@@ -48,7 +48,7 @@ export default function ScriptValidationPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl">Processing your script...</p>
+        <p className="text-xl text-foreground">Processing your script...</p>
       </div>
     );
   }
@@ -56,31 +56,33 @@ export default function ScriptValidationPage() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-red-500">{error}</p>
+        <p className="text-xl text-destructive">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-center p-4">
       <main className="max-w-4xl w-full space-y-8">
-        <h1 className="text-4xl font-bold text-gray-800 text-center">
+        <h1 className="text-4xl font-bold text-foreground text-center">
           Script Validation
         </h1>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4">
+        <div className="bg-card p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">
             {validatedScript.title}
           </h2>
-          <p className="mb-4">
+          <p className="mb-4 text-muted-foreground">
             Estimated Duration: {validatedScript.estimatedDuration} seconds
           </p>
           <div className="space-y-2">
             {validatedScript.content.map((item: any, index: number) => (
-              <div key={index} className="p-2 bg-gray-100 rounded">
+              <div key={index} className="p-2 bg-muted rounded">
                 {item.type === "speech" ? (
-                  <p>{item.text}</p>
+                  <p className="text-foreground">{item.text}</p>
                 ) : (
-                  <p className="italic">Pause for {item.duration} seconds</p>
+                  <p className="italic text-muted-foreground">
+                    Pause for {item.duration} seconds
+                  </p>
                 )}
               </div>
             ))}
