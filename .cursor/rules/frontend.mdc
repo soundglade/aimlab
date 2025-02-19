@@ -22,3 +22,9 @@ This document provides key information about the frontend architecture and conve
 - Avoid using color classes. Instead use shadcn/ui semantic classes (i.e. bg-primary)
 - Custom styles should be minimal and only used when Tailwind isn't sufficient
 - Follow mobile-first responsive design principles
+
+### Content Style
+- Keep it simple
+- Use gentle, mindful language that invites rather than demands
+- Keep text minimal and purposeful
+- Write with a calm, supportive tone
