@@ -28,7 +28,6 @@ export default function LandingPage() {
           <ul className="space-y-2 text-muted-foreground">
             <li>Real-time Adaptive Meditations</li>
             <li>Personalized Meditation Journeys</li>
-            <li>AI-Powered Mindfulness Insights</li>
           </ul>
         </div>
       </main>
