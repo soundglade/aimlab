@@ -18,10 +18,14 @@ This document provides key information about the frontend architecture and conve
 ## Key Conventions
 
 ### Styling
-- We use Tailwind CSS for styling (@src/styles/globals.css)
+- We use Tailwind CSS v4 for styling (@src/styles/globals.css)
 - Avoid using color classes. Instead use shadcn/ui semantic classes (i.e. bg-primary)
 - Custom styles should be minimal and only used when Tailwind isn't sufficient
 - Follow mobile-first responsive design principles
+
+### Components
+- We use shadcn/ui as our primary component library
+- Install missing shadcn/ui components using `npx shadcn@canary add componentname`
 
 ### Content Style
 - Keep it simple

@@ -15,8 +15,11 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
     "@tailwindcss/postcss": "^4.0.7",
+    "@types/cookie": "^0.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cookie": "^1.0.2",
+    "jose": "^5.10.0",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "postcss": "^8.5.3",
