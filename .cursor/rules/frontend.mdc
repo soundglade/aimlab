@@ -1,0 +1,24 @@
+---
+description: Frontend Conventions
+globs: *.tsx, *.css
+---
+# AIM Lab Frontend Conventions
+
+This document provides key information about the frontend architecture and conventions.
+
+## Project Structure
+
+- @src/pages/ - Next.js pages directory containing all route components
+  - @src/pages/admin/ - Admin dashboard and management interfaces
+  - @src/pages/playground/ - Interactive playground features
+- @src/components/ - Reusable UI components
+- @src/styles/ - Global styles and CSS modules
+- @src/lib/ - Utility functions and shared logic
+
+## Key Conventions
+
+### Styling
+- We use Tailwind CSS for styling (@src/styles/globals.css)
+- Avoid using color classes. Instead use shadcn/ui semantic classes (i.e. bg-primary)
+- Custom styles should be minimal and only used when Tailwind isn't sufficient
+- Follow mobile-first responsive design principles
