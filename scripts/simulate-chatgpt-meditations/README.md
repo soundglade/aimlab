@@ -1,54 +1,69 @@
 # ChatGPT Personas and Prompts
 
-A collection of user personas and example prompts for simulating how different users might request meditation scripts from ChatGPT.
+This project simulates how various users might request guided meditation scripts from ChatGPT using OpenAI's API. It facilitates generation of responses, extraction of guided meditations, and regeneration of any missing outputs.
+
+## Overview
+
+The project comprises three main scripts:
+
+1. **generate-samples.ts**
+
+   - **Purpose:** Combines each persona's introduction with multiple prompts (three per persona) to generate initial responses using ChatGPT (chatgpt-4o-latest).
+   - **Output:** Stores responses as JSON files (one per persona) in the `responses/` directory.
+
+2. **extract-meditations.ts**
+
+   - **Purpose:** Reads the JSON responses and uses a secondary OpenAI call (GPT-4o-mini) to extract the guided meditation script from each response.
+   - **Output:** Saves each extracted meditation as a Markdown file (named `<persona-id>-<number>.md`) in the `meditations/` directory. Each file includes YAML front matter with:
+     - `persona-id`: The persona identifier.
+     - `persona`: The full introduction.
+     - `prompt`: The original prompt.
+
+3. **regenerate-missing.ts**
+   - **Purpose:** Identifies missing Markdown files (based on the expected number of prompts) and regenerates them by re-calling OpenAI.
+   - **Output:** Updates the corresponding JSON response and creates the missing Markdown file(s).
 
 ## Script Usage
 
-### generate-samples.ts
+### Prerequisites
+
+Create a `.env` file in the project root with your OpenAI API key:
 
 ```bash
-npm run generate-meditations
+OPENAI_API_KEY=your-key-here
 ```
 
-The script combines each persona with their prompts to generate meditation scripts via GPT-4. Responses are saved in `responses/{persona-id}.json`.
+### Commands
 
-For testing, set `SAMPLE_SIZE` (default: 1) to limit the number of generated samples.
+- **Generate initial responses:**
 
-### extract-meditations.ts
+  ```bash
+  npm run generate-meditations
+  ```
 
-```bash
-npm run extract-meditations
-```
+  Processes each persona and prompt, storing outputs in `responses/`.
 
-This script processes the generated responses and extracts just the meditation scripts, removing any extra context or conversation. The extracted meditations are saved in `meditations/{persona-id}.json`.
+- **Extract meditation scripts:**
 
-## Files
+  ```bash
+  npm run extract-meditations
+  ```
 
-### personas.json
+  Reads the JSON responses, extracts guided meditations, and writes them as Markdown files in `meditations/`.
 
-```json
-{
-  "persona-id": "First-person description of the user...",
-  "another-persona": "Another first-person description..."
-}
-```
+- **Regenerate missing meditations:**
+  ```bash
+  npm run regenerate-missing
+  ```
+  Checks for missing Markdown files (based on expected prompt count) and regenerates them.
 
-Contains 20 user personas representing different types of meditation practitioners, from beginners to experts. Each persona is written in first person and reflects their unique background and relationship with meditation.
+## Project Structure
 
-### prompts.json
-
-```json
-{
-  "persona-id": [
-    "Short prompt example",
-    "Another prompt example",
-    "Third prompt example"
-  ]
-}
-```
-
-Contains 3 example prompts for each persona, showing how they might request a meditation script. Prompts intentionally vary in length and specificity to reflect realistic usage patterns.
-
-## Purpose
-
-This data is designed to help test and simulate how different users might interact with ChatGPT. The personas focus on early adopters who are interested in both meditation and technology.
+- **personas.json:** Contains persona IDs with full introductions.
+- **prompts.json:** Contains three prompts for each persona.
+- **responses/:** Directory where generated responses (JSON files) are saved.
+- **meditations/:** Directory where extracted guided meditations (Markdown files with YAML front matter) are saved.
+- **lib.ts:** Shared library with common functions and configurations.
+- **generate-samples.ts:** Generates initial responses.
+- **extract-meditations.ts:** Extracts and formats guided meditation scripts.
+- **regenerate-missing.ts:** Identifies and regenerates missing entries.

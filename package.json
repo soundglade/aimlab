@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate-meditations": "tsx scripts/simulate-chatgpt-meditations/generate-samples.ts",
-    "extract-meditations": "tsx scripts/simulate-chatgpt-meditations/extract-meditations.ts"
+    "extract-meditations": "tsx scripts/simulate-chatgpt-meditations/extract-meditations.ts",
+    "regenerate-missing": "tsx scripts/simulate-chatgpt-meditations/regenerate-missing.ts"
   },
   "dependencies": {
     "@radix-ui/react-menubar": "^1.1.6",
