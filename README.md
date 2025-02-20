@@ -10,10 +10,41 @@ Generate guided meditations from scripts created by AI language models like Chat
 
 ## Project Structure
 
+### Web Areas
+
+- **Public Website** - The main public-facing website accessible to all users
+
+  - Contains public experiments like NADA
+  - Available at the root URL
+  - Features a modern, user-friendly interface
+
+- **Admin Area** (`/admin`) - Password-protected administrative interface
+
+  - Accessible via `/admin`
+  - Features a structured layout with a sidebar navigation
+  - Uses a hierarchical routing system with pages and subpages
+  - Follows the pattern: `/admin/[section]/[subsection]`
+
+- **Playground** (`/playground`) - Password-protected experimental area
+  - Accessible via `/playground`
+  - Features a modular layout with sidebar navigation
+  - Organized into experiment sections with nested pages
+  - Follows the pattern: `/playground/[experiment]/[feature]`
+
+### Core Directories
+
 - `/src/pages` - Next.js pages and API routes
 - `/src/components` - Reusable UI components
 - `/src/styles` - Global styles and CSS modules
 - `/src/lib` - Utility functions and shared logic
+
+### Scripts
+
+The `/scripts` directory contains utility scripts for various project tasks. Currently includes:
+
+- `/scripts/simulate-chatgpt-meditations` - A tool for generating AI-powered meditation scripts
+  - Uses various personas to generate meditation content
+  - Includes tools for processing and managing the generated content
 
 ## Getting Started
 
