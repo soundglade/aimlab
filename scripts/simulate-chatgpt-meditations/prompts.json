@@ -1,0 +1,161 @@
+{
+  "software-developer": [
+    "meditation for debugging mindblock",
+
+    "Can you write a short meditation for focus while coding?",
+
+    "I need a meditation script that helps with mental clarity during programming. Something that uses the concept of clearing cache and resetting mental state, but not too technical. Around 10 minutes would be ideal."
+  ],
+
+  "meditation-teacher": [
+    "Write a meditation script incorporating shamatha and vipassana techniques, with space for silence between instructions. Looking for something suitable for a mixed-level group that gradually progresses from focused attention to open awareness over 25 minutes.",
+
+    "Beginning meditation script with extra guidance for common obstacles",
+
+    "Simple breath awareness meditation for first-timers"
+  ],
+
+  "psychology-researcher": [
+    "15-minute standardized mindfulness script with 3-minute intervals",
+
+    "Looking for a meditation focusing specifically on anxiety reduction, with clear markers for monitoring autonomic nervous system response. Should include progressive muscle relaxation followed by breath awareness, with timed segments.",
+
+    "basic meditation for research participants"
+  ],
+
+  "busy-professional": [
+    "quick meditation for work stress",
+
+    "Need a 5 min meditation to do between meetings. Something energizing.",
+
+    "I'd like a morning meditation that helps with focus and productivity. Been really stressed with deadlines lately and need something to start the day right. Preferably something I can do during my commute."
+  ],
+
+  "experienced-meditator": [
+    "dzogchen-style meditation on nature of mind",
+
+    "Could you create a self-inquiry meditation incorporating elements of traditional Advaita Vedanta methods? Preferably with minimal guidance and extended periods of silence for deeper contemplation.",
+
+    "non-dual awareness practice with bell intervals"
+  ],
+
+  "yoga-instructor": [
+    "savasana meditation script with pranayama",
+
+    "Need a meditation that integrates gentle movement cues with breath awareness. For my beginner vinyasa class - they're still learning to connect breath with movement and I want something that bridges the gap between asana and meditation.",
+
+    "calming meditation for end of class"
+  ],
+
+  "tech-enthusiast": [
+    "Can you make a meditation about being one with the flow state? Something for when I'm working on projects.",
+
+    "binaural beats meditation script",
+
+    "I want to try meditating but not sure where to start. Maybe something simple?"
+  ],
+
+  "mental-health-advocate": [
+    "trauma-informed meditation for anxiety",
+
+    "Looking for a gentle meditation script that emphasizes self-compassion and feeling safe in the body. Should include lots of options for people to modify the practice based on their comfort level, and clear permission to pause or stop if needed.",
+
+    "grounding meditation for overwhelming moments"
+  ],
+
+  "creative-professional": [
+    "meditation to boost creativity",
+
+    "Need a meditation for when I'm stuck on a design problem. Something that helps clear mental blocks but also keeps the creative energy flowing. Maybe with some visualization?",
+
+    "quick inspiration meditation"
+  ],
+
+  "retired-teacher": [
+    "easy meditation for seniors",
+
+    "Would like a gentle meditation to help with sleep. Nothing too complicated.",
+
+    "I'd like a simple meditation I can do in my chair. My joints aren't what they used to be, so I need something that doesn't require any special posture or movement. Just something peaceful for my afternoon quiet time."
+  ],
+
+  "student-athlete": [
+    "pre-game meditation",
+
+    "Need a meditation for recovery days that I can do while stretching. Been feeling pretty burnt out from training.",
+
+    "visualization for athletic performance"
+  ],
+
+  "digital-nomad": [
+    "grounding meditation for travel anxiety",
+
+    "Quick meditation I can do on planes/trains",
+
+    "Looking for a meditation that helps with adjusting to new time zones and spaces. I move around a lot and sometimes it's hard to maintain a regular practice when everything's always changing. Something that can help create a sense of routine despite being in different places?"
+  ],
+
+  "mindful-parent": [
+    "super quick meditation for busy parents",
+
+    "Can you write a meditation for when the kids are finally asleep and I need to decompress? Something that helps switch off the parent-brain but isn't so long that I fall asleep doing it.",
+
+    "morning meditation before kids wake up"
+  ],
+
+  "corporate-wellness": [
+    "Write a meditation script suitable for a corporate environment. Needs to be secular and focused on productivity and stress management. Should use business-appropriate language and avoid anything too spiritual.",
+
+    "group meditation for team building",
+
+    "5min desk meditation"
+  ],
+
+  "music-producer": [
+    "meditation for enhanced listening",
+
+    "Looking for a meditation that works with sound awareness. Something that helps train the ear while also being mindful - thinking about using it as a warm-up before studio sessions.",
+
+    "deep listening meditation with different sound layers"
+  ],
+
+  "healthcare-professional": [
+    "3-minute meditation for hospital breaks",
+
+    "Need something to decompress after a difficult shift. Been dealing with some tough cases lately.",
+
+    "meditation script for healthcare worker burnout"
+  ],
+
+  "accessibility-advocate": [
+    "Can you write a meditation script that doesn't rely on visual cues? Should use clear, directional language and avoid metaphors that assume sight. Include alternative anchors for attention like sound, breath, and body sensation.",
+
+    "meditation for chronic pain",
+
+    "inclusive body scan meditation"
+  ],
+
+  "startup-founder": [
+    "meditation for decision fatigue",
+
+    "Quick anti-stress meditation between investor calls",
+
+    "I need a morning meditation that helps with strategic thinking and staying focused on the big picture when everything feels chaotic. My mind tends to race with a million ideas and tasks."
+  ],
+
+  "mindfulness-blogger": [
+    "Looking for a unique angle on loving-kindness meditation that I can share with my readers. Something that makes it relevant for modern life but keeps the traditional benefits. Would love to explore how it might help with social media anxiety.",
+
+    "beginner-friendly mindful walking script",
+
+    "modern take on metta meditation"
+  ],
+
+  "recovery-coach": [
+    "urge surfing meditation",
+
+    "Need a gentle meditation for early recovery. Something that emphasizes self-compassion and doesn't require too much sitting still.",
+
+    "Write a grounding meditation for moments of craving. Should be simple enough to remember and use anywhere, with clear steps for working with difficult emotions as they arise."
+  ]
+}
