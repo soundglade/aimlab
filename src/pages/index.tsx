@@ -5,7 +5,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-center p-4">
       <main className="max-w-4xl w-full space-y-8 text-center">
-        <h1 className="text-4xl font-bold text-foreground sm:text-5xl md:text-6xl">
+        <h1 className="text-4xl text-foreground sm:text-5xl md:text-6xl">
           AI Meditation Lab
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -22,9 +22,7 @@ export default function LandingPage() {
           </p>
         </div>
         <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-foreground mb-4">
-            Coming Soon
-          </h2>
+          <h2 className="text-2xl  text-foreground mb-4">Coming Soon</h2>
           <ul className="space-y-2 text-muted-foreground">
             <li>Real-time Adaptive Meditations</li>
             <li>Personalized Meditation Journeys</li>

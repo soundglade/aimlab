@@ -26,7 +26,7 @@ export default function ScriptInputPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-center p-4">
       <main className="max-w-4xl w-full space-y-8">
-        <h1 className="text-4xl font-bold text-foreground text-center">
+        <h1 className="text-4xl text-foreground text-center">
           Import Your Meditation Script
         </h1>
         <p className="text-xl text-muted-foreground text-center">

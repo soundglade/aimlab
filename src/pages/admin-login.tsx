@@ -38,7 +38,7 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md space-y-8 p-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Admin Login</h2>
+          <h2 className="text-2xl">Admin Login</h2>
           <p className="text-muted-foreground mt-2">
             Enter password to access admin area
           </p>
