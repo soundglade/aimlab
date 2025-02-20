@@ -7,16 +7,20 @@ A collection of user personas and example prompts for simulating how different u
 ### generate-samples.ts
 
 ```bash
-# Set your OpenAI API key
-export OPENAI_API_KEY='your-key'
-
-# Run the script (from project root)
 npm run generate-meditations
 ```
 
 The script combines each persona with their prompts to generate meditation scripts via GPT-4. Responses are saved in `responses/{persona-id}.json`.
 
 For testing, set `SAMPLE_SIZE` (default: 1) to limit the number of generated samples.
+
+### extract-meditations.ts
+
+```bash
+npm run extract-meditations
+```
+
+This script processes the generated responses and extracts just the meditation scripts, removing any extra context or conversation. The extracted meditations are saved in `meditations/{persona-id}.json`.
 
 ## Files
 

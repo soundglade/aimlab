@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-meditations": "tsx scripts/simulate-chatgpt-meditations/generate-samples.ts"
+    "generate-meditations": "tsx scripts/simulate-chatgpt-meditations/generate-samples.ts",
+    "extract-meditations": "tsx scripts/simulate-chatgpt-meditations/extract-meditations.ts"
   },
   "dependencies": {
     "@radix-ui/react-menubar": "^1.1.6",
@@ -37,8 +38,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }

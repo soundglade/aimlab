@@ -1,6 +1,10 @@
 import { OpenAI } from "openai";
 import * as fs from "fs/promises";
 import * as path from "path";
+import * as dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
 
 interface Response {
   prompt: string;
@@ -8,7 +12,7 @@ interface Response {
   error?: string;
 }
 
-const SAMPLE_SIZE = 1;
+const SAMPLE_SIZE = Infinity;
 const OPENAI_MODEL = "chatgpt-4o-latest";
 
 const SYSTEM_MESSAGE = `You are ChatGPT, a large language model trained by OpenAI. You are a helpful assistant designed to make users' lives easier by providing accurate, informative, and engaging responses.
