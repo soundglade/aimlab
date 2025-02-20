@@ -54,35 +54,12 @@ export default function PlaygroundLayout({ children }: PlaygroundLayoutProps) {
               </Link>
             </li>
             <li>
-              <span className="block px-4 py-2 font-semibold text-muted-foreground">
-                Meditation Experiments
-              </span>
-              <ul className="pl-4 mt-1 space-y-1">
-                <li>
-                  <Link
-                    href="/playground/meditation"
-                    className="block px-4 py-2 rounded hover:bg-muted"
-                  >
-                    Experiment Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/playground/meditation/ai"
-                    className="block px-4 py-2 rounded hover:bg-muted"
-                  >
-                    AI Meditation
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/playground/meditation/guided"
-                    className="block px-4 py-2 rounded hover:bg-muted"
-                  >
-                    Guided Meditation
-                  </Link>
-                </li>
-              </ul>
+              <Link
+                href="/playground/chatgpt-meditation-samples"
+                className="block px-4 py-2 rounded hover:bg-muted"
+              >
+                ChatGPT Samples
+              </Link>
             </li>
           </ul>
         </nav>
