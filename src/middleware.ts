@@ -19,13 +19,19 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(getCookieName(area))?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL(`/${area}-login`, request.url));
+    const loginUrl = new URL(`/${area}-login`, request.url);
+    // Add the attempted URL as a query parameter
+    loginUrl.searchParams.set("redirect", path);
+    return NextResponse.redirect(loginUrl);
   }
 
   const payload = await verifyToken(token);
 
   if (!payload || payload.area !== area) {
-    return NextResponse.redirect(new URL(`/${area}-login`, request.url));
+    const loginUrl = new URL(`/${area}-login`, request.url);
+    // Add the attempted URL as a query parameter
+    loginUrl.searchParams.set("redirect", path);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
