@@ -53,9 +53,8 @@ export default function ProtectedRouteLogin({
 
       router.push(targetPath);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
       setIsLoading(false);
+      setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
 
