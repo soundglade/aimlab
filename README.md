@@ -37,6 +37,7 @@ Generate guided meditations from scripts created by AI language models like Chat
 - `/src/components` - Reusable UI components
 - `/src/styles` - Global styles and CSS modules
 - `/src/lib` - Utility functions and shared logic
+- `/console` - Development REPL environment and utilities
 
 ### Scripts
 
@@ -59,6 +60,17 @@ Then, run the development server:
 ```bash
 npm run dev
 ```
+
+### Console
+
+The project includes a REPL environment for development and debugging. You can run it in two modes:
+
+```bash
+npm run console  # Interactive REPL session
+npm run exec    # Single command execution
+```
+
+For detailed documentation about the console and its utilities, see [console/README.md](console/README.md).
 
 ## Tech Stack
 
