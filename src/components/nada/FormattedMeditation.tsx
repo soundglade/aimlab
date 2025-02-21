@@ -1,0 +1,112 @@
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
+import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import { cn } from "@/lib/utils";
+
+const getHeadingMargin = (index: number, level: number) => {
+  if (index === 0) return "";
+  switch (level) {
+    case 1:
+      return "mt-12";
+    case 2:
+      return "mt-9";
+    case 3:
+      return "mt-3";
+    default:
+      return "";
+  }
+};
+
+const getHeadingSize = (level: number) => {
+  switch (level) {
+    case 1:
+      return "text-3xl leading-relaxed";
+    case 2:
+      return "text-xl leading-relaxed";
+    case 3:
+      return "text-md leading-relaxed";
+    default:
+      return "";
+  }
+};
+
+interface FormattedMeditationProps {
+  result: MeditationFormatterResult;
+}
+
+export function FormattedMeditation({ result }: FormattedMeditationProps) {
+  if (result.isRejected) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{result.rejectionReason}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  const { warnings = [], formattedScript = [] } = result;
+
+  return (
+    <div className="space-y-6">
+      {warnings.length > 0 && (
+        <Alert>
+          <AlertDescription>
+            <div className="font-medium mb-2">Warnings:</div>
+            <ul className="list-disc pl-4">
+              {warnings.map((warning, index) => (
+                <li key={index}>{warning}</li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="space-y-2">
+        {formattedScript.map((step, index) => {
+          const margin =
+            step.type === "heading" ? getHeadingMargin(index, step.level) : "";
+
+          return (
+            <div key={index} className={margin}>
+              {step.type === "heading" && (
+                <div className={cn("font-medium", getHeadingSize(step.level))}>
+                  {step.text}
+                </div>
+              )}
+
+              {step.type === "speech" && (
+                <Card className="p-3 rounded-sm border shadow-none bg-white/50">
+                  <div>{step.text}</div>
+                </Card>
+              )}
+
+              {step.type === "pause" && (
+                <div className="text-muted-foreground">
+                  {step.duration}s pause
+                  {step.canExtend && " (can be extended)"}
+                  {step.waitForUserInput && " (waiting for user)"}
+                </div>
+              )}
+
+              {step.type === "sound" && (
+                <div className="text-muted-foreground">
+                  {step.soundId}
+                  {step.description && (
+                    <span className="text-sm ml-2">({step.description})</span>
+                  )}
+                </div>
+              )}
+
+              {step.type === "aside" && (
+                <div className="italic text-muted-foreground">{step.text}</div>
+              )}
+
+              {step.type === "direction" && (
+                <div className="text-primary">{step.text}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

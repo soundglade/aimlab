@@ -4,10 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { FormattedMeditation } from "@/components/nada/FormattedMeditation";
+import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 
 export default function NadaModePage() {
   const [script, setScript] = useState("");
-  const [formattedScript, setFormattedScript] = useState<any>(null);
+  const [formattedScript, setFormattedScript] =
+    useState<MeditationFormatterResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -56,21 +59,18 @@ export default function NadaModePage() {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          <h1 className="text-4xl text-foreground text-center">
-            Create Your Guided Meditation
-          </h1>
-
           {formattedScript ? (
             <Card className="p-6">
-              <h2 className="text-2xl font-semibold mb-4">Formatted Script</h2>
-              <pre className="whitespace-pre-wrap bg-muted p-4 rounded-lg">
-                {JSON.stringify(formattedScript, null, 2)}
-              </pre>
+              <FormattedMeditation result={formattedScript} />
             </Card>
           ) : (
             <>
+              <h1 className="text-4xl text-foreground text-center">
+                Create Your Guided Meditation
+              </h1>
+
               <div className="space-y-2 text-center">
                 <p className="text-xl text-muted-foreground">
                   How would you like to practice?
