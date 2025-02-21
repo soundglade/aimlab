@@ -62,56 +62,58 @@ export default function NadaModePage() {
             Create Your Guided Meditation
           </h1>
 
-          <div className="space-y-2 text-center">
-            <p className="text-xl text-muted-foreground">
-              How would you like to practice?
-            </p>
-            <div className="flex justify-center gap-4">
-              {[
-                { label: "Save Practice", value: false },
-                { label: "Private Session", value: true },
-              ].map((option) => (
-                <button
-                  key={option.label}
-                  type="button"
-                  onClick={() => setIsPrivate(option.value)}
-                  className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
-                    isPrivate === option.value
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted hover:bg-muted/80"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {isPrivate
-                ? "Your practice remains yours alone and is not saved"
-                : "Keep the option to save your meditation for future sessions"}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Textarea
-              placeholder="Paste your meditation script here..."
-              value={script}
-              onChange={(e) => setScript(e.target.value)}
-              className="h-64 bg-white/50"
-            />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Processing..." : "Read Script"}
-            </Button>
-          </form>
-
-          {formattedScript && (
-            <Card className="p-6 mt-8">
+          {formattedScript ? (
+            <Card className="p-6">
               <h2 className="text-2xl font-semibold mb-4">Formatted Script</h2>
               <pre className="whitespace-pre-wrap bg-muted p-4 rounded-lg">
                 {JSON.stringify(formattedScript, null, 2)}
               </pre>
             </Card>
+          ) : (
+            <>
+              <div className="space-y-2 text-center">
+                <p className="text-xl text-muted-foreground">
+                  How would you like to practice?
+                </p>
+                <div className="flex justify-center gap-4">
+                  {[
+                    { label: "Save Practice", value: false },
+                    { label: "Private Session", value: true },
+                  ].map((option) => (
+                    <button
+                      key={option.label}
+                      type="button"
+                      onClick={() => setIsPrivate(option.value)}
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                        isPrivate === option.value
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted hover:bg-muted/80"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {isPrivate
+                    ? "Your practice remains yours alone and is not saved"
+                    : "Keep the option to save your meditation for future sessions"}
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <Textarea
+                  placeholder="Paste your meditation script here..."
+                  value={script}
+                  onChange={(e) => setScript(e.target.value)}
+                  className="h-64 bg-white/50"
+                />
+
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Processing..." : "Read Script"}
+                </Button>
+              </form>
+            </>
           )}
         </main>
       </div>

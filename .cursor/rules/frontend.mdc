@@ -20,6 +20,7 @@ This document provides key information about the frontend architecture and conve
 ### Styling
 - We use Tailwind CSS v4 for styling (@src/styles/globals.css)
 - Avoid using color classes. Instead use shadcn/ui semantic classes (i.e. bg-primary)
+- Make abunded used of the "muted" colors, for a more gentle look
 - Custom styles should be minimal and only used when Tailwind isn't sufficient
 - Follow mobile-first responsive design principles
 
