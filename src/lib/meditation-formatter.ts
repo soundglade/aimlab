@@ -6,6 +6,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 const HeadingStep = z.object({
   type: z.literal("heading"),
   text: z.string(),
+  level: z.enum(["1", "2", "3"]).transform((val) => parseInt(val, 10)),
   readAloud: z.boolean(),
 });
 
@@ -101,7 +102,11 @@ Steps to follow:
    - For each piece of user-facing guidance, use "speech".
    - For silent intervals, use "pause", with an approximate "duration" in seconds. 
      Mark if it can be extended ("canExtend": boolean) or must wait for user input ("waitForUserInput": boolean).
-   - If there's a heading or title, set "type": "heading" with "readAloud": true/false as desired.
+   - For headings or titles, use "type": "heading" with:
+     * "level": 1 for main titles (h1)
+     * "level": 2 for section headings (h2)
+     * "level": 3 for subsection headings (h3)
+     * "readAloud": true/false as desired
    - If there's a mention of a bell or chime, use "sound" type with "soundId" and optional "description".
    - For teacher-only notes or advanced instructions that shouldn't be spoken, use "aside".
    - For performance or voice instructions, use "direction".

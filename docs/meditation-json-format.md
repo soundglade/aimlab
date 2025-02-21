@@ -61,12 +61,16 @@ A meditation script is represented as an **array** of **step objects**. Each obj
 
 ### 1. heading
 
-Represents a visual section heading or title within the meditation.
+Represents a visual section heading or title within the meditation. Supports three levels of headings that correspond to markdown h1, h2, and h3 tags.
 
 **Fields:**
 
 - `type`: "heading"
 - `text`: (string) The heading text
+- `level`: (number) The heading level (1, 2, or 3)
+  - `1`: Top-level heading (h1)
+  - `2`: Sub-heading (h2)
+  - `3`: Sub-sub-heading (h3)
 - `readAloud`: (boolean) Indicates whether this heading should be spoken by TTS engines.
   - `true`: The heading text will be read aloud.
   - `false`: The heading is shown visually but not read out loud.
@@ -76,7 +80,20 @@ Represents a visual section heading or title within the meditation.
 ```json
 {
   "type": "heading",
-  "text": "Body Scan Section",
+  "text": "Body Scan Meditation",
+  "level": 1,
+  "readAloud": false
+},
+{
+  "type": "heading",
+  "text": "Lower Body Section",
+  "level": 2,
+  "readAloud": false
+},
+{
+  "type": "heading",
+  "text": "Feet and Ankles",
+  "level": 3,
   "readAloud": false
 }
 ```
@@ -227,6 +244,13 @@ Below is a more complete JSON example that demonstrates all step types in one co
   {
     "type": "heading",
     "text": "Calming Evening Meditation",
+    "level": 1,
+    "readAloud": false
+  },
+  {
+    "type": "heading",
+    "text": "Introduction",
+    "level": 2,
     "readAloud": false
   },
   {
@@ -240,12 +264,24 @@ Below is a more complete JSON example that demonstrates all step types in one co
     "waitForUserInput": false
   },
   {
+    "type": "heading",
+    "text": "Breath Awareness",
+    "level": 2,
+    "readAloud": false
+  },
+  {
     "type": "speech",
     "text": "Gently close your eyes if that feels comfortable, and begin to notice your breath—moving in and out, without needing to change it."
   },
   {
     "type": "aside",
     "text": "Optional note: For advanced practitioners, suggest focusing on belly breathing here."
+  },
+  {
+    "type": "heading",
+    "text": "Deep Breathing Exercise",
+    "level": 3,
+    "readAloud": false
   },
   {
     "type": "pause",
@@ -257,6 +293,12 @@ Below is a more complete JSON example that demonstrates all step types in one co
     "type": "sound",
     "soundId": "chime_01",
     "description": "Gentle wind chime"
+  },
+  {
+    "type": "heading",
+    "text": "Body Relaxation",
+    "level": 2,
+    "readAloud": false
   },
   {
     "type": "speech",
@@ -275,6 +317,12 @@ Below is a more complete JSON example that demonstrates all step types in one co
     "duration": 60,
     "canExtend": false,
     "waitForUserInput": true
+  },
+  {
+    "type": "heading",
+    "text": "Closing",
+    "level": 2,
+    "readAloud": false
   },
   {
     "type": "speech",

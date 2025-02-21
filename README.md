@@ -37,7 +37,10 @@ Generate guided meditations from scripts created by AI language models like Chat
 - `/src/components` - Reusable UI components
 - `/src/styles` - Global styles and CSS modules
 - `/src/lib` - Utility functions and shared logic
+
 - `/console` - Development REPL environment and utilities
+- `/docs` - Documentation for the project
+- `/scripts` - On-off utility scripts for various project tasks
 
 ### Scripts
 
