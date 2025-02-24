@@ -36,6 +36,11 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     useState<MeditationFormatterResult | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [currentStep, setCurrentStep] = useState<SessionStep>("input");
+  const [voiceSettings, setVoiceSettings] = useState<{
+    voiceId: string;
+    customVoiceId?: string;
+    isAdvanced: boolean;
+  } | null>(null);
 
   // If private mode is selected, clear the session by redirecting to base URL
   useEffect(() => {
@@ -51,6 +56,9 @@ export function NadaPage({ sessionId }: NadaPageProps) {
       if (session) {
         setFormattedScript(session.formattedScript);
         setCurrentStep(session.currentStep);
+        if (session.voiceSettings) {
+          setVoiceSettings(session.voiceSettings);
+        }
       }
     }
     // Clean up old sessions on component mount
@@ -63,9 +71,10 @@ export function NadaPage({ sessionId }: NadaPageProps) {
       storage.updateSessionIfExists<NadaSession>(sessionId, {
         currentStep,
         formattedScript,
+        voiceSettings: voiceSettings || undefined,
       });
     }
-  }, [sessionId, currentStep, formattedScript]);
+  }, [sessionId, currentStep, formattedScript, voiceSettings]);
 
   const handleScriptFormatted = (
     formattedScript: MeditationFormatterResult,
@@ -89,12 +98,15 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     setCurrentStep("review");
   };
 
-  const handleGenerateAudio = async (voiceSettings: {
+  const handleGenerateAudio = async (settings: {
     voiceId: string;
     customVoiceId?: string;
     isAdvanced: boolean;
   }) => {
-    storage.updateSessionIfExists<NadaSession>(sessionId, { voiceSettings });
+    setVoiceSettings(settings);
+    storage.updateSessionIfExists<NadaSession>(sessionId, {
+      voiceSettings: settings,
+    });
     setCurrentStep("synthesis");
   };
 
@@ -132,9 +144,12 @@ export function NadaPage({ sessionId }: NadaPageProps) {
               onGenerateAudio={handleGenerateAudio}
               onEditScript={() => setCurrentStep("review")}
             />
-          ) : currentStep === "synthesis" && formattedScript ? (
+          ) : currentStep === "synthesis" &&
+            formattedScript &&
+            voiceSettings ? (
             <SynthesisProgress
               script={formattedScript}
+              voiceSettings={voiceSettings}
               onCancel={handleCancelSynthesis}
             />
           ) : (

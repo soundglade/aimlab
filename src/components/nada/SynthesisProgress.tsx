@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -107,26 +107,128 @@ function ScriptSection({ section, status, onPreview }: ScriptSectionProps) {
 
 interface SynthesisProgressProps {
   script: MeditationFormatterResult;
+  voiceSettings: {
+    voiceId: string;
+    customVoiceId?: string;
+    isAdvanced: boolean;
+  };
   onCancel: () => void;
 }
 
 export function SynthesisProgress({
   script,
+  voiceSettings,
   onCancel,
 }: SynthesisProgressProps) {
-  // Mock state for the demo
-  const [progress, setProgress] = useState(35);
-  const [currentIndex, setCurrentIndex] = useState(2);
+  const [progress, setProgress] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [audioSections] = useState(new Map<number, Blob>());
+  const [error, setError] = useState<string | null>(null);
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
 
-  const getScriptSectionStatus = (index: number) => {
-    if (index < currentIndex) return "complete";
-    if (index === currentIndex) return "processing";
-    return "pending";
+  useEffect(() => {
+    let aborted = false;
+
+    async function startSynthesis() {
+      try {
+        setIsSynthesizing(true);
+        setError(null);
+
+        const response = await fetch("/api/synthesize-meditation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sections: script.formattedScript,
+            voiceSettings,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Synthesis request failed");
+        }
+
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (!aborted) {
+          const { done, value } = await reader.read();
+
+          if (done) break;
+
+          // Append new data to buffer and process complete messages
+          buffer += decoder.decode(value, { stream: true });
+          const messages = buffer.split("\n");
+
+          // Keep the last incomplete message in buffer
+          buffer = messages.pop() || "";
+
+          // Process complete messages
+          for (const message of messages) {
+            if (!message) continue;
+
+            const data = JSON.parse(message);
+
+            switch (data.type) {
+              case "progress":
+                setProgress(data.progress);
+                setCurrentIndex(data.sectionIndex);
+                break;
+
+              case "audio":
+                const audioBlob = await fetch(
+                  `data:audio/wav;base64,${data.data}`
+                ).then((r) => r.blob());
+                audioSections.set(data.sectionIndex, audioBlob);
+                break;
+
+              case "complete":
+                setProgress(100);
+                break;
+
+              case "error":
+                throw new Error(data.message);
+            }
+          }
+        }
+      } catch (err) {
+        if (!aborted) {
+          setError(err instanceof Error ? err.message : "Synthesis failed");
+        }
+      } finally {
+        if (!aborted) {
+          setIsSynthesizing(false);
+        }
+      }
+    }
+
+    startSynthesis();
+
+    return () => {
+      aborted = true;
+    };
+  }, [script.formattedScript, voiceSettings]);
+
+  const previewSection = async (index: number) => {
+    const audioBlob = audioSections.get(index);
+    if (!audioBlob) return;
+
+    const url = URL.createObjectURL(audioBlob);
+    const audio = new Audio(url);
+
+    audio.onended = () => {
+      URL.revokeObjectURL(url);
+    };
+
+    await audio.play();
   };
 
-  const previewSection = (index: number) => {
-    console.log("Preview section", index);
-    // TODO: Implement audio preview
+  const getScriptSectionStatus = (index: number) => {
+    if (audioSections.has(index)) return "complete";
+    if (index === currentIndex) return "processing";
+    return "pending";
   };
 
   if (!script.formattedScript) {
@@ -140,6 +242,10 @@ export function SynthesisProgress({
   return (
     <Card className="p-6 space-y-6">
       <ProgressHeader progress={progress} />
+
+      {error && (
+        <div className="text-red-600 bg-red-50 p-4 rounded-md">{error}</div>
+      )}
 
       <div className="space-y-2">
         {script.formattedScript.map((section, index) => (
@@ -162,12 +268,15 @@ export function SynthesisProgress({
           variant="ghost"
           onClick={onCancel}
           className="text-red-600 gap-2"
+          disabled={isSynthesizing}
         >
           <StopCircle className="h-4 w-4" />
           Cancel Synthesis
         </Button>
         <div className="text-sm text-muted-foreground">
-          Estimated time remaining: ~2 minutes
+          {progress < 100
+            ? "Estimated time remaining: ~2 minutes"
+            : "Synthesis complete!"}
         </div>
       </div>
     </Card>
