@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import NadaPage from "./index";
+import { NadaPage } from "@/components/nada/NadaPage";
 
 export default function NadaSessionPage() {
   const router = useRouter();
