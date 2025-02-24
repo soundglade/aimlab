@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -125,8 +125,11 @@ export function SynthesisProgress({
   const [audioSections] = useState(new Map<number, Blob>());
   const [error, setError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
     let aborted = false;
 
     async function startSynthesis() {
@@ -143,6 +146,7 @@ export function SynthesisProgress({
             sections: script.formattedScript,
             voiceSettings,
           }),
+          signal: abortController.signal,
         });
 
         if (!response.ok) {
@@ -195,7 +199,12 @@ export function SynthesisProgress({
         }
       } catch (err) {
         if (!aborted) {
-          setError(err instanceof Error ? err.message : "Synthesis failed");
+          // Don't show the abort error to the user
+          if (err instanceof Error && err.name === "AbortError") {
+            setError("Synthesis cancelled");
+          } else {
+            setError(err instanceof Error ? err.message : "Synthesis failed");
+          }
         }
       } finally {
         if (!aborted) {
@@ -208,8 +217,17 @@ export function SynthesisProgress({
 
     return () => {
       aborted = true;
+      abortController.abort();
     };
   }, [script.formattedScript, voiceSettings]);
+
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setIsSynthesizing(false);
+    }
+    onCancel();
+  };
 
   const previewSection = async (index: number) => {
     const audioBlob = audioSections.get(index);
@@ -241,6 +259,18 @@ export function SynthesisProgress({
 
   return (
     <Card className="p-6 space-y-6">
+      <div className="flex justify-end">
+        <Button
+          variant="ghost"
+          onClick={handleCancel}
+          className="text-red-600 gap-2"
+          disabled={!isSynthesizing}
+        >
+          <StopCircle className="h-4 w-4" />
+          Cancel Synthesis
+        </Button>
+      </div>
+
       <ProgressHeader progress={progress} />
 
       {error && (
@@ -263,21 +293,10 @@ export function SynthesisProgress({
         ))}
       </div>
 
-      <div className="flex justify-between pt-4">
-        <Button
-          variant="ghost"
-          onClick={onCancel}
-          className="text-red-600 gap-2"
-          disabled={isSynthesizing}
-        >
-          <StopCircle className="h-4 w-4" />
-          Cancel Synthesis
-        </Button>
-        <div className="text-sm text-muted-foreground">
-          {progress < 100
-            ? "Estimated time remaining: ~2 minutes"
-            : "Synthesis complete!"}
-        </div>
+      <div className="text-sm text-muted-foreground text-center">
+        {progress < 100
+          ? "Estimated time remaining: ~2 minutes"
+          : "Synthesis complete!"}
       </div>
     </Card>
   );
