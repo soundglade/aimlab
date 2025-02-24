@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { FormattedMeditation } from "@/components/nada/FormattedMeditation";
 import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import { VoiceSelection } from "@/components/nada/VoiceSelection";
 
 export default function NadaModePage() {
   const [script, setScript] = useState("");
@@ -13,6 +14,9 @@ export default function NadaModePage() {
     useState<MeditationFormatterResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [currentStep, setCurrentStep] = useState<"input" | "review" | "voice">(
+    "input"
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +40,21 @@ export default function NadaModePage() {
 
       const data = await response.json();
       setFormattedScript(data);
+      setCurrentStep("review");
     } catch (error) {
       console.error("Error formatting script:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGenerateAudio = async (voiceSettings: {
+    voiceId: string;
+    customVoiceId?: string;
+    isAdvanced: boolean;
+  }) => {
+    // TODO: Implement audio generation
+    console.log("Generating audio with settings:", voiceSettings);
   };
 
   return (
@@ -61,10 +75,15 @@ export default function NadaModePage() {
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          {formattedScript ? (
+          {currentStep === "review" && formattedScript ? (
             <Card className="p-6">
-              <FormattedMeditation result={formattedScript} />
+              <FormattedMeditation
+                result={formattedScript}
+                onConfirm={() => setCurrentStep("voice")}
+              />
             </Card>
+          ) : currentStep === "voice" ? (
+            <VoiceSelection onGenerateAudio={handleGenerateAudio} />
           ) : (
             <>
               <h1 className="text-4xl text-foreground text-center">

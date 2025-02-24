@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
 
@@ -32,9 +33,13 @@ const getHeadingSize = (level: number) => {
 
 interface FormattedMeditationProps {
   result: MeditationFormatterResult;
+  onConfirm: () => void;
 }
 
-export function FormattedMeditation({ result }: FormattedMeditationProps) {
+export function FormattedMeditation({
+  result,
+  onConfirm,
+}: FormattedMeditationProps) {
   if (result.isRejected) {
     return (
       <Alert variant="destructive">
@@ -106,6 +111,10 @@ export function FormattedMeditation({ result }: FormattedMeditationProps) {
             </div>
           );
         })}
+      </div>
+
+      <div className="flex justify-center pt-4">
+        <Button onClick={onConfirm}>Confirm</Button>
       </div>
     </div>
   );
