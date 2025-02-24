@@ -7,12 +7,13 @@ import { FormattedMeditation } from "./FormattedMeditation";
 import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 import { VoiceSelection } from "./VoiceSelection";
 import { PracticeSetup } from "./PracticeSetup";
+import { SynthesisProgress } from "./SynthesisProgress";
 import { initializeStorage } from "@/lib/session-storage";
 
 // Initialize the session storage for NADA
 const storage = initializeStorage("nada");
 
-type SessionStep = "input" | "review" | "voice";
+type SessionStep = "input" | "review" | "voice" | "synthesis";
 
 interface NadaSession {
   currentStep: SessionStep;
@@ -71,6 +72,7 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isPrivate: boolean
   ) => {
     setFormattedScript(formattedScript);
+    setIsPrivate(isPrivate);
 
     if (!isPrivate) {
       // Generate new session ID and update URL
@@ -93,9 +95,11 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isAdvanced: boolean;
   }) => {
     storage.updateSessionIfExists<NadaSession>(sessionId, { voiceSettings });
+    setCurrentStep("synthesis");
+  };
 
-    // TODO: Implement audio generation
-    console.log("Generating audio with settings:", voiceSettings);
+  const handleCancelSynthesis = () => {
+    setCurrentStep("voice");
   };
 
   return (
@@ -127,6 +131,11 @@ export function NadaPage({ sessionId }: NadaPageProps) {
             <VoiceSelection
               onGenerateAudio={handleGenerateAudio}
               onEditScript={() => setCurrentStep("review")}
+            />
+          ) : currentStep === "synthesis" && formattedScript ? (
+            <SynthesisProgress
+              script={formattedScript}
+              onCancel={handleCancelSynthesis}
             />
           ) : (
             <PracticeSetup
