@@ -1,22 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { FormattedMeditation } from "@/components/nada/FormattedMeditation";
 import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 import { VoiceSelection } from "@/components/nada/VoiceSelection";
+import { initializeStorage } from "@/lib/session-storage";
 
-export default function NadaModePage() {
+// Initialize the session storage for NADA
+const storage = initializeStorage("nada");
+
+type SessionStep = "input" | "review" | "voice";
+
+interface NadaSession {
+  currentStep: SessionStep;
+  formattedScript: MeditationFormatterResult;
+  voiceSettings?: {
+    voiceId: string;
+    customVoiceId?: string;
+    isAdvanced: boolean;
+  };
+}
+
+interface NadaPageProps {
+  sessionId?: string;
+}
+
+export default function NadaPage({ sessionId }: NadaPageProps) {
+  const router = useRouter();
+
   const [script, setScript] = useState("");
   const [formattedScript, setFormattedScript] =
     useState<MeditationFormatterResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [currentStep, setCurrentStep] = useState<"input" | "review" | "voice">(
-    "input"
-  );
+  const [currentStep, setCurrentStep] = useState<SessionStep>("input");
+
+  // If private mode is selected, clear the session by redirecting to base URL
+  useEffect(() => {
+    if (isPrivate && sessionId) {
+      router.push("/nada");
+    }
+  }, [isPrivate, sessionId, router]);
+
+  // Load session if ID is provided
+  useEffect(() => {
+    if (sessionId) {
+      const session = storage.getSession<NadaSession>(sessionId);
+      if (session) {
+        setFormattedScript(session.formattedScript);
+        setCurrentStep(session.currentStep);
+      }
+    }
+    // Clean up old sessions on component mount
+    storage.cleanupOldSessions();
+  }, [sessionId]);
+
+  // Save session to localStorage when state changes
+  useEffect(() => {
+    if (formattedScript) {
+      storage.updateSessionIfExists<NadaSession>(sessionId, {
+        currentStep,
+        formattedScript,
+      });
+    }
+  }, [sessionId, currentStep, formattedScript]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +91,19 @@ export default function NadaModePage() {
 
       const data = await response.json();
       setFormattedScript(data);
+
+      if (!isPrivate) {
+        // Generate new session ID and update URL
+        const newSessionId = storage.generateId();
+        router.push(`/nada/${newSessionId}`);
+
+        // Save initial session data
+        storage.saveSession<NadaSession>(newSessionId, {
+          currentStep: "review",
+          formattedScript: data,
+        });
+      }
+
       setCurrentStep("review");
     } catch (error) {
       console.error("Error formatting script:", error);
@@ -53,6 +117,8 @@ export default function NadaModePage() {
     customVoiceId?: string;
     isAdvanced: boolean;
   }) => {
+    storage.updateSessionIfExists<NadaSession>(sessionId, { voiceSettings });
+
     // TODO: Implement audio generation
     console.log("Generating audio with settings:", voiceSettings);
   };
