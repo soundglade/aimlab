@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ArrowLeft } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,9 +17,13 @@ interface VoiceSelectionProps {
     customVoiceId?: string;
     isAdvanced: boolean;
   }) => void;
+  onEditScript: () => void;
 }
 
-export function VoiceSelection({ onGenerateAudio }: VoiceSelectionProps) {
+export function VoiceSelection({
+  onGenerateAudio,
+  onEditScript,
+}: VoiceSelectionProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("default-female");
   const [customVoiceId, setCustomVoiceId] = useState("");
@@ -56,6 +61,10 @@ export function VoiceSelection({ onGenerateAudio }: VoiceSelectionProps) {
           </div>
 
           <div className="flex gap-4">
+            <Button variant="ghost" onClick={onEditScript} className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Edit Script
+            </Button>
             <Button onClick={handleGenerateAudio}>Next: Generate Audio</Button>
             <Button variant="outline" onClick={() => setShowAdvanced(true)}>
               Show Advanced Options
@@ -96,6 +105,10 @@ export function VoiceSelection({ onGenerateAudio }: VoiceSelectionProps) {
             </div>
 
             <div className="flex gap-4">
+              <Button variant="ghost" onClick={onEditScript} className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Edit Script
+              </Button>
               <Button onClick={handleGenerateAudio}>Generate Audio</Button>
               <Button variant="outline" onClick={() => setShowAdvanced(false)}>
                 Show Simple Options

@@ -149,7 +149,10 @@ export default function NadaPage({ sessionId }: NadaPageProps) {
               />
             </Card>
           ) : currentStep === "voice" ? (
-            <VoiceSelection onGenerateAudio={handleGenerateAudio} />
+            <VoiceSelection
+              onGenerateAudio={handleGenerateAudio}
+              onEditScript={() => setCurrentStep("review")}
+            />
           ) : (
             <>
               <h1 className="text-4xl text-foreground text-center">
