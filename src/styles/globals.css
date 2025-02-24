@@ -98,3 +98,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+  https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor
+  This is a workaround to fix the cursor issue in Tailwind CSS.
+  The default cursor is not being applied to buttons and roles.
+*/
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
