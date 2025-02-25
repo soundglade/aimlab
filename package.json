@@ -15,7 +15,9 @@
     "exec": "tsx console/exec.ts",
     "generate-meditations": "tsx scripts/simulate-chatgpt-meditations/generate-samples.ts",
     "extract-meditations": "tsx scripts/simulate-chatgpt-meditations/extract-meditations.ts",
-    "regenerate-missing": "tsx scripts/simulate-chatgpt-meditations/regenerate-missing.ts"
+    "regenerate-missing": "tsx scripts/simulate-chatgpt-meditations/regenerate-missing.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.4",
@@ -45,14 +47,19 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/typography": "^0.5.16",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
     "chokidar": "^4.0.3",
     "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
+    "jsdom": "^26.0.0",
     "tsx": "^4.19.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.0.7"
   }
 }

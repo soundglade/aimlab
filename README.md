@@ -41,6 +41,7 @@ Generate guided meditations from scripts created by AI language models like Chat
 - `/console` - Development REPL environment and utilities
 - `/docs` - Documentation for the project
 - `/scripts` - On-off utility scripts for various project tasks
+- `/tests` - Unit and integration tests
 
 ### Scripts
 
@@ -74,6 +75,39 @@ npm run exec    # Single command execution
 ```
 
 For detailed documentation about the console and its utilities, see [console/README.md](console/README.md).
+
+## Testing
+
+The project uses Vitest for unit and integration testing.
+
+### Running Tests
+
+```bash
+npm test        # Run all tests once
+npm run test:watch  # Run tests in watch mode (rerun on file changes)
+```
+
+### Test Structure
+
+- `/tests/unit/` - Unit tests for individual components and functions
+- `/tests/setup.ts` - Global test setup and configuration
+
+### Writing Tests
+
+Tests are written using Vitest and React Testing Library. Example:
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import MyComponent from "@/components/MyComponent";
+
+describe("MyComponent", () => {
+  it("renders correctly", () => {
+    render(<MyComponent />);
+    expect(screen.getByText("Hello World")).toBeInTheDocument();
+  });
+});
+```
 
 ## Tech Stack
 
