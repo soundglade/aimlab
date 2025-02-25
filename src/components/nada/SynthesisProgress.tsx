@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, StopCircle } from "lucide-react";
-import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import type { FormattedScript } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
 
 // Internal components
@@ -46,7 +46,7 @@ const getHeadingSize = (level: number) => {
 };
 
 interface ScriptSectionProps {
-  section: NonNullable<MeditationFormatterResult["formattedScript"]>[number];
+  section: FormattedScript["steps"][number];
   status: "pending" | "processing" | "complete";
   onPreview?: () => void;
 }
@@ -112,7 +112,7 @@ function ScriptSection({ section, status, onPreview }: ScriptSectionProps) {
 }
 
 interface SynthesisProgressProps {
-  script: MeditationFormatterResult;
+  script: FormattedScript;
   voiceSettings: {
     voiceId: string;
     customVoiceId?: string;
@@ -136,8 +136,7 @@ export function SynthesisProgress({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Extract title and formattedScript from script
-  const { title = "Untitled Meditation", formattedScript = [] } = script;
+  const { title, steps } = script;
 
   useEffect(() => {
     const startSynthesis = async () => {
@@ -157,9 +156,9 @@ export function SynthesisProgress({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            sections: formattedScript,
+            sections: steps,
             voiceSettings,
-            title, // Pass the title to the API
+            title,
           }),
           signal: abortController.signal,
         });
@@ -242,7 +241,7 @@ export function SynthesisProgress({
         abortControllerRef.current.abort();
       }
     };
-  }, [formattedScript, voiceSettings, title]); // Add title to the dependency array
+  }, [steps, voiceSettings, title]);
 
   const handleCancel = () => {
     if (abortControllerRef.current) {
@@ -277,14 +276,6 @@ export function SynthesisProgress({
     return "pending";
   };
 
-  if (!formattedScript) {
-    return (
-      <Card className="p-6">
-        <div className="text-muted-foreground">No script content available</div>
-      </Card>
-    );
-  }
-
   return (
     <Card className="p-6 space-y-6">
       <h1 className="text-2xl font-medium text-center mb-4">{title}</h1>
@@ -307,7 +298,7 @@ export function SynthesisProgress({
       )}
 
       <div className="space-y-2">
-        {formattedScript.map((section, index) => (
+        {steps.map((section, index) => (
           <ScriptSection
             key={index}
             section={section}

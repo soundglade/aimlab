@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import type {
+  MeditationFormatterResult,
+  FormattedScript,
+} from "@/lib/meditation-formatter";
 
 interface PracticeSetupProps {
   onScriptFormatted: (
-    formattedScript: MeditationFormatterResult,
+    formattedResult: MeditationFormatterResult,
     isPrivate: boolean
   ) => void;
   isPrivate: boolean;
@@ -19,10 +23,12 @@ export function PracticeSetup({
 }: PracticeSetupProps) {
   const [script, setScript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
       const response = await fetch("/api/format-meditation-script", {
@@ -40,11 +46,32 @@ export function PracticeSetup({
         throw new Error("Failed to format script");
       }
 
-      const formattedScript = await response.json();
-      onScriptFormatted(formattedScript, isPrivate);
+      const formattedResult = await response.json();
+
+      // Handle rejection case
+      if (formattedResult.isRejected) {
+        setError(
+          formattedResult.rejectionReason ||
+            "The meditation script could not be processed."
+        );
+        return;
+      }
+
+      // Only proceed to next step if we have a valid script
+      if (!formattedResult.script) {
+        setError("No valid meditation script was generated.");
+        return;
+      }
+
+      // Success case - proceed to next step
+      onScriptFormatted(formattedResult, isPrivate);
     } catch (error) {
       console.error("Error formatting script:", error);
-      // TODO: Show error to user
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred while processing your script."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +120,12 @@ export function PracticeSetup({
           onChange={(e) => setScript(e.target.value)}
           className="h-64 bg-white/50"
         />
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Processing..." : "Read Script"}

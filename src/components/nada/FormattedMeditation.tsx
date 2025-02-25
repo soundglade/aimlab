@@ -1,7 +1,10 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import type {
+  MeditationFormatterResult,
+  FormattedScript,
+} from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
 
 const getHeadingMargin = (index: number, level: number) => {
@@ -48,11 +51,17 @@ export function FormattedMeditation({
     );
   }
 
-  const {
-    warnings = [],
-    formattedScript = [],
-    title = "Untitled Meditation",
-  } = result;
+  const { warnings = [], script } = result;
+
+  if (!script) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>No meditation script available</AlertDescription>
+      </Alert>
+    );
+  }
+
+  const { title, steps } = script;
 
   return (
     <div className="space-y-6">
@@ -72,7 +81,7 @@ export function FormattedMeditation({
       )}
 
       <div className="space-y-2">
-        {formattedScript.map((step, index) => {
+        {steps.map((step, index) => {
           const margin =
             step.type === "heading" ? getHeadingMargin(index, step.level) : "";
 

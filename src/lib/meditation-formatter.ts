@@ -47,13 +47,19 @@ const MeditationStep = z.discriminatedUnion("type", [
   DirectionStep,
 ]);
 
+// New FormattedScript type that represents the core meditation content
+const FormattedScript = z.object({
+  title: z.string(),
+  steps: z.array(MeditationStep),
+});
+
+// Updated MeditationFormatter to use FormattedScript
 const MeditationFormatter = z
   .object({
     isRejected: z.boolean(),
     rejectionReason: z.string().optional(),
     warnings: z.array(z.string()).optional(),
-    title: z.string().optional(),
-    formattedScript: z.array(MeditationStep).optional(),
+    script: FormattedScript.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.isRejected) {
@@ -70,22 +76,17 @@ const MeditationFormatter = z
           message: "warnings is required when isRejected is false",
         });
       }
-      if (!data.formattedScript) {
+      if (!data.script) {
         ctx.addIssue({
           code: "custom",
-          message: "formattedScript is required when isRejected is false",
-        });
-      }
-      if (!data.title) {
-        ctx.addIssue({
-          code: "custom",
-          message: "title is required when isRejected is false",
+          message: "script is required when isRejected is false",
         });
       }
     }
   });
 
 // Types for TypeScript
+type FormattedScript = z.infer<typeof FormattedScript>;
 type MeditationFormatterResult = z.infer<typeof MeditationFormatter>;
 
 // The system prompt as a constant
@@ -102,11 +103,12 @@ Steps to follow:
      and can't be approximated, we must reject the script.
    - If the script is invalid or not feasible, respond with: 
        { "isRejected": true, "rejectionReason": "some reason" }
-     and DO NOT provide any "formattedScript".
+     and DO NOT provide any "script".
 3) TRANSFORMATION STAGE:
-   - If the script is valid, extract a concise title that represents the meditation.
-   - Then transform the script into an array of steps with these possible types:
-       "heading", "speech", "pause", "sound", "aside", "direction".
+   - If the script is valid, transform it into a structured format with:
+     * A concise title that represents the meditation
+     * An array of steps with these possible types:
+       "heading", "speech", "pause", "sound", "aside", "direction"
    - For each piece of user-facing guidance, use "speech".
    - For silent intervals, use "pause", with an approximate "duration" in seconds. 
      Mark if it can be extended ("canExtend": boolean) or must wait for user input ("waitForUserInput": boolean).
@@ -125,8 +127,10 @@ Steps to follow:
      {
        "isRejected": false,
        "warnings": [ "string", ... ],
-       "title": "Concise meditation title",
-       "formattedScript": [ ... array of step objects ... ]
+       "script": {
+         "title": "Concise meditation title",
+         "steps": [ ... array of step objects ... ]
+       }
      }
    - Or, if rejected, return:
      {
@@ -177,4 +181,8 @@ const formatMeditationScript = async (
   }
 };
 
-export { formatMeditationScript, type MeditationFormatterResult };
+export {
+  formatMeditationScript,
+  type MeditationFormatterResult,
+  type FormattedScript,
+};

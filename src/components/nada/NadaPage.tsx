@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { FormattedMeditation } from "./FormattedMeditation";
-import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
+import type {
+  MeditationFormatterResult,
+  FormattedScript,
+} from "@/lib/meditation-formatter";
 import { VoiceSelection } from "./VoiceSelection";
 import { PracticeSetup } from "./PracticeSetup";
 import { SynthesisProgress } from "./SynthesisProgress";
@@ -17,7 +20,7 @@ type SessionStep = "input" | "review" | "voice" | "synthesis";
 
 interface NadaSession {
   currentStep: SessionStep;
-  formattedScript: MeditationFormatterResult;
+  script: FormattedScript;
   voiceSettings?: {
     voiceId: string;
     customVoiceId?: string;
@@ -31,11 +34,10 @@ interface NadaPageProps {
 
 export function NadaPage({ sessionId }: NadaPageProps) {
   const router = useRouter();
-
-  const [formattedScript, setFormattedScript] =
-    useState<MeditationFormatterResult | null>(null);
-  const [isPrivate, setIsPrivate] = useState(false);
   const [currentStep, setCurrentStep] = useState<SessionStep>("input");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [formattedResult, setFormattedResult] =
+    useState<MeditationFormatterResult | null>(null);
   const [voiceSettings, setVoiceSettings] = useState<{
     voiceId: string;
     customVoiceId?: string;
@@ -53,9 +55,20 @@ export function NadaPage({ sessionId }: NadaPageProps) {
   useEffect(() => {
     if (sessionId) {
       const session = storage.getSession<NadaSession>(sessionId);
+
       if (session) {
-        setFormattedScript(session.formattedScript);
+        // Set the current step from the session
         setCurrentStep(session.currentStep);
+
+        // Create a formatted result from the session script
+        if (session.script) {
+          setFormattedResult({
+            isRejected: false,
+            warnings: [],
+            script: session.script,
+          });
+        }
+
         if (session.voiceSettings) {
           setVoiceSettings(session.voiceSettings);
         }
@@ -67,35 +80,42 @@ export function NadaPage({ sessionId }: NadaPageProps) {
 
   // Save session to localStorage when state changes
   useEffect(() => {
-    if (formattedScript) {
+    if (formattedResult && !isPrivate) {
       storage.updateSessionIfExists<NadaSession>(sessionId, {
         currentStep,
-        formattedScript,
+        script: formattedResult.script,
         voiceSettings: voiceSettings || undefined,
       });
     }
-  }, [sessionId, currentStep, formattedScript, voiceSettings]);
+  }, [sessionId, currentStep, formattedResult, voiceSettings, isPrivate]);
 
   const handleScriptFormatted = (
-    formattedScript: MeditationFormatterResult,
+    formattedResult: MeditationFormatterResult,
     isPrivate: boolean
   ) => {
-    setFormattedScript(formattedScript);
+    setFormattedResult(formattedResult);
     setIsPrivate(isPrivate);
 
-    if (!isPrivate) {
-      // Generate new session ID and update URL
-      const newSessionId = storage.generateId();
-      router.push(`/nada/${newSessionId}`);
+    // Only proceed if we have a valid script
+    if (!formattedResult.isRejected && formattedResult.script) {
+      // If not private, save to session storage
+      if (!isPrivate) {
+        // Generate new session ID and update URL
+        const newSessionId = storage.generateId();
+        router.push(`/nada/${newSessionId}`);
 
-      // Save initial session data
-      storage.saveSession<NadaSession>(newSessionId, {
-        currentStep: "review",
-        formattedScript,
-      });
+        // Save initial session data
+        storage.saveSession<NadaSession>(newSessionId, {
+          currentStep: "review",
+          script: formattedResult.script,
+        });
+      }
+
+      // Change to review step
+      setCurrentStep("review");
     }
-
-    setCurrentStep("review");
+    // If rejected or no script, we stay on the input step
+    // The PracticeSetup component will display the error
   };
 
   const handleGenerateAudio = async (settings: {
@@ -104,9 +124,11 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isAdvanced: boolean;
   }) => {
     setVoiceSettings(settings);
-    storage.updateSessionIfExists<NadaSession>(sessionId, {
-      voiceSettings: settings,
-    });
+    if (!isPrivate) {
+      storage.updateSessionIfExists<NadaSession>(sessionId, {
+        voiceSettings: settings,
+      });
+    }
     setCurrentStep("synthesis");
   };
 
@@ -132,23 +154,25 @@ export function NadaPage({ sessionId }: NadaPageProps) {
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          {currentStep === "review" && formattedScript ? (
+          {currentStep === "review" &&
+          formattedResult &&
+          formattedResult.script ? (
             <Card className="p-6">
               <FormattedMeditation
-                result={formattedScript}
+                result={formattedResult}
                 onConfirm={() => setCurrentStep("voice")}
               />
             </Card>
-          ) : currentStep === "voice" ? (
+          ) : currentStep === "voice" && formattedResult?.script ? (
             <VoiceSelection
               onGenerateAudio={handleGenerateAudio}
               onEditScript={() => setCurrentStep("review")}
             />
           ) : currentStep === "synthesis" &&
-            formattedScript &&
+            formattedResult?.script &&
             voiceSettings ? (
             <SynthesisProgress
-              script={formattedScript}
+              script={formattedResult.script}
               voiceSettings={voiceSettings}
               onCancel={handleCancelSynthesis}
             />
