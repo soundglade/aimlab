@@ -68,8 +68,8 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const router = useRouter();
 
   // Select the appropriate storage based on privacy mode
-  const sessionStorage = isPrivate ? persistentStorage : ephemeralStorage;
-  const fileStorage = isPrivate ? persistentFileStorage : ephemeralFileStorage;
+  const sessionStorage = isPrivate ? ephemeralStorage : persistentStorage;
+  const fileStorage = isPrivate ? ephemeralFileStorage : persistentFileStorage;
 
   // Use our custom hook to manage session state
   const [session, updateSession] = useSessionState<NadaSession>(
