@@ -20,8 +20,6 @@ export default async function handler(
 
     const formattedResult = await formatMeditationScript(script);
 
-    // Title should be mandatory, so we don't need a fallback
-
     res.status(200).json(formattedResult);
   } catch (error) {
     console.error("Error processing script:", error);

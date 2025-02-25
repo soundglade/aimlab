@@ -47,13 +47,11 @@ const MeditationStep = z.discriminatedUnion("type", [
   DirectionStep,
 ]);
 
-// New FormattedScript type that represents the core meditation content
 const FormattedScript = z.object({
   title: z.string(),
   steps: z.array(MeditationStep),
 });
 
-// Updated MeditationFormatter to use FormattedScript
 const MeditationFormatter = z
   .object({
     isRejected: z.boolean(),

@@ -13,8 +13,9 @@ import { PracticeSetup } from "./PracticeSetup";
 import { SynthesisProgress } from "./SynthesisProgress";
 import { initializeStorage } from "@/lib/session-storage";
 
-// Initialize the session storage for NADA
-const storage = initializeStorage("nada");
+// Initialize both storage instances outside the component
+const persistentStorage = initializeStorage("nada", { ephemeral: false });
+const ephemeralStorage = initializeStorage("nada", { ephemeral: true });
 
 type SessionStep = "input" | "review" | "voice" | "synthesis";
 
@@ -44,17 +45,13 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isAdvanced: boolean;
   } | null>(null);
 
+  // Simply select the appropriate storage based on isPrivate
+  const storage = isPrivate ? ephemeralStorage : persistentStorage;
+
   // Load saved sessions directly
   const savedSessions = storage.getAllSessions<{
     script: FormattedScript;
   }>();
-
-  // If private mode is selected, clear the session by redirecting to base URL
-  useEffect(() => {
-    if (isPrivate && sessionId) {
-      router.push("/nada");
-    }
-  }, [isPrivate, sessionId, router]);
 
   // Load session if ID is provided
   useEffect(() => {
@@ -81,43 +78,39 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     }
     // Clean up old sessions on component mount
     storage.cleanupOldSessions();
-  }, [sessionId]);
+  }, [sessionId, storage]);
 
-  // Save session to localStorage when state changes
+  // Save session to storage when state changes
   useEffect(() => {
-    if (formattedResult && !isPrivate) {
+    if (formattedResult && sessionId) {
       storage.updateSessionIfExists<NadaSession>(sessionId, {
         currentStep,
         script: formattedResult.script,
         voiceSettings: voiceSettings || undefined,
       });
     }
-  }, [sessionId, currentStep, formattedResult, voiceSettings, isPrivate]);
+  }, [sessionId, currentStep, formattedResult, voiceSettings, storage]);
 
   const handleScriptFormatted = (
     formattedResult: MeditationFormatterResult,
-    isPrivate: boolean
+    isPrivateMode: boolean
   ) => {
     setFormattedResult(formattedResult);
-    setIsPrivate(isPrivate);
+    setIsPrivate(isPrivateMode);
 
     // Only proceed if we have a valid script
     if (!formattedResult.isRejected && formattedResult.script) {
-      // If not private, save to session storage
-      if (!isPrivate) {
-        // Generate new session ID and update URL
-        const newSessionId = storage.generateId();
-        router.push(`/nada/${newSessionId}`);
+      // Generate new session ID
+      const newSessionId = storage.generateId();
 
-        // Save initial session data
-        storage.saveSession<NadaSession>(newSessionId, {
-          currentStep: "review",
-          script: formattedResult.script,
-        });
+      // Save initial session data
+      storage.saveSession<NadaSession>(newSessionId, {
+        currentStep: "review",
+        script: formattedResult.script,
+      });
 
-        // Note: We don't need to update savedSessions state anymore
-        // since we're loading sessions directly in the component
-      }
+      // Always update URL with the session ID
+      router.push(`/nada/${newSessionId}`);
 
       // Change to review step
       setCurrentStep("review");
@@ -132,11 +125,13 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isAdvanced: boolean;
   }) => {
     setVoiceSettings(settings);
-    if (!isPrivate) {
+
+    if (sessionId) {
       storage.updateSessionIfExists<NadaSession>(sessionId, {
         voiceSettings: settings,
       });
     }
+
     setCurrentStep("synthesis");
   };
 
