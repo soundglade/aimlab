@@ -7,6 +7,7 @@ interface SessionStorageApi {
   generateId: () => string;
   saveSession: <T>(id: string, data: T) => void;
   getSession: <T>(id: string) => T | null;
+  getAllSessions: <T>() => Record<string, T> | null;
   replaceSessionIfExists: <T>(
     id: string | undefined,
     modifier: (data: T) => T
@@ -55,6 +56,26 @@ export function initializeStorage(key: string): SessionStorageApi {
     return session ? session.data : null;
   }
 
+  function getAllSessions<T>(): Record<string, T> | null {
+    try {
+      const sessions = getSessions<T>();
+      if (Object.keys(sessions).length === 0) {
+        return null;
+      }
+
+      // Convert StoredSession<T> to T with added createdAt
+      return Object.fromEntries(
+        Object.entries(sessions).map(([id, session]) => [
+          id,
+          { ...session.data, createdAt: session.createdAt } as unknown as T,
+        ])
+      );
+    } catch (error) {
+      console.error("Error getting all sessions:", error);
+      return null;
+    }
+  }
+
   function replaceSessionIfExists<T>(
     id: string | undefined,
     modifier: (data: T) => T
@@ -101,6 +122,7 @@ export function initializeStorage(key: string): SessionStorageApi {
     generateId,
     saveSession,
     getSession,
+    getAllSessions,
     replaceSessionIfExists,
     updateSessionIfExists,
     deleteSession,

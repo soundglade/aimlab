@@ -136,6 +136,13 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     setCurrentStep("voice");
   };
 
+  const handleLoadSession = (sessionId: string) => {
+    if (sessionId) {
+      // Navigate to the session page
+      router.push(`/nada/${sessionId}`);
+    }
+  };
+
   return (
     <div
       className={`min-h-screen flex flex-col relative ${
@@ -181,6 +188,7 @@ export function NadaPage({ sessionId }: NadaPageProps) {
               isPrivate={isPrivate}
               onPrivateChange={setIsPrivate}
               onScriptFormatted={handleScriptFormatted}
+              onLoadSession={handleLoadSession}
             />
           )}
         </main>

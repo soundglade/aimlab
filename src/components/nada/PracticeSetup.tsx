@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Clock } from "lucide-react";
+import { initializeStorage } from "@/lib/session-storage";
 import type {
   MeditationFormatterResult,
   FormattedScript,
 } from "@/lib/meditation-formatter";
+
+// Initialize the storage for accessing saved sessions
+const storage = initializeStorage("nada");
+
+interface SavedSession {
+  id: string;
+  title: string;
+  createdAt: number;
+}
 
 interface PracticeSetupProps {
   onScriptFormatted: (
@@ -14,16 +25,41 @@ interface PracticeSetupProps {
   ) => void;
   isPrivate: boolean;
   onPrivateChange: (isPrivate: boolean) => void;
+  onLoadSession?: (sessionId: string) => void;
 }
 
 export function PracticeSetup({
   onScriptFormatted,
   isPrivate,
   onPrivateChange,
+  onLoadSession,
 }: PracticeSetupProps) {
   const [script, setScript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
+
+  // Load saved sessions on component mount
+  useEffect(() => {
+    const sessions = storage.getAllSessions();
+    if (sessions) {
+      const formattedSessions: SavedSession[] = Object.entries(sessions)
+        .map(([id, data]) => {
+          const sessionData = data as {
+            script: FormattedScript;
+            createdAt: number;
+          };
+          return {
+            id,
+            title: sessionData.script?.title || "Untitled Meditation",
+            createdAt: sessionData.createdAt || Date.now(),
+          };
+        })
+        .sort((a, b) => b.createdAt - a.createdAt); // Sort by most recent first
+
+      setSavedSessions(formattedSessions);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +113,20 @@ export function PracticeSetup({
     }
   };
 
+  const handleLoadSession = (sessionId: string) => {
+    if (onLoadSession) {
+      onLoadSession(sessionId);
+    }
+  };
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <>
       <h1 className="text-4xl text-foreground text-center">
@@ -114,8 +164,29 @@ export function PracticeSetup({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {!isPrivate && savedSessions.length > 0 && (
+          <div className="bg-muted/20 p-4 rounded-md border border-muted/40">
+            <p className="text-sm font-medium mb-3">Your saved meditations:</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {savedSessions.map((session) => (
+                <button
+                  key={session.id}
+                  type="button"
+                  onClick={() => handleLoadSession(session.id)}
+                  className="inline-flex items-center text-sm text-primary hover:text-primary/80 hover:underline"
+                >
+                  <span className="font-medium">{session.title}</span>
+                  <span className="text-muted-foreground text-xs ml-1.5">
+                    ({formatDate(session.createdAt)})
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <Textarea
-          placeholder="Paste your meditation script here..."
+          placeholder="Paste your meditation script here or select a saved meditation above..."
           value={script}
           onChange={(e) => setScript(e.target.value)}
           className="h-64 bg-white/50"
