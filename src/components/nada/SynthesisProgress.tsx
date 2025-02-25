@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, Pause, StopCircle } from "lucide-react";
+import { Play, StopCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Meditation, MeditationStep } from "./NadaPage"; // Import the new types
+import { Meditation, MeditationStep } from "./NadaPage";
+import { FileStorageApi } from "@/lib/file-storage";
+import { Buffer } from "buffer";
 
 // Internal components
 function ProgressHeader({
@@ -45,13 +47,17 @@ const getHeadingSize = (level: number) => {
   }
 };
 
-interface ScriptSectionProps {
+interface MeditationStepProps {
   section: MeditationStep;
   status: "pending" | "processing" | "complete";
   onPreview?: () => void;
 }
 
-function ScriptSection({ section, status, onPreview }: ScriptSectionProps) {
+function MeditationStepDisplay({
+  section,
+  status,
+  onPreview,
+}: MeditationStepProps) {
   const getStatusStyles = () => {
     switch (status) {
       case "complete":
@@ -119,37 +125,60 @@ interface SynthesisProgressProps {
     isAdvanced: boolean;
   };
   onCancel: () => void;
+  fileStorage: FileStorageApi;
+  sessionId?: string;
+  onMeditationUpdate: (updatedMeditation: Meditation) => void;
 }
 
 export function SynthesisProgress({
   meditation,
   voiceSettings,
   onCancel,
+  fileStorage,
+  sessionId,
+  onMeditationUpdate,
 }: SynthesisProgressProps) {
+  // State management
   const [progress, setProgress] = useState(0);
-  const [audioSections, setAudioSections] = useState<
-    { sectionIndex: number; audioData: string }[]
-  >([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Refs
   const abortControllerRef = useRef<AbortController | null>(null);
+  const synthesisStartedRef = useRef<boolean>(false);
 
   const { title, steps } = meditation;
 
+  // Start synthesis process when component mounts
   useEffect(() => {
+    // Only start synthesis if it hasn't been started yet
+    if (synthesisStartedRef.current) {
+      return;
+    }
+
+    synthesisStartedRef.current = true;
+
     const startSynthesis = async () => {
       try {
+        // Initialize state
         setIsSynthesizing(true);
         setError(null);
         setProgress(0);
-        setAudioSections([]);
+
+        // Reset audioFileId for all steps
+        meditation.steps.forEach((step) => {
+          step.audioFileId = undefined;
+        });
+
+        // Notify parent about the reset
+        onMeditationUpdate({ ...meditation });
 
         // Create a new AbortController for this request
         const abortController = new AbortController();
         abortControllerRef.current = abortController;
 
+        // Make API request
         const response = await fetch("/api/synthesize-meditation", {
           method: "POST",
           headers: {
@@ -196,19 +225,37 @@ export function SynthesisProgress({
 
               if (data.type === "metadata") {
                 // Handle metadata if needed
-                // We already have the title from the script, but we could update it if needed
-                // This is useful if the API modifies or enhances the title
               } else if (data.type === "progress") {
                 setProgress(data.progress);
               } else if (data.type === "audio") {
-                // Update the script with the audio file ID
-                setAudioSections((prev) => [
-                  ...prev,
-                  {
-                    sectionIndex: data.sectionIndex,
-                    audioData: data.data,
-                  },
-                ]);
+                try {
+                  // Create a Blob from the base64 audio data
+                  const audioBlob = new Blob(
+                    [Buffer.from(data.data, "base64")],
+                    { type: "audio/mp3" }
+                  );
+
+                  // Save the audio blob to file storage
+                  const fileId = await fileStorage.saveFile(audioBlob, {
+                    projectId: "NADA",
+                    groupId: sessionId,
+                    contentType: "audio/mp3",
+                  });
+
+                  // Update the meditation step with the audio file ID
+                  meditation.steps[data.sectionIndex].audioFileId = fileId;
+
+                  // Notify parent about the update
+                  onMeditationUpdate({ ...meditation });
+                } catch (storageError) {
+                  console.error("Error storing audio file:", storageError);
+                  // Still mark as completed by setting a placeholder ID
+                  meditation.steps[data.sectionIndex].audioFileId =
+                    "error-" + Date.now();
+
+                  // Notify parent about the update
+                  onMeditationUpdate({ ...meditation });
+                }
               } else if (data.type === "error") {
                 setError(data.message);
               } else if (data.type === "complete") {
@@ -236,14 +283,15 @@ export function SynthesisProgress({
 
     startSynthesis();
 
+    // Cleanup function
     return () => {
-      // Cleanup: abort any ongoing request when component unmounts
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [steps, voiceSettings, title, meditation]);
+  }, []); // Empty dependency array to ensure it only runs once
 
+  // Event handlers
   const handleCancel = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -253,26 +301,53 @@ export function SynthesisProgress({
   };
 
   const previewSection = async (index: number) => {
-    const audioBlob = audioSections.find(
-      (section) => section.sectionIndex === index
-    )?.audioData;
-    if (!audioBlob) return;
+    const step = meditation.steps[index];
 
-    const url = URL.createObjectURL(
-      new Blob([Buffer.from(audioBlob, "base64")])
-    );
-    const audio = new Audio(url);
+    if (!step.audioFileId) {
+      console.error("No audio file ID available for this section");
+      return;
+    }
 
-    audio.onended = () => {
-      URL.revokeObjectURL(url);
-    };
+    try {
+      const storedFile = await fileStorage.getFile(step.audioFileId);
+      if (!storedFile || !storedFile.data) {
+        console.error("Audio file not found in storage");
+        return;
+      }
 
-    await audio.play();
+      // Create audio from stored file data
+      let audioData: string;
+
+      if (storedFile.data instanceof Blob) {
+        // Convert Blob to base64 for playback
+        const arrayBuffer = await storedFile.data.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString("base64");
+        audioData = base64;
+      } else if (typeof storedFile.data === "string") {
+        // Already a base64 string
+        audioData = storedFile.data;
+      } else {
+        throw new Error("Unsupported audio data format");
+      }
+
+      const url = URL.createObjectURL(
+        new Blob([Buffer.from(audioData, "base64")])
+      );
+      const audio = new Audio(url);
+
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error("Error playing audio:", error);
+    }
   };
 
-  const getScriptSectionStatus = (index: number) => {
-    if (audioSections.some((section) => section.sectionIndex === index))
-      return "complete";
+  // Helper functions
+  const getStepStatus = (index: number) => {
+    if (meditation.steps[index].audioFileId) return "complete";
     if (index === currentlyPlaying) return "processing";
     return "pending";
   };
@@ -300,13 +375,12 @@ export function SynthesisProgress({
 
       <div className="space-y-2">
         {steps.map((section, index) => (
-          <ScriptSection
-            key={index}
+          <MeditationStepDisplay
+            key={`${index}-${section.audioFileId || "pending"}`}
             section={section}
-            status={getScriptSectionStatus(index)}
+            status={getStepStatus(index)}
             onPreview={
-              getScriptSectionStatus(index) === "complete" &&
-              section.type === "speech"
+              getStepStatus(index) === "complete" && section.type === "speech"
                 ? () => previewSection(index)
                 : undefined
             }

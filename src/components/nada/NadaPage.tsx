@@ -10,10 +10,17 @@ import { PracticeSetup } from "./PracticeSetup";
 import { SynthesisProgress } from "./SynthesisProgress";
 import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
+import { initializeFileStorage, FileStorageApi } from "@/lib/file-storage";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
 const ephemeralStorage = initializeStorage("nada", { ephemeral: true });
+
+// Initialize both file storage instances
+const persistentFileStorage = initializeFileStorage("nada", {
+  ephemeral: false,
+});
+const ephemeralFileStorage = initializeFileStorage("nada", { ephemeral: true });
 
 type SessionStep = "input" | "review" | "voice" | "synthesis";
 
@@ -60,29 +67,30 @@ const getBasePath = (isPrivate: boolean) =>
 export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const router = useRouter();
 
-  // Simply select the appropriate storage based on isPrivate
-  const storage = isPrivate ? ephemeralStorage : persistentStorage;
+  // Select the appropriate storage based on privacy mode
+  const sessionStorage = isPrivate ? persistentStorage : ephemeralStorage;
+  const fileStorage = isPrivate ? persistentFileStorage : ephemeralFileStorage;
 
   // Use our custom hook to manage session state
   const [session, updateSession] = useSessionState<NadaSession>(
     sessionId,
-    storage,
+    sessionStorage,
     { currentStep: "input", meditation: null }
   );
 
   // Load saved sessions directly
-  const savedSessions = storage.getAllSessions<{
+  const savedSessions = sessionStorage.getAllSessions<{
     meditation: Meditation;
   }>();
 
   // Clean up old sessions on component mount
   useEffect(() => {
-    storage.cleanupOldSessions();
-  }, [storage]);
+    sessionStorage.cleanupOldSessions();
+  }, [sessionStorage]);
 
   const handleScriptCreated = (script: FormattedScript) => {
     // Generate new session ID if we don't have one
-    const newSessionId = sessionId || storage.generateId();
+    const newSessionId = sessionId || sessionStorage.generateId();
 
     // Convert to enhanced meditation with audio capabilities
     const enhancedMeditation = enhanceMeditation(script);
@@ -98,7 +106,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
 
     // If this is a new session, save it directly
     if (!sessionId) {
-      storage.saveSession(newSessionId, newSessionState);
+      sessionStorage.saveSession(newSessionId, newSessionState);
 
       // Navigate to the new session
       router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
@@ -166,6 +174,14 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
               meditation={session.meditation}
               voiceSettings={session.voiceSettings}
               onCancel={handleCancelSynthesis}
+              fileStorage={fileStorage}
+              sessionId={sessionId}
+              onMeditationUpdate={(updatedMeditation) => {
+                updateSession({
+                  ...session,
+                  meditation: updatedMeditation,
+                });
+              }}
             />
           ) : (
             <PracticeSetup
