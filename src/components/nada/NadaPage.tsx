@@ -33,7 +33,7 @@ interface NadaPageProps {
   sessionId?: string;
 }
 
-export function NadaPage({ sessionId }: NadaPageProps) {
+export default function NadaPage({ sessionId }: NadaPageProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<SessionStep>("input");
   const [isPrivate, setIsPrivate] = useState(false);
