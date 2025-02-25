@@ -1,8 +1,8 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { FormattedScript } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
+import { Meditation } from "./NadaPage"; // Import the new Meditation type
 
 const getHeadingMargin = (index: number, level: number) => {
   if (index === 0) return "";
@@ -32,15 +32,15 @@ const getHeadingSize = (level: number) => {
 };
 
 interface FormattedMeditationProps {
-  script: FormattedScript;
+  meditation: Meditation;
   onConfirm: () => void;
 }
 
 export function FormattedMeditation({
-  script,
+  meditation,
   onConfirm,
 }: FormattedMeditationProps) {
-  const { title, steps } = script;
+  const { title, steps } = meditation;
 
   return (
     <div className="space-y-6">
@@ -49,12 +49,16 @@ export function FormattedMeditation({
       <div className="space-y-2">
         {steps.map((step, index) => {
           const margin =
-            step.type === "heading" ? getHeadingMargin(index, step.level) : "";
+            step.type === "heading"
+              ? getHeadingMargin(index, step.level || 1)
+              : "";
 
           return (
             <div key={index} className={margin}>
               {step.type === "heading" && (
-                <div className={cn("font-medium", getHeadingSize(step.level))}>
+                <div
+                  className={cn("font-medium", getHeadingSize(step.level || 1))}
+                >
                   {step.text}
                 </div>
               )}

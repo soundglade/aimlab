@@ -17,9 +17,30 @@ const ephemeralStorage = initializeStorage("nada", { ephemeral: true });
 
 type SessionStep = "input" | "review" | "voice" | "synthesis";
 
+// Enhanced types for frontend use with audio capabilities
+export type MeditationStep = FormattedScript["steps"][number] & {
+  audioFileId?: string;
+};
+
+export interface Meditation {
+  title: string;
+  steps: MeditationStep[];
+}
+
+// Helper function to convert from backend FormattedScript to frontend Meditation
+export function enhanceMeditation(script: FormattedScript): Meditation {
+  return {
+    title: script.title,
+    steps: script.steps.map((step) => ({
+      ...step,
+      audioFileId: undefined,
+    })),
+  };
+}
+
 interface NadaSession {
   currentStep: SessionStep;
-  script: FormattedScript | null;
+  meditation: Meditation | null;
   voiceSettings?: {
     voiceId: string;
     customVoiceId?: string;
@@ -46,12 +67,12 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const [session, updateSession] = useSessionState<NadaSession>(
     sessionId,
     storage,
-    { currentStep: "input", script: null }
+    { currentStep: "input", meditation: null }
   );
 
   // Load saved sessions directly
   const savedSessions = storage.getAllSessions<{
-    script: FormattedScript;
+    meditation: Meditation;
   }>();
 
   // Clean up old sessions on component mount
@@ -63,10 +84,13 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     // Generate new session ID if we don't have one
     const newSessionId = sessionId || storage.generateId();
 
+    // Convert to enhanced meditation with audio capabilities
+    const enhancedMeditation = enhanceMeditation(script);
+
     // Create the new session state
     const newSessionState = {
       currentStep: "review" as const,
-      script,
+      meditation: enhancedMeditation,
     };
 
     // Update local state
@@ -123,23 +147,23 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          {session.currentStep === "review" && session.script ? (
+          {session.currentStep === "review" && session.meditation ? (
             <Card className="p-6">
               <FormattedMeditation
-                script={session.script}
+                meditation={session.meditation}
                 onConfirm={() => updateSession({ currentStep: "voice" })}
               />
             </Card>
-          ) : session.currentStep === "voice" && session.script ? (
+          ) : session.currentStep === "voice" && session.meditation ? (
             <VoiceSelection
               onGenerateAudio={handleGenerateAudio}
               onEditScript={() => updateSession({ currentStep: "review" })}
             />
           ) : session.currentStep === "synthesis" &&
-            session.script &&
+            session.meditation &&
             session.voiceSettings ? (
             <SynthesisProgress
-              script={session.script}
+              meditation={session.meditation}
               voiceSettings={session.voiceSettings}
               onCancel={handleCancelSynthesis}
             />

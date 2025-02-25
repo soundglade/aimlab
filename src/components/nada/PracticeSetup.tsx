@@ -6,13 +6,14 @@ import type {
   MeditationFormatterResult,
   FormattedScript,
 } from "@/lib/meditation-formatter";
+import { Meditation } from "./NadaPage";
 
 interface PracticeSetupProps {
   onScriptCreated: (script: FormattedScript) => void;
   isPrivate: boolean;
   onPrivateChange: (isPrivate: boolean) => void;
   onLoadSession?: (sessionId: string) => void;
-  savedSessions: Record<string, { script: FormattedScript }> | null;
+  savedSessions: Record<string, { meditation: Meditation }> | null;
 }
 
 export function PracticeSetup({
@@ -136,7 +137,7 @@ export function PracticeSetup({
                     onClick={() => handleLoadSession(id)}
                     className="inline-flex items-center text-sm text-primary hover:text-primary/80 hover:underline"
                   >
-                    <span className="font-medium">{data.script.title}</span>
+                    <span className="font-medium">{data.meditation.title}</span>
                   </button>
                 ))}
               </div>

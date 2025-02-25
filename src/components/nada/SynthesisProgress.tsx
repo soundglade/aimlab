@@ -3,8 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, StopCircle } from "lucide-react";
-import type { FormattedScript } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
+import { Meditation, MeditationStep } from "./NadaPage"; // Import the new types
 
 // Internal components
 function ProgressHeader({
@@ -46,7 +46,7 @@ const getHeadingSize = (level: number) => {
 };
 
 interface ScriptSectionProps {
-  section: FormattedScript["steps"][number];
+  section: MeditationStep;
   status: "pending" | "processing" | "complete";
   onPreview?: () => void;
 }
@@ -65,7 +65,7 @@ function ScriptSection({ section, status, onPreview }: ScriptSectionProps) {
 
   if (section.type === "heading") {
     return (
-      <div className={cn("font-medium", getHeadingSize(section.level))}>
+      <div className={cn("font-medium", getHeadingSize(section.level || 1))}>
         {section.text}
       </div>
     );
@@ -112,7 +112,7 @@ function ScriptSection({ section, status, onPreview }: ScriptSectionProps) {
 }
 
 interface SynthesisProgressProps {
-  script: FormattedScript;
+  meditation: Meditation;
   voiceSettings: {
     voiceId: string;
     customVoiceId?: string;
@@ -122,7 +122,7 @@ interface SynthesisProgressProps {
 }
 
 export function SynthesisProgress({
-  script,
+  meditation,
   voiceSettings,
   onCancel,
 }: SynthesisProgressProps) {
@@ -136,7 +136,7 @@ export function SynthesisProgress({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const { title, steps } = script;
+  const { title, steps } = meditation;
 
   useEffect(() => {
     const startSynthesis = async () => {
@@ -201,6 +201,7 @@ export function SynthesisProgress({
               } else if (data.type === "progress") {
                 setProgress(data.progress);
               } else if (data.type === "audio") {
+                // Update the script with the audio file ID
                 setAudioSections((prev) => [
                   ...prev,
                   {
@@ -241,7 +242,7 @@ export function SynthesisProgress({
         abortControllerRef.current.abort();
       }
     };
-  }, [steps, voiceSettings, title]);
+  }, [steps, voiceSettings, title, meditation]);
 
   const handleCancel = () => {
     if (abortControllerRef.current) {
