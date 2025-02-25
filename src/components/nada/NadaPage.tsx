@@ -11,6 +11,7 @@ import { SynthesisProgress } from "./SynthesisProgress";
 import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
 import { initializeFileStorage, FileStorageApi } from "@/lib/file-storage";
+import { MeditationPlayer } from "./MeditationPlayer";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
@@ -22,7 +23,8 @@ const persistentFileStorage = initializeFileStorage("nada", {
 });
 const ephemeralFileStorage = initializeFileStorage("nada", { ephemeral: true });
 
-type SessionStep = "input" | "review" | "voice" | "synthesis";
+// Update the SessionStep type to include the new player step
+type SessionStep = "input" | "review" | "voice" | "synthesis" | "player";
 
 // Enhanced types for frontend use with audio capabilities
 export type MeditationStep = FormattedScript["steps"][number] & {
@@ -130,6 +132,18 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     });
   };
 
+  const handleCompleteSynthesis = () => {
+    updateSession({
+      currentStep: "player",
+    });
+  };
+
+  const handleBackFromPlayer = () => {
+    updateSession({
+      currentStep: "synthesis",
+    });
+  };
+
   const handleLoadSession = (loadSessionId: string) => {
     if (loadSessionId) {
       // Navigate to the session page, preserving the privacy setting
@@ -174,6 +188,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
               meditation={session.meditation}
               voiceSettings={session.voiceSettings}
               onCancel={handleCancelSynthesis}
+              onComplete={handleCompleteSynthesis}
               fileStorage={fileStorage}
               sessionId={sessionId}
               onMeditationUpdate={(updatedMeditation) => {
@@ -182,6 +197,12 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
                   meditation: updatedMeditation,
                 });
               }}
+            />
+          ) : session.currentStep === "player" && session.meditation ? (
+            <MeditationPlayer
+              meditation={session.meditation}
+              fileStorage={fileStorage}
+              onBack={handleBackFromPlayer}
             />
           ) : (
             <PracticeSetup
