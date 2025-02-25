@@ -66,8 +66,12 @@ The frontend communicates with two simple API endpoints:
 
 ### Routing
 
-- `/nada`: Main entry point for creating new meditation sessions
-- `/nada/[id]`: Dynamic route for accessing saved meditation sessions
+- `/nada`: Main entry point for creating new meditation sessions (standard mode)
+- `/nada/[id]`: Access saved meditation sessions (standard mode)
+- `/nada/private`: Entry point for private meditation sessions
+- `/nada/private/[id]`: Access private meditation sessions (no data persistence)
+
+The privacy mode is determined by the URL path rather than component state, ensuring consistent behavior and clear user intent.
 
 ### Data Flow
 
