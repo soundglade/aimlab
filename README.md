@@ -92,6 +92,23 @@ npm run test:watch  # Run tests in watch mode (rerun on file changes)
 - `/tests/unit/` - Unit tests for individual components and functions
 - `/tests/setup.ts` - Global test setup and configuration
 
+### Testing Philosophy
+
+Our testing approach follows these principles:
+
+1. **Focus on meaningful tests** - We prioritize tests that verify actual functionality rather than implementation details.
+2. **Avoid redundant tests** - We don't write tests that verify the same thing multiple ways.
+3. **Test real behavior** - We prefer testing against real implementations rather than using mocks when possible.
+4. **Keep tests simple** - Tests should be easy to understand and maintain.
+5. **Test edge cases** - We focus on testing boundary conditions and error cases that are likely to occur.
+
+### Testing Browser APIs in Node.js
+
+For components that use browser APIs (like IndexedDB), we use polyfills to enable testing in Node.js:
+
+- `fake-indexeddb` - Provides a full implementation of the IndexedDB API for testing
+- Our test setup automatically configures these polyfills
+
 ### Writing Tests
 
 Tests are written using Vitest and React Testing Library. Example:
