@@ -8,7 +8,7 @@ import type {
 } from "@/lib/meditation-formatter";
 
 interface PracticeSetupProps {
-  onScriptFormatted: (formattedResult: MeditationFormatterResult) => void;
+  onScriptCreated: (script: FormattedScript) => void;
   isPrivate: boolean;
   onPrivateChange: (isPrivate: boolean) => void;
   onLoadSession?: (sessionId: string) => void;
@@ -16,7 +16,7 @@ interface PracticeSetupProps {
 }
 
 export function PracticeSetup({
-  onScriptFormatted,
+  onScriptCreated,
   isPrivate,
   onPrivateChange,
   onLoadSession,
@@ -64,8 +64,8 @@ export function PracticeSetup({
         return;
       }
 
-      // Success case - proceed to next step
-      onScriptFormatted(formattedResult);
+      // Success case - pass just the script to the parent
+      onScriptCreated(formattedResult.script);
     } catch (error) {
       console.error("Error formatting script:", error);
       setError(

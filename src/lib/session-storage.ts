@@ -3,7 +3,7 @@ interface StoredSession<T> {
   createdAt: number;
 }
 
-interface SessionStorageApi {
+export interface SessionStorageApi {
   generateId: () => string;
   saveSession: <T>(id: string, data: T) => void;
   getSession: <T>(id: string) => T | null;

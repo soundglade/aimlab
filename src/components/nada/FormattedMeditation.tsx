@@ -1,10 +1,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type {
-  MeditationFormatterResult,
-  FormattedScript,
-} from "@/lib/meditation-formatter";
+import type { FormattedScript } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
 
 const getHeadingMargin = (index: number, level: number) => {
@@ -35,50 +32,19 @@ const getHeadingSize = (level: number) => {
 };
 
 interface FormattedMeditationProps {
-  result: MeditationFormatterResult;
+  script: FormattedScript;
   onConfirm: () => void;
 }
 
 export function FormattedMeditation({
-  result,
+  script,
   onConfirm,
 }: FormattedMeditationProps) {
-  if (result.isRejected) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>{result.rejectionReason}</AlertDescription>
-      </Alert>
-    );
-  }
-
-  const { warnings = [], script } = result;
-
-  if (!script) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>No meditation script available</AlertDescription>
-      </Alert>
-    );
-  }
-
   const { title, steps } = script;
 
   return (
     <div className="space-y-6">
       <h1 className="text-4xl font-medium text-center">{title}</h1>
-
-      {warnings.length > 0 && (
-        <Alert>
-          <AlertDescription>
-            <div className="font-medium mb-2">Warnings:</div>
-            <ul className="list-disc pl-4">
-              {warnings.map((warning, index) => (
-                <li key={index}>{warning}</li>
-              ))}
-            </ul>
-          </AlertDescription>
-        </Alert>
-      )}
 
       <div className="space-y-2">
         {steps.map((step, index) => {

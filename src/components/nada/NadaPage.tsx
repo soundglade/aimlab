@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { FormattedMeditation } from "./FormattedMeditation";
-import type {
-  MeditationFormatterResult,
-  FormattedScript,
-} from "@/lib/meditation-formatter";
+import type { FormattedScript } from "@/lib/meditation-formatter";
 import { VoiceSelection } from "./VoiceSelection";
 import { PracticeSetup } from "./PracticeSetup";
 import { SynthesisProgress } from "./SynthesisProgress";
 import { initializeStorage } from "@/lib/session-storage";
+import { useSessionState } from "@/lib/use-session-state";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
@@ -21,7 +19,7 @@ type SessionStep = "input" | "review" | "voice" | "synthesis";
 
 interface NadaSession {
   currentStep: SessionStep;
-  script: FormattedScript;
+  script: FormattedScript | null;
   voiceSettings?: {
     voiceId: string;
     customVoiceId?: string;
@@ -40,85 +38,47 @@ const getBasePath = (isPrivate: boolean) =>
 
 export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState<SessionStep>("input");
-  const [formattedResult, setFormattedResult] =
-    useState<MeditationFormatterResult | null>(null);
-  const [voiceSettings, setVoiceSettings] = useState<{
-    voiceId: string;
-    customVoiceId?: string;
-    isAdvanced: boolean;
-  } | null>(null);
 
   // Simply select the appropriate storage based on isPrivate
   const storage = isPrivate ? ephemeralStorage : persistentStorage;
+
+  // Use our custom hook to manage session state
+  const [session, updateSession] = useSessionState<NadaSession>(
+    sessionId,
+    storage,
+    { currentStep: "input", script: null }
+  );
 
   // Load saved sessions directly
   const savedSessions = storage.getAllSessions<{
     script: FormattedScript;
   }>();
 
-  // Load session if ID is provided
+  // Clean up old sessions on component mount
   useEffect(() => {
-    if (sessionId) {
-      const session = storage.getSession<NadaSession>(sessionId);
-
-      if (session) {
-        // Set the current step from the session
-        setCurrentStep(session.currentStep);
-
-        // Create a formatted result from the session script
-        if (session.script) {
-          setFormattedResult({
-            isRejected: false,
-            warnings: [],
-            script: session.script,
-          });
-        }
-
-        if (session.voiceSettings) {
-          setVoiceSettings(session.voiceSettings);
-        }
-      }
-    }
-    // Clean up old sessions on component mount
     storage.cleanupOldSessions();
-  }, [sessionId, storage]);
+  }, [storage]);
 
-  // Save session to storage when state changes
-  useEffect(() => {
-    if (formattedResult && sessionId) {
-      storage.updateSessionIfExists<NadaSession>(sessionId, {
-        currentStep,
-        script: formattedResult.script,
-        voiceSettings: voiceSettings || undefined,
-      });
-    }
-  }, [sessionId, currentStep, formattedResult, voiceSettings, storage]);
+  const handleScriptCreated = (script: FormattedScript) => {
+    // Generate new session ID if we don't have one
+    const newSessionId = sessionId || storage.generateId();
 
-  const handleScriptFormatted = (
-    formattedResult: MeditationFormatterResult
-  ) => {
-    setFormattedResult(formattedResult);
+    // Create the new session state
+    const newSessionState = {
+      currentStep: "review" as const,
+      script,
+    };
 
-    // Only proceed if we have a valid script
-    if (!formattedResult.isRejected && formattedResult.script) {
-      // Generate new session ID
-      const newSessionId = storage.generateId();
+    // Update local state
+    updateSession(newSessionState);
 
-      // Save initial session data
-      storage.saveSession<NadaSession>(newSessionId, {
-        currentStep: "review",
-        script: formattedResult.script,
-      });
+    // If this is a new session, save it directly
+    if (!sessionId) {
+      storage.saveSession(newSessionId, newSessionState);
 
-      // Always update URL with the session ID, preserving the privacy setting
+      // Navigate to the new session
       router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
-
-      // Change to review step
-      setCurrentStep("review");
     }
-    // If rejected or no script, we stay on the input step
-    // The PracticeSetup component will display the error
   };
 
   const handleGenerateAudio = async (settings: {
@@ -126,25 +86,22 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     customVoiceId?: string;
     isAdvanced: boolean;
   }) => {
-    setVoiceSettings(settings);
-
-    if (sessionId) {
-      storage.updateSessionIfExists<NadaSession>(sessionId, {
-        voiceSettings: settings,
-      });
-    }
-
-    setCurrentStep("synthesis");
+    updateSession({
+      voiceSettings: settings,
+      currentStep: "synthesis",
+    });
   };
 
   const handleCancelSynthesis = () => {
-    setCurrentStep("voice");
+    updateSession({
+      currentStep: "voice",
+    });
   };
 
-  const handleLoadSession = (sessionId: string) => {
-    if (sessionId) {
+  const handleLoadSession = (loadSessionId: string) => {
+    if (loadSessionId) {
       // Navigate to the session page, preserving the privacy setting
-      router.push(`${getBasePath(isPrivate)}/${sessionId}`);
+      router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
     }
   };
 
@@ -166,26 +123,24 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          {currentStep === "review" &&
-          formattedResult &&
-          formattedResult.script ? (
+          {session.currentStep === "review" && session.script ? (
             <Card className="p-6">
               <FormattedMeditation
-                result={formattedResult}
-                onConfirm={() => setCurrentStep("voice")}
+                script={session.script}
+                onConfirm={() => updateSession({ currentStep: "voice" })}
               />
             </Card>
-          ) : currentStep === "voice" && formattedResult?.script ? (
+          ) : session.currentStep === "voice" && session.script ? (
             <VoiceSelection
               onGenerateAudio={handleGenerateAudio}
-              onEditScript={() => setCurrentStep("review")}
+              onEditScript={() => updateSession({ currentStep: "review" })}
             />
-          ) : currentStep === "synthesis" &&
-            formattedResult?.script &&
-            voiceSettings ? (
+          ) : session.currentStep === "synthesis" &&
+            session.script &&
+            session.voiceSettings ? (
             <SynthesisProgress
-              script={formattedResult.script}
-              voiceSettings={voiceSettings}
+              script={session.script}
+              voiceSettings={session.voiceSettings}
               onCancel={handleCancelSynthesis}
             />
           ) : (
@@ -197,7 +152,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
                   router.push(getBasePath(newIsPrivate));
                 }
               }}
-              onScriptFormatted={handleScriptFormatted}
+              onScriptCreated={handleScriptCreated}
               onLoadSession={handleLoadSession}
               savedSessions={savedSessions}
             />
