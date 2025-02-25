@@ -8,6 +8,8 @@ An open-source project exploring the intersection of AI and meditation practices
 
 Generate guided meditations from scripts created by AI language models like ChatGPT. Simply paste your meditation script and transform it into a guided meditation.
 
+For more details see [src/components/nada/README.md](src/components/nada/README.md).
+
 ## Project Structure
 
 ### Web Areas
