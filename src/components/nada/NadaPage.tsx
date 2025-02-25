@@ -31,12 +31,16 @@ interface NadaSession {
 
 interface NadaPageProps {
   sessionId?: string;
+  isPrivate: boolean;
 }
 
-export default function NadaPage({ sessionId }: NadaPageProps) {
+// Utility function to get the base path based on privacy setting
+const getBasePath = (isPrivate: boolean) =>
+  isPrivate ? "/nada/private" : "/nada";
+
+export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<SessionStep>("input");
-  const [isPrivate, setIsPrivate] = useState(false);
   const [formattedResult, setFormattedResult] =
     useState<MeditationFormatterResult | null>(null);
   const [voiceSettings, setVoiceSettings] = useState<{
@@ -92,11 +96,9 @@ export default function NadaPage({ sessionId }: NadaPageProps) {
   }, [sessionId, currentStep, formattedResult, voiceSettings, storage]);
 
   const handleScriptFormatted = (
-    formattedResult: MeditationFormatterResult,
-    isPrivateMode: boolean
+    formattedResult: MeditationFormatterResult
   ) => {
     setFormattedResult(formattedResult);
-    setIsPrivate(isPrivateMode);
 
     // Only proceed if we have a valid script
     if (!formattedResult.isRejected && formattedResult.script) {
@@ -109,8 +111,8 @@ export default function NadaPage({ sessionId }: NadaPageProps) {
         script: formattedResult.script,
       });
 
-      // Always update URL with the session ID
-      router.push(`/nada/${newSessionId}`);
+      // Always update URL with the session ID, preserving the privacy setting
+      router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
 
       // Change to review step
       setCurrentStep("review");
@@ -141,8 +143,8 @@ export default function NadaPage({ sessionId }: NadaPageProps) {
 
   const handleLoadSession = (sessionId: string) => {
     if (sessionId) {
-      // Navigate to the session page
-      router.push(`/nada/${sessionId}`);
+      // Navigate to the session page, preserving the privacy setting
+      router.push(`${getBasePath(isPrivate)}/${sessionId}`);
     }
   };
 
@@ -189,7 +191,12 @@ export default function NadaPage({ sessionId }: NadaPageProps) {
           ) : (
             <PracticeSetup
               isPrivate={isPrivate}
-              onPrivateChange={setIsPrivate}
+              onPrivateChange={(newIsPrivate) => {
+                // Redirect to the appropriate URL when privacy mode changes
+                if (newIsPrivate !== isPrivate) {
+                  router.push(getBasePath(newIsPrivate));
+                }
+              }}
               onScriptFormatted={handleScriptFormatted}
               onLoadSession={handleLoadSession}
               savedSessions={savedSessions}

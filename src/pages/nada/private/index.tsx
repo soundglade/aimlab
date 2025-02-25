@@ -5,6 +5,6 @@ const NadaPage = dynamic(() => import("@/components/nada/NadaPage"), {
   ssr: false,
 });
 
-export default function NadaIndexPage() {
-  return <NadaPage isPrivate={false} />;
+export default function NadaPrivateIndexPage() {
+  return <NadaPage isPrivate={true} />;
 }

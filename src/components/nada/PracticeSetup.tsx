@@ -8,10 +8,7 @@ import type {
 } from "@/lib/meditation-formatter";
 
 interface PracticeSetupProps {
-  onScriptFormatted: (
-    formattedResult: MeditationFormatterResult,
-    isPrivate: boolean
-  ) => void;
+  onScriptFormatted: (formattedResult: MeditationFormatterResult) => void;
   isPrivate: boolean;
   onPrivateChange: (isPrivate: boolean) => void;
   onLoadSession?: (sessionId: string) => void;
@@ -68,7 +65,7 @@ export function PracticeSetup({
       }
 
       // Success case - proceed to next step
-      onScriptFormatted(formattedResult, isPrivate);
+      onScriptFormatted(formattedResult);
     } catch (error) {
       console.error("Error formatting script:", error);
       setError(

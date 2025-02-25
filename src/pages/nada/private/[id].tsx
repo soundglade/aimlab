@@ -6,7 +6,7 @@ const NadaPage = dynamic(() => import("@/components/nada/NadaPage"), {
   ssr: false,
 });
 
-export default function NadaSessionPage() {
+export default function NadaPrivateSessionPage() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -15,5 +15,5 @@ export default function NadaSessionPage() {
     return null;
   }
 
-  return <NadaPage sessionId={id} isPrivate={false} />;
+  return <NadaPage sessionId={id} isPrivate={true} />;
 }
