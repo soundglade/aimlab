@@ -44,6 +44,11 @@ export function NadaPage({ sessionId }: NadaPageProps) {
     isAdvanced: boolean;
   } | null>(null);
 
+  // Load saved sessions directly
+  const savedSessions = storage.getAllSessions<{
+    script: FormattedScript;
+  }>();
+
   // If private mode is selected, clear the session by redirecting to base URL
   useEffect(() => {
     if (isPrivate && sessionId) {
@@ -109,6 +114,9 @@ export function NadaPage({ sessionId }: NadaPageProps) {
           currentStep: "review",
           script: formattedResult.script,
         });
+
+        // Note: We don't need to update savedSessions state anymore
+        // since we're loading sessions directly in the component
       }
 
       // Change to review step
@@ -189,6 +197,7 @@ export function NadaPage({ sessionId }: NadaPageProps) {
               onPrivateChange={setIsPrivate}
               onScriptFormatted={handleScriptFormatted}
               onLoadSession={handleLoadSession}
+              savedSessions={savedSessions}
             />
           )}
         </main>

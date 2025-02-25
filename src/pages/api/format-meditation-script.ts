@@ -20,14 +20,7 @@ export default async function handler(
 
     const formattedResult = await formatMeditationScript(script);
 
-    // Ensure there's a default title if none was extracted
-    if (
-      !formattedResult.isRejected &&
-      formattedResult.script &&
-      !formattedResult.script.title
-    ) {
-      formattedResult.script.title = "Meditation";
-    }
+    // Title should be mandatory, so we don't need a fallback
 
     res.status(200).json(formattedResult);
   } catch (error) {
