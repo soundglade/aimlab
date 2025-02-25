@@ -52,6 +52,7 @@ const MeditationFormatter = z
     isRejected: z.boolean(),
     rejectionReason: z.string().optional(),
     warnings: z.array(z.string()).optional(),
+    title: z.string().optional(),
     formattedScript: z.array(MeditationStep).optional(),
   })
   .superRefine((data, ctx) => {
@@ -73,6 +74,12 @@ const MeditationFormatter = z
         ctx.addIssue({
           code: "custom",
           message: "formattedScript is required when isRejected is false",
+        });
+      }
+      if (!data.title) {
+        ctx.addIssue({
+          code: "custom",
+          message: "title is required when isRejected is false",
         });
       }
     }
@@ -97,7 +104,8 @@ Steps to follow:
        { "isRejected": true, "rejectionReason": "some reason" }
      and DO NOT provide any "formattedScript".
 3) TRANSFORMATION STAGE:
-   - If the script is valid, transform it into an array of steps with these possible types:
+   - If the script is valid, extract a concise title that represents the meditation.
+   - Then transform the script into an array of steps with these possible types:
        "heading", "speech", "pause", "sound", "aside", "direction".
    - For each piece of user-facing guidance, use "speech".
    - For silent intervals, use "pause", with an approximate "duration" in seconds. 
@@ -117,6 +125,7 @@ Steps to follow:
      {
        "isRejected": false,
        "warnings": [ "string", ... ],
+       "title": "Concise meditation title",
        "formattedScript": [ ... array of step objects ... ]
      }
    - Or, if rejected, return:

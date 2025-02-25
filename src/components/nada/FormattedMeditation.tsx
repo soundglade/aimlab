@@ -48,10 +48,16 @@ export function FormattedMeditation({
     );
   }
 
-  const { warnings = [], formattedScript = [] } = result;
+  const {
+    warnings = [],
+    formattedScript = [],
+    title = "Untitled Meditation",
+  } = result;
 
   return (
     <div className="space-y-6">
+      <h1 className="text-4xl font-medium text-center">{title}</h1>
+
       {warnings.length > 0 && (
         <Alert>
           <AlertDescription>

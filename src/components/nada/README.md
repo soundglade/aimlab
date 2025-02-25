@@ -40,6 +40,30 @@ Nada is an experimental tool inside AIM Lab that allows users to synthesize guid
    - Manages the audio synthesis process
    - Displays progress and provides playback controls for the generated audio
 
+### Backend API Interactions
+
+The frontend communicates with two simple API endpoints:
+
+1. **Script Formatting** (`/api/format-meditation-script`):
+
+   - Takes a raw meditation script and transforms it into a structured format
+   - Uses OpenAI's GPT model to intelligently parse and structure the meditation content
+   - Identifies different elements in the script such as:
+     - Speech sections (narration to be spoken aloud)
+     - Headings and titles (with different importance levels)
+     - Pauses (with appropriate durations)
+     - Sound cues (like bells or chimes)
+     - Directions (performance instructions)
+     - Asides (notes not meant to be spoken)
+   - Validates the script to ensure it's suitable for meditation purposes
+   - Returns a well-organized structure that enhances the meditation experience
+
+2. **Audio Synthesis** (`/api/synthesize-meditation`):
+   - Converts the formatted script into spoken audio using the selected voice
+   - Provides real-time progress updates during the synthesis process
+   - Returns audio data for each section as it's generated
+   - Allows for immediate playback while the rest of the meditation is being processed
+
 ### Routing
 
 - `/nada`: Main entry point for creating new meditation sessions

@@ -19,6 +19,12 @@ export default async function handler(
     }
 
     const formattedResult = await formatMeditationScript(script);
+
+    // Ensure there's a default title if none was extracted
+    if (!formattedResult.isRejected && !formattedResult.title) {
+      formattedResult.title = "Untitled Meditation";
+    }
+
     res.status(200).json(formattedResult);
   } catch (error) {
     console.error("Error processing script:", error);

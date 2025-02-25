@@ -74,7 +74,7 @@ export default async function handler(
   });
 
   try {
-    const { sections, voiceSettings } = req.body;
+    const { sections, voiceSettings, title = "Untitled Meditation" } = req.body;
 
     // Enable streaming
     res.setHeader("Content-Type", "application/octet-stream");
@@ -82,6 +82,14 @@ export default async function handler(
 
     // Pipe the stream to the response
     stream.pipe(res);
+
+    // Send initial metadata with title
+    stream.push(
+      JSON.stringify({
+        type: "metadata",
+        title: title,
+      }) + "\n"
+    );
 
     // Process each section
     for (let i = 0; i < sections.length; i++) {

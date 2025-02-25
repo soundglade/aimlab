@@ -7,7 +7,13 @@ import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 import { cn } from "@/lib/utils";
 
 // Internal components
-function ProgressHeader({ progress }: { progress: number }) {
+function ProgressHeader({
+  progress,
+  title,
+}: {
+  progress: number;
+  title: string;
+}) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -15,7 +21,7 @@ function ProgressHeader({ progress }: { progress: number }) {
           <h2 className="text-xl font-medium">Synthesizing Audio</h2>
           <p className="text-muted-foreground">
             {progress < 100
-              ? "Creating your meditation audio..."
+              ? `Creating "${title}" meditation audio...`
               : "Synthesis complete!"}
           </p>
         </div>
@@ -121,21 +127,29 @@ export function SynthesisProgress({
   onCancel,
 }: SynthesisProgressProps) {
   const [progress, setProgress] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(-1);
-  const [audioSections] = useState(new Map<number, Blob>());
+  const [audioSections, setAudioSections] = useState<
+    { sectionIndex: number; audioData: string }[]
+  >([]);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    let aborted = false;
+  // Extract title and formattedScript from script
+  const { title = "Untitled Meditation", formattedScript = [] } = script;
 
-    async function startSynthesis() {
+  useEffect(() => {
+    const startSynthesis = async () => {
       try {
         setIsSynthesizing(true);
         setError(null);
+        setProgress(0);
+        setAudioSections([]);
+
+        // Create a new AbortController for this request
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
 
         const response = await fetch("/api/synthesize-meditation", {
           method: "POST",
@@ -143,8 +157,9 @@ export function SynthesisProgress({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            sections: script.formattedScript,
+            sections: formattedScript,
             voiceSettings,
+            title, // Pass the title to the API
           }),
           signal: abortController.signal,
         });
@@ -153,73 +168,81 @@ export function SynthesisProgress({
           throw new Error("Synthesis request failed");
         }
 
-        const reader = response.body!.getReader();
+        // Get the response as a stream
+        const reader = response.body?.getReader();
+        if (!reader) {
+          throw new Error("Failed to get stream reader");
+        }
+
+        // Process the stream
         const decoder = new TextDecoder();
         let buffer = "";
 
-        while (!aborted) {
+        while (true) {
           const { done, value } = await reader.read();
-
           if (done) break;
 
-          // Append new data to buffer and process complete messages
+          // Decode the chunk and add it to our buffer
           buffer += decoder.decode(value, { stream: true });
+
+          // Process complete messages in the buffer
           const messages = buffer.split("\n");
+          buffer = messages.pop() || ""; // Keep the last incomplete message in the buffer
 
-          // Keep the last incomplete message in buffer
-          buffer = messages.pop() || "";
-
-          // Process complete messages
           for (const message of messages) {
-            if (!message) continue;
+            if (!message.trim()) continue;
 
-            const data = JSON.parse(message);
+            try {
+              const data = JSON.parse(message);
 
-            switch (data.type) {
-              case "progress":
+              if (data.type === "metadata") {
+                // Handle metadata if needed
+                // We already have the title from the script, but we could update it if needed
+                // This is useful if the API modifies or enhances the title
+              } else if (data.type === "progress") {
                 setProgress(data.progress);
-                setCurrentIndex(data.sectionIndex);
-                break;
-
-              case "audio":
-                const audioBlob = await fetch(
-                  `data:audio/wav;base64,${data.data}`
-                ).then((r) => r.blob());
-                audioSections.set(data.sectionIndex, audioBlob);
-                break;
-
-              case "complete":
+              } else if (data.type === "audio") {
+                setAudioSections((prev) => [
+                  ...prev,
+                  {
+                    sectionIndex: data.sectionIndex,
+                    audioData: data.data,
+                  },
+                ]);
+              } else if (data.type === "error") {
+                setError(data.message);
+              } else if (data.type === "complete") {
                 setProgress(100);
-                break;
-
-              case "error":
-                throw new Error(data.message);
+              }
+            } catch (e) {
+              console.error("Error parsing message:", e);
             }
           }
         }
-      } catch (err) {
-        if (!aborted) {
-          // Don't show the abort error to the user
-          if (err instanceof Error && err.name === "AbortError") {
-            setError("Synthesis cancelled");
-          } else {
-            setError(err instanceof Error ? err.message : "Synthesis failed");
-          }
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          console.log("Synthesis aborted");
+        } else {
+          console.error("Synthesis error:", error);
+          setError(
+            error instanceof Error ? error.message : "An unknown error occurred"
+          );
         }
       } finally {
-        if (!aborted) {
-          setIsSynthesizing(false);
-        }
+        setIsSynthesizing(false);
+        abortControllerRef.current = null;
       }
-    }
+    };
 
     startSynthesis();
 
     return () => {
-      aborted = true;
-      abortController.abort();
+      // Cleanup: abort any ongoing request when component unmounts
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
-  }, [script.formattedScript, voiceSettings]);
+  }, [formattedScript, voiceSettings, title]); // Add title to the dependency array
 
   const handleCancel = () => {
     if (abortControllerRef.current) {
@@ -230,10 +253,14 @@ export function SynthesisProgress({
   };
 
   const previewSection = async (index: number) => {
-    const audioBlob = audioSections.get(index);
+    const audioBlob = audioSections.find(
+      (section) => section.sectionIndex === index
+    )?.audioData;
     if (!audioBlob) return;
 
-    const url = URL.createObjectURL(audioBlob);
+    const url = URL.createObjectURL(
+      new Blob([Buffer.from(audioBlob, "base64")])
+    );
     const audio = new Audio(url);
 
     audio.onended = () => {
@@ -244,12 +271,13 @@ export function SynthesisProgress({
   };
 
   const getScriptSectionStatus = (index: number) => {
-    if (audioSections.has(index)) return "complete";
-    if (index === currentIndex) return "processing";
+    if (audioSections.some((section) => section.sectionIndex === index))
+      return "complete";
+    if (index === currentlyPlaying) return "processing";
     return "pending";
   };
 
-  if (!script.formattedScript) {
+  if (!formattedScript) {
     return (
       <Card className="p-6">
         <div className="text-muted-foreground">No script content available</div>
@@ -259,6 +287,7 @@ export function SynthesisProgress({
 
   return (
     <Card className="p-6 space-y-6">
+      <h1 className="text-2xl font-medium text-center mb-4">{title}</h1>
       <div className="flex justify-end">
         <Button
           variant="ghost"
@@ -271,14 +300,14 @@ export function SynthesisProgress({
         </Button>
       </div>
 
-      <ProgressHeader progress={progress} />
+      <ProgressHeader progress={progress} title={title} />
 
       {error && (
         <div className="text-red-600 bg-red-50 p-4 rounded-md">{error}</div>
       )}
 
       <div className="space-y-2">
-        {script.formattedScript.map((section, index) => (
+        {formattedScript.map((section, index) => (
           <ScriptSection
             key={index}
             section={section}
