@@ -32,61 +32,43 @@ export async function exportMeditationAudio(
     throw new Error("No audio content found in this meditation.");
   }
 
-  // Prepare audio context
+  // Prepare audio context and process all steps
   const audioContext = new AudioContext();
-  const audioBuffers: AudioBuffer[] = [];
+  const audioBuffers = await processAudioSteps(
+    audioSteps,
+    audioContext,
+    fileStorage,
+    onProgress
+  );
 
-  // Process each step in sequence
+  // Render the final audio file
+  const url = await renderFinalAudio(audioBuffers, onProgress);
+
+  return url;
+}
+
+/**
+ * Process all audio steps and create corresponding AudioBuffers
+ */
+async function processAudioSteps(
+  audioSteps: Meditation["steps"],
+  audioContext: AudioContext,
+  fileStorage: FileStorageApi,
+  onProgress: (progress: number) => void
+): Promise<AudioBuffer[]> {
+  const audioBuffers: AudioBuffer[] = [];
   let processedSteps = 0;
+
   for (const step of audioSteps) {
     if (step.type === "speech" && step.audioFileId) {
-      // For speech steps, load the audio file
-      const storedFile = await fileStorage.getFile(step.audioFileId);
-      if (!storedFile || !storedFile.data) {
-        throw new Error(`Audio file not found: ${step.audioFileId}`);
-      }
-
-      // Convert to blob if needed
-      let audioBlob: Blob;
-      if (storedFile.data instanceof Blob) {
-        audioBlob = storedFile.data;
-      } else if (typeof storedFile.data === "string") {
-        audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
-          type: "audio/mp3",
-        });
-      } else {
-        throw new Error("Unsupported audio data format");
-      }
-
-      // Create URL and load audio
-      const url = URL.createObjectURL(audioBlob);
-      try {
-        // Load and decode audio
-        const arrayBuffer = await audioBlob.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        audioBuffers.push(audioBuffer);
-
-        // Clean up URL after use
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        URL.revokeObjectURL(url);
-        throw error;
-      }
-    } else if (step.type === "pause") {
-      // For pause steps, create a silent buffer with the specified duration
-      const sampleRate = 44100; // Standard sample rate
-      const numberOfChannels = 2; // Stereo
-      const pauseDuration = step.duration;
-      const pauseSamples = Math.floor(pauseDuration * sampleRate);
-
-      // Create silent buffer
-      const silenceBuffer = audioContext.createBuffer(
-        numberOfChannels,
-        pauseSamples,
-        sampleRate
+      const audioBuffer = await processSpeechStep(
+        step,
+        audioContext,
+        fileStorage
       );
-
-      // Buffer is automatically initialized with zeros (silence)
+      audioBuffers.push(audioBuffer);
+    } else if (step.type === "pause") {
+      const silenceBuffer = createSilenceBuffer(audioContext, step.duration);
       audioBuffers.push(silenceBuffer);
     }
 
@@ -99,8 +81,69 @@ export async function exportMeditationAudio(
     throw new Error("No audio content could be processed.");
   }
 
-  // Use offline audio context to concatenate and render the final audio
-  // First, calculate total length in samples
+  return audioBuffers;
+}
+
+/**
+ * Process a speech step by loading and decoding its audio file
+ */
+async function processSpeechStep(
+  step: Meditation["steps"][number],
+  audioContext: AudioContext,
+  fileStorage: FileStorageApi
+): Promise<AudioBuffer> {
+  const storedFile = await fileStorage.getFile(step.audioFileId!);
+  if (!storedFile || !storedFile.data) {
+    throw new Error(`Audio file not found: ${step.audioFileId}`);
+  }
+
+  // Convert to blob if needed
+  let audioBlob: Blob;
+  if (storedFile.data instanceof Blob) {
+    audioBlob = storedFile.data;
+  } else if (typeof storedFile.data === "string") {
+    audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
+      type: "audio/mp3",
+    });
+  } else {
+    throw new Error("Unsupported audio data format");
+  }
+
+  try {
+    const arrayBuffer = await audioBlob.arrayBuffer();
+    return await audioContext.decodeAudioData(arrayBuffer);
+  } catch (error) {
+    throw new Error(
+      `Failed to decode audio: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
+}
+
+/**
+ * Create a silent buffer with the specified duration
+ */
+function createSilenceBuffer(
+  audioContext: AudioContext,
+  durationInSeconds: number
+): AudioBuffer {
+  const sampleRate = 44100; // Standard sample rate
+  const numberOfChannels = 2; // Stereo
+  const pauseSamples = Math.floor(durationInSeconds * sampleRate);
+
+  // Create silent buffer (automatically initialized with zeros/silence)
+  return audioContext.createBuffer(numberOfChannels, pauseSamples, sampleRate);
+}
+
+/**
+ * Render the final audio from the collection of audio buffers
+ */
+async function renderFinalAudio(
+  audioBuffers: AudioBuffer[],
+  onProgress: (progress: number) => void
+): Promise<string> {
+  // Calculate total length in samples
   const totalSamples = audioBuffers.reduce(
     (acc, buffer) => acc + buffer.length,
     0
