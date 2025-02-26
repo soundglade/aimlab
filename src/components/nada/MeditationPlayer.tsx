@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { Meditation, MeditationStep } from "./NadaPage";
+import { Meditation } from "./NadaPage";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
