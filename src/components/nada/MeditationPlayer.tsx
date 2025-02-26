@@ -35,6 +35,13 @@ interface PlayerState {
   fullAudioReady: boolean; // Track if the full audio is ready
 }
 
+// Interface for step timing information
+interface StepTiming {
+  startTime: number;
+  endTime: number;
+  type: string;
+}
+
 export function MeditationPlayer({
   meditation,
   fileStorage,
@@ -61,7 +68,7 @@ export function MeditationPlayer({
   const currentAudioUrlRef = useRef<string | null>(null);
   const currentStepIndexRef = useRef<number>(0);
   const fullAudioUrlRef = useRef<string | null>(null);
-  const stepStartTimesRef = useRef<number[]>([]);
+  const stepTimingsRef = useRef<StepTiming[]>([]);
 
   // Update ref when state changes
   useEffect(() => {
@@ -100,32 +107,56 @@ export function MeditationPlayer({
 
         const totalDuration = tempAudio.duration || 0;
 
-        // Calculate step durations and start times
+        // Calculate step durations and timings
         const durations: number[] = [];
-        const startTimes: number[] = [];
-        let cumulativeTime = 0;
+        const timings: StepTiming[] = [];
+        const cumulativeTimes: number[] = [];
+        let currentTime = 0;
 
         for (const step of meditation.steps) {
           let stepDuration = 0;
-          startTimes.push(cumulativeTime);
+          const startTime = currentTime;
 
           if (step.type === "speech") {
-            // For speech steps, we'll estimate duration based on text length
-            // This will be overridden by actual durations from the full audio
+            // For speech steps, estimate duration based on text length
+            // This is a rough estimate and will be refined later if possible
             stepDuration = step.text.length / 15;
           } else if (step.type === "pause") {
             stepDuration = step.duration;
+          } else if (
+            step.type === "heading" ||
+            step.type === "direction" ||
+            step.type === "aside"
+          ) {
+            // Non-audio steps have minimal duration
+            stepDuration = 0.1; // Very small duration for non-audio steps
           }
 
+          currentTime += stepDuration;
           durations.push(stepDuration);
-          cumulativeTime += stepDuration;
+          cumulativeTimes.push(currentTime);
+
+          timings.push({
+            startTime,
+            endTime: currentTime,
+            type: step.type,
+          });
+        }
+
+        // Adjust timings to match total audio duration
+        if (currentTime > 0 && totalDuration > 0) {
+          const ratio = totalDuration / currentTime;
+
+          // Adjust all timings proportionally
+          timings.forEach((timing, i) => {
+            timing.startTime *= ratio;
+            timing.endTime *= ratio;
+          });
         }
 
         stepDurationsRef.current = durations;
-        stepStartTimesRef.current = startTimes;
-        cumulativeTimesRef.current = meditation.steps.map(
-          (_, i) => startTimes[i] + durations[i]
-        );
+        stepTimingsRef.current = timings;
+        cumulativeTimesRef.current = cumulativeTimes;
 
         setPlayerState((prev) => ({
           ...prev,
@@ -139,6 +170,8 @@ export function MeditationPlayer({
           audioRef.current.src = url;
           audioRef.current.load();
         }
+
+        console.log("Step timings calculated:", timings);
       } catch (error) {
         console.error("Error generating full audio:", error);
         setPlayerState((prev) => ({
@@ -234,6 +267,38 @@ export function MeditationPlayer({
     }));
   };
 
+  // Find the current step index based on current time
+  const findCurrentStepIndex = (currentTime: number): number => {
+    const timings = stepTimingsRef.current;
+
+    // Skip non-audio steps when determining current step
+    const audioStepTimings = timings.filter(
+      (timing) => timing.type === "speech" || timing.type === "pause"
+    );
+
+    // Find the current audio step
+    for (let i = 0; i < audioStepTimings.length; i++) {
+      if (currentTime < audioStepTimings[i].endTime) {
+        // Find the corresponding index in the original steps array
+        const originalIndex = timings.findIndex(
+          (t) =>
+            t.startTime === audioStepTimings[i].startTime &&
+            t.endTime === audioStepTimings[i].endTime
+        );
+        return originalIndex >= 0 ? originalIndex : i;
+      }
+    }
+
+    // If we're past all audio steps, find the last relevant step
+    for (let i = timings.length - 1; i >= 0; i--) {
+      if (timings[i].type === "speech" || timings[i].type === "pause") {
+        return i;
+      }
+    }
+
+    return 0; // Default to first step if nothing else matches
+  };
+
   // Handle audio timeupdate event
   const handleTimeUpdate = () => {
     if (audioRef.current && playerState.fullAudioReady) {
@@ -242,18 +307,7 @@ export function MeditationPlayer({
       const progress = (currentTime / totalDuration) * 100;
 
       // Find current step based on time
-      let currentStepIndex = 0;
-      for (let i = 0; i < stepStartTimesRef.current.length; i++) {
-        const nextStep = i + 1;
-        if (nextStep < stepStartTimesRef.current.length) {
-          if (currentTime < stepStartTimesRef.current[nextStep]) {
-            currentStepIndex = i;
-            break;
-          }
-        } else {
-          currentStepIndex = i;
-        }
-      }
+      const currentStepIndex = findCurrentStepIndex(currentTime);
 
       setPlayerState((prev) => ({
         ...prev,
@@ -358,22 +412,28 @@ export function MeditationPlayer({
     if (
       stepIndex < 0 ||
       stepIndex >= meditation.steps.length ||
-      !playerState.fullAudioReady
+      !playerState.fullAudioReady ||
+      !audioRef.current
     )
       return;
 
     console.log(`Seeking to step ${stepIndex}`);
 
-    if (audioRef.current) {
-      // Set audio playback position to the start of the selected step
-      audioRef.current.currentTime = stepStartTimesRef.current[stepIndex];
-
-      // Update state
-      setPlayerState((prev) => ({
-        ...prev,
-        currentStepIndex: stepIndex,
-      }));
+    // Get the timing for this step
+    const stepTiming = stepTimingsRef.current[stepIndex];
+    if (!stepTiming) {
+      console.error(`No timing information for step ${stepIndex}`);
+      return;
     }
+
+    // Set audio playback position to the start of the selected step
+    audioRef.current.currentTime = stepTiming.startTime;
+
+    // Update state
+    setPlayerState((prev) => ({
+      ...prev,
+      currentStepIndex: stepIndex,
+    }));
   };
 
   // Format time display (mm:ss)
@@ -381,6 +441,31 @@ export function MeditationPlayer({
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Seek to a specific time based on progress bar click
+  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!playerState.fullAudioReady || !audioRef.current) return;
+
+    // Get the progress bar element
+    const progressBar = e.currentTarget;
+
+    // Calculate the click position as a percentage of the bar width
+    const rect = progressBar.getBoundingClientRect();
+    const clickPosition = e.clientX - rect.left;
+    const clickPercentage = clickPosition / rect.width;
+
+    // Calculate the target time based on the total duration
+    const targetTime = clickPercentage * audioRef.current.duration;
+
+    // Set the audio time
+    audioRef.current.currentTime = targetTime;
+
+    console.log(
+      `Seeking to ${formatTime(targetTime)} (${Math.round(
+        clickPercentage * 100
+      )}%)`
+    );
   };
 
   // Downloads the meditation as a single audio file
@@ -526,7 +611,14 @@ export function MeditationPlayer({
         <div className="space-y-4">
           {/* Progress bar */}
           <div className="space-y-1">
-            <Progress value={playerState.progress} className="h-2" />
+            <div
+              className="relative cursor-pointer"
+              onClick={handleProgressBarClick}
+              title="Click to seek"
+            >
+              <Progress value={playerState.progress} className="h-2" />
+              <div className="absolute inset-0 opacity-0 hover:opacity-10 bg-primary transition-opacity"></div>
+            </div>
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>{formatTime(playerState.currentTime)}</span>
               <span>{formatTime(playerState.totalDuration)}</span>
