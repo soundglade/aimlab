@@ -4,9 +4,18 @@ import { Meditation, MeditationStep } from "./NadaPage";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import {
+  ArrowLeft,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Download,
+  Loader,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as synthesisService from "./synthesisService";
+import { exportMeditationAudio, downloadAudioFile } from "./audioExporter";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -21,6 +30,7 @@ interface PlayerState {
   progress: number; // 0-100
   currentTime: number; // in seconds
   totalDuration: number; // in seconds
+  isDownloading: boolean; // Track download state
 }
 
 export function MeditationPlayer({
@@ -35,6 +45,7 @@ export function MeditationPlayer({
     progress: 0,
     currentTime: 0,
     totalDuration: 0, // Will be calculated when steps are processed
+    isDownloading: false,
   });
 
   // References for playback control
@@ -478,9 +489,47 @@ export function MeditationPlayer({
     };
   }, []);
 
+  // Downloads the meditation as a single audio file
+  const downloadMeditation = async () => {
+    try {
+      // Start download process and update UI
+      setPlayerState((prev) => ({ ...prev, isDownloading: true }));
+
+      // Export the meditation audio with progress updates
+      const fileName = `${meditation.title
+        .replace(/[^a-z0-9]/gi, "_")
+        .toLowerCase()}_meditation.wav`;
+
+      const url = await exportMeditationAudio(meditation, fileStorage, {
+        onProgress: (progress) => {
+          // Optional: Update progress in UI if desired
+          console.log(`Export progress: ${progress}%`);
+        },
+        fileName,
+      });
+
+      // Download the file
+      downloadAudioFile(url, fileName);
+
+      // Clean up the URL after a delay
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 100);
+    } catch (error) {
+      console.error("Error downloading meditation:", error);
+      alert(
+        `Error downloading meditation: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    } finally {
+      setPlayerState((prev) => ({ ...prev, isDownloading: false }));
+    }
+  };
+
   return (
     <Card className="p-6">
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -489,6 +538,21 @@ export function MeditationPlayer({
         >
           <ArrowLeft className="mr-1" size={16} />
           Back
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={downloadMeditation}
+          disabled={playerState.isDownloading}
+          className="text-muted-foreground"
+        >
+          {playerState.isDownloading ? (
+            <Loader className="mr-1 animate-spin" size={16} />
+          ) : (
+            <Download className="mr-1" size={16} />
+          )}
+          {playerState.isDownloading ? "Exporting..." : "Download Audio"}
         </Button>
       </div>
 
