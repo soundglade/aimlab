@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { Meditation } from "./NadaPage";
+import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -14,8 +14,8 @@ import {
   Loader,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { downloadAudioFile } from "./utils/audioExporter";
-import * as meditationTimeline from "./utils/meditationTimeline";
+import { downloadAudioFile } from "../utils/audioExporter";
+import * as meditationTimeline from "../utils/meditationTimeline";
 
 interface MeditationPlayerProps {
   meditation: Meditation;

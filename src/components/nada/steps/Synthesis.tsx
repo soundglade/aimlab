@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, StopCircle, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Meditation, MeditationStep } from "./NadaPage";
+import { Meditation, MeditationStep } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
-import { VoiceSettings } from "./utils/synthesisService";
-import * as synthesisService from "./utils/synthesisService";
-import * as meditationTimeline from "./utils/meditationTimeline";
-import { exportMeditationAudio } from "./utils/audioExporter";
+import { VoiceSettings } from "../utils/synthesisService";
+import * as synthesisService from "../utils/synthesisService";
+import * as meditationTimeline from "../utils/meditationTimeline";
+import { exportMeditationAudio } from "../utils/audioExporter";
 
 export function useSynthesis(
   meditation: Meditation,

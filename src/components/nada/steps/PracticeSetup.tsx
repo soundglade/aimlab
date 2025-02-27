@@ -6,7 +6,7 @@ import type {
   MeditationFormatterResult,
   FormattedScript,
 } from "@/lib/meditation-formatter";
-import { Meditation } from "./NadaPage";
+import { Meditation } from "../Nada";
 
 interface PracticeSetupProps {
   onScriptCreated: (script: FormattedScript) => void;

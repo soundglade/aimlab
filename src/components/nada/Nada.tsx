@@ -3,16 +3,19 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
-import { FormattedMeditation } from "./FormattedMeditation";
+
+import { FormattedMeditation } from "./steps/FormattedMeditation";
+import { VoiceSelection } from "./steps/VoiceSelection";
+import { PracticeSetup } from "./steps/PracticeSetup";
+import { SynthesisProgress } from "./steps/Synthesis";
+import { MeditationPlayer } from "./steps/MeditationPlayer";
+
+import { Timing } from "./utils/meditationTimeline";
+
 import type { FormattedScript } from "@/lib/meditation-formatter";
-import { VoiceSelection } from "./VoiceSelection";
-import { PracticeSetup } from "./PracticeSetup";
-import { SynthesisProgress } from "./Synthesis";
 import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
 import { initializeFileStorage } from "@/lib/file-storage";
-import { MeditationPlayer } from "./MeditationPlayer";
-import { Timing } from "./utils/meditationTimeline";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
@@ -102,25 +105,19 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     // Generate new session ID if we don't have one
     const newSessionId = sessionId || sessionStorage.generateId();
 
-    // Convert to enhanced meditation with audio capabilities
-    const enhancedMeditation = enhanceMeditation(script);
-
     // Create the new session state
     const newSessionState = {
       currentStep: "review" as const,
-      meditation: enhancedMeditation,
+      meditation: enhanceMeditation(script),
     };
 
-    // Update local state
-    updateSession(newSessionState);
-
-    // If this is a new session, save it directly
     if (!sessionId) {
       sessionStorage.saveSession(newSessionId, newSessionState);
-
-      // Navigate to the new session
-      router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
+    } else {
+      updateSession(newSessionState);
     }
+
+    router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
   };
 
   const handleGenerateAudio = async (settings: {
@@ -153,10 +150,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   };
 
   const handleLoadSession = (loadSessionId: string) => {
-    if (loadSessionId) {
-      // Navigate to the session page, preserving the privacy setting
-      router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
-    }
+    router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
   };
 
   return (

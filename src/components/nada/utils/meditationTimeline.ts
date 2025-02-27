@@ -1,4 +1,4 @@
-import { Meditation } from "../NadaPage";
+import { Meditation } from "../Nada";
 
 /**
  * Interface for timing information

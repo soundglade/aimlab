@@ -1,4 +1,4 @@
-import { Meditation, MeditationStep } from "../NadaPage";
+import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Buffer } from "buffer";
 

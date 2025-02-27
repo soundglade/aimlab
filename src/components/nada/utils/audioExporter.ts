@@ -1,8 +1,7 @@
-import { Meditation } from "../NadaPage";
+import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Buffer } from "buffer";
 import * as meditationTimeline from "./meditationTimeline";
-import { Timing } from "./meditationTimeline";
 
 /**
  * Exports a meditation as a single audio file, including speech and pauses

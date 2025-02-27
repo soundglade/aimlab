@@ -1,8 +1,7 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Meditation } from "./NadaPage"; // Import the new Meditation type
+import { Meditation } from "../Nada"; // Import the new Meditation type
 
 const getHeadingMargin = (index: number, level: number) => {
   if (index === 0) return "";
