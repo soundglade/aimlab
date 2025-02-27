@@ -27,9 +27,6 @@ const persistentFileStorage = initializeFileStorage("nada", {
 });
 const ephemeralFileStorage = initializeFileStorage("nada", { ephemeral: true });
 
-// Update the SessionStep type to include the new player step
-type SessionStep = "input" | "review" | "voice" | "synthesis" | "player";
-
 // Enhanced types for frontend use with audio capabilities
 export type MeditationStep = FormattedScript["steps"][number] & {
   audioFileId?: string;
@@ -46,6 +43,21 @@ export interface Meditation {
   fullAudioFileId?: string;
 }
 
+// Voice settings type for reuse
+type VoiceSettings = {
+  voiceId: string;
+  customVoiceId?: string;
+  isAdvanced: boolean;
+};
+
+// Define the state machine states - using a single type for the session
+type NadaSession =
+  | { step: "input" }
+  | { step: "review"; meditation: Meditation }
+  | { step: "voice"; meditation: Meditation }
+  | { step: "synthesis"; meditation: Meditation; voiceSettings: VoiceSettings }
+  | { step: "player"; meditation: Meditation; voiceSettings: VoiceSettings };
+
 // Helper function to convert from backend FormattedScript to frontend Meditation
 export function enhanceMeditation(script: FormattedScript): Meditation {
   return {
@@ -55,16 +67,6 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
       audioFileId: undefined,
       durationMs: step.type === "pause" ? step.duration * 1000 : undefined,
     })),
-  };
-}
-
-interface NadaSession {
-  currentStep: SessionStep;
-  meditation: Meditation | null;
-  voiceSettings?: {
-    voiceId: string;
-    customVoiceId?: string;
-    isAdvanced: boolean;
   };
 }
 
@@ -88,7 +90,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const [session, updateSession] = useSessionState<NadaSession>(
     sessionId,
     sessionStorage,
-    { currentStep: "input", meditation: null }
+    { step: "input" }
   );
 
   // Load saved sessions directly
@@ -106,8 +108,8 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     const newSessionId = sessionId || sessionStorage.generateId();
 
     // Create the new session state
-    const newSessionState = {
-      currentStep: "review" as const,
+    const newSessionState: NadaSession = {
+      step: "review",
       meditation: enhanceMeditation(script),
     };
 
@@ -120,37 +122,109 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
   };
 
-  const handleGenerateAudio = async (settings: {
-    voiceId: string;
-    customVoiceId?: string;
-    isAdvanced: boolean;
-  }) => {
+  const handleGenerateAudio = async (settings: VoiceSettings) => {
     updateSession({
+      step: "synthesis",
       voiceSettings: settings,
-      currentStep: "synthesis",
     });
   };
 
   const handleCancelSynthesis = () => {
     updateSession({
-      currentStep: "voice",
+      step: "voice",
     });
   };
 
   const handleCompleteSynthesis = () => {
     updateSession({
-      currentStep: "player",
+      step: "player",
     });
   };
 
   const handleBackFromPlayer = () => {
     updateSession({
-      currentStep: "synthesis",
+      step: "synthesis",
+      voiceSettings: {
+        voiceId: "default", // Fallback value
+        isAdvanced: false,
+      },
     });
   };
 
   const handleLoadSession = (loadSessionId: string) => {
     router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
+  };
+
+  // For conciseness in the render logic
+  const { step } = session;
+
+  // Map steps to their corresponding components
+  const renderStepContent = () => {
+    switch (step) {
+      case "input":
+        return (
+          <PracticeSetup
+            isPrivate={isPrivate}
+            onPrivateChange={(newIsPrivate) => {
+              // Redirect to the appropriate URL when privacy mode changes
+              if (newIsPrivate !== isPrivate) {
+                router.push(getBasePath(newIsPrivate));
+              }
+            }}
+            onScriptCreated={handleScriptCreated}
+            onLoadSession={handleLoadSession}
+            savedSessions={savedSessions}
+          />
+        );
+      case "review":
+        return (
+          <Card className="p-6">
+            <FormattedMeditation
+              meditation={session.meditation}
+              onConfirm={() =>
+                updateSession({
+                  step: "voice",
+                })
+              }
+            />
+          </Card>
+        );
+      case "voice":
+        return (
+          <VoiceSelection
+            onGenerateAudio={handleGenerateAudio}
+            onEditScript={() =>
+              updateSession({
+                step: "review",
+              })
+            }
+          />
+        );
+      case "synthesis":
+        return (
+          <SynthesisProgress
+            meditation={session.meditation}
+            voiceSettings={session.voiceSettings}
+            onCancel={handleCancelSynthesis}
+            onComplete={handleCompleteSynthesis}
+            fileStorage={fileStorage}
+            sessionId={sessionId}
+            onMeditationUpdate={(updatedMeditation) => {
+              updateSession({
+                meditation: updatedMeditation,
+              });
+            }}
+          />
+        );
+      case "player":
+        return (
+          <MeditationPlayer
+            meditation={session.meditation}
+            fileStorage={fileStorage}
+            onBack={handleBackFromPlayer}
+          />
+        );
+    }
   };
 
   return (
@@ -171,55 +245,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
-          {session.currentStep === "review" && session.meditation ? (
-            <Card className="p-6">
-              <FormattedMeditation
-                meditation={session.meditation}
-                onConfirm={() => updateSession({ currentStep: "voice" })}
-              />
-            </Card>
-          ) : session.currentStep === "voice" && session.meditation ? (
-            <VoiceSelection
-              onGenerateAudio={handleGenerateAudio}
-              onEditScript={() => updateSession({ currentStep: "review" })}
-            />
-          ) : session.currentStep === "synthesis" &&
-            session.meditation &&
-            session.voiceSettings ? (
-            <SynthesisProgress
-              meditation={session.meditation}
-              voiceSettings={session.voiceSettings}
-              onCancel={handleCancelSynthesis}
-              onComplete={handleCompleteSynthesis}
-              fileStorage={fileStorage}
-              sessionId={sessionId}
-              onMeditationUpdate={(updatedMeditation) => {
-                updateSession({
-                  ...session,
-                  meditation: updatedMeditation,
-                });
-              }}
-            />
-          ) : session.currentStep === "player" && session.meditation ? (
-            <MeditationPlayer
-              meditation={session.meditation}
-              fileStorage={fileStorage}
-              onBack={handleBackFromPlayer}
-            />
-          ) : (
-            <PracticeSetup
-              isPrivate={isPrivate}
-              onPrivateChange={(newIsPrivate) => {
-                // Redirect to the appropriate URL when privacy mode changes
-                if (newIsPrivate !== isPrivate) {
-                  router.push(getBasePath(newIsPrivate));
-                }
-              }}
-              onScriptCreated={handleScriptCreated}
-              onLoadSession={handleLoadSession}
-              savedSessions={savedSessions}
-            />
-          )}
+          {renderStepContent()}
         </main>
       </div>
     </div>
