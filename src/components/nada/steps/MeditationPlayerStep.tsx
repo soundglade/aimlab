@@ -49,7 +49,7 @@ interface PlayerState {
   shareMessage?: { type: "success" | "error"; content: string; url?: string }; // Track share result message
 }
 
-export function MeditationPlayer({
+export function MeditationPlayerStep({
   meditation,
   fileStorage,
   onBack,

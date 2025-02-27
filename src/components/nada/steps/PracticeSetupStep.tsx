@@ -13,7 +13,7 @@ interface PracticeSetupProps {
   savedSessions: Record<string, { meditation: Meditation }> | null;
 }
 
-export function PracticeSetup({
+export function PracticeSetupStep({
   onScriptCreated,
   isPrivate,
   onPrivateChange,

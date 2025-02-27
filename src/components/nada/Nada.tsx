@@ -4,11 +4,11 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 
-import { FormattedMeditation } from "./steps/FormattedMeditation";
-import { VoiceSelection } from "./steps/VoiceSelection";
-import { PracticeSetup } from "./steps/PracticeSetup";
-import { SynthesisProgress } from "./steps/Synthesis";
-import { MeditationPlayer } from "./steps/MeditationPlayer";
+import { FormattedMeditationStep } from "./steps/FormattedMeditationStep";
+import { VoiceSelectionStep } from "./steps/VoiceSelectionStep";
+import { PracticeSetupStep } from "./steps/PracticeSetupStep";
+import { SynthesisProgressStep } from "./steps/SynthesisStep";
+import { MeditationPlayerStep } from "./steps/MeditationPlayerStep";
 
 import { Timing } from "./utils/meditationTimeline";
 
@@ -171,7 +171,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     switch (step) {
       case "input":
         return (
-          <PracticeSetup
+          <PracticeSetupStep
             isPrivate={isPrivate}
             onPrivateChange={(newIsPrivate) => {
               // Redirect to the appropriate URL when privacy mode changes
@@ -187,7 +187,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
       case "review":
         return (
           <Card className="p-6">
-            <FormattedMeditation
+            <FormattedMeditationStep
               meditation={session.meditation}
               onConfirm={() =>
                 updateSession({
@@ -199,7 +199,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
         );
       case "voice":
         return (
-          <VoiceSelection
+          <VoiceSelectionStep
             onGenerateAudio={handleGenerateAudio}
             onEditScript={() =>
               updateSession({
@@ -210,7 +210,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
         );
       case "synthesis":
         return (
-          <SynthesisProgress
+          <SynthesisProgressStep
             meditation={session.meditation}
             voiceSettings={session.voiceSettings}
             onCancel={handleCancelSynthesis}
@@ -226,7 +226,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
         );
       case "player":
         return (
-          <MeditationPlayer
+          <MeditationPlayerStep
             meditation={session.meditation}
             fileStorage={fileStorage}
             onBack={handleBackFromPlayer}

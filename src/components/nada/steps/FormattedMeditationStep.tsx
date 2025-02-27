@@ -35,7 +35,7 @@ interface FormattedMeditationProps {
   onConfirm: () => void;
 }
 
-export function FormattedMeditation({
+export function FormattedMeditationStep({
   meditation,
   onConfirm,
 }: FormattedMeditationProps) {

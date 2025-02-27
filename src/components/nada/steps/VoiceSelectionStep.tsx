@@ -20,7 +20,7 @@ interface VoiceSelectionProps {
   onEditScript: () => void;
 }
 
-export function VoiceSelection({
+export function VoiceSelectionStep({
   onGenerateAudio,
   onEditScript,
 }: VoiceSelectionProps) {

@@ -375,7 +375,7 @@ interface SynthesisProgressProps {
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
 }
 
-export function SynthesisProgress({
+export function SynthesisProgressStep({
   meditation,
   voiceSettings,
   onCancel,
