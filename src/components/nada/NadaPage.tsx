@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { FormattedMeditation } from "./FormattedMeditation";
 import type { FormattedScript } from "@/lib/meditation-formatter";
 import { VoiceSelection } from "./VoiceSelection";
 import { PracticeSetup } from "./PracticeSetup";
-import { SynthesisProgress } from "./SynthesisProgress";
+import { SynthesisProgress } from "./Synthesis";
 import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
-import { initializeFileStorage, FileStorageApi } from "@/lib/file-storage";
+import { initializeFileStorage } from "@/lib/file-storage";
 import { MeditationPlayer } from "./MeditationPlayer";
-import { Timing } from "./meditationTimeline";
+import { Timing } from "./utils/meditationTimeline";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });

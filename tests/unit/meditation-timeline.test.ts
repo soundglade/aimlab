@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import * as meditationTimeline from "@/components/nada/meditationTimeline";
+import * as meditationTimeline from "@/components/nada/utils/meditationTimeline";
 import { Meditation } from "@/components/nada/NadaPage";
 
 describe("Meditation Timeline", () => {

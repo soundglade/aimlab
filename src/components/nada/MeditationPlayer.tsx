@@ -14,9 +14,11 @@ import {
   Loader,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import * as synthesisService from "./synthesisService";
-import { exportMeditationAudio, downloadAudioFile } from "./audioExporter";
-import * as meditationTimeline from "./meditationTimeline";
+import {
+  exportMeditationAudio,
+  downloadAudioFile,
+} from "./utils/audioExporter";
+import * as meditationTimeline from "./utils/meditationTimeline";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -299,15 +301,19 @@ export function MeditationPlayer({
   const downloadMeditation = async () => {
     try {
       setPlayerState((prev) => ({ ...prev, isDownloading: true }));
-      const url =
-        fullAudioUrlRef.current ||
-        (await exportMeditationAudio(meditation, fileStorage));
+
+      // Use the existing audio URL from the audio element or fullAudioUrlRef
+      let url = fullAudioUrlRef.current;
 
       const fileName = `${meditation.title
         .replace(/[^a-z0-9]/gi, "_")
         .toLowerCase()}_meditation.wav`;
 
-      downloadAudioFile(url, fileName);
+      if (url) {
+        downloadAudioFile(url, fileName);
+      } else {
+        alert("Audio file missing");
+      }
     } catch (error) {
       console.error("Error downloading meditation:", error);
       alert(
