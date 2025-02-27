@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import * as synthesisService from "./synthesisService";
 import { exportMeditationAudio, downloadAudioFile } from "./audioExporter";
+import * as meditationTimeline from "./meditationTimeline";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -35,13 +36,6 @@ interface PlayerState {
   fullAudioReady: boolean; // Track if the full audio is ready
 }
 
-// Interface for step timing information
-interface StepTiming {
-  startTime: number;
-  endTime: number;
-  type: string;
-}
-
 export function MeditationPlayer({
   meditation,
   fileStorage,
@@ -53,125 +47,39 @@ export function MeditationPlayer({
     currentStepIndex: 0,
     progress: 0,
     currentTime: 0,
-    totalDuration: 0, // Will be calculated when steps are processed
+    totalDuration: meditation.timeline?.totalDurationMs
+      ? meditation.timeline.totalDurationMs / 1000
+      : 0, // Convert to seconds
     isDownloading: false,
-    isGeneratingAudio: true, // Start with generation in progress
+    isGeneratingAudio: true,
     fullAudioReady: false,
   });
 
   // References for playback control
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const stepDurationsRef = useRef<number[]>([]);
-  const cumulativeTimesRef = useRef<number[]>([]);
   const isPlayingRef = useRef<boolean>(false);
   const currentStepIndexRef = useRef<number>(0);
   const fullAudioUrlRef = useRef<string | null>(null);
-  const stepTimingsRef = useRef<StepTiming[]>([]);
 
   // Update ref when state changes
   useEffect(() => {
     currentStepIndexRef.current = playerState.currentStepIndex;
   }, [playerState.currentStepIndex]);
 
-  // Simplify duration calculation by combining related effects
+  // Generate full audio
   useEffect(() => {
     const generateFullAudio = async () => {
       try {
         setPlayerState((prev) => ({ ...prev, isGeneratingAudio: true }));
 
-        // Combined audio generation and duration calculation
-        const [url, totalDuration] = await Promise.all([
-          exportMeditationAudio(meditation, fileStorage, {
-            onProgress: (progress) =>
-              console.log(`Audio generation progress: ${progress}%`),
-          }),
-          // Pre-calculate total duration from steps as fallback
-          (async () => {
-            let total = 0;
-            for (const step of meditation.steps) {
-              total +=
-                step.type === "speech"
-                  ? step.text.length / 15
-                  : step.type === "pause"
-                  ? step.duration
-                  : 0;
-            }
-            return total;
-          })(),
-        ]);
-
-        fullAudioUrlRef.current = url;
-
-        // Create a temporary audio element to get duration
-        const tempAudio = new Audio(url);
-        await new Promise((resolve) => {
-          tempAudio.onloadedmetadata = () => {
-            resolve(null);
-          };
-          tempAudio.onerror = () => {
-            console.error("Error loading audio metadata");
-            resolve(null);
-          };
+        // Generate full audio
+        const url = await exportMeditationAudio(meditation, fileStorage, {
+          onProgress: (progress) =>
+            console.log(`Audio generation progress: ${progress}%`),
         });
 
-        // Calculate step durations and timings
-        const durations: number[] = [];
-        const timings: StepTiming[] = [];
-        const cumulativeTimes: number[] = [];
-        let currentTime = 0;
-
-        for (const step of meditation.steps) {
-          let stepDuration = 0;
-          const startTime = currentTime;
-
-          if (step.type === "speech") {
-            // For speech steps, estimate duration based on text length
-            // This is a rough estimate and will be refined later if possible
-            stepDuration = step.text.length / 15;
-          } else if (step.type === "pause") {
-            stepDuration = step.duration;
-          } else if (
-            step.type === "heading" ||
-            step.type === "direction" ||
-            step.type === "aside"
-          ) {
-            // Non-audio steps have minimal duration
-            stepDuration = 0.1; // Very small duration for non-audio steps
-          }
-
-          currentTime += stepDuration;
-          durations.push(stepDuration);
-          cumulativeTimes.push(currentTime);
-
-          timings.push({
-            startTime,
-            endTime: currentTime,
-            type: step.type,
-          });
-        }
-
-        // Adjust timings to match total audio duration
-        if (currentTime > 0 && totalDuration > 0) {
-          const ratio = totalDuration / currentTime;
-
-          // Adjust all timings proportionally
-          timings.forEach((timing, i) => {
-            timing.startTime *= ratio;
-            timing.endTime *= ratio;
-          });
-        }
-
-        stepDurationsRef.current = durations;
-        stepTimingsRef.current = timings;
-        cumulativeTimesRef.current = cumulativeTimes;
-
-        setPlayerState((prev) => ({
-          ...prev,
-          isGeneratingAudio: false,
-          fullAudioReady: true,
-          totalDuration: totalDuration,
-        }));
+        fullAudioUrlRef.current = url;
 
         // Create and set up the main audio element
         if (audioRef.current) {
@@ -179,7 +87,16 @@ export function MeditationPlayer({
           audioRef.current.load();
         }
 
-        console.log("Step timings calculated:", timings);
+        setPlayerState((prev) => ({
+          ...prev,
+          isGeneratingAudio: false,
+          fullAudioReady: true,
+          totalDuration: meditation.timeline?.totalDurationMs
+            ? meditation.timeline.totalDurationMs / 1000
+            : prev.totalDuration,
+        }));
+
+        console.log("Full audio ready");
       } catch (error) {
         console.error("Error generating full audio:", error);
         setPlayerState((prev) => ({
@@ -238,48 +155,26 @@ export function MeditationPlayer({
     }));
   };
 
-  // Simplify findCurrentStepIndex by using array findIndex directly
-  const findCurrentStepIndex = (currentTime: number): number => {
-    return (
-      stepTimingsRef.current.findIndex(
-        (t) => currentTime >= t.startTime && currentTime < t.endTime
-      ) || 0
-    );
-  };
-
   // Handle audio timeupdate event
   const handleTimeUpdate = () => {
-    if (audioRef.current && playerState.fullAudioReady) {
+    if (audioRef.current && playerState.fullAudioReady && meditation.timeline) {
       const currentTime = audioRef.current.currentTime;
       const totalDuration = audioRef.current.duration;
       const progress = (currentTime / totalDuration) * 100;
 
-      // Find current step based on time
-      const currentStepIndex = findCurrentStepIndex(currentTime);
+      // Find current step based on time (convert seconds to ms)
+      const currentTimeMs = currentTime * 1000;
+      const currentStepIndex = meditationTimeline.getStepIndexAtTime(
+        meditation.timeline.timings,
+        currentTimeMs
+      );
 
       setPlayerState((prev) => ({
         ...prev,
         currentTime,
         progress: Math.min(progress, 100),
-        currentStepIndex,
-      }));
-    } else if (audioRef.current) {
-      // Fallback for when full audio isn't ready yet
-      const currentStepIndex = currentStepIndexRef.current;
-      const previousTime =
-        currentStepIndex > 0
-          ? cumulativeTimesRef.current[currentStepIndex - 1]
-          : 0;
-
-      const currentTime = previousTime + audioRef.current.currentTime;
-      const totalDuration =
-        cumulativeTimesRef.current[cumulativeTimesRef.current.length - 1] || 1;
-      const progress = (currentTime / totalDuration) * 100;
-
-      setPlayerState((prev) => ({
-        ...prev,
-        currentTime,
-        progress: Math.min(progress, 100),
+        currentStepIndex:
+          currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
       }));
     }
   };
@@ -361,21 +256,21 @@ export function MeditationPlayer({
       stepIndex < 0 ||
       stepIndex >= meditation.steps.length ||
       !playerState.fullAudioReady ||
-      !audioRef.current
+      !audioRef.current ||
+      !meditation.timeline
     )
       return;
 
     console.log(`Seeking to step ${stepIndex}`);
 
-    // Get the timing for this step
-    const stepTiming = stepTimingsRef.current[stepIndex];
-    if (!stepTiming) {
-      console.error(`No timing information for step ${stepIndex}`);
-      return;
-    }
+    // Get the time for this step
+    const startTimeMs = meditationTimeline.getTimeForStep(
+      meditation.timeline.timings,
+      stepIndex
+    );
 
-    // Set audio playback position to the start of the selected step
-    audioRef.current.currentTime = stepTiming.startTime;
+    // Set audio playback position to the start of the selected step (convert ms to seconds)
+    audioRef.current.currentTime = startTimeMs / 1000;
 
     // Update state
     setPlayerState((prev) => ({

@@ -12,6 +12,7 @@ import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
 import { initializeFileStorage, FileStorageApi } from "@/lib/file-storage";
 import { MeditationPlayer } from "./MeditationPlayer";
+import { Timing } from "./meditationTimeline";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
@@ -29,11 +30,16 @@ type SessionStep = "input" | "review" | "voice" | "synthesis" | "player";
 // Enhanced types for frontend use with audio capabilities
 export type MeditationStep = FormattedScript["steps"][number] & {
   audioFileId?: string;
+  durationMs?: number;
 };
 
 export interface Meditation {
   title: string;
   steps: MeditationStep[];
+  timeline?: {
+    timings: Timing[];
+    totalDurationMs: number;
+  };
 }
 
 // Helper function to convert from backend FormattedScript to frontend Meditation
@@ -43,6 +49,7 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
     steps: script.steps.map((step) => ({
       ...step,
       audioFileId: undefined,
+      durationMs: step.type === "pause" ? step.duration * 1000 : undefined,
     })),
   };
 }

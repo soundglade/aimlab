@@ -192,3 +192,44 @@ export async function playAudio(
 
   return audio.play();
 }
+
+// New function to get audio duration from a stored file
+export async function getAudioDuration(storedFile: {
+  data: Blob | string;
+}): Promise<number> {
+  if (!storedFile || !storedFile.data) {
+    throw new Error("Invalid audio file data");
+  }
+
+  // Convert data to blob if needed
+  let audioBlob: Blob;
+  if (storedFile.data instanceof Blob) {
+    audioBlob = storedFile.data;
+  } else if (typeof storedFile.data === "string") {
+    audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
+      type: "audio/mp3",
+    });
+  } else {
+    throw new Error("Unsupported audio data format");
+  }
+
+  // Create audio element and get duration
+  const url = URL.createObjectURL(audioBlob);
+  const audio = new Audio(url);
+
+  try {
+    // Wait for metadata to load to get duration
+    await new Promise((resolve, reject) => {
+      audio.onloadedmetadata = resolve;
+      audio.onerror = reject;
+    });
+
+    // Get duration in milliseconds
+    const durationMs = audio.duration * 1000;
+
+    return durationMs;
+  } finally {
+    // Clean up
+    URL.revokeObjectURL(url);
+  }
+}
