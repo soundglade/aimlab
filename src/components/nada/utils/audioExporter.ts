@@ -1,6 +1,8 @@
 import { Meditation } from "../NadaPage";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Buffer } from "buffer";
+import * as meditationTimeline from "./meditationTimeline";
+import { Timing } from "./meditationTimeline";
 
 /**
  * Exports a meditation as a single audio file, including speech and pauses
@@ -25,19 +27,22 @@ export async function exportMeditationAudio(
   // Report initial progress
   onProgress(0);
 
-  // Collect all steps that need audio (speech or pause)
-  const audioSteps = meditation.steps.filter(
-    (step) => step.type === "speech" || step.type === "pause"
-  );
+  // Ensure the meditation has timeline information
+  const meditationWithTimeline = meditation.timeline
+    ? meditation
+    : meditationTimeline.addTimelineToMeditation(meditation);
 
-  if (audioSteps.length === 0) {
+  if (
+    !meditationWithTimeline.timeline ||
+    meditationWithTimeline.timeline.timings.length === 0
+  ) {
     throw new Error("No audio content found in this meditation.");
   }
 
-  // Prepare audio context and process all steps
+  // Prepare audio context and process all timings
   const audioContext = new AudioContext();
-  const audioBuffers = await processAudioSteps(
-    audioSteps,
+  const audioBuffers = await processTimings(
+    meditationWithTimeline,
     audioContext,
     fileStorage,
     onProgress
@@ -57,33 +62,74 @@ export async function exportMeditationAudio(
 }
 
 /**
- * Process all audio steps and create corresponding AudioBuffers
+ * Process all timings from the meditation timeline and create corresponding AudioBuffers
  */
-async function processAudioSteps(
-  audioSteps: Meditation["steps"],
+async function processTimings(
+  meditation: Meditation,
   audioContext: AudioContext,
   fileStorage: FileStorageApi,
   onProgress: (progress: number) => void
 ): Promise<AudioBuffer[]> {
   const audioBuffers: AudioBuffer[] = [];
-  let processedSteps = 0;
+  const timings = meditation.timeline!.timings;
+  let processedTimings = 0;
 
-  for (const step of audioSteps) {
-    if (step.type === "speech" && step.audioFileId) {
-      const audioBuffer = await processSpeechStep(
-        step,
-        audioContext,
-        fileStorage
-      );
-      audioBuffers.push(audioBuffer);
-    } else if (step.type === "pause") {
-      const silenceBuffer = createSilenceBuffer(audioContext, step.duration);
-      audioBuffers.push(silenceBuffer);
+  for (const timing of timings) {
+    try {
+      if (timing.isGap) {
+        // Create a silence buffer for gaps
+        const silenceBuffer = createSilenceBuffer(
+          audioContext,
+          timing.durationMs / 1000
+        );
+        audioBuffers.push(silenceBuffer);
+      } else if (timing.type === "speech") {
+        // Process speech with audio file
+        const step = meditation.steps[timing.index];
+        if (step.audioFileId) {
+          const audioBuffer = await processSpeechStep(
+            step,
+            audioContext,
+            fileStorage
+          );
+          audioBuffers.push(audioBuffer);
+        }
+      } else if (timing.type === "pause") {
+        // Create silence for pauses
+        const step = meditation.steps[timing.index];
+        const durationInSeconds = (step.durationMs || timing.durationMs) / 1000;
+        const silenceBuffer = createSilenceBuffer(
+          audioContext,
+          durationInSeconds
+        );
+        audioBuffers.push(silenceBuffer);
+      } else if (timing.type === "sound" && timing.index >= 0) {
+        // Handle sound steps if they have audio files
+        const step = meditation.steps[timing.index];
+        if (step.audioFileId) {
+          const audioBuffer = await processSpeechStep(
+            step,
+            audioContext,
+            fileStorage
+          );
+          audioBuffers.push(audioBuffer);
+        } else if (step.durationMs) {
+          // If no audio file but has duration, create silence
+          const silenceBuffer = createSilenceBuffer(
+            audioContext,
+            step.durationMs / 1000
+          );
+          audioBuffers.push(silenceBuffer);
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing timing at index ${timing.index}:`, error);
+      // Continue with next timing instead of failing the whole export
     }
 
     // Update progress
-    processedSteps++;
-    onProgress((processedSteps / audioSteps.length) * 50); // First half of progress
+    processedTimings++;
+    onProgress((processedTimings / timings.length) * 50); // First half of progress
   }
 
   if (audioBuffers.length === 0) {
