@@ -35,6 +35,16 @@ interface PlayerState {
   audioReady: boolean; // Track if the audio is ready
 }
 
+function getAudioBlob(data: Blob | string): Blob {
+  if (data instanceof Blob) {
+    return data;
+  } else if (typeof data === "string") {
+    return new Blob([Buffer.from(data, "base64")], { type: "audio/wav" });
+  } else {
+    throw new Error("Unsupported audio data format");
+  }
+}
+
 export function MeditationPlayer({
   meditation,
   fileStorage,
@@ -54,15 +64,7 @@ export function MeditationPlayer({
 
   // References for playback control
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const isPlayingRef = useRef<boolean>(false);
-  const currentStepIndexRef = useRef<number>(0);
   const audioUrlRef = useRef<string | null>(null);
-
-  // Update ref when state changes
-  useEffect(() => {
-    currentStepIndexRef.current = playerState.currentStepIndex;
-  }, [playerState.currentStepIndex]);
 
   // Load the full audio file
   useEffect(() => {
@@ -83,18 +85,7 @@ export function MeditationPlayer({
         }
 
         // Create a blob URL from the stored file
-        let audioBlob: Blob;
-        if (storedFile.data instanceof Blob) {
-          audioBlob = storedFile.data;
-        } else if (typeof storedFile.data === "string") {
-          audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
-            type: "audio/wav",
-          });
-        } else {
-          throw new Error("Unsupported audio data format");
-        }
-
-        // Create a URL for the blob
+        const audioBlob = getAudioBlob(storedFile.data);
         const url = URL.createObjectURL(audioBlob);
         audioUrlRef.current = url;
 
@@ -204,7 +195,6 @@ export function MeditationPlayer({
       return;
     }
 
-    isPlayingRef.current = true;
     setPlayerState((prev) => ({ ...prev, isPlaying: true }));
 
     if (audioRef.current) {
@@ -217,18 +207,11 @@ export function MeditationPlayer({
 
   // Pause playback
   const pausePlayback = () => {
-    isPlayingRef.current = false;
     setPlayerState((prev) => ({ ...prev, isPlaying: false }));
 
     // Pause audio if playing
     if (audioRef.current) {
       audioRef.current.pause();
-    }
-
-    // Clear pause timer if active
-    if (pauseTimerRef.current) {
-      clearTimeout(pauseTimerRef.current);
-      pauseTimerRef.current = null;
     }
   };
 
@@ -244,9 +227,6 @@ export function MeditationPlayer({
       progress: 0,
       currentTimeMs: 0,
     }));
-
-    // Update ref
-    currentStepIndexRef.current = 0;
 
     // Reset audio
     if (audioRef.current) {
@@ -331,18 +311,7 @@ export function MeditationPlayer({
       }
 
       // Create a blob URL from the stored file
-      let audioBlob: Blob;
-      if (storedFile.data instanceof Blob) {
-        audioBlob = storedFile.data;
-      } else if (typeof storedFile.data === "string") {
-        audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
-          type: "audio/wav",
-        });
-      } else {
-        throw new Error("Unsupported audio data format");
-      }
-
-      // Create a URL for the blob
+      const audioBlob = getAudioBlob(storedFile.data);
       const url = URL.createObjectURL(audioBlob);
 
       const fileName = `${meditation.title
