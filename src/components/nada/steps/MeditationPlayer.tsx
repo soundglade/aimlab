@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { downloadAudioFile } from "../utils/audioExporter";
 import * as meditationTimeline from "../utils/meditationTimeline";
+import { getAudioBlob, createAudioUrl } from "../utils/audioUtils";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -33,16 +34,6 @@ interface PlayerState {
   isDownloading: boolean; // Track download state
   isLoading: boolean; // Track loading state
   audioReady: boolean; // Track if the audio is ready
-}
-
-function getAudioBlob(data: Blob | string): Blob {
-  if (data instanceof Blob) {
-    return data;
-  } else if (typeof data === "string") {
-    return new Blob([Buffer.from(data, "base64")], { type: "audio/wav" });
-  } else {
-    throw new Error("Unsupported audio data format");
-  }
 }
 
 export function MeditationPlayer({
@@ -85,8 +76,7 @@ export function MeditationPlayer({
         }
 
         // Create a blob URL from the stored file
-        const audioBlob = getAudioBlob(storedFile.data);
-        const url = URL.createObjectURL(audioBlob);
+        const url = createAudioUrl(storedFile.data);
         audioUrlRef.current = url;
 
         // Create and set up the main audio element
@@ -311,8 +301,7 @@ export function MeditationPlayer({
       }
 
       // Create a blob URL from the stored file
-      const audioBlob = getAudioBlob(storedFile.data);
-      const url = URL.createObjectURL(audioBlob);
+      const url = createAudioUrl(storedFile.data);
 
       const fileName = `${meditation.title
         .replace(/[^a-z0-9]/gi, "_")

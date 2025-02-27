@@ -2,6 +2,7 @@ import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Buffer } from "buffer";
 import * as meditationTimeline from "./meditationTimeline";
+import { getAudioBlob } from "./audioUtils";
 
 /**
  * Exports a meditation as a single audio file, including speech and pauses
@@ -152,16 +153,7 @@ async function processSpeechStep(
   }
 
   // Convert to blob if needed
-  let audioBlob: Blob;
-  if (storedFile.data instanceof Blob) {
-    audioBlob = storedFile.data;
-  } else if (typeof storedFile.data === "string") {
-    audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
-      type: "audio/mp3",
-    });
-  } else {
-    throw new Error("Unsupported audio data format");
-  }
+  const audioBlob = getAudioBlob(storedFile.data, "audio/mp3");
 
   try {
     const arrayBuffer = await audioBlob.arrayBuffer();

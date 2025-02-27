@@ -155,9 +155,10 @@ export function useSynthesis(
                 if (storedFile && storedFile.data) {
                   try {
                     // Use the function from synthesisService
-                    const durationMs = await synthesisService.getAudioDuration(
-                      storedFile
-                    );
+                    const durationMs =
+                      await synthesisService.getAudioDurationFromFile(
+                        storedFile
+                      );
 
                     // Update the step with duration information
                     const updatedMeditation = JSON.parse(

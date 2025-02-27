@@ -1,6 +1,7 @@
 import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
 import { Buffer } from "buffer";
+import { getAudioBlob, createAudioUrl, getAudioDuration } from "./audioUtils";
 
 export interface VoiceSettings {
   voiceId: string;
@@ -31,9 +32,7 @@ async function handleAudioData(
 ) {
   try {
     // Create a Blob from the base64 audio data
-    const audioBlob = new Blob([Buffer.from(data.data, "base64")], {
-      type: "audio/mp3",
-    });
+    const audioBlob = getAudioBlob(data.data, "audio/mp3");
 
     // Save the audio blob to file storage
     const fileId = await fileStorage.saveFile(audioBlob, {
@@ -168,22 +167,7 @@ export async function playAudio(
     throw new Error("Audio file not found in storage");
   }
 
-  // Create audio from stored file data
-  let audioData: string;
-
-  if (storedFile.data instanceof Blob) {
-    // Convert Blob to base64 for playback
-    const arrayBuffer = await storedFile.data.arrayBuffer();
-    const base64 = Buffer.from(arrayBuffer).toString("base64");
-    audioData = base64;
-  } else if (typeof storedFile.data === "string") {
-    // Already a base64 string
-    audioData = storedFile.data;
-  } else {
-    throw new Error("Unsupported audio data format");
-  }
-
-  const url = URL.createObjectURL(new Blob([Buffer.from(audioData, "base64")]));
+  const url = createAudioUrl(storedFile.data, "audio/mp3");
   const audio = new Audio(url);
 
   audio.onended = () => {
@@ -194,42 +178,12 @@ export async function playAudio(
 }
 
 // New function to get audio duration from a stored file
-export async function getAudioDuration(storedFile: {
+export async function getAudioDurationFromFile(storedFile: {
   data: Blob | string;
 }): Promise<number> {
   if (!storedFile || !storedFile.data) {
     throw new Error("Invalid audio file data");
   }
 
-  // Convert data to blob if needed
-  let audioBlob: Blob;
-  if (storedFile.data instanceof Blob) {
-    audioBlob = storedFile.data;
-  } else if (typeof storedFile.data === "string") {
-    audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
-      type: "audio/mp3",
-    });
-  } else {
-    throw new Error("Unsupported audio data format");
-  }
-
-  // Create audio element and get duration
-  const url = URL.createObjectURL(audioBlob);
-  const audio = new Audio(url);
-
-  try {
-    // Wait for metadata to load to get duration
-    await new Promise((resolve, reject) => {
-      audio.onloadedmetadata = resolve;
-      audio.onerror = reject;
-    });
-
-    // Get duration in milliseconds
-    const durationMs = audio.duration * 1000;
-
-    return durationMs;
-  } finally {
-    // Clean up
-    URL.revokeObjectURL(url);
-  }
+  return getAudioDuration(storedFile.data);
 }
