@@ -28,8 +28,8 @@ interface PlayerState {
   isPlaying: boolean;
   currentStepIndex: number;
   progress: number; // 0-100
-  currentTime: number; // in seconds
-  totalDuration: number; // in seconds
+  currentTimeMs: number; // in milliseconds
+  totalDurationMs: number; // in milliseconds
   isDownloading: boolean; // Track download state
   isLoading: boolean; // Track loading state
   audioReady: boolean; // Track if the audio is ready
@@ -45,10 +45,8 @@ export function MeditationPlayer({
     isPlaying: false,
     currentStepIndex: 0,
     progress: 0,
-    currentTime: 0,
-    totalDuration: meditation.timeline?.totalDurationMs
-      ? meditation.timeline.totalDurationMs / 1000
-      : 0, // Convert to seconds
+    currentTimeMs: 0,
+    totalDurationMs: meditation.timeline?.totalDurationMs || 0,
     isDownloading: false,
     isLoading: true,
     audioReady: false,
@@ -110,9 +108,8 @@ export function MeditationPlayer({
           ...prev,
           isLoading: false,
           audioReady: true,
-          totalDuration: meditation.timeline?.totalDurationMs
-            ? meditation.timeline.totalDurationMs / 1000
-            : prev.totalDuration,
+          totalDurationMs:
+            meditation.timeline?.totalDurationMs || prev.totalDurationMs,
         }));
 
         console.log("Full audio loaded");
@@ -170,19 +167,20 @@ export function MeditationPlayer({
       isPlaying: false,
       currentStepIndex: 0,
       progress: 0,
-      currentTime: 0,
+      currentTimeMs: 0,
     }));
   };
 
   // Handle audio timeupdate event
   const handleTimeUpdate = () => {
     if (audioRef.current && playerState.audioReady && meditation.timeline) {
-      const currentTime = audioRef.current.currentTime;
-      const totalDuration = audioRef.current.duration;
-      const progress = (currentTime / totalDuration) * 100;
+      const currentTimeSec = audioRef.current.currentTime;
+      const currentTimeMs = currentTimeSec * 1000;
+      const totalDurationSec = audioRef.current.duration;
+      const totalDurationMs = totalDurationSec * 1000;
+      const progress = (currentTimeSec / totalDurationSec) * 100;
 
-      // Find current step based on time (convert seconds to ms)
-      const currentTimeMs = currentTime * 1000;
+      // Find current step based on time
       const currentStepIndex = meditationTimeline.getStepIndexAtTime(
         meditation.timeline.timings,
         currentTimeMs
@@ -190,7 +188,8 @@ export function MeditationPlayer({
 
       setPlayerState((prev) => ({
         ...prev,
-        currentTime,
+        currentTimeMs,
+        totalDurationMs,
         progress: Math.min(progress, 100),
         currentStepIndex:
           currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
@@ -243,7 +242,7 @@ export function MeditationPlayer({
       isPlaying: false,
       currentStepIndex: 0,
       progress: 0,
-      currentTime: 0,
+      currentTimeMs: 0,
     }));
 
     // Update ref
@@ -256,16 +255,17 @@ export function MeditationPlayer({
   };
 
   // Skip forward/backward
-  const seekRelative = (seconds: number) => {
+  const seekRelative = (secondsToAdd: number) => {
     if (audioRef.current && playerState.audioReady) {
-      const newTime = Math.max(
+      const msToAdd = secondsToAdd * 1000;
+      const currentTimeMs = audioRef.current.currentTime * 1000;
+      const durationMs = audioRef.current.duration * 1000;
+
+      const newTimeMs = Math.max(
         0,
-        Math.min(
-          audioRef.current.currentTime + seconds,
-          audioRef.current.duration
-        )
+        Math.min(currentTimeMs + msToAdd, durationMs)
       );
-      audioRef.current.currentTime = newTime;
+      audioRef.current.currentTime = newTimeMs / 1000; // Convert back to seconds for the audio element
     }
   };
 
@@ -299,7 +299,8 @@ export function MeditationPlayer({
   };
 
   // Consolidate time formatting into a helper function
-  const formatTime = (seconds: number) => {
+  const formatTime = (milliseconds: number) => {
+    const seconds = Math.floor(milliseconds / 1000);
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
@@ -370,9 +371,9 @@ export function MeditationPlayer({
   const isLoading = playerState.isLoading;
 
   // Simplify progress display logic by precalculating values
-  const { currentTime, totalDuration } = playerState;
-  const timeDisplay = `${formatTime(currentTime)} / ${formatTime(
-    totalDuration
+  const { currentTimeMs, totalDurationMs } = playerState;
+  const timeDisplay = `${formatTime(currentTimeMs)} / ${formatTime(
+    totalDurationMs
   )}`;
 
   return (

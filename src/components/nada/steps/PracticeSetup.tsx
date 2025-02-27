@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import type {
-  MeditationFormatterResult,
-  FormattedScript,
-} from "@/lib/meditation-formatter";
+import type { FormattedScript } from "@/lib/meditation-formatter";
 import { Meditation } from "../Nada";
 
 interface PracticeSetupProps {
