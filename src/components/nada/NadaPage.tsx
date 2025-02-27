@@ -40,6 +40,7 @@ export interface Meditation {
     timings: Timing[];
     totalDurationMs: number;
   };
+  fullAudioFileId?: string;
 }
 
 // Helper function to convert from backend FormattedScript to frontend Meditation

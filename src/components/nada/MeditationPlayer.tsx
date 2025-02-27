@@ -14,10 +14,7 @@ import {
   Loader,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  exportMeditationAudio,
-  downloadAudioFile,
-} from "./utils/audioExporter";
+import { downloadAudioFile } from "./utils/audioExporter";
 import * as meditationTimeline from "./utils/meditationTimeline";
 
 interface MeditationPlayerProps {
@@ -34,8 +31,8 @@ interface PlayerState {
   currentTime: number; // in seconds
   totalDuration: number; // in seconds
   isDownloading: boolean; // Track download state
-  isGeneratingAudio: boolean; // Track audio generation state
-  fullAudioReady: boolean; // Track if the full audio is ready
+  isLoading: boolean; // Track loading state
+  audioReady: boolean; // Track if the audio is ready
 }
 
 export function MeditationPlayer({
@@ -53,8 +50,8 @@ export function MeditationPlayer({
       ? meditation.timeline.totalDurationMs / 1000
       : 0, // Convert to seconds
     isDownloading: false,
-    isGeneratingAudio: true,
-    fullAudioReady: false,
+    isLoading: true,
+    audioReady: false,
   });
 
   // References for playback control
@@ -62,26 +59,46 @@ export function MeditationPlayer({
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef<boolean>(false);
   const currentStepIndexRef = useRef<number>(0);
-  const fullAudioUrlRef = useRef<string | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
 
   // Update ref when state changes
   useEffect(() => {
     currentStepIndexRef.current = playerState.currentStepIndex;
   }, [playerState.currentStepIndex]);
 
-  // Generate full audio
+  // Load the full audio file
   useEffect(() => {
-    const generateFullAudio = async () => {
+    const loadFullAudio = async () => {
       try {
-        setPlayerState((prev) => ({ ...prev, isGeneratingAudio: true }));
+        setPlayerState((prev) => ({ ...prev, isLoading: true }));
 
-        // Generate full audio
-        const url = await exportMeditationAudio(meditation, fileStorage, {
-          onProgress: (progress) =>
-            console.log(`Audio generation progress: ${progress}%`),
-        });
+        if (!meditation.fullAudioFileId) {
+          throw new Error("No full audio file ID found in the meditation");
+        }
 
-        fullAudioUrlRef.current = url;
+        // Get the full audio file from storage
+        const storedFile = await fileStorage.getFile(
+          meditation.fullAudioFileId
+        );
+        if (!storedFile || !storedFile.data) {
+          throw new Error("Full audio file not found in storage");
+        }
+
+        // Create a blob URL from the stored file
+        let audioBlob: Blob;
+        if (storedFile.data instanceof Blob) {
+          audioBlob = storedFile.data;
+        } else if (typeof storedFile.data === "string") {
+          audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
+            type: "audio/wav",
+          });
+        } else {
+          throw new Error("Unsupported audio data format");
+        }
+
+        // Create a URL for the blob
+        const url = URL.createObjectURL(audioBlob);
+        audioUrlRef.current = url;
 
         // Create and set up the main audio element
         if (audioRef.current) {
@@ -91,34 +108,34 @@ export function MeditationPlayer({
 
         setPlayerState((prev) => ({
           ...prev,
-          isGeneratingAudio: false,
-          fullAudioReady: true,
+          isLoading: false,
+          audioReady: true,
           totalDuration: meditation.timeline?.totalDurationMs
             ? meditation.timeline.totalDurationMs / 1000
             : prev.totalDuration,
         }));
 
-        console.log("Full audio ready");
+        console.log("Full audio loaded");
       } catch (error) {
-        console.error("Error generating full audio:", error);
+        console.error("Error loading full audio:", error);
         setPlayerState((prev) => ({
           ...prev,
-          isGeneratingAudio: false,
+          isLoading: false,
         }));
         alert(
-          `Error generating audio: ${
+          `Error loading audio: ${
             error instanceof Error ? error.message : "Unknown error"
           }`
         );
       }
     };
 
-    generateFullAudio();
+    loadFullAudio();
 
     return () => {
       // Clean up the URL on unmount
-      if (fullAudioUrlRef.current) {
-        URL.revokeObjectURL(fullAudioUrlRef.current);
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(audioUrlRef.current);
       }
     };
   }, [meditation, fileStorage]);
@@ -159,7 +176,7 @@ export function MeditationPlayer({
 
   // Handle audio timeupdate event
   const handleTimeUpdate = () => {
-    if (audioRef.current && playerState.fullAudioReady && meditation.timeline) {
+    if (audioRef.current && playerState.audioReady && meditation.timeline) {
       const currentTime = audioRef.current.currentTime;
       const totalDuration = audioRef.current.duration;
       const progress = (currentTime / totalDuration) * 100;
@@ -183,8 +200,8 @@ export function MeditationPlayer({
 
   // Start or resume playback
   const startPlayback = () => {
-    if (!playerState.fullAudioReady) {
-      console.warn("Cannot start playback, full audio not ready yet");
+    if (!playerState.audioReady) {
+      console.warn("Cannot start playback, audio not ready yet");
       return;
     }
 
@@ -240,7 +257,7 @@ export function MeditationPlayer({
 
   // Skip forward/backward
   const seekRelative = (seconds: number) => {
-    if (audioRef.current && playerState.fullAudioReady) {
+    if (audioRef.current && playerState.audioReady) {
       const newTime = Math.max(
         0,
         Math.min(
@@ -257,7 +274,7 @@ export function MeditationPlayer({
     if (
       stepIndex < 0 ||
       stepIndex >= meditation.steps.length ||
-      !playerState.fullAudioReady ||
+      !playerState.audioReady ||
       !audioRef.current ||
       !meditation.timeline
     )
@@ -297,23 +314,45 @@ export function MeditationPlayer({
     audioRef.current.currentTime = clickPercentage * audioRef.current.duration;
   };
 
-  // Simplify downloadMeditation by removing redundant URL check
+  // Download the meditation audio
   const downloadMeditation = async () => {
     try {
       setPlayerState((prev) => ({ ...prev, isDownloading: true }));
 
-      // Use the existing audio URL from the audio element or fullAudioUrlRef
-      let url = fullAudioUrlRef.current;
+      if (!meditation.fullAudioFileId) {
+        throw new Error("No full audio file ID found in the meditation");
+      }
+
+      // Get the full audio file from storage
+      const storedFile = await fileStorage.getFile(meditation.fullAudioFileId);
+      if (!storedFile || !storedFile.data) {
+        throw new Error("Full audio file not found in storage");
+      }
+
+      // Create a blob URL from the stored file
+      let audioBlob: Blob;
+      if (storedFile.data instanceof Blob) {
+        audioBlob = storedFile.data;
+      } else if (typeof storedFile.data === "string") {
+        audioBlob = new Blob([Buffer.from(storedFile.data, "base64")], {
+          type: "audio/wav",
+        });
+      } else {
+        throw new Error("Unsupported audio data format");
+      }
+
+      // Create a URL for the blob
+      const url = URL.createObjectURL(audioBlob);
 
       const fileName = `${meditation.title
         .replace(/[^a-z0-9]/gi, "_")
         .toLowerCase()}_meditation.wav`;
 
-      if (url) {
-        downloadAudioFile(url, fileName);
-      } else {
-        alert("Audio file missing");
-      }
+      // Download the file
+      downloadAudioFile(url, fileName);
+
+      // Clean up the URL
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading meditation:", error);
       alert(
@@ -327,8 +366,8 @@ export function MeditationPlayer({
   };
 
   // In the JSX, extract repeated loading/disabled conditions
-  const isDisabled = !playerState.fullAudioReady;
-  const isLoading = playerState.isGeneratingAudio;
+  const isDisabled = !playerState.audioReady;
+  const isLoading = playerState.isLoading;
 
   // Simplify progress display logic by precalculating values
   const { currentTime, totalDuration } = playerState;
@@ -356,12 +395,12 @@ export function MeditationPlayer({
           disabled={isDisabled}
           className="text-muted-foreground"
         >
-          {isLoading ? (
+          {playerState.isDownloading ? (
             <Loader className="mr-1 animate-spin" size={16} />
           ) : (
             <Download className="mr-1" size={16} />
           )}
-          {isLoading ? "Exporting..." : "Download Audio"}
+          {playerState.isDownloading ? "Downloading..." : "Download Audio"}
         </Button>
       </div>
 
@@ -373,9 +412,7 @@ export function MeditationPlayer({
       {isLoading && (
         <div className="flex flex-col items-center justify-center p-8">
           <Loader className="animate-spin mb-4" size={32} />
-          <p className="text-muted-foreground">
-            Generating meditation audio...
-          </p>
+          <p className="text-muted-foreground">Loading meditation audio...</p>
         </div>
       )}
 

@@ -9,6 +9,7 @@ import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings } from "./utils/synthesisService";
 import * as synthesisService from "./utils/synthesisService";
 import * as meditationTimeline from "./utils/meditationTimeline";
+import { exportMeditationAudio } from "./utils/audioExporter";
 
 export function useSynthesis(
   meditation: Meditation,
@@ -22,6 +23,7 @@ export function useSynthesis(
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [isGeneratingFullAudio, setIsGeneratingFullAudio] = useState(false);
 
   // We only need refs for values that we need to access in callbacks
   // that might be stale due to closures
@@ -45,6 +47,56 @@ export function useSynthesis(
     onCancel();
   }, [onCancel]);
 
+  // Generate full audio and store it
+  const generateAndStoreFullAudio = useCallback(
+    async (meditation: Meditation) => {
+      try {
+        setIsGeneratingFullAudio(true);
+
+        // Generate the full audio
+        const audioBlob = (await exportMeditationAudio(
+          meditation,
+          fileStorage,
+          {
+            onProgress: (exportProgress) => {
+              // Map export progress (0-100) to overall progress (90-100)
+              setProgress(90 + exportProgress * 0.1);
+            },
+            returnBlob: true as any,
+          }
+        )) as Blob;
+
+        // Store the full audio in file storage
+        const fullAudioFileId = await fileStorage.saveFile(audioBlob, {
+          projectId: "NADA",
+          groupId: sessionId,
+          contentType: "audio/wav",
+        });
+
+        // Update the meditation with the full audio file ID
+        const updatedMeditation = {
+          ...meditation,
+          fullAudioFileId,
+        };
+
+        onMeditationUpdate(updatedMeditation);
+        setIsGeneratingFullAudio(false);
+
+        return updatedMeditation;
+      } catch (error) {
+        console.error("Error generating full audio:", error);
+        setError(
+          `Error generating full audio: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+        setIsGeneratingFullAudio(false);
+        return meditation;
+      }
+    },
+    [fileStorage, onMeditationUpdate, sessionId]
+  );
+
   // Start synthesis process when component mounts - only once
   useEffect(() => {
     if (synthesisStartedRef.current) {
@@ -63,6 +115,7 @@ export function useSynthesis(
         audioFileId: undefined,
         durationMs: undefined,
       })),
+      fullAudioFileId: undefined,
     };
     onMeditationUpdate(updatedMeditation);
 
@@ -75,7 +128,10 @@ export function useSynthesis(
         sessionId,
       },
       {
-        onProgress: setProgress,
+        onProgress: (synthProgress) => {
+          // Map synthesis progress (0-100) to overall progress (0-90)
+          setProgress(synthProgress * 0.9);
+        },
         onError: (message) => {
           setError(message);
           setIsSynthesizing(false);
@@ -125,7 +181,7 @@ export function useSynthesis(
           // Update the meditation
           onMeditationUpdate(newMeditation);
         },
-        onComplete: () => {
+        onComplete: async () => {
           // Get the current meditation with all audio files
           const currentMeditation = meditationRef.current;
 
@@ -138,6 +194,9 @@ export function useSynthesis(
 
           // Update the meditation with timeline
           onMeditationUpdate(meditationWithTimeline);
+
+          // Generate and store the full audio
+          await generateAndStoreFullAudio(meditationWithTimeline);
 
           // Update state
           setProgress(100);
@@ -158,6 +217,7 @@ export function useSynthesis(
     progress,
     error,
     isSynthesizing,
+    isGeneratingFullAudio,
     handleCancel,
   };
 }
@@ -221,9 +281,11 @@ function PlayButton({ onClick }: { onClick: () => void }) {
 function ProgressHeader({
   progress,
   title,
+  isGeneratingFullAudio,
 }: {
   progress: number;
   title: string;
+  isGeneratingFullAudio: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -231,8 +293,10 @@ function ProgressHeader({
         <div>
           <h2 className="text-xl font-medium">Synthesizing Audio</h2>
           <p className="text-muted-foreground">
-            {progress < 100
+            {progress < 90
               ? `Creating "${title}" meditation audio...`
+              : progress < 100
+              ? `Generating full audio file...`
               : "Synthesis complete!"}
           </p>
         </div>
@@ -322,7 +386,13 @@ export function SynthesisProgress({
   // Add state for currently playing section
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
 
-  const { progress, error, isSynthesizing, handleCancel } = useSynthesis(
+  const {
+    progress,
+    error,
+    isSynthesizing,
+    isGeneratingFullAudio,
+    handleCancel,
+  } = useSynthesis(
     meditation,
     voiceSettings,
     fileStorage,
@@ -369,7 +439,11 @@ export function SynthesisProgress({
         </Button>
       </div>
 
-      <ProgressHeader progress={progress} title={title} />
+      <ProgressHeader
+        progress={progress}
+        title={title}
+        isGeneratingFullAudio={isGeneratingFullAudio}
+      />
 
       {error && (
         <div className="text-red-600 bg-red-50 p-4 rounded-md">{error}</div>
@@ -391,8 +465,10 @@ export function SynthesisProgress({
       </div>
 
       <div className="text-sm text-muted-foreground text-center">
-        {progress < 100
+        {progress < 90
           ? "Estimated time remaining: ~2 minutes"
+          : progress < 100
+          ? "Generating full audio file..."
           : "Synthesis complete!"}
       </div>
 

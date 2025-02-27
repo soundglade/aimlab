@@ -11,13 +11,15 @@ export async function exportMeditationAudio(
   options: {
     onProgress?: (progress: number) => void;
     fileName?: string;
+    returnBlob?: boolean;
   } = {}
-): Promise<string> {
+): Promise<string | Blob> {
   // Default options
   const {
     onProgress = () => {},
     fileName = meditation.title.replace(/[^a-z0-9]/gi, "_").toLowerCase() +
       "_meditation.wav",
+    returnBlob = false,
   } = options;
 
   // Report initial progress
@@ -42,8 +44,15 @@ export async function exportMeditationAudio(
   );
 
   // Render the final audio file
-  const url = await renderFinalAudio(audioBuffers, onProgress);
+  const wavBlob = await renderFinalAudio(audioBuffers, onProgress);
 
+  // Return the blob if requested
+  if (returnBlob) {
+    return wavBlob;
+  }
+
+  // Otherwise create and return a URL
+  const url = URL.createObjectURL(wavBlob);
   return url;
 }
 
@@ -142,7 +151,7 @@ function createSilenceBuffer(
 async function renderFinalAudio(
   audioBuffers: AudioBuffer[],
   onProgress: (progress: number) => void
-): Promise<string> {
+): Promise<Blob> {
   // Calculate total length in samples
   const totalSamples = audioBuffers.reduce(
     (acc, buffer) => acc + buffer.length,
@@ -176,11 +185,9 @@ async function renderFinalAudio(
   const wavBuffer = bufferToWav(renderedBuffer);
   const wavBlob = new Blob([wavBuffer], { type: "audio/wav" });
 
-  // Create download URL
-  const url = URL.createObjectURL(wavBlob);
   onProgress(100); // Signal that export is complete
 
-  return url;
+  return wavBlob;
 }
 
 /**
