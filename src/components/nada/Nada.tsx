@@ -16,6 +16,7 @@ import type { FormattedScript } from "@/lib/meditation-formatter";
 import { initializeStorage } from "@/lib/session-storage";
 import { useSessionState } from "@/lib/use-session-state";
 import { initializeFileStorage } from "@/lib/file-storage";
+import { shareMeditation } from "./utils/shareService";
 
 // Initialize both storage instances outside the component
 const persistentStorage = initializeStorage("nada", { ephemeral: false });
@@ -151,6 +152,13 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     });
   };
 
+  const handleShareMeditation = async () => {
+    if (session.step !== "player")
+      throw new Error("Cannot share meditation in this step");
+
+    return shareMeditation(session.meditation, fileStorage);
+  };
+
   const handleLoadSession = (loadSessionId: string) => {
     router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
   };
@@ -222,6 +230,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
             meditation={session.meditation}
             fileStorage={fileStorage}
             onBack={handleBackFromPlayer}
+            onShareMeditation={handleShareMeditation}
           />
         );
     }

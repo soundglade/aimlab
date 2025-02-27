@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { downloadAudioFile } from "../utils/audioExporter";
 import * as meditationTimeline from "../utils/meditationTimeline";
 import { getAudioBlob, createAudioUrl } from "../utils/audioUtils";
+import { ShareResponse } from "../utils/shareService";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ interface MeditationPlayerProps {
   meditation: Meditation;
   fileStorage: FileStorageApi;
   onBack: () => void;
+  onShareMeditation: () => Promise<ShareResponse>;
 }
 
 // Types for the player state
@@ -50,6 +52,7 @@ export function MeditationPlayer({
   meditation,
   fileStorage,
   onBack,
+  onShareMeditation,
 }: MeditationPlayerProps) {
   // Player state
   const [playerState, setPlayerState] = useState<PlayerState>({
@@ -344,14 +347,26 @@ export function MeditationPlayer({
     setPlayerState((prev) => ({ ...prev, isShareDialogOpen: false }));
   };
 
-  const confirmShare = () => {
-    // Close the dialog
-    closeShareDialog();
+  const confirmShare = async () => {
+    try {
+      // Call the share handler
+      const response = await onShareMeditation();
 
-    // For now, just show an alert
-    alert("Sharing functionality will be implemented soon!");
+      // Close the dialog
+      closeShareDialog();
 
-    // Later, this will generate and provide a shareable link
+      // Show success message with the URL
+      alert(
+        `Meditation shared successfully! Share this link: ${response.shareUrl}`
+      );
+    } catch (error) {
+      console.error("Error sharing meditation:", error);
+      alert(
+        `Failed to share meditation: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
   };
 
   // In the JSX, extract repeated loading/disabled conditions
