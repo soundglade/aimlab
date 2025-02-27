@@ -46,6 +46,7 @@ interface PlayerState {
   isLoading: boolean; // Track loading state
   audioReady: boolean; // Track if the audio is ready
   isShareDialogOpen: boolean; // Track share dialog state
+  shareMessage?: { type: "success" | "error"; content: string; url?: string }; // Track share result message
 }
 
 export function MeditationPlayer({
@@ -356,16 +357,25 @@ export function MeditationPlayer({
       closeShareDialog();
 
       // Show success message with the URL
-      alert(
-        `Meditation shared successfully! Share this link: ${response.shareUrl}`
-      );
+      setPlayerState((prev) => ({
+        ...prev,
+        shareMessage: {
+          type: "success",
+          content: "Meditation shared successfully! Share using this link:",
+          url: response.shareUrl,
+        },
+      }));
     } catch (error) {
       console.error("Error sharing meditation:", error);
-      alert(
-        `Failed to share meditation: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+      setPlayerState((prev) => ({
+        ...prev,
+        shareMessage: {
+          type: "error",
+          content: `Failed to share meditation: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+        },
+      }));
     }
   };
 
@@ -461,6 +471,32 @@ export function MeditationPlayer({
       <h1 className="text-2xl font-medium text-center mb-6">
         {meditation.title}
       </h1>
+
+      {/* Share result message */}
+      {playerState.shareMessage && (
+        <div
+          className={cn(
+            "mb-6 p-4 rounded-lg text-center border",
+            playerState.shareMessage.type === "success"
+              ? "bg-background border-border text-foreground"
+              : "bg-destructive/10 border-destructive/50 text-destructive"
+          )}
+        >
+          <p>
+            {playerState.shareMessage.content}
+            {playerState.shareMessage.url && (
+              <a
+                href={playerState.shareMessage.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 text-primary hover:underline"
+              >
+                {playerState.shareMessage.url}
+              </a>
+            )}
+          </p>
+        </div>
+      )}
 
       {/* Loading state */}
       {isLoading && (
