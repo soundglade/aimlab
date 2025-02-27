@@ -12,11 +12,20 @@ import {
   SkipForward,
   Download,
   Loader,
+  Share2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { downloadAudioFile } from "../utils/audioExporter";
 import * as meditationTimeline from "../utils/meditationTimeline";
 import { getAudioBlob, createAudioUrl } from "../utils/audioUtils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -34,6 +43,7 @@ interface PlayerState {
   isDownloading: boolean; // Track download state
   isLoading: boolean; // Track loading state
   audioReady: boolean; // Track if the audio is ready
+  isShareDialogOpen: boolean; // Track share dialog state
 }
 
 export function MeditationPlayer({
@@ -51,6 +61,7 @@ export function MeditationPlayer({
     isDownloading: false,
     isLoading: true,
     audioReady: false,
+    isShareDialogOpen: false,
   });
 
   // References for playback control
@@ -324,6 +335,25 @@ export function MeditationPlayer({
     }
   };
 
+  // Handle share meditation
+  const openShareDialog = () => {
+    setPlayerState((prev) => ({ ...prev, isShareDialogOpen: true }));
+  };
+
+  const closeShareDialog = () => {
+    setPlayerState((prev) => ({ ...prev, isShareDialogOpen: false }));
+  };
+
+  const confirmShare = () => {
+    // Close the dialog
+    closeShareDialog();
+
+    // For now, just show an alert
+    alert("Sharing functionality will be implemented soon!");
+
+    // Later, this will generate and provide a shareable link
+  };
+
   // In the JSX, extract repeated loading/disabled conditions
   const isDisabled = !playerState.audioReady;
   const isLoading = playerState.isLoading;
@@ -347,21 +377,71 @@ export function MeditationPlayer({
           Back
         </Button>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={downloadMeditation}
-          disabled={isDisabled}
-          className="text-muted-foreground"
-        >
-          {playerState.isDownloading ? (
-            <Loader className="mr-1 animate-spin" size={16} />
-          ) : (
-            <Download className="mr-1" size={16} />
-          )}
-          {playerState.isDownloading ? "Downloading..." : "Download Audio"}
-        </Button>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={openShareDialog}
+            disabled={isDisabled}
+            className="text-muted-foreground"
+          >
+            <Share2 className="mr-1" size={16} />
+            Share Meditation
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={downloadMeditation}
+            disabled={isDisabled}
+            className="text-muted-foreground"
+          >
+            {playerState.isDownloading ? (
+              <Loader className="mr-1 animate-spin" size={16} />
+            ) : (
+              <Download className="mr-1" size={16} />
+            )}
+            {playerState.isDownloading ? "Downloading..." : "Download Audio"}
+          </Button>
+        </div>
       </div>
+
+      {/* Share Meditation Dialog */}
+      <Dialog
+        open={playerState.isShareDialogOpen}
+        onOpenChange={closeShareDialog}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Meditation</DialogTitle>
+            <DialogDescription>
+              You're about to share "{meditation.title}" with others.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4">
+            <p className="mb-4">
+              If you proceed, we'll generate a link that you can share with
+              friends and family.
+            </p>
+            <p className="mb-4 text-muted-foreground">Please note:</p>
+            <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+              <li>You won't be able to edit or delete it</li>
+              <li>This is a temporary link that will expire after 7 days</li>
+              <li>
+                Anyone with the link will be able to access this meditation
+              </li>
+            </ul>
+          </div>
+
+          <DialogFooter className="flex space-x-2 sm:justify-end">
+            <Button variant="outline" onClick={closeShareDialog}>
+              Cancel
+            </Button>
+            <Button onClick={confirmShare}>Ok, create link</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <h1 className="text-2xl font-medium text-center mb-6">
         {meditation.title}
