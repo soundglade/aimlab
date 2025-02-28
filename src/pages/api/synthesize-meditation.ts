@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
 import Replicate from "replicate";
+import { parseBuffer } from "music-metadata";
 
 // Initialize Replicate client
 const replicate = new Replicate({
@@ -33,6 +34,20 @@ async function generateSpeech(text: string): Promise<ArrayBuffer> {
     return await audioResponse.arrayBuffer();
   } catch (error) {
     console.error("Speech generation error:", error);
+    throw error;
+  }
+}
+
+// Get audio duration in milliseconds using music-metadata
+async function getAudioDurationMs(audioBuffer: ArrayBuffer): Promise<number> {
+  try {
+    const metadata = await parseBuffer(Buffer.from(audioBuffer));
+    if (!metadata.format.duration) {
+      throw new Error("Could not determine audio duration");
+    }
+    return Math.round(metadata.format.duration * 1000);
+  } catch (error) {
+    console.error("Error getting audio duration:", error);
     throw error;
   }
 }
@@ -86,16 +101,20 @@ export default async function handler(
           // Generate speech for this section
           const audioBuffer = await generateSpeech(section.text);
 
-          // Send audio data
+          // Calculate audio duration using the helper function
+          const durationMs = await getAudioDurationMs(audioBuffer);
+
+          // Send audio data with durationMs
           stream.push(
             JSON.stringify({
               type: "audio",
               sectionIndex: i,
               data: Buffer.from(audioBuffer).toString("base64"),
+              durationMs,
             }) + "\n"
           );
-        } catch (error) {
-          console.error(`Error generating audio for section ${i}:`, error);
+        } catch (err) {
+          console.error(`Error generating audio for section ${i}:`, err);
           stream.push(
             JSON.stringify({
               type: "error",

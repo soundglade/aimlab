@@ -1,7 +1,6 @@
 import { Meditation } from "../Nada";
 import { FileStorageApi } from "@/lib/file-storage";
-import { Buffer } from "buffer";
-import { getAudioBlob, createAudioUrl, getAudioDuration } from "./audioUtils";
+import { getAudioBlob, createAudioUrl } from "./audioUtils";
 
 export interface VoiceSettings {
   voiceId: string;
@@ -19,16 +18,23 @@ export interface SynthesisOptions {
 export interface SynthesisCallbacks {
   onProgress: (progress: number) => void;
   onError: (error: string) => void;
-  onAudioCreated: (sectionIndex: number, fileId: string) => void;
-  onComplete: () => void;
+  onAudioCreated: (
+    sectionIndex: number,
+    durationMs: number,
+    fileId: string
+  ) => void;
 }
 
 // Helper function to handle audio data processing
 async function handleAudioData(
-  data: { data: string; sectionIndex: number },
+  data: { data: string; sectionIndex: number; durationMs: number },
   fileStorage: FileStorageApi,
   sessionId: string | undefined,
-  onAudioCreated: (sectionIndex: number, fileId: string) => void
+  onAudioCreated: (
+    sectionIndex: number,
+    durationMs: number,
+    fileId: string
+  ) => void
 ) {
   try {
     // Create a Blob from the base64 audio data
@@ -42,11 +48,15 @@ async function handleAudioData(
     });
 
     // Notify about the audio file creation
-    onAudioCreated(data.sectionIndex, fileId);
+    onAudioCreated(data.sectionIndex, data.durationMs, fileId);
   } catch (storageError) {
     console.error("Error storing audio file:", storageError);
     // Still mark as completed by setting a placeholder ID
-    onAudioCreated(data.sectionIndex, "error-" + Date.now());
+    onAudioCreated(
+      data.sectionIndex,
+      data.durationMs || 0,
+      "error-" + Date.now()
+    );
   }
 }
 
@@ -74,10 +84,6 @@ function processStreamMessage(
         break;
       case "error":
         callbacks.onError(data.message);
-        break;
-      case "complete":
-        callbacks.onProgress(100);
-        callbacks.onComplete();
         break;
     }
   } catch (e) {
@@ -175,15 +181,4 @@ export async function playAudio(
   };
 
   return audio.play();
-}
-
-// New function to get audio duration from a stored file
-export async function getAudioDurationFromFile(storedFile: {
-  data: Blob | string;
-}): Promise<number> {
-  if (!storedFile || !storedFile.data) {
-    throw new Error("Invalid audio file data");
-  }
-
-  return getAudioDuration(storedFile.data);
 }

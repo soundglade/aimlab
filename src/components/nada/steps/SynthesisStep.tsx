@@ -137,43 +137,14 @@ export function useSynthesis(
           setError(message);
           setIsSynthesizing(false);
         },
-        onAudioCreated: async (sectionIndex, fileId) => {
+        onAudioCreated: async (sectionIndex, durationMs, fileId) => {
           const currentMeditation = meditationRef.current;
           // Create a deep clone to avoid mutating the current meditation
           const newMeditation = JSON.parse(JSON.stringify(currentMeditation));
 
           // Set the audio file ID for the specific step
           newMeditation.steps[sectionIndex].audioFileId = fileId;
-
-          // Add duration information when we have the audio file
-          if (fileId && !fileId.startsWith("error-")) {
-            const startTime = performance.now();
-            fileStorage
-              .getFile(fileId)
-              .then(async (storedFile) => {
-                if (storedFile && storedFile.data) {
-                  try {
-                    const durationMs =
-                      await synthesisService.getAudioDurationFromFile(
-                        storedFile
-                      );
-                    const updatedMeditation = JSON.parse(
-                      JSON.stringify(meditationRef.current)
-                    );
-                    updatedMeditation.steps[sectionIndex].durationMs =
-                      durationMs;
-                    onMeditationUpdate(updatedMeditation);
-                  } catch (err) {
-                    console.error("Error getting audio duration:", err);
-                  }
-                }
-              })
-              .catch((err) => {
-                console.error("Error getting audio file:", err);
-              });
-          }
-
-          // Update the meditation with the new audio file id
+          newMeditation.steps[sectionIndex].durationMs = durationMs;
           onMeditationUpdate(newMeditation);
 
           // Check if all speech steps have an audioFileId
@@ -183,9 +154,6 @@ export function useSynthesis(
           if (allSpeechDone) {
             await doFinalComplete(newMeditation);
           }
-        },
-        onComplete: async () => {
-          // Finalization is handled in onAudioCreated
         },
       }
     );

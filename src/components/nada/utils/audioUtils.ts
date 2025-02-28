@@ -25,22 +25,3 @@ export function createAudioUrl(
   const blob = getAudioBlob(data, mimeType);
   return URL.createObjectURL(blob);
 }
-
-/**
- * Gets the duration of an audio file in milliseconds
- */
-export async function getAudioDuration(data: Blob | string): Promise<number> {
-  const blob = getAudioBlob(data);
-  const url = URL.createObjectURL(blob);
-  const audio = new Audio(url);
-
-  try {
-    await new Promise((resolve, reject) => {
-      audio.onloadedmetadata = resolve;
-      audio.onerror = reject;
-    });
-    return audio.duration * 1000; // Convert to milliseconds
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
