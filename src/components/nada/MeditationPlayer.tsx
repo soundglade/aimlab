@@ -175,17 +175,22 @@ export function MeditationPlayer({
       {/* Meditation script display */}
       {!playerState.isLoading && (
         <>
-          <div className="mb-8 max-h-[60vh] overflow-y-auto p-2">
+          <div className="mb-8 max-h-[60vh] text-foreground/60 overflow-y-auto p-2">
             <div className="space-y-2">
               {meditation.steps.map((step, idx) => (
                 <div
                   key={idx}
                   className={cn(
-                    "p-3 rounded transition-colors cursor-pointer hover:bg-muted/50",
+                    "p-3 rounded transition-colors",
+                    step.type === "speech" &&
+                      "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
                     playerState.currentStepIndex === idx &&
-                      "bg-muted border-l-4 border-primary"
+                      "border-l-4 bg-primary/10 border-primary",
+                    playerState.currentStepIndex >= idx && "text-foreground"
                   )}
-                  onClick={() => seekToStep(idx)}
+                  onClick={
+                    step.type === "speech" ? () => seekToStep(idx) : undefined
+                  }
                 >
                   {step.type === "heading" && (
                     <div
