@@ -48,6 +48,41 @@ export function MeditationPlayer({
       onAudioLoaded?.();
     };
 
+    const handleAudioEnded = () => {
+      pausePlayback();
+      setPlayerState((prev) => ({
+        ...prev,
+        isPlaying: false,
+        currentStepIndex: 0,
+        progress: 0,
+        currentTimeMs: 0,
+      }));
+    };
+
+    const handleTimeUpdate = () => {
+      if (audioRef.current && playerState.audioReady && meditation.timeline) {
+        const currentTimeSec = audioRef.current.currentTime;
+        const currentTimeMs = currentTimeSec * 1000;
+        const totalDurationSec = audioRef.current.duration;
+        const totalDurationMs = totalDurationSec * 1000;
+        const progress = (currentTimeSec / totalDurationSec) * 100;
+
+        const currentStepIndex = meditationTimeline.getStepIndexAtTime(
+          meditation.timeline.timings,
+          currentTimeMs
+        );
+
+        setPlayerState((prev) => ({
+          ...prev,
+          currentTimeMs,
+          totalDurationMs,
+          progress: Math.min(progress, 100),
+          currentStepIndex:
+            currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
+        }));
+      }
+    };
+
     audio.addEventListener("canplay", handleCanPlay);
     audio.addEventListener("ended", handleAudioEnded);
     audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -62,50 +97,20 @@ export function MeditationPlayer({
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audioRef.current = null;
     };
-  }, [audioUrl, onAudioLoaded]);
+  }, [
+    audioUrl,
+    onAudioLoaded,
+    meditation.timeline,
+    playerState.audioReady,
+    meditation.steps,
+  ]);
 
-  // Handle audio ended event
-  const handleAudioEnded = () => {
-    pausePlayback();
-    setPlayerState((prev) => ({
-      ...prev,
-      isPlaying: false,
-      currentStepIndex: 0,
-      progress: 0,
-      currentTimeMs: 0,
-    }));
-  };
-
-  // Handle audio timeupdate event
-  const handleTimeUpdate = () => {
-    if (audioRef.current && playerState.audioReady && meditation.timeline) {
-      const currentTimeSec = audioRef.current.currentTime;
-      const currentTimeMs = currentTimeSec * 1000;
-      const totalDurationSec = audioRef.current.duration;
-      const totalDurationMs = totalDurationSec * 1000;
-      const progress = (currentTimeSec / totalDurationSec) * 100;
-
-      const currentStepIndex = meditationTimeline.getStepIndexAtTime(
-        meditation.timeline.timings,
-        currentTimeMs
-      );
-
-      setPlayerState((prev) => ({
-        ...prev,
-        currentTimeMs,
-        totalDurationMs,
-        progress: Math.min(progress, 100),
-        currentStepIndex:
-          currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
-      }));
-    }
-  };
-
-  // Playback controls
   const startPlayback = () => {
     if (!playerState.audioReady) return;
     setPlayerState((prev) => ({ ...prev, isPlaying: true }));
-    audioRef.current?.play().catch(() => pausePlayback());
+    audioRef.current?.play().catch(() => {
+      pausePlayback();
+    });
   };
 
   const pausePlayback = () => {
@@ -115,12 +120,10 @@ export function MeditationPlayer({
 
   const seekRelative = (secondsToAdd: number) => {
     if (audioRef.current && playerState.audioReady) {
+      const currentTime = audioRef.current.currentTime;
       const newTime = Math.max(
         0,
-        Math.min(
-          audioRef.current.currentTime + secondsToAdd,
-          audioRef.current.duration
-        )
+        Math.min(currentTime + secondsToAdd, audioRef.current.duration)
       );
       audioRef.current.currentTime = newTime;
     }
@@ -133,8 +136,9 @@ export function MeditationPlayer({
       !meditation.timeline ||
       stepIndex < 0 ||
       stepIndex >= meditation.steps.length
-    )
+    ) {
       return;
+    }
 
     const startTimeMs = meditationTimeline.getTimeForStep(
       meditation.timeline.timings,
@@ -144,7 +148,6 @@ export function MeditationPlayer({
     setPlayerState((prev) => ({ ...prev, currentStepIndex: stepIndex }));
   };
 
-  // Format time display
   const formatTime = (milliseconds: number) => {
     const seconds = Math.floor(milliseconds / 1000);
     const mins = Math.floor(seconds / 60);

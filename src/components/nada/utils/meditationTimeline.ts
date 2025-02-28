@@ -139,7 +139,18 @@ export function getActiveTimingAtTime(
  */
 export function getStepIndexAtTime(timings: Timing[], timeMs: number): number {
   const activeTiming = getActiveTimingAtTime(timings, timeMs);
-  return activeTiming && !activeTiming.isGap ? activeTiming.index : -1;
+  if (!activeTiming) return -1;
+
+  if (activeTiming.isGap) {
+    // Find the previous non-gap timing
+    const previousTimings = timings.filter(
+      (t) => t.endTimeMs <= activeTiming.startTimeMs && !t.isGap
+    );
+    if (previousTimings.length === 0) return -1;
+    return previousTimings[previousTimings.length - 1].index;
+  }
+
+  return activeTiming.index;
 }
 
 /**
