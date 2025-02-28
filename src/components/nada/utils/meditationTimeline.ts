@@ -75,23 +75,29 @@ export function calculateTimings(meditation: Meditation): Timing[] {
     const isLastAudioStep = currentAudioIndex === audioStepIndices.length - 1;
 
     if (!isLastAudioStep && stepDurationMs > 0) {
-      // Determine gap duration based on the next step
+      // Get the next step that has audio
       const nextStepIndex = audioStepIndices[currentAudioIndex + 1];
+      const nextStep = meditation.steps[nextStepIndex];
       const stepBeforeNext = meditation.steps[nextStepIndex - 1];
-      const gapDurationMs =
-        stepBeforeNext?.type === "heading" ? HEADING_GAP_MS : DEFAULT_GAP_MS;
 
-      // Add a gap as a separate timing
-      timings.push({
-        index: -1, // Gaps don't correspond to a step in the original array
-        type: "gap",
-        startTimeMs: currentTimeMs,
-        endTimeMs: currentTimeMs + gapDurationMs,
-        durationMs: gapDurationMs,
-        isGap: true,
-      });
+      // Only add gap if neither current step nor next step is a pause
+      if (step.type !== "pause" && nextStep.type !== "pause") {
+        // Determine gap duration based on the next step
+        const gapDurationMs =
+          stepBeforeNext?.type === "heading" ? HEADING_GAP_MS : DEFAULT_GAP_MS;
 
-      currentTimeMs += gapDurationMs;
+        // Add a gap as a separate timing
+        timings.push({
+          index: -1, // Gaps don't correspond to a step in the original array
+          type: "gap",
+          startTimeMs: currentTimeMs,
+          endTimeMs: currentTimeMs + gapDurationMs,
+          durationMs: gapDurationMs,
+          isGap: true,
+        });
+
+        currentTimeMs += gapDurationMs;
+      }
     }
   }
 
