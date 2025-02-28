@@ -163,7 +163,7 @@ export function MeditationPlayer({
   };
 
   return (
-    <Card className={cn("p-6", className)}>
+    <Card className={cn("p-4 sm:p-6", className)}>
       {/* Loading state */}
       {playerState.isLoading && (
         <div className="flex flex-col items-center justify-center p-8">
@@ -175,7 +175,7 @@ export function MeditationPlayer({
       {/* Meditation script display */}
       {!playerState.isLoading && (
         <>
-          <div className="mb-8 max-h-[60vh] text-foreground/60 overflow-y-auto p-2">
+          <div className="max-h-[60vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
             <div className="space-y-2">
               {meditation.steps.map((step, idx) => (
                 <div
