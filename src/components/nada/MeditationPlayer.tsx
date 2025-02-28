@@ -34,6 +34,9 @@ export function MeditationPlayer({
   // References for playback control
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Add ref for the current active step
+  const activeStepRef = useRef<HTMLDivElement>(null);
+
   // Load and setup audio
   useEffect(() => {
     const audio = new Audio(audioUrl);
@@ -105,6 +108,16 @@ export function MeditationPlayer({
     meditation.steps,
   ]);
 
+  // Add effect to handle scrolling when current step changes
+  useEffect(() => {
+    if (activeStepRef.current) {
+      activeStepRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [playerState.currentStepIndex]);
+
   const startPlayback = () => {
     if (!playerState.audioReady) return;
     setPlayerState((prev) => ({ ...prev, isPlaying: true }));
@@ -146,6 +159,10 @@ export function MeditationPlayer({
     );
     audioRef.current.currentTime = startTimeMs / 1000;
     setPlayerState((prev) => ({ ...prev, currentStepIndex: stepIndex }));
+
+    if (!playerState.isPlaying) {
+      startPlayback();
+    }
   };
 
   const formatTime = (milliseconds: number) => {
@@ -175,11 +192,14 @@ export function MeditationPlayer({
       {/* Meditation script display */}
       {!playerState.isLoading && (
         <>
-          <div className="max-h-[60vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
+          <div className="max-h-[55vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
             <div className="space-y-2">
               {meditation.steps.map((step, idx) => (
                 <div
                   key={idx}
+                  ref={
+                    playerState.currentStepIndex === idx ? activeStepRef : null
+                  }
                   className={cn(
                     "p-3 rounded transition-colors",
                     step.type === "speech" &&
