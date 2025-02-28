@@ -13,13 +13,13 @@ export interface Timing {
   isGap?: boolean; // Whether this timing represents a gap between steps
 }
 
+const DEFAULT_GAP_MS = 2000;
+const HEADING_GAP_MS = 3000;
+
 /**
  * Calculate timing information for all steps in a meditation
  */
-export function calculateTimings(
-  meditation: Meditation,
-  defaultGapMs: number = 3000
-): Timing[] {
+export function calculateTimings(meditation: Meditation): Timing[] {
   const timings: Timing[] = [];
   let currentTimeMs = 0;
 
@@ -75,17 +75,23 @@ export function calculateTimings(
     const isLastAudioStep = currentAudioIndex === audioStepIndices.length - 1;
 
     if (!isLastAudioStep && stepDurationMs > 0) {
+      // Determine gap duration based on the next step
+      const nextStepIndex = audioStepIndices[currentAudioIndex + 1];
+      const stepBeforeNext = meditation.steps[nextStepIndex - 1];
+      const gapDurationMs =
+        stepBeforeNext?.type === "heading" ? HEADING_GAP_MS : DEFAULT_GAP_MS;
+
       // Add a gap as a separate timing
       timings.push({
         index: -1, // Gaps don't correspond to a step in the original array
         type: "gap",
         startTimeMs: currentTimeMs,
-        endTimeMs: currentTimeMs + defaultGapMs,
-        durationMs: defaultGapMs,
+        endTimeMs: currentTimeMs + gapDurationMs,
+        durationMs: gapDurationMs,
         isGap: true,
       });
 
-      currentTimeMs += defaultGapMs;
+      currentTimeMs += gapDurationMs;
     }
   }
 
@@ -95,11 +101,8 @@ export function calculateTimings(
 /**
  * Calculate and add timeline to a meditation
  */
-export function addTimelineToMeditation(
-  meditation: Meditation,
-  defaultGapMs: number = 3000
-): Meditation {
-  const timings = calculateTimings(meditation, defaultGapMs);
+export function addTimelineToMeditation(meditation: Meditation): Meditation {
+  const timings = calculateTimings(meditation);
   const totalDurationMs =
     timings.length > 0 ? timings[timings.length - 1].endTimeMs : 0;
 
