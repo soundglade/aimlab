@@ -67,6 +67,11 @@ Then, run the development server:
 npm run dev
 ```
 
+The application uses a custom Express.js server that:
+
+- Serves the Next.js application
+- Handles static files from the `public` directory with dynamic reloading in development
+
 ### Console
 
 The project includes a REPL environment for development and debugging. You can run it in two modes:
