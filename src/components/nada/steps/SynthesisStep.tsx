@@ -97,6 +97,19 @@ export function useSynthesis(
     [fileStorage, onMeditationUpdate, sessionId]
   );
 
+  // At the top of useSynthesis, after other useRef declarations, add:
+  const doFinalComplete = useCallback(
+    async (currentMeditation: Meditation) => {
+      const meditationWithTimeline =
+        meditationTimeline.addTimelineToMeditation(currentMeditation);
+      onMeditationUpdate(meditationWithTimeline);
+      await generateAndStoreFullAudio(meditationWithTimeline);
+      setProgress(100);
+      setIsSynthesizing(false);
+    },
+    [generateAndStoreFullAudio, onMeditationUpdate]
+  );
+
   // Start synthesis process when component mounts - only once
   useEffect(() => {
     if (synthesisStartedRef.current) {
@@ -107,22 +120,10 @@ export function useSynthesis(
     setIsSynthesizing(true);
     setError(null);
 
-    // Reset audioFileId for all steps
-    const updatedMeditation = {
-      ...meditation,
-      steps: meditation.steps.map((step) => ({
-        ...step,
-        audioFileId: undefined,
-        durationMs: undefined,
-      })),
-      fullAudioFileId: undefined,
-    };
-    onMeditationUpdate(updatedMeditation);
-
     // Use the service
     synthesisRef.current = synthesisService.startSynthesis(
       {
-        meditation: updatedMeditation,
+        meditation,
         voiceSettings,
         fileStorage,
         sessionId,
@@ -136,10 +137,8 @@ export function useSynthesis(
           setError(message);
           setIsSynthesizing(false);
         },
-        onAudioCreated: (sectionIndex, fileId) => {
-          // Use the CURRENT meditation as base
+        onAudioCreated: async (sectionIndex, fileId) => {
           const currentMeditation = meditationRef.current;
-
           // Create a deep clone to avoid mutating the current meditation
           const newMeditation = JSON.parse(JSON.stringify(currentMeditation));
 
@@ -148,26 +147,21 @@ export function useSynthesis(
 
           // Add duration information when we have the audio file
           if (fileId && !fileId.startsWith("error-")) {
-            // Get the audio duration from the file
+            const startTime = performance.now();
             fileStorage
               .getFile(fileId)
               .then(async (storedFile) => {
                 if (storedFile && storedFile.data) {
                   try {
-                    // Use the function from synthesisService
                     const durationMs =
                       await synthesisService.getAudioDurationFromFile(
                         storedFile
                       );
-
-                    // Update the step with duration information
                     const updatedMeditation = JSON.parse(
                       JSON.stringify(meditationRef.current)
                     );
                     updatedMeditation.steps[sectionIndex].durationMs =
                       durationMs;
-
-                    // Update the meditation with duration info
                     onMeditationUpdate(updatedMeditation);
                   } catch (err) {
                     console.error("Error getting audio duration:", err);
@@ -179,29 +173,19 @@ export function useSynthesis(
               });
           }
 
-          // Update the meditation
+          // Update the meditation with the new audio file id
           onMeditationUpdate(newMeditation);
+
+          // Check if all speech steps have an audioFileId
+          const allSpeechDone = newMeditation.steps
+            .filter((step) => step.type === "speech")
+            .every((step) => step.audioFileId);
+          if (allSpeechDone) {
+            await doFinalComplete(newMeditation);
+          }
         },
         onComplete: async () => {
-          // Get the current meditation with all audio files
-          const currentMeditation = meditationRef.current;
-
-          // Add timeline to the meditation
-          const meditationWithTimeline =
-            meditationTimeline.addTimelineToMeditation(
-              currentMeditation,
-              3000 // 3 second default gap
-            );
-
-          // Update the meditation with timeline
-          onMeditationUpdate(meditationWithTimeline);
-
-          // Generate and store the full audio
-          await generateAndStoreFullAudio(meditationWithTimeline);
-
-          // Update state
-          setProgress(100);
-          setIsSynthesizing(false);
+          // Finalization is handled in onAudioCreated
         },
       }
     );

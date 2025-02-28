@@ -99,11 +99,9 @@ export function initializeStorage(
         return null;
       }
 
-      // Convert StoredSession<T> to T while preserving createdAt
       return Object.fromEntries(
         Object.entries(sessions).map(([id, session]) => [
           id,
-          // Add createdAt to the returned data for informational purposes
           {
             ...(session.data as object),
             createdAt: session.createdAt,
@@ -124,7 +122,8 @@ export function initializeStorage(
 
     const currentData = getSession<T>(id);
     if (currentData !== null) {
-      saveSession(id, modifier(currentData));
+      const newData = modifier(currentData);
+      saveSession(id, newData);
     }
   }
 
@@ -142,7 +141,6 @@ export function initializeStorage(
 
   function deleteSession(id: string): void {
     const sessions = getSessions<unknown>();
-
     if (!sessions[id]) return;
 
     delete sessions[id];
