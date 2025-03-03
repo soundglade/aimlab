@@ -1,0 +1,68 @@
+---
+description: UI/UX Conventions
+globs: *.tsx
+alwaysApply: false
+---
+## 1. General UX Guidelines
+
+1. **Clear Hierarchy**  
+   - Use a single prominent call-to-action (primary button) when absolutely necessary.  
+   - Secondary and tertiary actions should be less visually prominent (e.g., outline or ghost buttons).
+
+2. **Consistent Spacing & Alignment**  
+   - Maintain uniform vertical and horizontal spacing between elements (use a consistent scale).  
+   - Keep content and interactive elements clearly separated. Use spacing tokens (e.g. `space-y-*`, `space-x-*`) rather than arbitrary values.
+
+3. **Intuitive Labels & Text**  
+   - Button text should be short and descriptive (e.g., “Save,” “Next,” “Cancel”).  
+   - Keep headings and labels clear: one main heading, followed by subheadings if needed.
+
+4. **Minimalist Layouts**  
+   - Avoid overcrowding. Focus on essential components; hide or collapse less-used options.  
+   - Leverage whitespace to enhance clarity and guide user attention.
+
+---
+
+## 2. Tailwind CSS Usage
+
+1. **Semantic Classes**  
+   - Prefer utility classes like `p-4`, `m-2`, or `flex` to keep styling consistent.  
+   - Use spacing and sizing scales from Tailwind (e.g., `p-4`, `m-6`) rather than arbitrary pixel or rem values.
+
+2. **Avoid Direct Color Classes**  
+   - **Do not** directly use Tailwind’s color utility classes (e.g., `text-red-500`) for text or background if a semantic color is available from shadcn/ui.  
+   - Let shadcn/ui's design tokens handle color to ensure consistency across light/dark modes.
+
+3. **Responsiveness by Default**  
+   - Use responsive variants (e.g., `md:p-6`, `lg:flex`) wherever possible to ensure good layout on all screen sizes.
+
+---
+
+## 3. shadcn/ui Usage
+
+1. **Leverage shadcn/ui Components**  
+   - Use the pre-built components (buttons, dialogs, forms, etc.) as a starting point. They’re already styled for consistency.  
+   - Override them only if necessary (e.g., variant changes, small styling tweaks).
+
+2. **Stick to Semantic Colors & Themes**  
+   - Rely on shadcn/ui’s built-in color tokens (e.g., `variant="destructive"`, `variant="outline"`) for buttons and alerts.  
+   - Avoid mixing Tailwind color classes with shadcn/ui’s semantic tokens.
+
+3. **Consistent Component Variants**  
+   - Reuse the same variant of a component for the same type of action throughout the interface (e.g., all secondary actions use `variant="outline"`).  
+   - Keep theming logic centralized (avoid scattering theming overrides all over the code).
+
+---
+
+## 4. Project-Specific Preferences
+
+1. **Default Button Variant**  
+   - **Use `outline` variant** for most buttons
+   - **Do not specify a variant only for primary calls-to-action** and main user journey actions (examples of main actions: primary landing page CTA, form submission buttons, "Continue" buttons in flows)
+
+
+
+
+
+
+
