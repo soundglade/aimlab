@@ -194,54 +194,62 @@ export function MeditationPlayer({
         <>
           <div className="max-h-[55vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
             <div className="space-y-2">
-              {meditation.steps.map((step, idx) => (
-                <div
-                  key={idx}
-                  ref={
-                    playerState.currentStepIndex === idx ? activeStepRef : null
-                  }
-                  className={cn(
-                    "p-3 rounded transition-colors",
-                    step.type === "speech" &&
-                      "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
-                    playerState.currentStepIndex === idx &&
-                      "border-l-4 bg-primary/10 border-primary",
-                    playerState.currentStepIndex >= idx && "text-foreground"
-                  )}
-                  onClick={
-                    step.type === "speech" ? () => seekToStep(idx) : undefined
-                  }
-                >
-                  {step.type === "heading" && (
-                    <div
-                      className={cn(
-                        "font-medium",
-                        step.level === 1
-                          ? "text-xl"
-                          : step.level === 2
-                          ? "text-lg"
-                          : "text-base"
-                      )}
-                    >
-                      {step.text}
-                    </div>
-                  )}
-                  {step.type === "speech" && <p>{step.text}</p>}
-                  {step.type === "pause" && (
-                    <p className="text-muted-foreground italic">
-                      {step.duration}s pause
-                      {step.canExtend && " (can be extended)"}
-                      {step.waitForUserInput && " (waiting for user)"}
-                    </p>
-                  )}
-                  {step.type === "direction" && (
-                    <p className="text-primary italic">{step.text}</p>
-                  )}
-                  {step.type === "aside" && (
-                    <p className="text-muted-foreground italic">{step.text}</p>
-                  )}
-                </div>
-              ))}
+              {meditation.steps
+                .filter(
+                  (step) => !(step.type === "heading" && step.level === 1)
+                )
+                .map((step, idx) => (
+                  <div
+                    key={idx}
+                    ref={
+                      playerState.currentStepIndex === idx
+                        ? activeStepRef
+                        : null
+                    }
+                    className={cn(
+                      "p-3 rounded transition-colors",
+                      step.type === "speech" &&
+                        "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
+                      playerState.currentStepIndex === idx &&
+                        "border-l-4 bg-primary/10 border-primary",
+                      playerState.currentStepIndex >= idx && "text-foreground"
+                    )}
+                    onClick={
+                      step.type === "speech" ? () => seekToStep(idx) : undefined
+                    }
+                  >
+                    {step.type === "heading" && (
+                      <div
+                        className={cn(
+                          "font-medium",
+                          step.level === 1
+                            ? "text-xl"
+                            : step.level === 2
+                            ? "text-lg"
+                            : "text-base"
+                        )}
+                      >
+                        {step.text}
+                      </div>
+                    )}
+                    {step.type === "speech" && <p>{step.text}</p>}
+                    {step.type === "pause" && (
+                      <p className="text-muted-foreground italic">
+                        {step.duration}s pause
+                        {step.canExtend && " (can be extended)"}
+                        {step.waitForUserInput && " (waiting for user)"}
+                      </p>
+                    )}
+                    {step.type === "direction" && (
+                      <p className="text-primary italic">{step.text}</p>
+                    )}
+                    {step.type === "aside" && (
+                      <p className="text-muted-foreground italic">
+                        {step.text}
+                      </p>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
 

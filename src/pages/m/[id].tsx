@@ -73,7 +73,7 @@ export default function SharedMeditation({
 
   return (
     <div className="container max-w-3xl mx-auto py-8 px-4">
-      <h1 className="text-xl sm:text-2xl font-medium text-center mb-2">
+      <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
         {metadata.title}
       </h1>
       <MeditationPlayer meditation={metadata} audioUrl={audioUrl} />
