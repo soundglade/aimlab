@@ -238,10 +238,10 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
 
   return (
     <div
-      className={`min-h-screen flex flex-col relative ${
+      className={`min-h-screen flex flex-col relative border-8 ${
         isPrivate
-          ? "bg-gradient-to-b from-slate-200 to-slate-300 border-8 border-slate-500"
-          : "bg-gradient-to-b from-background to-muted"
+          ? "bg-gradient-to-b from-slate-200 to-slate-300 border-slate-500"
+          : "bg-gradient-to-b from-background to-muted border-transparent"
       }`}
     >
       {isPrivate && (
@@ -252,7 +252,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 pt-14">
+      <div className="flex-1 flex flex-col items-center p-4 pt-14">
         <main className="max-w-4xl w-full space-y-8">
           {renderStepContent()}
         </main>
