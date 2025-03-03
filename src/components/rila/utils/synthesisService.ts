@@ -1,12 +1,7 @@
 import { Meditation } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { getAudioBlob, createAudioUrl } from "./audioUtils";
-
-export interface VoiceSettings {
-  voiceId: string;
-  customVoiceId?: string;
-  isAdvanced: boolean;
-}
+import { VoiceSettings } from "../steps/voice/ttsTypes";
 
 export interface SynthesisOptions {
   meditation: Meditation;

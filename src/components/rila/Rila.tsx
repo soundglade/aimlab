@@ -8,6 +8,7 @@ import { VoiceSelectionStep } from "./steps/VoiceSelectionStep";
 import { PracticeSetupStep } from "./steps/PracticeSetupStep";
 import { SynthesisProgressStep } from "./steps/SynthesisStep";
 import { MeditationPlayerStep } from "./steps/MeditationPlayerStep";
+import { VoiceSettings } from "./steps/voice/ttsTypes";
 
 import { Timing } from "./utils/meditationTimeline";
 
@@ -42,13 +43,6 @@ export interface Meditation {
   };
   fullAudioFileId?: string;
 }
-
-// Voice settings type for reuse
-type VoiceSettings = {
-  voiceId: string;
-  customVoiceId?: string;
-  isAdvanced: boolean;
-};
 
 // Define the state machine states - using a single type for the session
 type RilaSession =
@@ -144,10 +138,6 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   const handleBackFromPlayer = () => {
     updateSession({
       step: "synthesis",
-      voiceSettings: {
-        voiceId: "default", // Fallback value
-        isAdvanced: false,
-      },
     });
   };
 

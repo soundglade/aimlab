@@ -6,14 +6,14 @@ import { Play, StopCircle, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Meditation, MeditationStep } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
-import { VoiceSettings } from "../utils/synthesisService";
+import { VoiceSettings } from "./voice/ttsTypes";
 import * as synthesisService from "../utils/synthesisService";
 import * as meditationTimeline from "../utils/meditationTimeline";
 import { exportMeditationAudio } from "../utils/audioExporter";
 
 export function useSynthesis(
   meditation: Meditation,
-  voiceSettings: synthesisService.VoiceSettings,
+  voiceSettings: VoiceSettings,
   fileStorage: FileStorageApi,
   onMeditationUpdate: (updatedMeditation: Meditation) => void,
   onCancel: () => void,
