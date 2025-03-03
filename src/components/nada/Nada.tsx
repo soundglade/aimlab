@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 
-import { FormattedMeditationStep } from "./steps/FormattedMeditationStep";
+import { FormatReviewStep } from "./steps/FormatReviewStep";
 import { VoiceSelectionStep } from "./steps/VoiceSelectionStep";
 import { PracticeSetupStep } from "./steps/PracticeSetupStep";
 import { SynthesisProgressStep } from "./steps/SynthesisStep";
@@ -186,16 +186,14 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
         );
       case "review":
         return (
-          <Card className="p-6">
-            <FormattedMeditationStep
-              meditation={session.meditation}
-              onConfirm={() =>
-                updateSession({
-                  step: "voice",
-                })
-              }
-            />
-          </Card>
+          <FormatReviewStep
+            meditation={session.meditation}
+            onConfirm={() =>
+              updateSession({
+                step: "voice",
+              })
+            }
+          />
         );
       case "voice":
         return (

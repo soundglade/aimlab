@@ -1,17 +1,18 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Meditation } from "../Nada"; // Import the new Meditation type
+import { Meditation } from "../Nada";
 
+// Using more consistent spacing from Tailwind's scale
 const getHeadingMargin = (index: number, level: number) => {
   if (index === 0) return "";
   switch (level) {
     case 1:
-      return "mt-12";
+      return "mt-12"; // Large spacing for major sections
     case 2:
-      return "mt-9";
+      return "mt-8"; // Medium spacing for sub-sections (changed from mt-9)
     case 3:
-      return "mt-3";
+      return "mt-4"; // Smaller spacing (changed from mt-3 to use Tailwind scale)
     default:
       return "";
   }
@@ -20,29 +21,29 @@ const getHeadingMargin = (index: number, level: number) => {
 const getHeadingSize = (level: number) => {
   switch (level) {
     case 1:
-      return "text-3xl leading-relaxed";
+      return "text-3xl font-medium leading-relaxed";
     case 2:
-      return "text-xl leading-relaxed";
+      return "text-xl font-medium leading-relaxed";
     case 3:
-      return "text-md leading-relaxed";
+      return "text-md font-medium leading-relaxed";
     default:
       return "";
   }
 };
 
-interface FormattedMeditationProps {
+interface FormatReviewStepProps {
   meditation: Meditation;
   onConfirm: () => void;
 }
 
-export function FormattedMeditationStep({
+export function FormatReviewStep({
   meditation,
   onConfirm,
-}: FormattedMeditationProps) {
+}: FormatReviewStepProps) {
   const { title, steps } = meditation;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-2xl mx-auto">
       <h1 className="text-4xl font-medium text-center">{title}</h1>
 
       <div className="space-y-2">
@@ -54,16 +55,14 @@ export function FormattedMeditationStep({
 
           return (
             <div key={index} className={margin}>
-              {step.type === "heading" && (
-                <div
-                  className={cn("font-medium", getHeadingSize(step.level || 1))}
-                >
+              {step.type === "heading" && step.level !== 1 && (
+                <div className={getHeadingSize(step.level || 2)}>
                   {step.text}
                 </div>
               )}
 
               {step.type === "speech" && (
-                <Card className="p-3 rounded-sm border shadow-none bg-white/50">
+                <Card className="p-3 rounded-sm border shadow-none bg-card/50">
                   <div>{step.text}</div>
                 </Card>
               )}
@@ -97,7 +96,8 @@ export function FormattedMeditationStep({
         })}
       </div>
 
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center pt-6 md:pt-8">
+        {/* Primary CTA - no variant needed per guidelines */}
         <Button onClick={onConfirm}>Confirm</Button>
       </div>
     </div>

@@ -111,7 +111,7 @@ Steps to follow:
    - For silent intervals, use "pause", with an approximate "duration" in seconds. 
      Mark if it can be extended ("canExtend": boolean) or must wait for user input ("waitForUserInput": boolean).
    - For headings or titles, use "type": "heading" with:
-     * "level": 1 for main titles (h1)
+     * "level": 1 for the main title (h1) - there should never be more than one
      * "level": 2 for section headings (h2)
      * "level": 3 for subsection headings (h3)
      * "readAloud": true/false as desired
