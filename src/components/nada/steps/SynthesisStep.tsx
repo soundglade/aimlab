@@ -207,9 +207,9 @@ function getStepStatus(
 const getStatusStyles = (status: StepStatus): string => {
   switch (status) {
     case "complete":
-      return "bg-green-50 border-green-200";
+      return "bg-primary/10 border-primary/20";
     case "processing":
-      return "bg-blue-50 border-blue-200 animate-pulse";
+      return "bg-secondary/10 border-secondary/20 animate-pulse";
     default:
       return "bg-white/50";
   }
@@ -378,61 +378,63 @@ export function SynthesisProgressStep({
   const { title, steps } = meditation;
 
   return (
-    <Card className="p-6 space-y-6">
-      <h1 className="text-2xl font-medium text-center mb-4">{title}</h1>
-      <div className="flex justify-end">
-        <Button
-          variant="ghost"
-          onClick={handleCancel}
-          className="text-red-600 gap-2"
-          disabled={!isSynthesizing}
-        >
-          <StopCircle className="h-4 w-4" />
-          Cancel Synthesis
-        </Button>
-      </div>
-
-      <ProgressHeader
-        progress={progress}
-        title={title}
-        isGeneratingFullAudio={isGeneratingFullAudio}
-      />
-
-      {error && (
-        <div className="text-red-600 bg-red-50 p-4 rounded-md">{error}</div>
-      )}
-
-      <div className="space-y-2">
-        {steps.map((section, index) => (
-          <MeditationStepDisplay
-            key={`${index}-${section.audioFileId || "pending"}`}
-            section={section}
-            status={getStepStatus(section, currentlyPlaying, index)}
-            onPreview={
-              section.audioFileId && section.type === "speech"
-                ? () => previewSection(index)
-                : undefined
-            }
-          />
-        ))}
-      </div>
-
-      <div className="text-sm text-muted-foreground text-center">
-        {progress < 90
-          ? "Estimated time remaining: ~2 minutes"
-          : progress < 100
-          ? "Generating full audio file..."
-          : "Synthesis complete!"}
-      </div>
-
-      {isAllAudioReady && (
-        <div className="pt-6 flex justify-center">
-          <Button className="gap-2" size="lg" onClick={onComplete}>
-            <PlayCircle className="h-5 w-5" />
-            Play Meditation
+    <div>
+      <h1 className="text-3xl font-medium text-center mb-6">{title}</h1>
+      <Card className="p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="flex justify-end">
+          <Button
+            variant="destructive"
+            onClick={handleCancel}
+            className="gap-2"
+            disabled={!isSynthesizing}
+          >
+            <StopCircle className="h-4 w-4" />
+            Cancel Synthesis
           </Button>
         </div>
-      )}
-    </Card>
+
+        <ProgressHeader
+          progress={progress}
+          title={title}
+          isGeneratingFullAudio={isGeneratingFullAudio}
+        />
+
+        {error && (
+          <div className="text-red-600 bg-red-50 p-4 rounded-md">{error}</div>
+        )}
+
+        <div className="space-y-2">
+          {steps.map((section, index) => (
+            <MeditationStepDisplay
+              key={`${index}-${section.audioFileId || "pending"}`}
+              section={section}
+              status={getStepStatus(section, currentlyPlaying, index)}
+              onPreview={
+                section.audioFileId && section.type === "speech"
+                  ? () => previewSection(index)
+                  : undefined
+              }
+            />
+          ))}
+        </div>
+
+        <div className="text-sm text-muted-foreground text-center">
+          {progress < 90
+            ? ""
+            : progress < 100
+            ? "Generating full audio file..."
+            : "Synthesis complete!"}
+        </div>
+
+        {isAllAudioReady && (
+          <div className="pt-6 flex justify-center">
+            <Button className="gap-2" size="lg" onClick={onComplete}>
+              <PlayCircle className="h-5 w-5" />
+              Play Meditation
+            </Button>
+          </div>
+        )}
+      </Card>
+    </div>
   );
 }
