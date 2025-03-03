@@ -194,11 +194,11 @@ export function MeditationPlayer({
         <>
           <div className="max-h-[55vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
             <div className="space-y-2">
-              {meditation.steps
-                .filter(
-                  (step) => !(step.type === "heading" && step.level === 1)
-                )
-                .map((step, idx) => (
+              {meditation.steps.map((step, idx) => {
+                if (step.type === "heading" && step.level === 1) {
+                  return null;
+                }
+                return (
                   <div
                     key={idx}
                     ref={
@@ -249,7 +249,8 @@ export function MeditationPlayer({
                       </p>
                     )}
                   </div>
-                ))}
+                );
+              })}
             </div>
           </div>
 
