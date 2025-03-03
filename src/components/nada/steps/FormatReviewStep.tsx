@@ -1,6 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Meditation } from "../Nada";
 
 // Using more consistent spacing from Tailwind's scale
@@ -18,14 +17,12 @@ const getHeadingMargin = (index: number, level: number) => {
   }
 };
 
-const getHeadingSize = (level: number) => {
+const getHeadingStyle = (level: number) => {
   switch (level) {
-    case 1:
-      return "text-3xl font-medium leading-relaxed";
     case 2:
-      return "text-xl font-medium leading-relaxed";
+      return "text-xl font-medium leading-relaxed p-3";
     case 3:
-      return "text-md font-medium leading-relaxed";
+      return "text-md font-medium leading-relaxed p-3";
     default:
       return "";
   }
@@ -44,7 +41,7 @@ export function FormatReviewStep({
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-medium text-center">{title}</h1>
+      <h1 className="text-4xl font-medium text-center mb-10">{title}</h1>
 
       <div className="space-y-2">
         {steps.map((step, index) => {
@@ -56,7 +53,7 @@ export function FormatReviewStep({
           return (
             <div key={index} className={margin}>
               {step.type === "heading" && step.level !== 1 && (
-                <div className={getHeadingSize(step.level || 2)}>
+                <div className={getHeadingStyle(step.level || 2)}>
                   {step.text}
                 </div>
               )}
@@ -68,7 +65,7 @@ export function FormatReviewStep({
               )}
 
               {step.type === "pause" && (
-                <div className="text-muted-foreground">
+                <div className="text-muted-foreground p-3">
                   {step.duration}s pause
                   {step.canExtend && " (can be extended)"}
                   {step.waitForUserInput && " (waiting for user)"}
@@ -96,8 +93,7 @@ export function FormatReviewStep({
         })}
       </div>
 
-      <div className="flex justify-center pt-6 md:pt-8">
-        {/* Primary CTA - no variant needed per guidelines */}
+      <div className="flex justify-center pt-2 md:pt-4">
         <Button onClick={onConfirm}>Confirm</Button>
       </div>
     </div>
