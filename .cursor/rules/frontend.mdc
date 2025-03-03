@@ -1,6 +1,7 @@
 ---
 description: Frontend Conventions
 globs: *.tsx, *.css
+alwaysApply: false
 ---
 # AIM Lab Frontend Conventions
 
@@ -25,7 +26,7 @@ This document provides key information about the frontend architecture and conve
 ### Routing
 - We use Next.js Pages Router (not App Router)
 - Dynamic routes should be created in the pages directory using [param].tsx naming convention
-- Example: For a route like /nada/123, create src/pages/nada/[id].tsx
+- Example: For a route like /rila/123, create src/pages/rila/[id].tsx
 - Keep route handling logic in the pages directory, component logic in components directory
 
 ### Styling

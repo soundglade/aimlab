@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, StopCircle, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Meditation, MeditationStep } from "../Nada";
+import { Meditation, MeditationStep } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings } from "../utils/synthesisService";
 import * as synthesisService from "../utils/synthesisService";
@@ -68,7 +68,7 @@ export function useSynthesis(
 
         // Store the full audio in file storage
         const fullAudioFileId = await fileStorage.saveFile(audioBlob, {
-          projectId: "NADA",
+          projectId: "rila",
           groupId: sessionId,
           contentType: "audio/wav",
         });

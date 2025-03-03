@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
 
 import { FormatReviewStep } from "./steps/FormatReviewStep";
 import { VoiceSelectionStep } from "./steps/VoiceSelectionStep";
@@ -19,14 +18,14 @@ import { initializeFileStorage } from "@/lib/file-storage";
 import { shareMeditation } from "./utils/shareService";
 
 // Initialize both storage instances outside the component
-const persistentStorage = initializeStorage("nada", { ephemeral: false });
-const ephemeralStorage = initializeStorage("nada", { ephemeral: true });
+const persistentStorage = initializeStorage("rila", { ephemeral: false });
+const ephemeralStorage = initializeStorage("rila", { ephemeral: true });
 
 // Initialize both file storage instances
-const persistentFileStorage = initializeFileStorage("nada", {
+const persistentFileStorage = initializeFileStorage("rila", {
   ephemeral: false,
 });
-const ephemeralFileStorage = initializeFileStorage("nada", { ephemeral: true });
+const ephemeralFileStorage = initializeFileStorage("rila", { ephemeral: true });
 
 // Enhanced types for frontend use with audio capabilities
 export type MeditationStep = FormattedScript["steps"][number] & {
@@ -52,7 +51,7 @@ type VoiceSettings = {
 };
 
 // Define the state machine states - using a single type for the session
-type NadaSession =
+type RilaSession =
   | { step: "input" }
   | { step: "review"; meditation: Meditation }
   | { step: "voice"; meditation: Meditation }
@@ -71,16 +70,16 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
   };
 }
 
-interface NadaPageProps {
+interface RilaPageProps {
   sessionId?: string;
   isPrivate: boolean;
 }
 
 // Utility function to get the base path based on privacy setting
 const getBasePath = (isPrivate: boolean) =>
-  isPrivate ? "/nada/private" : "/nada";
+  isPrivate ? "/rila/private" : "/rila";
 
-export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
+export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   const router = useRouter();
 
   // Select the appropriate storage based on privacy mode
@@ -88,7 +87,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
   const fileStorage = isPrivate ? ephemeralFileStorage : persistentFileStorage;
 
   // Use our custom hook to manage session state
-  const [session, updateSession] = useSessionState<NadaSession>(
+  const [session, updateSession] = useSessionState<RilaSession>(
     sessionId,
     sessionStorage,
     { step: "input" }
@@ -109,7 +108,7 @@ export default function NadaPage({ sessionId, isPrivate }: NadaPageProps) {
     const newSessionId = sessionId || sessionStorage.generateId();
 
     // Create the new session state
-    const newSessionState: NadaSession = {
+    const newSessionState: RilaSession = {
       step: "review",
       meditation: enhanceMeditation(script),
     };

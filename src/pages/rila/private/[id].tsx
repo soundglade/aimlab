@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
 // Simplified dynamic import with default export
-const NadaPage = dynamic(() => import("@/components/nada/Nada"), {
+const RilaPage = dynamic(() => import("@/components/rila/Rila"), {
   ssr: false,
 });
 
-export default function NadaSessionPage() {
+export default function RilaPrivateSessionPage() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -15,5 +15,5 @@ export default function NadaSessionPage() {
     return null;
   }
 
-  return <NadaPage sessionId={id} isPrivate={false} />;
+  return <RilaPage sessionId={id} isPrivate={true} />;
 }

@@ -1,10 +1,9 @@
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import { Card } from "@/components/ui/card";
 import path from "path";
 import fs from "fs/promises";
-import { MeditationPlayer } from "@/components/nada/MeditationPlayer";
-import { Meditation } from "@/components/nada/Nada";
+import { MeditationPlayer } from "@/components/rila/MeditationPlayer";
+import { Meditation } from "@/components/rila/Rila";
 
 // Type for the meditation metadata
 interface SharedMeditationProps {
@@ -20,7 +19,7 @@ export const getServerSideProps: GetServerSideProps<
     const id = params?.id as string;
     const meditationDir = path.join(
       process.cwd(),
-      "public/storage/nada/shared-meditations",
+      "public/storage/rila/shared-meditations",
       id
     );
 
@@ -30,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<
     const metadata = JSON.parse(metadataContent);
 
     // Generate the audio URL
-    const audioUrl = `/storage/nada/shared-meditations/${id}/audio.wav`;
+    const audioUrl = `/storage/rila/shared-meditations/${id}/audio.wav`;
 
     return {
       props: {

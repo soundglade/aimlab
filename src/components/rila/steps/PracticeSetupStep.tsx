@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { FormattedScript } from "@/lib/meditation-formatter";
-import { Meditation } from "../Nada";
+import { Meditation } from "../Rila";
 
 interface PracticeSetupProps {
   onScriptCreated: (script: FormattedScript) => void;

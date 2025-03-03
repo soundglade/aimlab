@@ -1,4 +1,4 @@
-import { Meditation } from "../Nada";
+import { Meditation } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { getAudioBlob, createAudioUrl } from "./audioUtils";
 
@@ -42,7 +42,7 @@ async function handleAudioData(
 
     // Save the audio blob to file storage
     const fileId = await fileStorage.saveFile(audioBlob, {
-      projectId: "NADA",
+      projectId: "rila",
       groupId: sessionId,
       contentType: "audio/mp3",
     });

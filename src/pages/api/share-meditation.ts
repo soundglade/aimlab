@@ -54,7 +54,7 @@ export default async function handler(
     // Create directory for storing shared meditations
     const shareDir = path.join(
       process.cwd(),
-      "public/storage/nada/shared-meditations",
+      "public/storage/rila/shared-meditations",
       shareId
     );
     await fs.mkdir(shareDir, { recursive: true });

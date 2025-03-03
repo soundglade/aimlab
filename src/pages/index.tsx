@@ -14,7 +14,7 @@ export default function LandingPage() {
         </p>
         <div className="space-y-4">
           <Button asChild size="lg" className="text-lg">
-            <Link href="/nada">Create from Script</Link>
+            <Link href="/rila">Create from Script</Link>
           </Button>
           <p className="text-sm text-muted-foreground">
             Generate, refine, and play guided meditations using scripts

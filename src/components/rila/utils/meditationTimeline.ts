@@ -1,4 +1,4 @@
-import { Meditation } from "../Nada";
+import { Meditation } from "../Rila";
 
 /**
  * Interface for timing information

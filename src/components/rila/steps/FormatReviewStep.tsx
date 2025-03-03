@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Meditation } from "../Nada";
+import { Meditation } from "../Rila";
 
 // Using more consistent spacing from Tailwind's scale
 const getHeadingMargin = (index: number, level: number) => {

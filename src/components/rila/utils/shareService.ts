@@ -1,4 +1,4 @@
-import { Meditation } from "../Nada";
+import { Meditation } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 
 export interface ShareResponse {
