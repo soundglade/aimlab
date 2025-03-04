@@ -108,7 +108,7 @@ export function AdvancedVoiceSettings({
 
       {/* Preview Text Area */}
       <div>
-        <p className="text-base mb-2">Preview Text:</p>
+        <p className="mb-2">Preview Text:</p>
         <Textarea
           placeholder="Enter text to preview"
           value={previewTextInput}

@@ -41,57 +41,60 @@ export function FormatReviewStep({
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-medium text-center mb-10">{title}</h1>
+      <h1 className="text-2xl font-medium text-center mb-10">{title}</h1>
+      <Card className="p-6 space-y-6">
+        <div className="space-y-2">
+          {steps.map((step, index) => {
+            const margin =
+              step.type === "heading"
+                ? getHeadingMargin(index, step.level || 1)
+                : "";
 
-      <div className="space-y-2">
-        {steps.map((step, index) => {
-          const margin =
-            step.type === "heading"
-              ? getHeadingMargin(index, step.level || 1)
-              : "";
+            return (
+              <div key={index} className={margin}>
+                {step.type === "heading" && step.level !== 1 && (
+                  <div className={getHeadingStyle(step.level || 2)}>
+                    {step.text}
+                  </div>
+                )}
 
-          return (
-            <div key={index} className={margin}>
-              {step.type === "heading" && step.level !== 1 && (
-                <div className={getHeadingStyle(step.level || 2)}>
-                  {step.text}
-                </div>
-              )}
+                {step.type === "speech" && (
+                  <Card className="p-3 rounded-sm border shadow-none bg-card/50">
+                    <div>{step.text}</div>
+                  </Card>
+                )}
 
-              {step.type === "speech" && (
-                <Card className="p-3 rounded-sm border shadow-none bg-card/50">
-                  <div>{step.text}</div>
-                </Card>
-              )}
+                {step.type === "pause" && (
+                  <div className="text-muted-foreground p-3">
+                    {step.duration}s pause
+                    {step.canExtend && " (can be extended)"}
+                    {step.waitForUserInput && " (waiting for user)"}
+                  </div>
+                )}
 
-              {step.type === "pause" && (
-                <div className="text-muted-foreground p-3">
-                  {step.duration}s pause
-                  {step.canExtend && " (can be extended)"}
-                  {step.waitForUserInput && " (waiting for user)"}
-                </div>
-              )}
+                {step.type === "sound" && (
+                  <div className="text-muted-foreground">
+                    {step.soundId}
+                    {step.description && (
+                      <span className="text-sm ml-2">({step.description})</span>
+                    )}
+                  </div>
+                )}
 
-              {step.type === "sound" && (
-                <div className="text-muted-foreground">
-                  {step.soundId}
-                  {step.description && (
-                    <span className="text-sm ml-2">({step.description})</span>
-                  )}
-                </div>
-              )}
+                {step.type === "aside" && (
+                  <div className="italic text-muted-foreground">
+                    {step.text}
+                  </div>
+                )}
 
-              {step.type === "aside" && (
-                <div className="italic text-muted-foreground">{step.text}</div>
-              )}
-
-              {step.type === "direction" && (
-                <div className="text-primary">{step.text}</div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                {step.type === "direction" && (
+                  <div className="text-primary">{step.text}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
       <div className="flex justify-center pt-2 md:pt-4">
         <Button onClick={onConfirm}>Confirm</Button>

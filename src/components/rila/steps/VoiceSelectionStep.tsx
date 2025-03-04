@@ -131,9 +131,6 @@ export function VoiceSelectionStep({
                 >
                   Simple Options
                 </Button>
-                <Button variant="secondary" size="sm" className="font-medium">
-                  Advanced Options
-                </Button>
               </div>
             ) : (
               <Button
@@ -152,7 +149,6 @@ export function VoiceSelectionStep({
             // Simple Mode - Preset Voice Options (always Kokoro)
             <div className="space-y-6">
               <div>
-                <p className="text-lg mb-4">Select a voice style:</p>
                 <RadioGroup
                   value={String(selectedPreset)}
                   onValueChange={(value) => handlePresetChange(parseInt(value))}
@@ -205,19 +201,19 @@ export function VoiceSelectionStep({
               onSettingsChange={setSettings}
             />
           )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-4 pt-2">
-            <Button variant="outline" onClick={onEditScript} className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Edit Script
-            </Button>
-            <Button onClick={() => onGenerateAudio(settings)}>
-              Next: Generate Audio
-            </Button>
-          </div>
         </div>
       </Card>
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 pt-2 justify-center">
+        <Button variant="outline" onClick={onEditScript} className="gap-2">
+          <ArrowLeft className="h-4 w-4" />
+          Edit Script
+        </Button>
+        <Button onClick={() => onGenerateAudio(settings)}>
+          Next: Generate Audio
+        </Button>
+      </div>
     </>
   );
 }
