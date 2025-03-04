@@ -87,7 +87,6 @@ export function ElevenLabsSettingsSelection({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-lg mb-2">Select Voice:</p>
         <Select
           value={settings.voiceId}
           onValueChange={(id) => onChange({ ...settings, voiceId: id })}

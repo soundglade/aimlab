@@ -111,7 +111,6 @@ export function KokoroSettingsSelection({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-lg mb-2">Select Voice:</p>
         <Select
           value={settings.voiceId}
           onValueChange={(id) => onChange({ ...settings, voiceId: id })}
@@ -146,7 +145,7 @@ export function KokoroSettingsSelection({
         </div>
         <Slider
           min={0.5}
-          max={2.0}
+          max={1.5}
           step={0.1}
           value={[settings.speed]}
           onValueChange={(value) => onChange({ ...settings, speed: value[0] })}
@@ -154,7 +153,7 @@ export function KokoroSettingsSelection({
         <div className="flex justify-between mt-1 text-xs text-muted-foreground">
           <span>Slower (0.5x)</span>
           <span>Normal (1.0x)</span>
-          <span>Faster (2.0x)</span>
+          <span>Faster (1.5x)</span>
         </div>
       </div>
     </div>
