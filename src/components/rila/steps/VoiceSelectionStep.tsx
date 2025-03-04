@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Play } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, Play, Settings2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Import TTS services and types
 import { VoiceSettings } from "./voice/ttsTypes";
@@ -120,16 +120,32 @@ export function VoiceSelectionStep({
       <h1 className="text-2xl font-medium text-center">Choose a Voice</h1>
       <Card className="p-6 space-y-6">
         <div className="space-y-6">
-          {/* Mode Toggle */}
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={isAdvancedMode}
-              onCheckedChange={handleModeToggle}
-              id="advanced-mode"
-            />
-            <Label htmlFor="advanced-mode">
-              {isAdvancedMode ? "Advanced Options" : "Simple Options"}
-            </Label>
+          {/* Mode Toggle - Conditional UI */}
+          <div className="flex justify-end">
+            {isAdvancedMode ? (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleModeToggle(false)}
+                >
+                  Simple Options
+                </Button>
+                <Button variant="secondary" size="sm" className="font-medium">
+                  Advanced Options
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleModeToggle(true)}
+                className="flex items-center gap-1"
+              >
+                <Settings2 className="h-3.5 w-3.5" />
+                Advanced Options
+              </Button>
+            )}
           </div>
 
           {!isAdvancedMode ? (
