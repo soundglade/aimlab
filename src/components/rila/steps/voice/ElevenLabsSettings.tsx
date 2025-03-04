@@ -92,7 +92,7 @@ export function ElevenLabsSettingsSelection({
 
       {/* Prosody Control */}
       <div>
-        <p className="text-base mb-2">Prosody (speaking style):</p>
+        <p className="mb-2">Prosody (speaking style):</p>
         <Select
           value={settings.prosody || "normal"}
           onValueChange={(value) => onChange({ ...settings, prosody: value })}
@@ -114,7 +114,7 @@ export function ElevenLabsSettingsSelection({
 
       {/* Custom Voice ID */}
       <div>
-        <p className="text-base mb-2">Custom Voice ID (optional):</p>
+        <p className="mb-2">Custom Voice ID (optional):</p>
         <Input
           placeholder="Enter your custom voice ID"
           value={settings.customVoiceId || ""}

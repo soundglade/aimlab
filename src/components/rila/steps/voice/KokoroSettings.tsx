@@ -111,7 +111,7 @@ export function KokoroSettingsSelection({
       {/* Speed Control */}
       <div>
         <div className="flex justify-between mb-2">
-          <p className="text-base">Speed:</p>
+          <p>Speed:</p>
           <p className="text-sm">{settings.speed.toFixed(1)}x</p>
         </div>
         <Slider
