@@ -44,12 +44,24 @@ export interface Meditation {
   fullAudioFileId?: string;
 }
 
+// Define the synthesis state type
+export interface SynthesisState {
+  started: boolean;
+  progress: number;
+  completedStepIndices: number[];
+}
+
 // Define the state machine states - using a single type for the session
 type RilaSession =
   | { step: "input" }
   | { step: "review"; meditation: Meditation }
   | { step: "voice"; meditation: Meditation }
-  | { step: "synthesis"; meditation: Meditation; voiceSettings: VoiceSettings }
+  | {
+      step: "synthesis";
+      meditation: Meditation;
+      voiceSettings: VoiceSettings;
+      synthesisState: SynthesisState;
+    }
   | { step: "player"; meditation: Meditation; voiceSettings: VoiceSettings };
 
 // Helper function to convert from backend FormattedScript to frontend Meditation
@@ -120,6 +132,11 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     updateSession({
       step: "synthesis",
       voiceSettings: settings,
+      synthesisState: {
+        started: false,
+        progress: 0,
+        completedStepIndices: [],
+      },
     });
   };
 
@@ -200,6 +217,12 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
           <SynthesisProgressStep
             meditation={session.meditation}
             voiceSettings={session.voiceSettings}
+            synthesisState={session.synthesisState}
+            onSynthesisStateUpdate={(newSynthesisState) => {
+              updateSession({
+                synthesisState: newSynthesisState,
+              });
+            }}
             onCancel={handleCancelSynthesis}
             onComplete={handleCompleteSynthesis}
             fileStorage={fileStorage}

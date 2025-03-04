@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, StopCircle, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Meditation, MeditationStep } from "../Rila";
+import { Meditation, MeditationStep, SynthesisState } from "../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings } from "./voice/ttsTypes";
 import * as synthesisService from "../utils/synthesisService";
@@ -16,11 +16,13 @@ export function useSynthesis(
   voiceSettings: VoiceSettings,
   fileStorage: FileStorageApi,
   onMeditationUpdate: (updatedMeditation: Meditation) => void,
+  onSynthesisStateUpdate: (synthesisState: SynthesisState) => void,
   onCancel: () => void,
+  synthesisState: SynthesisState,
   sessionId?: string
 ) {
   // State management
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(synthesisState.progress);
   const [error, setError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isGeneratingFullAudio, setIsGeneratingFullAudio] = useState(false);
@@ -31,7 +33,6 @@ export function useSynthesis(
 
   // Refs for synthesis control
   const synthesisRef = useRef<{ abort: () => void } | null>(null);
-  const synthesisStartedRef = useRef<boolean>(false);
 
   // Update meditation ref when it changes
   useEffect(() => {
@@ -110,15 +111,19 @@ export function useSynthesis(
     [generateAndStoreFullAudio, onMeditationUpdate]
   );
 
-  // Start synthesis process when component mounts - only once
-  useEffect(() => {
-    if (synthesisStartedRef.current) {
-      return;
-    }
+  // Start synthesis only if it hasn't been started yet
+  const startSynthesis = useCallback(() => {
+    if (isSynthesizing) return; // Don't start if already synthesizing
 
-    synthesisStartedRef.current = true;
     setIsSynthesizing(true);
     setError(null);
+
+    // Update synthesis state in session
+    onSynthesisStateUpdate({
+      started: true,
+      progress: 0,
+      completedStepIndices: synthesisState.completedStepIndices,
+    });
 
     // Use the service
     synthesisRef.current = synthesisService.startSynthesis(
@@ -131,7 +136,15 @@ export function useSynthesis(
       {
         onProgress: (synthProgress) => {
           // Map synthesis progress (0-100) to overall progress (0-90)
-          setProgress(synthProgress * 0.9);
+          const newProgress = synthProgress * 0.9;
+          setProgress(newProgress);
+
+          // Update synthesis state in session
+          onSynthesisStateUpdate({
+            started: true,
+            progress: newProgress,
+            completedStepIndices: synthesisState.completedStepIndices,
+          });
         },
         onError: (message) => {
           setError(message);
@@ -146,6 +159,17 @@ export function useSynthesis(
           newMeditation.steps[sectionIndex].audioFileId = fileId;
           newMeditation.steps[sectionIndex].durationMs = durationMs;
           onMeditationUpdate(newMeditation);
+
+          // Update completed steps in synthesis state
+          const updatedCompletedSteps = [
+            ...synthesisState.completedStepIndices,
+            sectionIndex,
+          ];
+          onSynthesisStateUpdate({
+            started: true,
+            progress: progress,
+            completedStepIndices: updatedCompletedSteps,
+          });
 
           // Check if all speech steps have an audioFileId
           const allSpeechDone = newMeditation.steps
@@ -164,7 +188,27 @@ export function useSynthesis(
         synthesisRef.current.abort();
       }
     };
-  }, []); // Empty dependency array since we're using refs for changing values
+  }, [
+    meditation,
+    voiceSettings,
+    fileStorage,
+    sessionId,
+    onMeditationUpdate,
+    onSynthesisStateUpdate,
+    synthesisState,
+    progress,
+    isSynthesizing,
+    doFinalComplete,
+  ]);
+
+  // Start synthesis process when component mounts - only if it hasn't been started yet
+  useEffect(() => {
+    if (synthesisState.started) {
+      return;
+    }
+
+    startSynthesis();
+  }, [synthesisState.started, startSynthesis]);
 
   return {
     progress,
@@ -172,6 +216,7 @@ export function useSynthesis(
     isSynthesizing,
     isGeneratingFullAudio,
     handleCancel,
+    startSynthesis,
   };
 }
 
@@ -325,6 +370,8 @@ interface SynthesisProgressProps {
   fileStorage: FileStorageApi;
   sessionId?: string;
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
+  synthesisState: SynthesisState;
+  onSynthesisStateUpdate: (synthesisState: SynthesisState) => void;
 }
 
 export function SynthesisProgressStep({
@@ -335,6 +382,8 @@ export function SynthesisProgressStep({
   fileStorage,
   sessionId,
   onMeditationUpdate,
+  synthesisState,
+  onSynthesisStateUpdate,
 }: SynthesisProgressProps) {
   // Add state for currently playing section
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
@@ -345,12 +394,15 @@ export function SynthesisProgressStep({
     isSynthesizing,
     isGeneratingFullAudio,
     handleCancel,
+    startSynthesis,
   } = useSynthesis(
     meditation,
     voiceSettings,
     fileStorage,
     onMeditationUpdate,
+    onSynthesisStateUpdate,
     onCancel,
+    synthesisState,
     sessionId
   );
 
@@ -382,6 +434,16 @@ export function SynthesisProgressStep({
       <h1 className="text-3xl font-medium text-center mb-6">{title}</h1>
       <Card className="p-4 md:p-6 space-y-4 md:space-y-6">
         <div className="flex justify-end">
+          {synthesisState.started && !isSynthesizing && progress < 100 ? (
+            <Button
+              variant="outline"
+              onClick={startSynthesis}
+              className="gap-2 mr-2"
+            >
+              <PlayCircle className="h-4 w-4" />
+              Resume Synthesis
+            </Button>
+          ) : null}
           <Button
             variant="destructive"
             onClick={handleCancel}
