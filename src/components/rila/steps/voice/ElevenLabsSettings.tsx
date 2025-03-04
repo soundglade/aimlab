@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { TtsServiceConfig } from "./ttsTypes";
+import { Label } from "@/components/ui/label";
 
 // ElevenLabs-specific types
 export interface ElevenLabsSettings {
@@ -49,7 +50,7 @@ const elevenLabsVoices = [
 // ElevenLabs service configuration
 export const ELEVENLABS_SERVICE: TtsServiceConfig = {
   id: "elevenlabs",
-  displayName: "ElevenLabs TTS",
+  displayName: "ElevenLabs",
   defaultPreviewText: "Close your eyes and focus on your breathing.",
   defaultSettings: {
     voiceId: "11labs-soothing-female",
@@ -67,6 +68,7 @@ export function ElevenLabsSettingsSelection({
   return (
     <div className="space-y-6">
       <div>
+        <Label className="mb-2 block">Voice:</Label>
         <Select
           value={settings.voiceId}
           onValueChange={(id) => onChange({ ...settings, voiceId: id })}
@@ -92,7 +94,7 @@ export function ElevenLabsSettingsSelection({
 
       {/* Prosody Control */}
       <div>
-        <p className="mb-2">Prosody (speaking style):</p>
+        <Label className="mb-2 block">Prosody (speaking style):</Label>
         <Select
           value={settings.prosody || "normal"}
           onValueChange={(value) => onChange({ ...settings, prosody: value })}
@@ -114,7 +116,7 @@ export function ElevenLabsSettingsSelection({
 
       {/* Custom Voice ID */}
       <div>
-        <p className="mb-2">Custom Voice ID (optional):</p>
+        <Label className="mb-2 block">Custom Voice ID (optional):</Label>
         <Input
           placeholder="Enter your custom voice ID"
           value={settings.customVoiceId || ""}

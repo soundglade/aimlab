@@ -8,6 +8,7 @@ import {
   ElevenLabsSettingsSelection,
   ELEVENLABS_SERVICE,
 } from "./ElevenLabsSettings";
+import { Label } from "@/components/ui/label";
 
 // Collection of all available TTS services
 const TTS_SERVICES = [KOKORO_SERVICE, ELEVENLABS_SERVICE];
@@ -108,7 +109,7 @@ export function AdvancedVoiceSettings({
 
       {/* Preview Text Area */}
       <div>
-        <p className="mb-2">Preview Text:</p>
+        <Label className="mb-2 block">Preview Text:</Label>
         <Textarea
           placeholder="Enter text to preview"
           value={previewTextInput}

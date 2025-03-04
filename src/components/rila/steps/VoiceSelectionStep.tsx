@@ -20,6 +20,7 @@ const VOICE_PRESETS: TtsPreset[] = [
     name: "Meditation Default",
     description: "Nicole's whispering voice at a gentle pace",
     settings: {
+      model: "web",
       voiceId: "nicole",
       speed: 1.0,
     },
@@ -30,6 +31,7 @@ const VOICE_PRESETS: TtsPreset[] = [
     name: "Guided Relaxation",
     description: "James's soothing British voice at a slower pace",
     settings: {
+      model: "web",
       voiceId: "james",
       speed: 0.8,
     },
@@ -40,6 +42,7 @@ const VOICE_PRESETS: TtsPreset[] = [
     name: "Energetic Meditation",
     description: "Bella's passionate voice at a moderate pace",
     settings: {
+      model: "web",
       voiceId: "bella",
       speed: 1.2,
     },
@@ -171,7 +174,7 @@ export function VoiceSelectionStep({
                   size="sm"
                   onClick={() => handleModeToggle(false)}
                 >
-                  Simple Options
+                  Presets
                 </Button>
               </div>
             ) : (
@@ -197,39 +200,42 @@ export function VoiceSelectionStep({
                   className="space-y-4"
                 >
                   {VOICE_PRESETS.map((preset, index) => (
-                    <div key={preset.id} className="flex items-start space-x-3">
-                      <RadioGroupItem
-                        value={String(index)}
-                        id={preset.id}
-                        className="mt-1"
-                      />
-                      <div className="flex-grow">
-                        <Label
-                          htmlFor={preset.id}
-                          className="text-base font-medium cursor-pointer"
-                        >
-                          {preset.name}
-                        </Label>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {preset.description}
-                        </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-2"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            console.log("Playing preview with preset:", {
-                              ttsService: preset.ttsService,
-                              ttsSettings: preset.settings,
-                            });
-                          }}
-                        >
-                          <Play className="h-4 w-4 mr-1" />
-                          Preview
-                        </Button>
+                    <label
+                      key={preset.id}
+                      htmlFor={preset.id}
+                      className="cursor-pointer block"
+                    >
+                      <div className="flex items-start space-x-3 border rounded-md p-4 hover:bg-muted transition-colors">
+                        <RadioGroupItem
+                          value={String(index)}
+                          id={preset.id}
+                          className="mt-1"
+                        />
+                        <div className="flex-grow">
+                          <span className="text-base font-medium">
+                            {preset.name}
+                          </span>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {preset.description}
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              console.log("Playing preview with preset:", {
+                                ttsService: preset.ttsService,
+                                ttsSettings: preset.settings,
+                              });
+                            }}
+                          >
+                            <Play className="h-4 w-4 mr-1" />
+                            Preview
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               </div>
