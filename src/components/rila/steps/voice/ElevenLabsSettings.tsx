@@ -55,26 +55,6 @@ export const ELEVENLABS_SERVICE: TtsServiceConfig = {
     voiceId: "11labs-soothing-female",
     prosody: "normal",
   },
-  presets: [
-    {
-      id: "whispered-meditation",
-      name: "Whispered Meditation",
-      description: "Soothing Female voice with whispered prosody",
-      settings: {
-        voiceId: "11labs-soothing-female",
-        prosody: "whispered",
-      },
-    },
-    {
-      id: "calm-guidance",
-      name: "Calm Guidance",
-      description: "Calm Male voice with normal prosody",
-      settings: {
-        voiceId: "11labs-calm-male",
-        prosody: "normal",
-      },
-    },
-  ],
 };
 
 export function ElevenLabsSettingsSelection({

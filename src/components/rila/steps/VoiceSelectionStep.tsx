@@ -4,16 +4,48 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Play, Settings2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Import TTS services and types
-import { VoiceSettings } from "./voice/ttsTypes";
+import { VoiceSettings, TtsPreset } from "./voice/ttsTypes";
 import { KOKORO_SERVICE } from "./voice/KokoroSettings";
 import { ELEVENLABS_SERVICE } from "./voice/ElevenLabsSettings";
 import { AdvancedVoiceSettings } from "./voice/AdvancedVoiceSettings";
 
 // Collection of all available TTS services
 const TTS_SERVICES = [KOKORO_SERVICE, ELEVENLABS_SERVICE];
+
+const VOICE_PRESETS: TtsPreset[] = [
+  {
+    id: "meditation-default",
+    name: "Meditation Default",
+    description: "Nicole's whispering voice at a gentle pace",
+    settings: {
+      voiceId: "nicole",
+      speed: 1.0,
+    },
+    ttsService: "kokoro",
+  },
+  {
+    id: "guided-relaxation",
+    name: "Guided Relaxation",
+    description: "James's soothing British voice at a slower pace",
+    settings: {
+      voiceId: "james",
+      speed: 0.8,
+    },
+    ttsService: "kokoro",
+  },
+  {
+    id: "energetic-meditation",
+    name: "Energetic Meditation",
+    description: "Bella's passionate voice at a moderate pace",
+    settings: {
+      voiceId: "bella",
+      speed: 1.2,
+    },
+    ttsService: "kokoro",
+  },
+];
 
 interface VoiceSelectionProps {
   voiceSettings?: VoiceSettings;
@@ -55,14 +87,15 @@ export function VoiceSelectionStep({
       setIsAdvancedMode(voiceSettings.isAdvancedMode);
 
       // Find matching preset for simple mode
-      if (
-        !voiceSettings.isAdvancedMode &&
-        voiceSettings.ttsService === KOKORO_SERVICE.id
-      ) {
-        const presetIndex = KOKORO_SERVICE.presets.findIndex((preset) => {
+      if (!voiceSettings.isAdvancedMode) {
+        const presetIndex = VOICE_PRESETS.findIndex((preset) => {
           const presetVoiceId = preset.settings.voiceId;
           const currentVoiceId = voiceSettings.ttsSettings.voiceId;
-          return presetVoiceId === currentVoiceId;
+          const presetService = preset.ttsService;
+          const currentService = voiceSettings.ttsService;
+          return (
+            presetVoiceId === currentVoiceId && presetService === currentService
+          );
         });
 
         if (presetIndex !== -1) {
@@ -77,23 +110,31 @@ export function VoiceSelectionStep({
     setIsAdvancedMode(advanced);
 
     if (!advanced) {
-      // Switch to Kokoro simple mode (always use Kokoro for simple mode)
+      // Switch to simple mode using the first preset by default
       let bestPresetIndex = 0;
 
-      // Try to find a matching preset if already using Kokoro
-      if (settings.ttsService === KOKORO_SERVICE.id) {
-        const matchingPreset = KOKORO_SERVICE.presets.findIndex(
+      // Try to find a matching preset if already using the same service
+      const currentService = settings.ttsService;
+      const matchingPresets = VOICE_PRESETS.filter(
+        (p) => p.ttsService === currentService
+      );
+
+      if (matchingPresets.length > 0) {
+        const matchingPreset = matchingPresets.findIndex(
           (p) => p.settings.voiceId === settings.ttsSettings.voiceId
         );
         if (matchingPreset !== -1) {
-          bestPresetIndex = matchingPreset;
+          bestPresetIndex = VOICE_PRESETS.findIndex(
+            (p) => p === matchingPresets[matchingPreset]
+          );
         }
       }
 
       setSelectedPreset(bestPresetIndex);
+      const selectedPresetData = VOICE_PRESETS[bestPresetIndex];
       setSettings({
-        ttsService: KOKORO_SERVICE.id,
-        ttsSettings: KOKORO_SERVICE.presets[bestPresetIndex].settings,
+        ttsService: selectedPresetData.ttsService,
+        ttsSettings: selectedPresetData.settings,
         isAdvancedMode: false,
       });
     } else {
@@ -108,9 +149,10 @@ export function VoiceSelectionStep({
   // Handle preset selection in simple mode
   const handlePresetChange = (index: number) => {
     setSelectedPreset(index);
+    const selectedPresetData = VOICE_PRESETS[index];
     setSettings({
-      ttsService: KOKORO_SERVICE.id,
-      ttsSettings: KOKORO_SERVICE.presets[index].settings,
+      ttsService: selectedPresetData.ttsService,
+      ttsSettings: selectedPresetData.settings,
       isAdvancedMode: false,
     });
   };
@@ -146,7 +188,7 @@ export function VoiceSelectionStep({
           </div>
 
           {!isAdvancedMode ? (
-            // Simple Mode - Preset Voice Options (always Kokoro)
+            // Simple Mode - Preset Voice Options (now using VOICE_PRESETS)
             <div className="space-y-6">
               <div>
                 <RadioGroup
@@ -154,7 +196,7 @@ export function VoiceSelectionStep({
                   onValueChange={(value) => handlePresetChange(parseInt(value))}
                   className="space-y-4"
                 >
-                  {KOKORO_SERVICE.presets.map((preset, index) => (
+                  {VOICE_PRESETS.map((preset, index) => (
                     <div key={preset.id} className="flex items-start space-x-3">
                       <RadioGroupItem
                         value={String(index)}
@@ -178,7 +220,7 @@ export function VoiceSelectionStep({
                           onClick={(e) => {
                             e.preventDefault();
                             console.log("Playing preview with preset:", {
-                              ttsService: KOKORO_SERVICE.id,
+                              ttsService: preset.ttsService,
                               ttsSettings: preset.settings,
                             });
                           }}

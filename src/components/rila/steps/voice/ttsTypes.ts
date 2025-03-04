@@ -3,7 +3,6 @@ export interface TtsServiceConfig {
   displayName: string;
   defaultPreviewText: string;
   defaultSettings: any;
-  presets: TtsPreset[];
 }
 
 export interface TtsPreset {
@@ -11,6 +10,7 @@ export interface TtsPreset {
   name: string;
   description: string;
   settings: any;
+  ttsService: string;
 }
 
 export type VoiceSettings = {

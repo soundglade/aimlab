@@ -70,35 +70,6 @@ export const KOKORO_SERVICE: TtsServiceConfig = {
     voiceId: "nicole",
     speed: 1.0,
   },
-  presets: [
-    {
-      id: "meditation-default",
-      name: "Meditation Default",
-      description: "Nicole's whispering voice at a gentle pace",
-      settings: {
-        voiceId: "nicole",
-        speed: 1.0,
-      },
-    },
-    {
-      id: "guided-relaxation",
-      name: "Guided Relaxation",
-      description: "James's soothing British voice at a slower pace",
-      settings: {
-        voiceId: "james",
-        speed: 0.8,
-      },
-    },
-    {
-      id: "energetic-meditation",
-      name: "Energetic Meditation",
-      description: "Bella's passionate voice at a moderate pace",
-      settings: {
-        voiceId: "bella",
-        speed: 1.2,
-      },
-    },
-  ],
 };
 
 export function KokoroSettingsSelection({
