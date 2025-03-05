@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Meditation } from "../Rila";
 import { useState, useEffect } from "react";
 
@@ -106,23 +108,22 @@ export function FormatReviewStep({
               <div key={index} className={margin}>
                 {step.type === "heading" && step.level !== 1 && (
                   <div className={getHeadingStyle(step.level || 2)}>
-                    <input
-                      type="text"
+                    <Input
                       value={editableTexts[index] || ""}
                       onChange={(e) => handleTextChange(index, e.target.value)}
                       onBlur={() => handleBlur(index)}
-                      className="w-full bg-transparent border-none focus:outline-none focus:ring-0"
+                      className="w-full border-none shadow-none focus-visible:ring-0 h-auto p-0"
                     />
                   </div>
                 )}
 
                 {step.type === "speech" && (
                   <Card className="p-3 rounded-sm border shadow-none bg-card/50">
-                    <textarea
+                    <Textarea
                       value={editableTexts[index] || ""}
                       onChange={(e) => handleTextChange(index, e.target.value)}
                       onBlur={() => handleBlur(index)}
-                      className="w-full bg-transparent border-none focus:outline-none focus:ring-0 resize-none min-h-[24px]"
+                      className="w-full border-none shadow-none focus-visible:ring-0 resize-none min-h-[24px] p-0"
                       rows={Math.max(
                         1,
                         (editableTexts[index] || "").split("\n").length
