@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Meditation } from "../Rila";
+import { useState, useEffect } from "react";
 
 // Using more consistent spacing from Tailwind's scale
 const getHeadingMargin = (index: number, level: number) => {
@@ -30,14 +31,65 @@ const getHeadingStyle = (level: number) => {
 
 interface FormatReviewStepProps {
   meditation: Meditation;
+  onMeditationUpdate: (updatedMeditation: Meditation) => void;
   onConfirm: () => void;
 }
 
 export function FormatReviewStep({
   meditation,
+  onMeditationUpdate,
   onConfirm,
 }: FormatReviewStepProps) {
   const { title, steps } = meditation;
+
+  // Local state for editable text
+  const [editableTexts, setEditableTexts] = useState<{ [key: number]: string }>(
+    steps.reduce((acc, step, index) => {
+      if (step.type === "speech" || step.type === "heading") {
+        acc[index] = step.text;
+      }
+      return acc;
+    }, {} as { [key: number]: string })
+  );
+
+  // Update local state when meditation prop changes
+  useEffect(() => {
+    setEditableTexts(
+      steps.reduce((acc, step, index) => {
+        if (step.type === "speech" || step.type === "heading") {
+          acc[index] = step.text;
+        }
+        return acc;
+      }, {} as { [key: number]: string })
+    );
+  }, [steps]);
+
+  // Handle text change in the input
+  const handleTextChange = (index: number, text: string) => {
+    setEditableTexts((prev) => ({
+      ...prev,
+      [index]: text,
+    }));
+  };
+
+  // Update meditation when input loses focus
+  const handleBlur = (index: number) => {
+    const updatedSteps = [...steps];
+    if (
+      updatedSteps[index].type === "speech" ||
+      updatedSteps[index].type === "heading"
+    ) {
+      updatedSteps[index] = {
+        ...updatedSteps[index],
+        text: editableTexts[index],
+      };
+
+      onMeditationUpdate({
+        ...meditation,
+        steps: updatedSteps,
+      });
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
@@ -54,13 +106,28 @@ export function FormatReviewStep({
               <div key={index} className={margin}>
                 {step.type === "heading" && step.level !== 1 && (
                   <div className={getHeadingStyle(step.level || 2)}>
-                    {step.text}
+                    <input
+                      type="text"
+                      value={editableTexts[index] || ""}
+                      onChange={(e) => handleTextChange(index, e.target.value)}
+                      onBlur={() => handleBlur(index)}
+                      className="w-full bg-transparent border-none focus:outline-none focus:ring-0"
+                    />
                   </div>
                 )}
 
                 {step.type === "speech" && (
                   <Card className="p-3 rounded-sm border shadow-none bg-card/50">
-                    <div>{step.text}</div>
+                    <textarea
+                      value={editableTexts[index] || ""}
+                      onChange={(e) => handleTextChange(index, e.target.value)}
+                      onBlur={() => handleBlur(index)}
+                      className="w-full bg-transparent border-none focus:outline-none focus:ring-0 resize-none min-h-[24px]"
+                      rows={Math.max(
+                        1,
+                        (editableTexts[index] || "").split("\n").length
+                      )}
+                    />
                   </Card>
                 )}
 

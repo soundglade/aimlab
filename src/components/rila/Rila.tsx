@@ -164,6 +164,11 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
   };
 
+  const handleMeditationUpdate = (updatedMeditation: Meditation) => {
+    updateSession({
+      meditation: updatedMeditation,
+    });
+  };
   // For conciseness in the render logic
   const { step } = session;
 
@@ -189,6 +194,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
         return (
           <FormatReviewStep
             meditation={session.meditation}
+            onMeditationUpdate={handleMeditationUpdate}
             onConfirm={() =>
               updateSession({
                 step: "voice",
@@ -222,11 +228,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
             onComplete={handleCompleteSynthesis}
             fileStorage={fileStorage}
             sessionId={sessionId}
-            onMeditationUpdate={(updatedMeditation) => {
-              updateSession({
-                meditation: updatedMeditation,
-              });
-            }}
+            onMeditationUpdate={handleMeditationUpdate}
           />
         );
       case "player":
