@@ -13,6 +13,7 @@ import {
   Edit,
   Save,
   Loader,
+  PenSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Meditation, MeditationStep, SynthesisState } from "./Rila";
@@ -106,7 +107,7 @@ export function MeditationWorkspace({
   voiceSettings: initialVoiceSettings,
   onVoiceSettingsUpdate,
 }: MeditationWorkspaceProps) {
-  // State for voice settings
+  // Voice settings state
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(
     initialVoiceSettings || {
       ttsService: "kokoro",
@@ -118,28 +119,6 @@ export function MeditationWorkspace({
       isAdvancedMode: false,
     }
   );
-
-  // State for editing
-  const [editMode, setEditMode] = useState(false);
-  const [editableTexts, setEditableTexts] = useState<{ [key: number]: string }>(
-    {}
-  );
-  const [editablePauseDurations, setEditablePauseDurations] = useState<{
-    [key: number]: number;
-  }>({});
-
-  // State for playback
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTimeMs, setCurrentTimeMs] = useState(0);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // State for sharing
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [isSharing, setIsSharing] = useState(false);
-
-  // State for voice selection
   const [selectedPreset, setSelectedPreset] = useState<string>(() => {
     if (initialVoiceSettings) {
       // Try to find a matching preset
@@ -155,21 +134,59 @@ export function MeditationWorkspace({
   const [showAdvancedVoiceSettings, setShowAdvancedVoiceSettings] =
     useState(false);
 
-  // Audio preview functionality
-  const { currentlyPlaying, previewSection } = useAudioPreview(
-    meditation,
-    fileStorage
+  // Audio playback state
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
+    null
   );
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTimeMs, setCurrentTimeMs] = useState(0);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+  const [isSharing, setIsSharing] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
+  // Editable text state - now we'll keep this always available
+  const [editableTexts, setEditableTexts] = useState<Record<number, string>>(
+    {}
+  );
+  const [editablePauseDurations, setEditablePauseDurations] = useState<
+    Record<number, number>
+  >({});
+
+  // Track which steps are being edited
+  const [editingStepIndex, setEditingStepIndex] = useState<number | null>(null);
+  const [editingTitle, setEditingTitle] = useState(false);
+
+  // Initialize editable texts from meditation steps
+  useEffect(() => {
+    const texts: Record<number, string> = {};
+    const pauseDurations: Record<number, number> = {};
+
+    meditation.steps.forEach((step, index) => {
+      if (step.type === "speech" || step.type === "heading") {
+        texts[index] = step.text;
+      } else if (step.type === "pause") {
+        pauseDurations[index] = step.durationMs ? step.durationMs / 1000 : 1;
+      }
+    });
+
+    setEditableTexts(texts);
+    setEditablePauseDurations(pauseDurations);
+  }, [meditation]);
+
+  // Synthesis state and derived values
+  const isSynthesizing =
+    synthesisState.started && synthesisState.progress < 100;
+  const isGeneratingFullAudio =
+    synthesisState.progress >= 90 && synthesisState.progress < 100;
+  const isSynthesisComplete =
+    synthesisState.started && synthesisState.progress === 100;
+  const isUILocked = isSynthesizing || isGeneratingFullAudio;
+  const progress = synthesisState.progress;
 
   // Synthesis functionality
-  const {
-    progress,
-    error,
-    isSynthesizing,
-    isGeneratingFullAudio,
-    handleCancel,
-    startSynthesis,
-  } = useSynthesis(
+  const { handleCancel, startSynthesis } = useSynthesis(
     meditation,
     voiceSettings,
     fileStorage,
@@ -188,7 +205,10 @@ export function MeditationWorkspace({
     false // Don't start synthesis automatically
   );
 
-  // Update voice settings in session when they change
+  // Audio preview functionality
+  const { previewSection } = useAudioPreview(meditation, fileStorage);
+
+  // Update voice settings
   const updateVoiceSettings = (newSettings: VoiceSettings) => {
     setVoiceSettings(newSettings);
     if (onVoiceSettingsUpdate) {
@@ -196,160 +216,148 @@ export function MeditationWorkspace({
     }
   };
 
-  // Initialize editable texts when meditation changes
-  useEffect(() => {
-    setEditableTexts(
-      meditation.steps.reduce((acc, step, index) => {
-        if (step.type === "speech" || step.type === "heading") {
-          acc[index] = step.text;
-        }
-        return acc;
-      }, {} as { [key: number]: string })
-    );
-
-    setEditablePauseDurations(
-      meditation.steps.reduce((acc, step, index) => {
-        if (step.type === "pause") {
-          acc[index] = step.duration;
-        }
-        return acc;
-      }, {} as { [key: number]: number })
-    );
-  }, [meditation]);
-
-  // Load audio when meditation has a full audio file
+  // Load audio when synthesis is complete
   useEffect(() => {
     const loadAudio = async () => {
-      if (meditation.fullAudioFileId) {
+      if (isSynthesisComplete && meditation.fullAudioFileId && !audioUrl) {
         try {
           const storedFile = await fileStorage.getFile(
             meditation.fullAudioFileId
           );
           if (storedFile && storedFile.data) {
-            const url = createAudioUrl(storedFile.data, "audio/wav");
+            const url = createAudioUrl(storedFile.data);
             setAudioUrl(url);
 
-            // Create audio element
             const audio = new Audio(url);
-            audioRef.current = audio;
+            setAudioElement(audio);
 
-            // Set up event listeners
             audio.addEventListener("timeupdate", () => {
               setCurrentTimeMs(audio.currentTime * 1000);
             });
 
             audio.addEventListener("ended", () => {
               setIsPlaying(false);
-              setCurrentTimeMs(0);
             });
           }
         } catch (error) {
-          console.error("Error loading audio:", error);
+          console.error("Failed to load audio:", error);
         }
       }
     };
 
     loadAudio();
+  }, [isSynthesisComplete, meditation.fullAudioFileId, fileStorage, audioUrl]);
 
-    return () => {
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-      }
-
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, [meditation.fullAudioFileId, fileStorage]);
-
-  // Handle text change in the input
+  // Handle text changes and auto-save
   const handleTextChange = (index: number, text: string) => {
-    setEditableTexts((prev) => ({
-      ...prev,
-      [index]: text,
-    }));
+    setEditableTexts((prev) => ({ ...prev, [index]: text }));
   };
 
-  // Handle pause duration change
+  // Auto-save on blur
+  const handleTextBlur = (index: number) => {
+    saveEditForStep(index);
+  };
+
+  // Handle pause duration changes and auto-save
   const handlePauseDurationChange = (index: number, duration: number) => {
-    setEditablePauseDurations((prev) => ({
-      ...prev,
-      [index]: duration,
-    }));
+    setEditablePauseDurations((prev) => ({ ...prev, [index]: duration }));
   };
 
-  // Save edits
-  const saveEdits = () => {
-    const updatedSteps = [...meditation.steps];
+  // Auto-save pause duration on change
+  const handlePauseDurationBlur = (index: number) => {
+    saveEditForStep(index);
+  };
 
-    // Update text content
-    Object.entries(editableTexts).forEach(([indexStr, text]) => {
-      const index = parseInt(indexStr);
+  // Save edits for a specific step
+  const saveEditForStep = (index: number) => {
+    if (isUILocked) return;
+
+    const updatedSteps = [...meditation.steps];
+    const step = updatedSteps[index];
+
+    if (step.type === "speech" || step.type === "heading") {
       if (
-        updatedSteps[index].type === "speech" ||
-        updatedSteps[index].type === "heading"
+        editableTexts[index] !== undefined &&
+        editableTexts[index] !== step.text
       ) {
         updatedSteps[index] = {
-          ...updatedSteps[index],
-          text,
+          ...step,
+          text: editableTexts[index],
+          // Clear audio file ID if text has changed
+          audioFileId: undefined,
         };
       }
-    });
-
-    // Update pause durations
-    Object.entries(editablePauseDurations).forEach(([indexStr, duration]) => {
-      const index = parseInt(indexStr);
-      if (updatedSteps[index].type === "pause") {
+    } else if (step.type === "pause") {
+      if (
+        editablePauseDurations[index] !== undefined &&
+        editablePauseDurations[index] * 1000 !== step.durationMs
+      ) {
         updatedSteps[index] = {
-          ...updatedSteps[index],
-          duration,
-          durationMs: duration * 1000,
+          ...step,
+          durationMs: editablePauseDurations[index] * 1000,
         };
       }
-    });
+    }
 
-    onMeditationUpdate({
-      ...meditation,
-      steps: updatedSteps,
-    });
+    // Only update if changes were made
+    if (JSON.stringify(updatedSteps) !== JSON.stringify(meditation.steps)) {
+      const updatedMeditation = {
+        ...meditation,
+        steps: updatedSteps,
+        // Clear full audio file ID if any step has changed
+        fullAudioFileId: undefined,
+        timeline: undefined,
+      };
 
-    setEditMode(false);
+      onMeditationUpdate(updatedMeditation);
+
+      // Reset synthesis state if changes were made
+      if (isSynthesisComplete) {
+        onSynthesisStateUpdate({
+          started: false,
+          progress: 0,
+          completedStepIndices: [],
+        });
+      }
+    }
   };
 
-  // Handle voice preset selection
+  // Handle voice preset change
   const handlePresetChange = (presetId: string) => {
     setSelectedPreset(presetId);
+
     const preset = VOICE_PRESETS.find((p) => p.id === presetId);
     if (preset) {
-      const newSettings = {
+      updateVoiceSettings({
         ttsService: preset.ttsService,
-        ttsSettings: preset.settings,
+        ttsSettings: {
+          ...voiceSettings.ttsSettings,
+          ...preset.settings,
+        },
         isAdvancedMode: false,
-      };
-      updateVoiceSettings(newSettings);
+      });
     }
   };
 
   // Handle playback controls
   const togglePlayback = () => {
-    if (!audioRef.current || !audioUrl) return;
+    if (!audioElement) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      audioElement.pause();
     } else {
-      audioRef.current.play();
+      audioElement.play();
     }
 
     setIsPlaying(!isPlaying);
   };
 
   const handleRestart = () => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = 0;
+    if (!audioElement) return;
+    audioElement.currentTime = 0;
     setCurrentTimeMs(0);
     if (!isPlaying) {
-      audioRef.current.play();
+      audioElement.play();
       setIsPlaying(true);
     }
   };
@@ -362,7 +370,7 @@ export function MeditationWorkspace({
           meditation.fullAudioFileId
         );
         if (storedFile && storedFile.data) {
-          const url = createAudioUrl(storedFile.data, "audio/wav");
+          const url = createAudioUrl(storedFile.data);
           downloadAudioFile(url, `${meditation.title}.wav`);
         }
       } catch (error) {
@@ -376,8 +384,10 @@ export function MeditationWorkspace({
     setIsSharing(true);
     try {
       const response = await onShareMeditation();
-      setShareUrl(response.shareUrl);
-      setShareDialogOpen(true);
+      if (response.shareUrl) {
+        setShareUrl(response.shareUrl);
+        setShareDialogOpen(true);
+      }
     } catch (error) {
       console.error("Error sharing meditation:", error);
     } finally {
@@ -385,24 +395,28 @@ export function MeditationWorkspace({
     }
   };
 
-  // Handle synthesis
+  // Handle start synthesis
   const handleStartSynthesis = () => {
-    // Reset synthesis state
-    onSynthesisStateUpdate({
-      started: false,
-      progress: 0,
-      completedStepIndices: [],
-    });
-
-    // Start synthesis
     startSynthesis();
   };
 
-  // Determine if synthesis is complete
-  const isSynthesisComplete = meditation.fullAudioFileId !== undefined;
+  // Start editing a step
+  const startEditing = (index: number) => {
+    if (isUILocked) return;
+    setEditingStepIndex(index);
+  };
 
-  // Determine if UI should be locked during synthesis
-  const isUILocked = isSynthesizing || isGeneratingFullAudio;
+  // Start editing the title
+  const startEditingTitle = () => {
+    if (isUILocked) return;
+    setEditingTitle(true);
+  };
+
+  // Finish editing and save changes
+  const finishEditing = () => {
+    setEditingStepIndex(null);
+    setEditingTitle(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -412,32 +426,34 @@ export function MeditationWorkspace({
           <div className="flex h-14 items-center justify-between">
             {/* Left side - Meditation Title */}
             <div className="flex items-center">
-              <h1 className="text-lg font-semibold truncate max-w-[200px] sm:max-w-xs">
-                {meditation.title}
-              </h1>
+              {editingTitle ? (
+                <Input
+                  value={meditation.title}
+                  onChange={(e) => {
+                    const updatedMeditation = {
+                      ...meditation,
+                      title: e.target.value,
+                    };
+                    onMeditationUpdate(updatedMeditation);
+                  }}
+                  onBlur={() => finishEditing()}
+                  autoFocus
+                  className="font-semibold text-lg border-none focus-visible:ring-0 p-0 max-w-[200px] sm:max-w-xs"
+                  disabled={isUILocked}
+                />
+              ) : (
+                <div
+                  className="group relative cursor-pointer font-semibold text-lg truncate max-w-[200px] sm:max-w-xs"
+                  onClick={() => startEditingTitle()}
+                >
+                  {meditation.title}
+                  <PenSquare className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-4 h-3.5 w-3.5 opacity-0 group-hover:opacity-70 transition-opacity" />
+                </div>
+              )}
             </div>
 
             {/* Right side - Action Buttons */}
             <div className="flex items-center gap-2">
-              {!isUILocked && !editMode && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditMode(true)}
-                  disabled={isUILocked}
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-              )}
-
-              {!isUILocked && editMode && (
-                <Button size="sm" onClick={saveEdits} disabled={isUILocked}>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-              )}
-
               {!isUILocked && !isSynthesisComplete && (
                 <div className="flex items-center gap-2">
                   <select
@@ -580,41 +596,102 @@ export function MeditationWorkspace({
                 ? "processing"
                 : "pending";
 
-            if (editMode) {
-              // Editable view
-              if (step.type === "heading") {
-                return (
-                  <div key={index} className="space-y-1">
-                    <Label htmlFor={`heading-${index}`}>Heading</Label>
+            if (step.type === "heading") {
+              return (
+                <div key={index} className="space-y-1">
+                  <Label
+                    htmlFor={`heading-${index}`}
+                    className="text-xs text-muted-foreground"
+                  >
+                    Heading
+                  </Label>
+                  {editingStepIndex === index ? (
                     <Input
                       id={`heading-${index}`}
                       value={editableTexts[index] || ""}
                       onChange={(e) => handleTextChange(index, e.target.value)}
+                      onBlur={() => {
+                        handleTextBlur(index);
+                        finishEditing();
+                      }}
+                      autoFocus
                       className={cn(
                         "font-medium",
                         step.level === 1 ? "text-xl" : "text-lg"
                       )}
+                      disabled={isUILocked}
                     />
+                  ) : (
+                    <div
+                      className={cn(
+                        "group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors",
+                        "font-medium",
+                        step.level === 1 ? "text-xl" : "text-lg"
+                      )}
+                      onClick={() => startEditing(index)}
+                    >
+                      {step.text}
+                      <PenSquare className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
+                    </div>
+                  )}
+                </div>
+              );
+            } else if (step.type === "speech") {
+              return (
+                <div key={index} className="space-y-1">
+                  <div className="flex justify-between">
+                    <Label
+                      htmlFor={`speech-${index}`}
+                      className="text-xs text-muted-foreground"
+                    >
+                      Speech
+                    </Label>
+                    {status === "complete" && step.audioFileId && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => previewSection(index)}
+                        className="h-5 px-2 text-xs"
+                      >
+                        <Play className="h-3 w-3 mr-1" />
+                        Preview
+                      </Button>
+                    )}
                   </div>
-                );
-              } else if (step.type === "speech") {
-                return (
-                  <div key={index} className="space-y-1">
-                    <Label htmlFor={`speech-${index}`}>Speech</Label>
+                  {editingStepIndex === index ? (
                     <Textarea
                       id={`speech-${index}`}
                       value={editableTexts[index] || ""}
                       onChange={(e) => handleTextChange(index, e.target.value)}
+                      onBlur={() => {
+                        handleTextBlur(index);
+                        finishEditing();
+                      }}
+                      autoFocus
                       className="min-h-24"
+                      disabled={isUILocked}
                     />
-                  </div>
-                );
-              } else if (step.type === "pause") {
-                return (
-                  <div key={index} className="space-y-1">
-                    <Label htmlFor={`pause-${index}`}>
-                      Pause Duration (seconds)
-                    </Label>
+                  ) : (
+                    <div
+                      className="group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors whitespace-pre-wrap"
+                      onClick={() => startEditing(index)}
+                    >
+                      {step.text}
+                      <PenSquare className="absolute right-2 top-4 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
+                    </div>
+                  )}
+                </div>
+              );
+            } else if (step.type === "pause") {
+              return (
+                <div key={index} className="space-y-1">
+                  <Label
+                    htmlFor={`pause-${index}`}
+                    className="text-xs text-muted-foreground"
+                  >
+                    Pause Duration (seconds)
+                  </Label>
+                  {editingStepIndex === index ? (
                     <div className="flex items-center gap-4">
                       <Slider
                         id={`pause-${index}`}
@@ -625,39 +702,37 @@ export function MeditationWorkspace({
                         onValueChange={(value) =>
                           handlePauseDurationChange(index, value[0])
                         }
+                        onValueCommit={() => {
+                          handlePauseDurationBlur(index);
+                          finishEditing();
+                        }}
                         className="flex-1"
+                        disabled={isUILocked}
                       />
                       <span className="w-12 text-right">
                         {editablePauseDurations[index] || 1}s
                       </span>
                     </div>
-                  </div>
-                );
-              } else {
-                // For other step types, just display them
-                return (
-                  <MeditationStepDisplay
-                    key={index}
-                    section={step}
-                    status={status}
-                    onPreview={undefined}
-                  />
-                );
-              }
+                  ) : (
+                    <div
+                      className="group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors"
+                      onClick={() => startEditing(index)}
+                    >
+                      Pause for {step.durationMs ? step.durationMs / 1000 : 1}{" "}
+                      seconds
+                      <PenSquare className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
+                    </div>
+                  )}
+                </div>
+              );
             } else {
-              // Display view
+              // For other step types, just display them
               return (
                 <MeditationStepDisplay
                   key={index}
                   section={step}
                   status={status}
-                  onPreview={
-                    step.type === "speech" &&
-                    "audioFileId" in step &&
-                    step.audioFileId
-                      ? () => previewSection(index)
-                      : undefined
-                  }
+                  onPreview={undefined}
                 />
               );
             }
