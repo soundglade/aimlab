@@ -5,10 +5,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-center p-4">
       <main className="max-w-4xl w-full space-y-8 text-center">
-        <h1 className="text-4xl text-foreground sm:text-5xl md:text-6xl">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
           AI Meditation Lab
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Welcome to the future of meditation. Explore AI-powered experiments to
           enhance your mindfulness practice.
         </p>

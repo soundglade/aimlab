@@ -147,11 +147,7 @@ export function PracticeSetupStep({
         )}
 
         <div className="flex justify-center pt-2">
-          <Button
-            type="submit"
-            className="px-10 py-6 text-base"
-            disabled={isLoading}
-          >
+          <Button type="submit" size="lg" disabled={isLoading}>
             {isLoading ? "Processing..." : "Read Script"}
           </Button>
         </div>
