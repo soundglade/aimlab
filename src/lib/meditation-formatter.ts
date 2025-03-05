@@ -139,6 +139,29 @@ Steps to follow:
 Return NOTHING else, no extra commentary. Output MUST be valid JSON conforming to the schema.
 `;
 
+// Post-refinement function to clean up the formatted meditation
+const refineResult = (
+  result: MeditationFormatterResult
+): MeditationFormatterResult => {
+  if (!result.isRejected && result.script) {
+    removeEmojisFromSpeech(result.script);
+  }
+
+  return result;
+};
+
+const removeEmojisFromSpeech = (script: FormattedScript) => {
+  script.steps = script.steps.map((step) => {
+    if (step.type === "speech") {
+      // Regex to remove all emojis
+      step.text = step.text.replace(/[\p{Emoji}]/gu, "");
+      // Clean up any double spaces that might result from emoji removal
+      step.text = step.text.replace(/\s+/g, " ").trim();
+    }
+    return step;
+  });
+};
+
 // Format the meditation script
 const formatMeditationScript = async (
   rawScript: string
@@ -168,7 +191,7 @@ const formatMeditationScript = async (
       };
     }
 
-    return parsed;
+    return refineResult(parsed);
   } catch (error) {
     return {
       isRejected: true,
