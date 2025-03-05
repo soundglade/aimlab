@@ -2,17 +2,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import type { FormattedScript } from "@/lib/meditation-formatter";
+import type { SessionStorageApi } from "@/lib/session-storage";
 import { Meditation } from "../Rila";
+import { SavedMeditations } from "./setup/SavedMeditations";
 
 interface PracticeSetupProps {
   onScriptCreated: (script: FormattedScript) => void;
   isPrivate: boolean;
   onPrivateChange: (isPrivate: boolean) => void;
   onLoadSession?: (sessionId: string) => void;
-  savedSessions: Record<string, { meditation: Meditation }> | null;
+  sessionStorage: SessionStorageApi;
 }
 
 export function PracticeSetupStep({
@@ -20,7 +21,7 @@ export function PracticeSetupStep({
   isPrivate,
   onPrivateChange,
   onLoadSession,
-  savedSessions,
+  sessionStorage,
 }: PracticeSetupProps) {
   const [script, setScript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -121,42 +122,12 @@ export function PracticeSetupStep({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {!isPrivate &&
-          savedSessions &&
-          Object.keys(savedSessions).length > 0 && (
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Your saved meditations:
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {Object.entries(savedSessions).map(([id, data], index) => (
-                    <Button
-                      key={id}
-                      type="button"
-                      onClick={() => handleLoadSession(id)}
-                      variant="outline"
-                      className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors"
-                    >
-                      <div className="flex items-center gap-2 text-left overflow-hidden">
-                        <Badge
-                          variant="secondary"
-                          className="h-6 min-w-6 flex items-center justify-center rounded-full text-xs shrink-0"
-                        >
-                          {index + 1}
-                        </Badge>
-                        <span className="truncate">
-                          {data.meditation.title}
-                        </span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+        {!isPrivate && (
+          <SavedMeditations
+            sessionStorage={sessionStorage}
+            onLoadSession={handleLoadSession}
+          />
+        )}
 
         <Card>
           <CardContent>

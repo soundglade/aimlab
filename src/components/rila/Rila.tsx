@@ -99,11 +99,6 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     { step: "input" }
   );
 
-  // Load saved sessions directly
-  const savedSessions = sessionStorage.getAllSessions<{
-    meditation: Meditation;
-  }>();
-
   // Clean up old sessions on component mount
   useEffect(() => {
     sessionStorage.cleanupOldSessions();
@@ -187,7 +182,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
             }}
             onScriptCreated={handleScriptCreated}
             onLoadSession={handleLoadSession}
-            savedSessions={savedSessions}
+            sessionStorage={sessionStorage}
           />
         );
       case "review":
