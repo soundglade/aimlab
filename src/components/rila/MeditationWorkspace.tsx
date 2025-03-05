@@ -146,6 +146,29 @@ export function MeditationWorkspace({
   const [editingStepIndex, setEditingStepIndex] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState(false);
 
+  // Add selected step state
+  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(
+    null
+  );
+
+  // Add a state to detect if we're on a touch device
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    // Simple detection for touch devices
+    const detectTouch = () => {
+      setIsTouchDevice(true);
+      // Remove the event listener once we know it's a touch device
+      window.removeEventListener("touchstart", detectTouch);
+    };
+
+    window.addEventListener("touchstart", detectTouch);
+
+    return () => {
+      window.removeEventListener("touchstart", detectTouch);
+    };
+  }, []);
+
   // Initialize editable texts from meditation steps
   useEffect(() => {
     const texts: Record<number, string> = {};
@@ -392,18 +415,30 @@ export function MeditationWorkspace({
   const startEditing = (index: number) => {
     if (isUILocked) return;
     setEditingStepIndex(index);
+    // Clear selection when editing starts
+    setSelectedStepIndex(null);
   };
 
   // Start editing the title
   const startEditingTitle = () => {
     if (isUILocked) return;
     setEditingTitle(true);
+    // Clear selection when editing title
+    setSelectedStepIndex(null);
   };
 
   // Finish editing and save changes
   const finishEditing = () => {
     setEditingStepIndex(null);
     setEditingTitle(false);
+  };
+
+  // Handle click on the container to clear selection
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // Only clear selection if clicking directly on the container, not on a step
+    if (e.target === e.currentTarget) {
+      setSelectedStepIndex(null);
+    }
   };
 
   // Track if a step's text has been modified after audio generation
@@ -442,6 +477,12 @@ export function MeditationWorkspace({
     await startSynthesis();
   };
 
+  // Clear selection when UI is locked
+  useEffect(() => {
+    if (isUILocked) {
+      setSelectedStepIndex(null);
+    }
+  }, [isUILocked]);
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar - Fixed */}
@@ -611,7 +652,10 @@ export function MeditationWorkspace({
           isSynthesisComplete && audioUrl ? "pb-14" : "pb-4"
         }`}
       >
-        <div className="mx-auto max-w-3xl px-4 space-y-4 py-4">
+        <div
+          className="mx-auto max-w-3xl px-4 space-y-4 py-4"
+          onClick={handleContainerClick}
+        >
           {meditation.steps.map((step, index) => {
             const isAudioGenerated = !!step.audioFileId;
             const isOutOfSync = isStepOutOfSync(index);
@@ -622,6 +666,7 @@ export function MeditationWorkspace({
                 step={step}
                 index={index}
                 isEditing={editingStepIndex === index}
+                isSelected={selectedStepIndex === index}
                 editableText={editableTexts[index] || ""}
                 editablePauseDuration={editablePauseDurations[index] || 1}
                 onEdit={() => startEditing(index)}
@@ -644,6 +689,16 @@ export function MeditationWorkspace({
                 isAudioOutOfSync={isOutOfSync}
                 onGenerateAudio={() => handleGenerateStepAudio(index)}
                 isUILocked={isUILocked}
+                onSelect={() => {
+                  // On touch devices, toggle selection
+                  // On non-touch devices, we don't need to manage selection state
+                  // as hover will handle showing the action buttons
+                  if (isTouchDevice) {
+                    setSelectedStepIndex(
+                      selectedStepIndex === index ? null : index
+                    );
+                  }
+                }}
               />
             );
           })}

@@ -11,6 +11,7 @@ export interface MeditationStepProps {
   step: MeditationStepType;
   index: number;
   isEditing: boolean;
+  isSelected: boolean;
   editableText: string;
   editablePauseDuration: number;
   onEdit: () => void;
@@ -22,12 +23,14 @@ export interface MeditationStepProps {
   isAudioOutOfSync: boolean;
   onGenerateAudio?: () => void;
   isUILocked: boolean;
+  onSelect: () => void;
 }
 
 export function MeditationStep({
   step,
   index,
   isEditing,
+  isSelected,
   editableText,
   editablePauseDuration,
   onEdit,
@@ -39,30 +42,30 @@ export function MeditationStep({
   isAudioOutOfSync,
   onGenerateAudio,
   isUILocked,
+  onSelect,
 }: MeditationStepProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
 
   // Determine the status color for the left bar
   const getStatusColor = () => {
-    if (isSelected) return "bg-blue-500";
+    if (step.type !== "speech") return "bg-transparent";
     if (isAudioOutOfSync) return "bg-amber-500";
-    if (isAudioGenerated) return "bg-green-500";
+    if (isAudioGenerated) return "bg-primary/50";
     return "bg-gray-300";
   };
 
   // Show action buttons on hover (desktop) or when selected (mobile)
   const showActions = (isHovered || isSelected) && !isEditing && !isUILocked;
 
-  // Handle click on the step
+  // Handle click on the step - only used for mobile/touch devices
   const handleClick = () => {
     if (isUILocked) return;
-    setIsSelected(!isSelected);
+    onSelect();
   };
 
   return (
     <div
-      className="relative flex mb-4 group"
+      className="relative flex mb-4 group hover:bg-muted/30 transition-colors rounded-r"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -71,7 +74,7 @@ export function MeditationStep({
       <div className={`w-1 self-stretch rounded-l ${getStatusColor()}`}></div>
 
       {/* Main content area */}
-      <div className="flex-1 px-4 py-3 bg-muted/30 rounded-r">
+      <div className="flex-1 px-4 py-3 rounded-r">
         {isEditing ? (
           step.type === "pause" ? (
             <div className="flex items-center gap-4">

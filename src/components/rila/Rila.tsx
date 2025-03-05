@@ -228,9 +228,15 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   return (
     <div
       className={`min-h-screen flex flex-col relative border-8 ${
-        isPrivate
-          ? "bg-gradient-to-b from-slate-200 to-slate-300 border-slate-500"
-          : "bg-gradient-to-b from-background to-muted border-transparent"
+        isPrivate ? "bg-slate-300 border-slate-500" : "border-transparent"
+      } ${
+        !session.meditation
+          ? isPrivate
+            ? "bg-gradient-to-b from-slate-200 to-slate-300"
+            : "bg-gradient-to-b from-background to-muted"
+          : isPrivate
+          ? "bg-slate-300"
+          : "bg-background"
       }`}
     >
       {isPrivate && (
