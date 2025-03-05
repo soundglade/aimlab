@@ -405,305 +405,311 @@ export function MeditationWorkspace({
   const isUILocked = isSynthesizing || isGeneratingFullAudio;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-2xl font-bold">{meditation.title}</h1>
+    <div className="flex flex-col h-screen">
+      {/* Top Navigation Bar - Fixed */}
+      <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="w-full px-4">
+          <div className="flex h-14 items-center justify-between">
+            {/* Left side - Meditation Title */}
+            <div className="flex items-center">
+              <h1 className="text-lg font-semibold truncate max-w-[200px] sm:max-w-xs">
+                {meditation.title}
+              </h1>
+            </div>
 
-          <div className="flex flex-wrap gap-2">
-            {!isUILocked && !editMode && (
-              <Button
-                variant="outline"
-                onClick={() => setEditMode(true)}
-                disabled={isUILocked}
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
-            )}
-
-            {!isUILocked && editMode && (
-              <Button onClick={saveEdits} disabled={isUILocked}>
-                <Save className="h-4 w-4 mr-2" />
-                Save Changes
-              </Button>
-            )}
-
-            {isSynthesisComplete && !isUILocked && (
-              <>
+            {/* Right side - Action Buttons */}
+            <div className="flex items-center gap-2">
+              {!isUILocked && !editMode && (
                 <Button
                   variant="outline"
-                  onClick={handleDownload}
+                  size="sm"
+                  onClick={() => setEditMode(true)}
                   disabled={isUILocked}
                 >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
                 </Button>
+              )}
 
-                <Button
-                  variant="outline"
-                  onClick={handleShare}
-                  disabled={isUILocked || isSharing}
-                >
-                  {isSharing ? (
-                    <Loader className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Share2 className="h-4 w-4 mr-2" />
-                  )}
-                  Share
+              {!isUILocked && editMode && (
+                <Button size="sm" onClick={saveEdits} disabled={isUILocked}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save
                 </Button>
-              </>
-            )}
-          </div>
-        </div>
+              )}
 
-        {/* Voice Selection and Synthesis Controls */}
-        {!isUILocked && !isSynthesisComplete && (
-          <Card className="bg-muted/50">
-            <CardContent className="pt-4">
-              <div className="space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <h2 className="text-lg font-medium">Voice Settings</h2>
-
-                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                      <div className="flex-1 space-y-1">
-                        <Label htmlFor="voice-preset">Voice</Label>
-                        <select
-                          id="voice-preset"
-                          value={selectedPreset}
-                          onChange={(e) => handlePresetChange(e.target.value)}
-                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        >
-                          {VOICE_PRESETS.map((preset) => (
-                            <option key={preset.id} value={preset.id}>
-                              {preset.name} - {preset.description}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setShowAdvancedVoiceSettings(
-                            !showAdvancedVoiceSettings
-                          )
-                        }
-                        className="mt-4 sm:mt-0"
-                      >
-                        <Settings2 className="h-4 w-4 mr-2" />
-                        {showAdvancedVoiceSettings
-                          ? "Hide Advanced"
-                          : "Advanced Settings"}
-                      </Button>
-                    </div>
-                  </div>
+              {!isUILocked && !isSynthesisComplete && (
+                <div className="flex items-center gap-2">
+                  <select
+                    id="voice-preset"
+                    value={selectedPreset}
+                    onChange={(e) => handlePresetChange(e.target.value)}
+                    className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {VOICE_PRESETS.map((preset) => (
+                      <option key={preset.id} value={preset.id}>
+                        {preset.name}
+                      </option>
+                    ))}
+                  </select>
 
                   <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setShowAdvancedVoiceSettings(!showAdvancedVoiceSettings)
+                    }
+                  >
+                    <Settings2 className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    size="sm"
                     onClick={handleStartSynthesis}
                     disabled={isUILocked}
-                    className="mt-4 md:mt-0"
                   >
                     Generate Audio
                   </Button>
                 </div>
+              )}
 
-                {showAdvancedVoiceSettings && (
-                  <div className="space-y-4 pt-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="speed">Speed</Label>
-                      <div className="flex items-center gap-4">
-                        <Slider
-                          id="speed"
-                          min={0.5}
-                          max={2.0}
-                          step={0.1}
-                          value={[voiceSettings.ttsSettings.speed]}
-                          onValueChange={(value) =>
-                            updateVoiceSettings({
-                              ...voiceSettings,
-                              ttsSettings: {
-                                ...voiceSettings.ttsSettings,
-                                speed: value[0],
-                              },
-                            })
-                          }
-                          className="flex-1"
-                        />
-                        <span className="w-12 text-right">
-                          {voiceSettings.ttsSettings.speed}x
-                        </span>
-                      </div>
-                    </div>
+              {isSynthesisComplete && !isUILocked && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownload}
+                    disabled={isUILocked}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
 
-                    {/* Additional advanced settings could go here */}
-                  </div>
-                )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShare}
+                    disabled={isUILocked || isSharing}
+                  >
+                    {isSharing ? (
+                      <Loader className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Share2 className="h-4 w-4 mr-2" />
+                    )}
+                    Share
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Advanced Voice Settings Panel */}
+          {showAdvancedVoiceSettings && !isUILocked && !isSynthesisComplete && (
+            <div className="py-2 border-t">
+              <div className="space-y-2">
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="speed" className="w-20">
+                    Speed
+                  </Label>
+                  <Slider
+                    id="speed"
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    value={[voiceSettings.ttsSettings.speed]}
+                    onValueChange={(value) =>
+                      updateVoiceSettings({
+                        ...voiceSettings,
+                        ttsSettings: {
+                          ...voiceSettings.ttsSettings,
+                          speed: value[0],
+                        },
+                      })
+                    }
+                    className="flex-1 max-w-xs"
+                  />
+                  <span className="w-12 text-right text-sm">
+                    {voiceSettings.ttsSettings.speed}x
+                  </span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          )}
 
-        {/* Synthesis Progress */}
-        {(isSynthesizing || isGeneratingFullAudio) && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-medium">Synthesizing Audio</h2>
-                <p className="text-muted-foreground">
+          {/* Synthesis Progress */}
+          {(isSynthesizing || isGeneratingFullAudio) && (
+            <div className="py-2 border-t">
+              <div className="flex justify-between items-center mb-1">
+                <p className="text-sm text-muted-foreground">
                   {progress < 90
                     ? `Creating "${meditation.title}" meditation audio...`
                     : progress < 100
                     ? `Generating full audio file...`
                     : "Synthesis complete!"}
                 </p>
+                <div className="text-sm font-medium">
+                  {Math.round(progress)}%
+                </div>
               </div>
-              <div className="text-lg font-medium">{Math.round(progress)}%</div>
+              <Progress value={progress} className="h-2" />
+
+              {progress < 100 && (
+                <div className="flex justify-end mt-1">
+                  <Button variant="outline" size="sm" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </div>
-            <Progress value={progress} className="h-2" />
-
-            {progress < 100 && (
-              <div className="flex justify-end">
-                <Button variant="outline" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Playback Controls */}
-        {isSynthesisComplete && audioUrl && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleRestart}
-                disabled={isUILocked}
-              >
-                <SkipBack className="h-4 w-4" />
-              </Button>
-
-              <Button
-                size="icon"
-                onClick={togglePlayback}
-                disabled={isUILocked}
-              >
-                {isPlaying ? (
-                  <Pause className="h-4 w-4" />
-                ) : (
-                  <Play className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-
-            <Progress
-              value={
-                (currentTimeMs / (meditation.timeline?.totalDurationMs || 1)) *
-                100
-              }
-              className="h-2"
-            />
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Meditation Content */}
-      <div className="space-y-4">
-        {meditation.steps.map((step, index) => {
-          const status: StepStatus =
-            synthesisState.completedStepIndices.includes(index)
-              ? "complete"
-              : currentlyPlaying === index
-              ? "processing"
-              : "pending";
+      {/* Main Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto py-4">
+        <div className="mx-auto max-w-3xl px-4 space-y-4">
+          {meditation.steps.map((step, index) => {
+            const status: StepStatus =
+              synthesisState.completedStepIndices.includes(index)
+                ? "complete"
+                : currentlyPlaying === index
+                ? "processing"
+                : "pending";
 
-          if (editMode) {
-            // Editable view
-            if (step.type === "heading") {
-              return (
-                <div key={index} className="space-y-1">
-                  <Label htmlFor={`heading-${index}`}>Heading</Label>
-                  <Input
-                    id={`heading-${index}`}
-                    value={editableTexts[index] || ""}
-                    onChange={(e) => handleTextChange(index, e.target.value)}
-                    className={cn(
-                      "font-medium",
-                      step.level === 1 ? "text-xl" : "text-lg"
-                    )}
-                  />
-                </div>
-              );
-            } else if (step.type === "speech") {
-              return (
-                <div key={index} className="space-y-1">
-                  <Label htmlFor={`speech-${index}`}>Speech</Label>
-                  <Textarea
-                    id={`speech-${index}`}
-                    value={editableTexts[index] || ""}
-                    onChange={(e) => handleTextChange(index, e.target.value)}
-                    className="min-h-24"
-                  />
-                </div>
-              );
-            } else if (step.type === "pause") {
-              return (
-                <div key={index} className="space-y-1">
-                  <Label htmlFor={`pause-${index}`}>
-                    Pause Duration (seconds)
-                  </Label>
-                  <div className="flex items-center gap-4">
-                    <Slider
-                      id={`pause-${index}`}
-                      min={1}
-                      max={30}
-                      step={1}
-                      value={[editablePauseDurations[index] || 1]}
-                      onValueChange={(value) =>
-                        handlePauseDurationChange(index, value[0])
-                      }
-                      className="flex-1"
+            if (editMode) {
+              // Editable view
+              if (step.type === "heading") {
+                return (
+                  <div key={index} className="space-y-1">
+                    <Label htmlFor={`heading-${index}`}>Heading</Label>
+                    <Input
+                      id={`heading-${index}`}
+                      value={editableTexts[index] || ""}
+                      onChange={(e) => handleTextChange(index, e.target.value)}
+                      className={cn(
+                        "font-medium",
+                        step.level === 1 ? "text-xl" : "text-lg"
+                      )}
                     />
-                    <span className="w-12 text-right">
-                      {editablePauseDurations[index] || 1}s
-                    </span>
                   </div>
-                </div>
-              );
+                );
+              } else if (step.type === "speech") {
+                return (
+                  <div key={index} className="space-y-1">
+                    <Label htmlFor={`speech-${index}`}>Speech</Label>
+                    <Textarea
+                      id={`speech-${index}`}
+                      value={editableTexts[index] || ""}
+                      onChange={(e) => handleTextChange(index, e.target.value)}
+                      className="min-h-24"
+                    />
+                  </div>
+                );
+              } else if (step.type === "pause") {
+                return (
+                  <div key={index} className="space-y-1">
+                    <Label htmlFor={`pause-${index}`}>
+                      Pause Duration (seconds)
+                    </Label>
+                    <div className="flex items-center gap-4">
+                      <Slider
+                        id={`pause-${index}`}
+                        min={1}
+                        max={30}
+                        step={1}
+                        value={[editablePauseDurations[index] || 1]}
+                        onValueChange={(value) =>
+                          handlePauseDurationChange(index, value[0])
+                        }
+                        className="flex-1"
+                      />
+                      <span className="w-12 text-right">
+                        {editablePauseDurations[index] || 1}s
+                      </span>
+                    </div>
+                  </div>
+                );
+              } else {
+                // For other step types, just display them
+                return (
+                  <MeditationStepDisplay
+                    key={index}
+                    section={step}
+                    status={status}
+                    onPreview={undefined}
+                  />
+                );
+              }
             } else {
-              // For other step types, just display them
+              // Display view
               return (
                 <MeditationStepDisplay
                   key={index}
                   section={step}
                   status={status}
-                  onPreview={undefined}
+                  onPreview={
+                    step.type === "speech" &&
+                    "audioFileId" in step &&
+                    step.audioFileId
+                      ? () => previewSection(index)
+                      : undefined
+                  }
                 />
               );
             }
-          } else {
-            // Display view
-            return (
-              <MeditationStepDisplay
-                key={index}
-                section={step}
-                status={status}
-                onPreview={
-                  step.type === "speech" &&
-                  "audioFileId" in step &&
-                  step.audioFileId
-                    ? () => previewSection(index)
-                    : undefined
-                }
-              />
-            );
-          }
-        })}
+          })}
+        </div>
+      </div>
+
+      {/* Bottom Navigation Bar - Fixed */}
+      <div className="sticky bottom-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="w-full px-4">
+          <div className="flex h-14 items-center justify-center">
+            {isSynthesisComplete && audioUrl ? (
+              <div className="w-full max-w-md">
+                <div className="flex flex-col space-y-1">
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleRestart}
+                      disabled={isUILocked}
+                    >
+                      <SkipBack className="h-4 w-4" />
+                    </Button>
+
+                    <Button
+                      size="icon"
+                      onClick={togglePlayback}
+                      disabled={isUILocked}
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-4 w-4" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+
+                  <Progress
+                    value={
+                      (currentTimeMs /
+                        (meditation.timeline?.totalDurationMs || 1)) *
+                      100
+                    }
+                    className="h-1.5"
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {isSynthesizing || isGeneratingFullAudio
+                  ? "Generating audio..."
+                  : "Generate audio to enable playback"}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Share Dialog */}

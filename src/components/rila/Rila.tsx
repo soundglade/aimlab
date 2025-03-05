@@ -184,37 +184,43 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     if (!session.meditation) {
       // If no meditation, show the setup step
       return (
-        <PracticeSetupStep
-          isPrivate={isPrivate}
-          onPrivateChange={(newIsPrivate) => {
-            // Redirect to the appropriate URL when privacy mode changes
-            if (newIsPrivate !== isPrivate) {
-              router.push(getBasePath(newIsPrivate));
-            }
-          }}
-          onScriptCreated={handleScriptCreated}
-          onLoadSession={handleLoadSession}
-          sessionStorage={sessionStorage}
-        />
+        <div className="flex-1 flex flex-col items-center p-4 pt-14">
+          <main className="max-w-4xl w-full space-y-8">
+            <PracticeSetupStep
+              isPrivate={isPrivate}
+              onPrivateChange={(newIsPrivate) => {
+                // Redirect to the appropriate URL when privacy mode changes
+                if (newIsPrivate !== isPrivate) {
+                  router.push(getBasePath(newIsPrivate));
+                }
+              }}
+              onScriptCreated={handleScriptCreated}
+              onLoadSession={handleLoadSession}
+              sessionStorage={sessionStorage}
+            />
+          </main>
+        </div>
       );
     } else {
-      // If we have a meditation, show the workspace
+      // If we have a meditation, show the workspace with no padding
       return (
-        <MeditationWorkspace
-          meditation={session.meditation}
-          fileStorage={fileStorage}
-          sessionId={sessionId}
-          onMeditationUpdate={handleMeditationUpdate}
-          onSynthesisStateUpdate={(synthesisState) => {
-            updateSession({ synthesisState });
-          }}
-          synthesisState={session.synthesisState}
-          onShareMeditation={handleShareMeditation}
-          voiceSettings={session.voiceSettings}
-          onVoiceSettingsUpdate={(voiceSettings) => {
-            updateSession({ voiceSettings });
-          }}
-        />
+        <div className="flex-1 flex flex-col w-full">
+          <MeditationWorkspace
+            meditation={session.meditation}
+            fileStorage={fileStorage}
+            sessionId={sessionId}
+            onMeditationUpdate={handleMeditationUpdate}
+            onSynthesisStateUpdate={(synthesisState) => {
+              updateSession({ synthesisState });
+            }}
+            synthesisState={session.synthesisState}
+            onShareMeditation={handleShareMeditation}
+            voiceSettings={session.voiceSettings}
+            onVoiceSettingsUpdate={(voiceSettings) => {
+              updateSession({ voiceSettings });
+            }}
+          />
+        </div>
       );
     }
   };
@@ -235,9 +241,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col items-center p-4 pt-14">
-        <main className="max-w-4xl w-full space-y-8">{renderContent()}</main>
-      </div>
+      {renderContent()}
     </div>
   );
 }
