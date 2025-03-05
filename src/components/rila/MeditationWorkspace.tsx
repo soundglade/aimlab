@@ -566,7 +566,11 @@ export function MeditationWorkspace({
       </div>
 
       {/* Main Content */}
-      <div className="pt-14 pb-14">
+      <div
+        className={`pt-14 ${
+          isSynthesisComplete && audioUrl ? "pb-14" : "pb-4"
+        }`}
+      >
         <div className="mx-auto max-w-3xl px-4 space-y-4 py-4">
           {meditation.steps.map((step, index) => {
             const status: StepStatus =
@@ -661,11 +665,11 @@ export function MeditationWorkspace({
         </div>
       </div>
 
-      {/* Bottom Navigation Bar - Fixed */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto w-full max-w-5xl px-4">
-          <div className="flex h-14 items-center justify-center">
-            {isSynthesisComplete && audioUrl ? (
+      {/* Bottom Navigation Bar - Fixed - Only shown when audio is available */}
+      {isSynthesisComplete && audioUrl && (
+        <div className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="mx-auto w-full max-w-5xl px-4">
+            <div className="flex h-14 items-center justify-center">
               <div className="w-full max-w-md">
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-center justify-center gap-2">
@@ -701,16 +705,10 @@ export function MeditationWorkspace({
                   />
                 </div>
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {isSynthesizing || isGeneratingFullAudio
-                  ? "Generating audio..."
-                  : "Generate audio to enable playback"}
-              </p>
-            )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Share Dialog */}
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
