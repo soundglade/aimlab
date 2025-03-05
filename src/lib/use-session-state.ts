@@ -29,12 +29,13 @@ export function useSessionState<T>(
   // Update function that syncs with storage
   const updateState = useCallback(
     (updates: Partial<T>) => {
-      const newState = { ...state, ...updates };
-      setState(newState);
-
-      if (sessionId) {
-        storage.updateSessionIfExists(sessionId, newState);
-      }
+      setState((prevState) => {
+        const newState = { ...prevState, ...updates };
+        if (sessionId) {
+          storage.updateSessionIfExists(sessionId, newState);
+        }
+        return newState;
+      });
     },
     [state, sessionId, storage]
   );
