@@ -10,17 +10,15 @@ import {
   Settings2,
   Loader,
   PenSquare,
+  RefreshCw,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
 import { useSynthesis } from "./steps/synthesis/useSynthesis";
-import {
-  MeditationStepDisplay,
-  useAudioPreview,
-  StepStatus,
-} from "./steps/synthesis/MeditationStepDisplay";
+import { useAudioPreview } from "./steps/synthesis/MeditationStepDisplay";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +26,7 @@ import { Slider } from "@/components/ui/slider";
 import { createAudioUrl } from "./utils/audioUtils";
 import { downloadAudioFile } from "./utils/audioExporter";
 import { ShareResponse } from "./utils/shareService";
+import { MeditationStep } from "./MeditationStep";
 import {
   Dialog,
   DialogContent,
@@ -407,6 +406,42 @@ export function MeditationWorkspace({
     setEditingTitle(false);
   };
 
+  // Track if a step's text has been modified after audio generation
+  const isStepOutOfSync = (index: number) => {
+    const step = meditation.steps[index];
+    if (!step.audioFileId) return false;
+
+    if (step.type === "speech" || step.type === "heading") {
+      return editableTexts[index] !== step.text;
+    } else if (step.type === "pause") {
+      return editablePauseDurations[index] * 1000 !== step.durationMs;
+    }
+
+    return false;
+  };
+
+  // Generate audio for a specific step
+  const handleGenerateStepAudio = async (index: number) => {
+    // If the step is out of sync, we need to save the changes first
+    if (isStepOutOfSync(index)) {
+      saveEditForStep(index);
+    }
+
+    // For now, we'll just start the full synthesis process
+    // In a real implementation, this would generate audio only for the specific step
+    // and update the meditation state accordingly
+
+    // Set synthesis state to started with only this step as target
+    onSynthesisStateUpdate({
+      started: true,
+      progress: 0,
+      completedStepIndices: [],
+    });
+
+    // Start synthesis for all steps (in a real implementation, this would be for a single step)
+    await startSynthesis();
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar - Fixed */}
@@ -578,135 +613,39 @@ export function MeditationWorkspace({
       >
         <div className="mx-auto max-w-3xl px-4 space-y-4 py-4">
           {meditation.steps.map((step, index) => {
-            const status: StepStatus =
-              synthesisState.completedStepIndices.includes(index)
-                ? "complete"
-                : currentlyPlaying === index
-                ? "processing"
-                : "pending";
+            const isAudioGenerated = !!step.audioFileId;
+            const isOutOfSync = isStepOutOfSync(index);
 
-            if (step.type === "heading") {
-              return (
-                <div key={index} className="space-y-1">
-                  {editingStepIndex === index ? (
-                    <Input
-                      id={`heading-${index}`}
-                      value={editableTexts[index] || ""}
-                      onChange={(e) => handleTextChange(index, e.target.value)}
-                      onBlur={() => {
-                        handleTextBlur(index);
-                        finishEditing();
-                      }}
-                      autoFocus
-                      className={cn(
-                        "font-medium",
-                        step.level === 1 ? "text-xl" : "text-lg"
-                      )}
-                      disabled={isUILocked}
-                    />
-                  ) : (
-                    <div
-                      className={cn(
-                        "group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors",
-                        "font-medium",
-                        step.level === 1 ? "text-xl" : "text-lg"
-                      )}
-                      onClick={() => startEditing(index)}
-                    >
-                      {step.text}
-                      <PenSquare className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
-                    </div>
-                  )}
-                </div>
-              );
-            } else if (step.type === "speech") {
-              return (
-                <div key={index} className="space-y-1">
-                  <div className="flex justify-between">
-                    {status === "complete" && step.audioFileId && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => previewSection(index)}
-                        className="h-5 px-2 text-xs"
-                      >
-                        <Play className="h-3 w-3 mr-1" />
-                        Preview
-                      </Button>
-                    )}
-                  </div>
-                  {editingStepIndex === index ? (
-                    <Textarea
-                      id={`speech-${index}`}
-                      value={editableTexts[index] || ""}
-                      onChange={(e) => handleTextChange(index, e.target.value)}
-                      onBlur={() => {
-                        handleTextBlur(index);
-                        finishEditing();
-                      }}
-                      autoFocus
-                      className="min-h-24"
-                      disabled={isUILocked}
-                    />
-                  ) : (
-                    <div
-                      className="group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors whitespace-pre-wrap"
-                      onClick={() => startEditing(index)}
-                    >
-                      {step.text}
-                      <PenSquare className="absolute right-2 top-4 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
-                    </div>
-                  )}
-                </div>
-              );
-            } else if (step.type === "pause") {
-              return (
-                <div key={index} className="space-y-1">
-                  {editingStepIndex === index ? (
-                    <div className="flex items-center gap-4">
-                      <Slider
-                        id={`pause-${index}`}
-                        min={1}
-                        max={30}
-                        step={1}
-                        value={[editablePauseDurations[index] || 1]}
-                        onValueChange={(value) =>
-                          handlePauseDurationChange(index, value[0])
-                        }
-                        onValueCommit={() => {
-                          handlePauseDurationBlur(index);
-                          finishEditing();
-                        }}
-                        className="flex-1"
-                        disabled={isUILocked}
-                      />
-                      <span className="w-12 text-right">
-                        {editablePauseDurations[index] || 1}s
-                      </span>
-                    </div>
-                  ) : (
-                    <div
-                      className="group relative cursor-pointer rounded px-3 py-2 text-muted-foreground hover:bg-muted/50 transition-colors"
-                      onClick={() => startEditing(index)}
-                    >
-                      [Pause for {step.durationMs ? step.durationMs / 1000 : 1}{" "}
-                      seconds]
-                      <PenSquare className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
-                    </div>
-                  )}
-                </div>
-              );
-            } else {
-              // For other step types, just display them
-              return (
-                <MeditationStepDisplay
-                  key={index}
-                  section={step}
-                  status={status}
-                  onPreview={undefined}
-                />
-              );
-            }
+            return (
+              <MeditationStep
+                key={index}
+                step={step}
+                index={index}
+                isEditing={editingStepIndex === index}
+                editableText={editableTexts[index] || ""}
+                editablePauseDuration={editablePauseDurations[index] || 1}
+                onEdit={() => startEditing(index)}
+                onTextChange={(text) => handleTextChange(index, text)}
+                onPauseDurationChange={(duration) =>
+                  handlePauseDurationChange(index, duration)
+                }
+                onBlur={() => {
+                  if (step.type === "pause") {
+                    handlePauseDurationBlur(index);
+                  } else {
+                    handleTextBlur(index);
+                  }
+                  finishEditing();
+                }}
+                onPreview={
+                  step.audioFileId ? () => previewSection(index) : undefined
+                }
+                isAudioGenerated={isAudioGenerated}
+                isAudioOutOfSync={isOutOfSync}
+                onGenerateAudio={() => handleGenerateStepAudio(index)}
+                isUILocked={isUILocked}
+              />
+            );
           })}
         </div>
       </div>
