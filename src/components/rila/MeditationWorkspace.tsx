@@ -405,10 +405,10 @@ export function MeditationWorkspace({
   const isUILocked = isSynthesizing || isGeneratingFullAudio;
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar - Fixed */}
-      <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="w-full px-4">
+      <div className="fixed top-0 left-0 right-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="mx-auto w-full max-w-5xl px-4">
           <div className="flex h-14 items-center justify-between">
             {/* Left side - Meditation Title */}
             <div className="flex items-center">
@@ -565,9 +565,9 @@ export function MeditationWorkspace({
         </div>
       </div>
 
-      {/* Main Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto py-4">
-        <div className="mx-auto max-w-3xl px-4 space-y-4">
+      {/* Main Content */}
+      <div className="pt-14 pb-14">
+        <div className="mx-auto max-w-3xl px-4 space-y-4 py-4">
           {meditation.steps.map((step, index) => {
             const status: StepStatus =
               synthesisState.completedStepIndices.includes(index)
@@ -662,8 +662,8 @@ export function MeditationWorkspace({
       </div>
 
       {/* Bottom Navigation Bar - Fixed */}
-      <div className="sticky bottom-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="w-full px-4">
+      <div className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="mx-auto w-full max-w-5xl px-4">
           <div className="flex h-14 items-center justify-center">
             {isSynthesisComplete && audioUrl ? (
               <div className="w-full max-w-md">
