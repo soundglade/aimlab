@@ -14,7 +14,8 @@ export function useSynthesis(
   onSynthesisStateUpdate: (synthesisState: SynthesisState) => void,
   onCancel: () => void,
   synthesisState: SynthesisState,
-  sessionId?: string
+  sessionId?: string,
+  autoStart: boolean = true
 ) {
   // State management
   const [progress, setProgress] = useState(synthesisState.progress);
@@ -196,14 +197,14 @@ export function useSynthesis(
     doFinalComplete,
   ]);
 
-  // Start synthesis process when component mounts - only if it hasn't been started yet
+  // Start synthesis process when component mounts - only if it hasn't been started yet and autoStart is true
   useEffect(() => {
-    if (synthesisState.started) {
+    if (synthesisState.started || !autoStart) {
       return;
     }
 
     startSynthesis();
-  }, [synthesisState.started, startSynthesis]);
+  }, [synthesisState.started, startSynthesis, autoStart]);
 
   return {
     progress,

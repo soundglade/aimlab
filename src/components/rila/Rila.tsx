@@ -3,11 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { FormatReviewStep } from "./steps/FormatReviewStep";
-import { VoiceSelectionStep } from "./steps/VoiceSelectionStep";
 import { PracticeSetupStep } from "./steps/PracticeSetupStep";
-import { SynthesisProgressStep } from "./steps/SynthesisStep";
-import { MeditationPlayerStep } from "./steps/MeditationPlayerStep";
+import { MeditationWorkspace } from "./MeditationWorkspace";
 import { VoiceSettings } from "./steps/voice/ttsTypes";
 
 import { Timing } from "./utils/meditationTimeline";
@@ -51,18 +48,12 @@ export interface SynthesisState {
   completedStepIndices: number[];
 }
 
-// Define the state machine states - using a single type for the session
-type RilaSession =
-  | { step: "input" }
-  | { step: "review"; meditation: Meditation }
-  | { step: "voice"; meditation: Meditation }
-  | {
-      step: "synthesis";
-      meditation: Meditation;
-      voiceSettings: VoiceSettings;
-      synthesisState: SynthesisState;
-    }
-  | { step: "player"; meditation: Meditation; voiceSettings: VoiceSettings };
+// Define the session type without steps
+export interface RilaSession {
+  meditation?: Meditation;
+  voiceSettings?: VoiceSettings;
+  synthesisState: SynthesisState;
+}
 
 // Helper function to convert from backend FormattedScript to frontend Meditation
 export function enhanceMeditation(script: FormattedScript): Meditation {
@@ -88,15 +79,21 @@ const getBasePath = (isPrivate: boolean) =>
 export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   const router = useRouter();
 
-  // Select the appropriate storage based on privacy mode
+  // Choose the appropriate storage based on privacy mode
   const sessionStorage = isPrivate ? ephemeralStorage : persistentStorage;
   const fileStorage = isPrivate ? ephemeralFileStorage : persistentFileStorage;
 
-  // Use our custom hook to manage session state
+  // Initialize session state
   const [session, updateSession] = useSessionState<RilaSession>(
     sessionId,
     sessionStorage,
-    { step: "input" }
+    {
+      synthesisState: {
+        started: false,
+        progress: 0,
+        completedStepIndices: [],
+      },
+    }
   );
 
   // Clean up old sessions on component mount
@@ -105,27 +102,38 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   }, [sessionStorage]);
 
   const handleScriptCreated = (script: FormattedScript) => {
-    // Generate new session ID if we don't have one
-    const newSessionId = sessionId || sessionStorage.generateId();
+    // Convert the formatted script to a meditation
+    const meditation = enhanceMeditation(script);
 
-    // Create the new session state
-    const newSessionState: RilaSession = {
-      step: "review",
-      meditation: enhanceMeditation(script),
+    // Create a new session with the meditation
+    const newSession: RilaSession = {
+      meditation,
+      voiceSettings: {
+        ttsService: "kokoro",
+        ttsSettings: {
+          model: "web",
+          voiceId: "nicole",
+          speed: 1.0,
+        },
+        isAdvancedMode: false,
+      },
+      synthesisState: {
+        started: false,
+        progress: 0,
+        completedStepIndices: [],
+      },
     };
 
-    if (!sessionId) {
-      sessionStorage.saveSession(newSessionId, newSessionState);
-    } else {
-      updateSession(newSessionState);
-    }
+    // Create a new session in storage
+    const newSessionId = sessionStorage.generateId();
+    sessionStorage.saveSession(newSessionId, newSession);
 
+    // Redirect to the new session
     router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
   };
 
   const handleGenerateAudio = async (settings: VoiceSettings) => {
     updateSession({
-      step: "synthesis",
       voiceSettings: settings,
       synthesisState: {
         started: false,
@@ -137,25 +145,26 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
 
   const handleCancelSynthesis = () => {
     updateSession({
-      step: "voice",
+      synthesisState: {
+        started: false,
+        progress: 0,
+        completedStepIndices: [],
+      },
     });
   };
 
   const handleCompleteSynthesis = () => {
-    updateSession({
-      step: "player",
-    });
+    // No need to change step anymore
   };
 
   const handleBackFromPlayer = () => {
-    updateSession({
-      step: "synthesis",
-    });
+    // No need to change step anymore
   };
 
   const handleShareMeditation = async () => {
-    if (session.step !== "player")
-      throw new Error("Cannot share meditation in this step");
+    if (!session.meditation) {
+      throw new Error("No meditation to share");
+    }
 
     return shareMeditation(session.meditation, fileStorage);
   };
@@ -169,77 +178,44 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
       meditation: updatedMeditation,
     });
   };
-  // For conciseness in the render logic
-  const { step } = session;
 
-  // Map steps to their corresponding components
-  const renderStepContent = () => {
-    switch (step) {
-      case "input":
-        return (
-          <PracticeSetupStep
-            isPrivate={isPrivate}
-            onPrivateChange={(newIsPrivate) => {
-              // Redirect to the appropriate URL when privacy mode changes
-              if (newIsPrivate !== isPrivate) {
-                router.push(getBasePath(newIsPrivate));
-              }
-            }}
-            onScriptCreated={handleScriptCreated}
-            onLoadSession={handleLoadSession}
-            sessionStorage={sessionStorage}
-          />
-        );
-      case "review":
-        return (
-          <FormatReviewStep
-            meditation={session.meditation}
-            onMeditationUpdate={handleMeditationUpdate}
-            onConfirm={() =>
-              updateSession({
-                step: "voice",
-              })
+  // Render the appropriate content based on whether we have a meditation
+  const renderContent = () => {
+    if (!session.meditation) {
+      // If no meditation, show the setup step
+      return (
+        <PracticeSetupStep
+          isPrivate={isPrivate}
+          onPrivateChange={(newIsPrivate) => {
+            // Redirect to the appropriate URL when privacy mode changes
+            if (newIsPrivate !== isPrivate) {
+              router.push(getBasePath(newIsPrivate));
             }
-          />
-        );
-      case "voice":
-        return (
-          <VoiceSelectionStep
-            onGenerateAudio={handleGenerateAudio}
-            onEditScript={() =>
-              updateSession({
-                step: "review",
-              })
-            }
-          />
-        );
-      case "synthesis":
-        return (
-          <SynthesisProgressStep
-            meditation={session.meditation}
-            voiceSettings={session.voiceSettings}
-            synthesisState={session.synthesisState}
-            onSynthesisStateUpdate={(newSynthesisState) => {
-              updateSession({
-                synthesisState: newSynthesisState,
-              });
-            }}
-            onCancel={handleCancelSynthesis}
-            onComplete={handleCompleteSynthesis}
-            fileStorage={fileStorage}
-            sessionId={sessionId}
-            onMeditationUpdate={handleMeditationUpdate}
-          />
-        );
-      case "player":
-        return (
-          <MeditationPlayerStep
-            meditation={session.meditation}
-            fileStorage={fileStorage}
-            onBack={handleBackFromPlayer}
-            onShareMeditation={handleShareMeditation}
-          />
-        );
+          }}
+          onScriptCreated={handleScriptCreated}
+          onLoadSession={handleLoadSession}
+          sessionStorage={sessionStorage}
+        />
+      );
+    } else {
+      // If we have a meditation, show the workspace
+      return (
+        <MeditationWorkspace
+          meditation={session.meditation}
+          fileStorage={fileStorage}
+          sessionId={sessionId}
+          onMeditationUpdate={handleMeditationUpdate}
+          onSynthesisStateUpdate={(synthesisState) => {
+            updateSession({ synthesisState });
+          }}
+          synthesisState={session.synthesisState}
+          onShareMeditation={handleShareMeditation}
+          voiceSettings={session.voiceSettings}
+          onVoiceSettingsUpdate={(voiceSettings) => {
+            updateSession({ voiceSettings });
+          }}
+        />
+      );
     }
   };
 
@@ -260,9 +236,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
       )}
 
       <div className="flex-1 flex flex-col items-center p-4 pt-14">
-        <main className="max-w-4xl w-full space-y-8">
-          {renderStepContent()}
-        </main>
+        <main className="max-w-4xl w-full space-y-8">{renderContent()}</main>
       </div>
     </div>
   );
