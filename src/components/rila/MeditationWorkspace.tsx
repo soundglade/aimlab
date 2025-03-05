@@ -599,12 +599,6 @@ export function MeditationWorkspace({
             if (step.type === "heading") {
               return (
                 <div key={index} className="space-y-1">
-                  <Label
-                    htmlFor={`heading-${index}`}
-                    className="text-xs text-muted-foreground"
-                  >
-                    Heading
-                  </Label>
                   {editingStepIndex === index ? (
                     <Input
                       id={`heading-${index}`}
@@ -640,12 +634,6 @@ export function MeditationWorkspace({
               return (
                 <div key={index} className="space-y-1">
                   <div className="flex justify-between">
-                    <Label
-                      htmlFor={`speech-${index}`}
-                      className="text-xs text-muted-foreground"
-                    >
-                      Speech
-                    </Label>
                     {status === "complete" && step.audioFileId && (
                       <Button
                         variant="ghost"
@@ -685,12 +673,6 @@ export function MeditationWorkspace({
             } else if (step.type === "pause") {
               return (
                 <div key={index} className="space-y-1">
-                  <Label
-                    htmlFor={`pause-${index}`}
-                    className="text-xs text-muted-foreground"
-                  >
-                    Pause Duration (seconds)
-                  </Label>
                   {editingStepIndex === index ? (
                     <div className="flex items-center gap-4">
                       <Slider
@@ -715,11 +697,11 @@ export function MeditationWorkspace({
                     </div>
                   ) : (
                     <div
-                      className="group relative cursor-pointer rounded px-3 py-2 hover:bg-muted/50 transition-colors"
+                      className="group relative cursor-pointer rounded px-3 py-2 text-muted-foreground hover:bg-muted/50 transition-colors"
                       onClick={() => startEditing(index)}
                     >
-                      Pause for {step.durationMs ? step.durationMs / 1000 : 1}{" "}
-                      seconds
+                      [Pause for {step.durationMs ? step.durationMs / 1000 : 1}{" "}
+                      seconds]
                       <PenSquare className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0 group-hover:opacity-70 transition-opacity" />
                     </div>
                   )}
