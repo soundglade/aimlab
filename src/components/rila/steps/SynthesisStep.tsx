@@ -111,6 +111,7 @@ export function SynthesisProgressStep({
           ) : null}
           <Button
             variant="destructive"
+            size="sm"
             onClick={handleCancel}
             className="gap-2"
             disabled={!isSynthesizing}
@@ -143,14 +144,6 @@ export function SynthesisProgressStep({
               }
             />
           ))}
-        </div>
-
-        <div className="text-sm text-muted-foreground text-center">
-          {progress < 90
-            ? ""
-            : progress < 100
-            ? "Generating full audio file..."
-            : "Synthesis complete!"}
         </div>
 
         {isAllAudioReady && (
