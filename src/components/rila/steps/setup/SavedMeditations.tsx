@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { X, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { Meditation } from "../../Rila";
 import type { SessionStorageApi } from "@/lib/session-storage";
@@ -32,12 +32,30 @@ export function SavedMeditations({
     setDeletedSessionIds([...deletedSessionIds, sessionId]);
   };
 
+  const handleClearAllSessions = () => {
+    // Use the new clearAllSessions method
+    sessionStorage.clearAllSessions();
+    // Update state to trigger re-render
+    setDeletedSessionIds(Object.keys(savedSessions));
+  };
+
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">
-          Your saved meditations:
-        </CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-sm font-medium">
+            Your saved meditations:
+          </CardTitle>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleClearAllSessions}
+            className="h-8 px-2 text-xs"
+          >
+            <Trash2 size={14} className="mr-1" />
+            Clear all
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

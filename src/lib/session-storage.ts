@@ -17,6 +17,7 @@ export interface SessionStorageApi {
     updates: Partial<T>
   ) => void;
   deleteSession: (id: string) => void;
+  clearAllSessions: () => void;
   cleanupOldSessions: (maxAgeDays?: number) => void;
   isEphemeral: () => boolean;
 }
@@ -147,6 +148,10 @@ export function initializeStorage(
     persistSessions(sessions);
   }
 
+  function clearAllSessions(): void {
+    persistSessions({});
+  }
+
   function cleanupOldSessions(maxAgeDays: number = 7): void {
     const sessions = getSessions<unknown>();
     const now = Date.now();
@@ -173,6 +178,7 @@ export function initializeStorage(
     replaceSessionIfExists,
     updateSessionIfExists,
     deleteSession,
+    clearAllSessions,
     cleanupOldSessions,
     isEphemeral,
   };
