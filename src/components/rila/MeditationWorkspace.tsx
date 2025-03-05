@@ -1,37 +1,29 @@
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
   Play,
   Pause,
   SkipBack,
-  SkipForward,
   Download,
   Share2,
   Settings2,
-  Edit,
-  Save,
   Loader,
   PenSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Meditation, MeditationStep, SynthesisState } from "./Rila";
+import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
-import { KOKORO_SERVICE } from "./steps/voice/KokoroSettings";
-import { ELEVENLABS_SERVICE } from "./steps/voice/ElevenLabsSettings";
 import { useSynthesis } from "./steps/synthesis/useSynthesis";
 import {
   MeditationStepDisplay,
-  getStepStatus,
   useAudioPreview,
   StepStatus,
 } from "./steps/synthesis/MeditationStepDisplay";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { createAudioUrl } from "./utils/audioUtils";
 import { downloadAudioFile } from "./utils/audioExporter";
@@ -44,9 +36,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-// Collection of all available TTS services
-const TTS_SERVICES = [KOKORO_SERVICE, ELEVENLABS_SERVICE];
 
 const VOICE_PRESETS: TtsPreset[] = [
   {
