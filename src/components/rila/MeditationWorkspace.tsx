@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Meditation, SynthesisState } from "./Rila";
@@ -58,6 +59,49 @@ const VOICE_PRESETS: TtsPreset[] = [
   },
 ];
 
+// Jotai atoms for shared state
+export const meditationAtom = atom<Meditation | null>(null);
+export const voiceSettingsAtom = atom<VoiceSettings>({
+  ttsService: "kokoro",
+  ttsSettings: {
+    model: "web",
+    voiceId: "nicole",
+    speed: 1.0,
+  },
+  isAdvancedMode: false,
+});
+export const selectedPresetAtom = atom<string>("meditation-default");
+export const isPlayingAtom = atom<boolean>(false);
+export const currentTimeMsAtom = atom<number>(0);
+export const isSharingAtom = atom<boolean>(false);
+export const editableTextsAtom = atom<Record<number, string>>({});
+export const editablePauseDurationsAtom = atom<Record<number, number>>({});
+export const editingStepIndexAtom = atom<number | null>(null);
+export const editingTitleAtom = atom<boolean>(false);
+export const selectedStepIndexAtom = atom<number | null>(null);
+export const isUILockedAtom = atom<boolean>(false);
+export const synthesisStateAtom = atom<SynthesisState>({
+  started: false,
+  progress: 0,
+  completedStepIndices: [],
+});
+
+// Derived atoms
+export const isSynthesizingAtom = atom((get) => {
+  const state = get(synthesisStateAtom);
+  return state.started && state.progress < 100;
+});
+
+export const isGeneratingFullAudioAtom = atom((get) => {
+  const state = get(synthesisStateAtom);
+  return state.progress >= 90 && state.progress < 100;
+});
+
+export const isSynthesisCompleteAtom = atom((get) => {
+  const state = get(synthesisStateAtom);
+  return state.started && state.progress === 100;
+});
+
 interface MeditationWorkspaceProps {
   meditation: Meditation;
   fileStorage: FileStorageApi;
@@ -81,58 +125,81 @@ export function MeditationWorkspace({
   voiceSettings: initialVoiceSettings,
   onVoiceSettingsUpdate,
 }: MeditationWorkspaceProps) {
-  // Voice settings state
-  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(
-    initialVoiceSettings || {
-      ttsService: "kokoro",
-      ttsSettings: {
-        model: "web",
-        voiceId: "nicole",
-        speed: 1.0,
-      },
-      isAdvancedMode: false,
-    }
+  // Initialize atoms with props
+  const [, setMeditationAtom] = useAtom(meditationAtom);
+  const [voiceSettings, setVoiceSettings] = useAtom(voiceSettingsAtom);
+  const [selectedPreset, setSelectedPreset] = useAtom(selectedPresetAtom);
+  const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
+  const [currentTimeMs, setCurrentTimeMs] = useAtom(currentTimeMsAtom);
+  const [isSharing, setIsSharing] = useAtom(isSharingAtom);
+  const [editableTexts, setEditableTexts] = useAtom(editableTextsAtom);
+  const [editablePauseDurations, setEditablePauseDurations] = useAtom(
+    editablePauseDurationsAtom
   );
-  const [selectedPreset, setSelectedPreset] = useState<string>(() => {
+  const [editingStepIndex, setEditingStepIndex] = useAtom(editingStepIndexAtom);
+  const [editingTitle, setEditingTitle] = useAtom(editingTitleAtom);
+  const [selectedStepIndex, setSelectedStepIndex] = useAtom(
+    selectedStepIndexAtom
+  );
+  const [, setSynthesisState] = useAtom(synthesisStateAtom);
+
+  // Set derived atoms
+  const isSynthesizing = useAtomValue(isSynthesizingAtom);
+  const isGeneratingFullAudio = useAtomValue(isGeneratingFullAudioAtom);
+  const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
+  const setIsUILocked = useSetAtom(isUILockedAtom);
+
+  // Compute isUILocked locally for use in this component
+  const isUILocked = isSynthesizing || isGeneratingFullAudio;
+  const progress = synthesisState.progress;
+
+  // Local state (not shared with child components)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
+    null
+  );
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
+  // Initialize atoms with props on mount
+  useEffect(() => {
+    setMeditationAtom(meditation);
+    setSynthesisState(synthesisState);
+
+    // Update UI locked state based on synthesis state
+    setIsUILocked(
+      (synthesisState.started && synthesisState.progress < 100) ||
+        (synthesisState.progress >= 90 && synthesisState.progress < 100)
+    );
+
     if (initialVoiceSettings) {
+      setVoiceSettings(initialVoiceSettings);
+
       // Try to find a matching preset
       const matchingPreset = VOICE_PRESETS.find(
         (preset) =>
           preset.ttsService === initialVoiceSettings.ttsService &&
           preset.settings.voiceId === initialVoiceSettings.ttsSettings.voiceId
       );
-      return matchingPreset?.id || "meditation-default";
+      setSelectedPreset(matchingPreset?.id || "meditation-default");
     }
-    return "meditation-default";
-  });
+  }, []);
 
-  // Audio playback state
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
-    null
-  );
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTimeMs, setCurrentTimeMs] = useState(0);
-  const [isSharing, setIsSharing] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  // Update meditation atom when prop changes
+  useEffect(() => {
+    setMeditationAtom(meditation);
+  }, [meditation]);
 
-  // Editable text state
-  const [editableTexts, setEditableTexts] = useState<Record<number, string>>(
-    {}
-  );
-  const [editablePauseDurations, setEditablePauseDurations] = useState<
-    Record<number, number>
-  >({});
+  // Update synthesis state atom when prop changes
+  useEffect(() => {
+    setSynthesisState(synthesisState);
 
-  // Track which steps are being edited
-  const [editingStepIndex, setEditingStepIndex] = useState<number | null>(null);
-  const [editingTitle, setEditingTitle] = useState(false);
-
-  // Add selected step state
-  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(
-    null
-  );
+    // Update UI locked state based on synthesis state
+    setIsUILocked(
+      (synthesisState.started && synthesisState.progress < 100) ||
+        (synthesisState.progress >= 90 && synthesisState.progress < 100)
+    );
+  }, [synthesisState]);
 
   // Initialize editable texts from meditation steps
   useEffect(() => {
@@ -150,16 +217,6 @@ export function MeditationWorkspace({
     setEditableTexts(texts);
     setEditablePauseDurations(pauseDurations);
   }, [meditation]);
-
-  // Synthesis state and derived values
-  const isSynthesizing =
-    synthesisState.started && synthesisState.progress < 100;
-  const isGeneratingFullAudio =
-    synthesisState.progress >= 90 && synthesisState.progress < 100;
-  const isSynthesisComplete =
-    synthesisState.started && synthesisState.progress === 100;
-  const isUILocked = isSynthesizing || isGeneratingFullAudio;
-  const progress = synthesisState.progress;
 
   // Synthesis functionality
   const { handleCancel, startSynthesis } = useSynthesis(
@@ -505,16 +562,6 @@ export function MeditationWorkspace({
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
       <TopBar
-        meditation={meditation}
-        isUILocked={isUILocked}
-        isSynthesizing={isSynthesizing}
-        isGeneratingFullAudio={isGeneratingFullAudio}
-        isSynthesisComplete={isSynthesisComplete}
-        progress={progress}
-        voiceSettings={voiceSettings}
-        selectedPreset={selectedPreset}
-        isSharing={isSharing}
-        editingTitle={editingTitle}
         voicePresets={VOICE_PRESETS}
         onMeditationUpdate={onMeditationUpdate}
         onVoiceSettingsUpdate={updateVoiceSettings}
@@ -534,12 +581,6 @@ export function MeditationWorkspace({
         }`}
       >
         <MeditationStepsList
-          meditation={meditation}
-          editableTexts={editableTexts}
-          editablePauseDurations={editablePauseDurations}
-          editingStepIndex={editingStepIndex}
-          selectedStepIndex={selectedStepIndex}
-          isUILocked={isUILocked}
           onStartEditing={startEditing}
           onTextChange={handleTextChange}
           onPauseDurationChange={handlePauseDurationChange}
@@ -553,14 +594,7 @@ export function MeditationWorkspace({
       </div>
 
       {/* Bottom Playback Controls */}
-
-      <BottomBar
-        meditation={meditation}
-        isPlaying={isPlaying}
-        currentTimeMs={currentTimeMs}
-        isUILocked={isUILocked}
-        onTogglePlayback={togglePlayback}
-      />
+      <BottomBar onTogglePlayback={togglePlayback} />
 
       {/* Share Dialog */}
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>

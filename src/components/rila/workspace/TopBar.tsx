@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Download, Share2, Settings2, Loader, PenSquare } from "lucide-react";
@@ -7,18 +8,33 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Meditation, SynthesisState } from "../Rila";
 import { VoiceSettings, TtsPreset } from "../steps/voice/ttsTypes";
+import {
+  meditationAtom,
+  voiceSettingsAtom,
+  selectedPresetAtom,
+  isSharingAtom,
+  editingTitleAtom,
+  isSynthesizingAtom,
+  isGeneratingFullAudioAtom,
+  isSynthesisCompleteAtom,
+  isUILockedAtom,
+  synthesisStateAtom,
+} from "../MeditationWorkspace";
 
 interface TopBarProps {
-  meditation: Meditation;
-  isUILocked: boolean;
-  isSynthesizing: boolean;
-  isGeneratingFullAudio: boolean;
-  isSynthesisComplete: boolean;
-  progress: number;
-  voiceSettings: VoiceSettings;
-  selectedPreset: string;
-  isSharing: boolean;
-  editingTitle: boolean;
+  // Props now handled by atoms
+  // meditation: Meditation;
+  // isUILocked: boolean;
+  // isSynthesizing: boolean;
+  // isGeneratingFullAudio: boolean;
+  // isSynthesisComplete: boolean;
+  // progress: number;
+  // voiceSettings: VoiceSettings;
+  // selectedPreset: string;
+  // isSharing: boolean;
+  // editingTitle: boolean;
+
+  // Props still passed as props
   voicePresets: TtsPreset[];
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
   onVoiceSettingsUpdate: (voiceSettings: VoiceSettings) => void;
@@ -32,16 +48,6 @@ interface TopBarProps {
 }
 
 export function TopBar({
-  meditation,
-  isUILocked,
-  isSynthesizing,
-  isGeneratingFullAudio,
-  isSynthesisComplete,
-  progress,
-  voiceSettings,
-  selectedPreset,
-  isSharing,
-  editingTitle,
   voicePresets,
   onMeditationUpdate,
   onVoiceSettingsUpdate,
@@ -53,8 +59,26 @@ export function TopBar({
   onStartEditingTitle,
   onFinishEditing,
 }: TopBarProps) {
+  // Use atoms instead of props
+  const [voiceSettings] = useAtom(voiceSettingsAtom);
+  const [selectedPreset] = useAtom(selectedPresetAtom);
+  const [isSharing] = useAtom(isSharingAtom);
+  const [editingTitle] = useAtom(editingTitleAtom);
+  const meditation = useAtomValue(meditationAtom);
+
+  // Read-only atoms
+  const isUILocked = useAtomValue(isUILockedAtom);
+  const isSynthesizing = useAtomValue(isSynthesizingAtom);
+  const isGeneratingFullAudio = useAtomValue(isGeneratingFullAudioAtom);
+  const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
+  const synthesisState = useAtomValue(synthesisStateAtom);
+  const progress = synthesisState.progress;
+
   const [showAdvancedVoiceSettings, setShowAdvancedVoiceSettings] =
     useState(false);
+
+  // If meditation is null, don't render anything
+  if (!meditation) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

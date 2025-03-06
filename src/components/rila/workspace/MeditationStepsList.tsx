@@ -1,13 +1,25 @@
 import { MeditationStep } from "./MeditationStep";
 import { Meditation } from "../Rila";
+import { useAtom, useAtomValue } from "jotai";
+import {
+  meditationAtom,
+  editableTextsAtom,
+  editablePauseDurationsAtom,
+  editingStepIndexAtom,
+  selectedStepIndexAtom,
+  isUILockedAtom,
+} from "../MeditationWorkspace";
 
 interface MeditationStepsListProps {
-  meditation: Meditation;
-  editableTexts: Record<number, string>;
-  editablePauseDurations: Record<number, number>;
-  editingStepIndex: number | null;
-  selectedStepIndex: number | null;
-  isUILocked: boolean;
+  // Props now handled by atoms
+  // meditation: Meditation;
+  // editableTexts: Record<number, string>;
+  // editablePauseDurations: Record<number, number>;
+  // editingStepIndex: number | null;
+  // selectedStepIndex: number | null;
+  // isUILocked: boolean;
+
+  // Props still passed as props
   onStartEditing: (index: number) => void;
   onTextChange: (index: number, text: string) => void;
   onPauseDurationChange: (index: number, duration: number) => void;
@@ -20,12 +32,6 @@ interface MeditationStepsListProps {
 }
 
 export function MeditationStepsList({
-  meditation,
-  editableTexts,
-  editablePauseDurations,
-  editingStepIndex,
-  selectedStepIndex,
-  isUILocked,
   onStartEditing,
   onTextChange,
   onPauseDurationChange,
@@ -36,6 +42,17 @@ export function MeditationStepsList({
   onContainerClick,
   isStepOutOfSync,
 }: MeditationStepsListProps) {
+  // Use atoms instead of props
+  const meditation = useAtomValue(meditationAtom);
+  const editableTexts = useAtomValue(editableTextsAtom);
+  const editablePauseDurations = useAtomValue(editablePauseDurationsAtom);
+  const [editingStepIndex] = useAtom(editingStepIndexAtom);
+  const [selectedStepIndex] = useAtom(selectedStepIndexAtom);
+  const isUILocked = useAtomValue(isUILockedAtom);
+
+  // If meditation is null, don't render anything
+  if (!meditation) return null;
+
   return (
     <div
       className="mx-auto max-w-3xl px-4 space-y-4 py-4"
