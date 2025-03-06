@@ -65,7 +65,7 @@ export function MeditationStep({
 
   return (
     <div
-      className="relative flex mb-4 group hover:bg-muted/30 transition-colors rounded-r"
+      className="relative flex mb-4 group hover:bg-gradient-to-r hover:from-accent/20 hover:to-accent/50 transition-colors rounded-r"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -74,7 +74,7 @@ export function MeditationStep({
       <div className={`w-1 self-stretch rounded-l ${getStatusColor()}`}></div>
 
       {/* Main content area */}
-      <div className="flex-1 px-4 py-3 rounded-r">
+      <div className="flex-1 pl-4 pr-38 py-3 rounded-r">
         {isEditing ? (
           step.type === "pause" ? (
             <div className="flex items-center gap-4">
@@ -154,7 +154,7 @@ export function MeditationStep({
 
       {/* Action buttons that appear on hover/select */}
       {showActions && (
-        <div className="absolute right-4 top-4 flex space-x-2">
+        <div className="absolute right-2 top-2 flex space-x-2">
           <Button
             variant="ghost"
             size="icon"
