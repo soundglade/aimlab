@@ -214,7 +214,7 @@ export function MeditationWorkspace({
   // Load audio when synthesis is complete
   useEffect(() => {
     const loadAudio = async () => {
-      if (isSynthesisComplete && meditation.fullAudioFileId && !audioUrl) {
+      if (meditation.fullAudioFileId && !audioUrl) {
         try {
           const storedFile = await fileStorage.getFile(
             meditation.fullAudioFileId
@@ -241,7 +241,7 @@ export function MeditationWorkspace({
     };
 
     loadAudio();
-  }, [isSynthesisComplete, meditation.fullAudioFileId, fileStorage, audioUrl]);
+  }, [meditation.fullAudioFileId, fileStorage, audioUrl]);
 
   // Handle text changes and auto-save
   const handleTextChange = (index: number, text: string) => {
