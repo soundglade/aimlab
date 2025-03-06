@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
-import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
+import { VoiceSettings } from "./steps/voice/ttsTypes";
 import { ShareResponse } from "./utils/shareService";
 import { TopBar } from "./workspace/TopBar";
 import { BottomBar } from "./workspace/BottomBar";

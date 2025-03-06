@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
-import { Meditation } from "../Rila";
 import { useAtom, useAtomValue } from "jotai";
 import {
   meditationAtom,

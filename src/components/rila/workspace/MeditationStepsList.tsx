@@ -1,8 +1,7 @@
 import { MeditationStep } from "./MeditationStep";
 import { Meditation, SynthesisState } from "../Rila";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
-  meditationAtom,
   editableTextsAtom,
   editablePauseDurationsAtom,
   editingStepIndexAtom,
@@ -14,7 +13,6 @@ import {
 import { getAudioBlob } from "../utils/audioUtils";
 import { useEffect, useState } from "react";
 import * as synthesisService from "../utils/synthesisService";
-import { FileStorageApi } from "@/lib/file-storage";
 
 interface MeditationStepsListProps {
   meditation: Meditation;
