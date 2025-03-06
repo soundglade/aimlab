@@ -28,9 +28,45 @@ import {
   currentTimeMsAtom,
 } from "../MeditationWorkspace";
 
+// Voice presets definition
+const VOICE_PRESETS: TtsPreset[] = [
+  {
+    id: "meditation-default",
+    name: "Meditation Default",
+    description: "Nicole's whispering voice at a gentle pace",
+    settings: {
+      model: "web",
+      voiceId: "nicole",
+      speed: 1.0,
+    },
+    ttsService: "kokoro",
+  },
+  {
+    id: "guided-relaxation",
+    name: "Guided Relaxation",
+    description: "James's soothing British voice at a slower pace",
+    settings: {
+      model: "web",
+      voiceId: "james",
+      speed: 0.8,
+    },
+    ttsService: "kokoro",
+  },
+  {
+    id: "energetic-meditation",
+    name: "Energetic Meditation",
+    description: "Bella's passionate voice at a moderate pace",
+    settings: {
+      model: "web",
+      voiceId: "bella",
+      speed: 1.2,
+    },
+    ttsService: "kokoro",
+  },
+];
+
 interface TopBarProps {
   meditation: Meditation;
-  voicePresets: TtsPreset[];
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
   onSynthesisStateUpdate: (synthesisState: SynthesisState) => void;
   onShareMeditation: () => Promise<any>;
@@ -41,7 +77,6 @@ interface TopBarProps {
 
 export function TopBar({
   meditation,
-  voicePresets,
   onMeditationUpdate,
   onSynthesisStateUpdate,
   onShareMeditation,
@@ -79,6 +114,21 @@ export function TopBar({
   useEffect(() => {
     setMeditationAtom(meditation);
   }, [meditation, setMeditationAtom]);
+
+  // Initialize voice settings if needed
+  useEffect(() => {
+    // Try to find a matching preset based on current voice settings
+    const matchingPreset = VOICE_PRESETS.find(
+      (preset) =>
+        preset.ttsService === voiceSettings.ttsService &&
+        preset.settings.voiceId === voiceSettings.ttsSettings.voiceId
+    );
+
+    if (!matchingPreset) {
+      // If no matching preset, set to default
+      setSelectedPreset("meditation-default");
+    }
+  }, [voiceSettings, setSelectedPreset]);
 
   // Load audio when synthesis is complete
   useEffect(() => {
@@ -151,7 +201,7 @@ export function TopBar({
   const handlePresetChange = (presetId: string) => {
     setSelectedPreset(presetId);
 
-    const preset = voicePresets.find((p) => p.id === presetId);
+    const preset = VOICE_PRESETS.find((p) => p.id === presetId);
     if (preset) {
       updateVoiceSettings({
         ttsService: preset.ttsService,
@@ -257,7 +307,7 @@ export function TopBar({
                   onChange={(e) => handlePresetChange(e.target.value)}
                   className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  {voicePresets.map((preset) => (
+                  {VOICE_PRESETS.map((preset) => (
                     <option key={preset.id} value={preset.id}>
                       {preset.name}
                     </option>
