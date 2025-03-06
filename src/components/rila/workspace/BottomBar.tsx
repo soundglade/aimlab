@@ -11,13 +11,6 @@ import {
 } from "../MeditationWorkspace";
 
 interface BottomBarProps {
-  // Props now handled by atoms
-  // meditation: Meditation;
-  // isPlaying: boolean;
-  // currentTimeMs: number;
-  // isUILocked: boolean;
-
-  // Props still passed as props
   onTogglePlayback: () => void;
 }
 

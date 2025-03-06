@@ -5,6 +5,14 @@ import { Slider } from "@/components/ui/slider";
 import { Play, PenSquare, RefreshCw, AudioLines } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MeditationStep as MeditationStepType } from "../Rila";
+import { useAtomValue } from "jotai";
+import {
+  isUILockedAtom,
+  editingStepIndexAtom,
+  selectedStepIndexAtom,
+  editableTextsAtom,
+  editablePauseDurationsAtom,
+} from "../MeditationWorkspace";
 
 // Import dropdown components from shadcn/ui
 import {
@@ -17,10 +25,6 @@ import {
 export interface MeditationStepProps {
   step: MeditationStepType;
   index: number;
-  isEditing: boolean;
-  isSelected: boolean;
-  editableText: string;
-  editablePauseDuration: number;
   onEdit: () => void;
   onTextChange: (text: string) => void;
   onPauseDurationChange: (duration: number) => void;
@@ -29,17 +33,12 @@ export interface MeditationStepProps {
   isAudioGenerated: boolean;
   isAudioOutOfSync: boolean;
   onGenerateAudio?: () => void;
-  isUILocked: boolean;
   onSelect: () => void;
 }
 
 export function MeditationStep({
   step,
   index,
-  isEditing,
-  isSelected,
-  editableText,
-  editablePauseDuration,
   onEdit,
   onTextChange,
   onPauseDurationChange,
@@ -48,9 +47,21 @@ export function MeditationStep({
   isAudioGenerated,
   isAudioOutOfSync,
   onGenerateAudio,
-  isUILocked,
   onSelect,
 }: MeditationStepProps) {
+  // Use atoms instead of props
+  const isUILocked = useAtomValue(isUILockedAtom);
+  const editingStepIndex = useAtomValue(editingStepIndexAtom);
+  const selectedStepIndex = useAtomValue(selectedStepIndexAtom);
+  const editableTexts = useAtomValue(editableTextsAtom);
+  const editablePauseDurations = useAtomValue(editablePauseDurationsAtom);
+
+  // Derive values from atoms
+  const isEditing = editingStepIndex === index;
+  const isSelected = selectedStepIndex === index;
+  const editableText = editableTexts[index] || "";
+  const editablePauseDuration = editablePauseDurations[index] || 1;
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ x: 0, y: 0 });
 

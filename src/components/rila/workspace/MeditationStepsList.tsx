@@ -11,15 +11,6 @@ import {
 } from "../MeditationWorkspace";
 
 interface MeditationStepsListProps {
-  // Props now handled by atoms
-  // meditation: Meditation;
-  // editableTexts: Record<number, string>;
-  // editablePauseDurations: Record<number, number>;
-  // editingStepIndex: number | null;
-  // selectedStepIndex: number | null;
-  // isUILocked: boolean;
-
-  // Props still passed as props
   onStartEditing: (index: number) => void;
   onTextChange: (index: number, text: string) => void;
   onPauseDurationChange: (index: number, duration: number) => void;
@@ -44,11 +35,6 @@ export function MeditationStepsList({
 }: MeditationStepsListProps) {
   // Use atoms instead of props
   const meditation = useAtomValue(meditationAtom);
-  const editableTexts = useAtomValue(editableTextsAtom);
-  const editablePauseDurations = useAtomValue(editablePauseDurationsAtom);
-  const [editingStepIndex] = useAtom(editingStepIndexAtom);
-  const [selectedStepIndex] = useAtom(selectedStepIndexAtom);
-  const isUILocked = useAtomValue(isUILockedAtom);
 
   // If meditation is null, don't render anything
   if (!meditation) return null;
@@ -67,10 +53,6 @@ export function MeditationStepsList({
             key={index}
             step={step}
             index={index}
-            isEditing={editingStepIndex === index}
-            isSelected={selectedStepIndex === index}
-            editableText={editableTexts[index] || ""}
-            editablePauseDuration={editablePauseDurations[index] || 1}
             onEdit={() => onStartEditing(index)}
             onTextChange={(text) => onTextChange(index, text)}
             onPauseDurationChange={(duration) =>
@@ -83,7 +65,6 @@ export function MeditationStepsList({
             isAudioGenerated={isAudioGenerated}
             isAudioOutOfSync={isOutOfSync}
             onGenerateAudio={() => onGenerateStepAudio(index)}
-            isUILocked={isUILocked}
             onSelect={() => onSelectStep(index)}
           />
         );

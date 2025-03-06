@@ -22,19 +22,6 @@ import {
 } from "../MeditationWorkspace";
 
 interface TopBarProps {
-  // Props now handled by atoms
-  // meditation: Meditation;
-  // isUILocked: boolean;
-  // isSynthesizing: boolean;
-  // isGeneratingFullAudio: boolean;
-  // isSynthesisComplete: boolean;
-  // progress: number;
-  // voiceSettings: VoiceSettings;
-  // selectedPreset: string;
-  // isSharing: boolean;
-  // editingTitle: boolean;
-
-  // Props still passed as props
   voicePresets: TtsPreset[];
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
   onVoiceSettingsUpdate: (voiceSettings: VoiceSettings) => void;
