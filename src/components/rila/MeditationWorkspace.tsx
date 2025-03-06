@@ -151,24 +151,6 @@ export function MeditationWorkspace({
     null
   );
 
-  // Add a state to detect if we're on a touch device
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  useEffect(() => {
-    // Simple detection for touch devices
-    const detectTouch = () => {
-      setIsTouchDevice(true);
-      // Remove the event listener once we know it's a touch device
-      window.removeEventListener("touchstart", detectTouch);
-    };
-
-    window.addEventListener("touchstart", detectTouch);
-
-    return () => {
-      window.removeEventListener("touchstart", detectTouch);
-    };
-  }, []);
-
   // Initialize editable texts from meditation steps
   useEffect(() => {
     const texts: Record<number, string> = {};
@@ -539,7 +521,7 @@ export function MeditationWorkspace({
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar - Fixed */}
       <div className="fixed top-0 left-0 right-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto w-full max-w-5xl px-4">
+        <div className="mx-auto w-full max-w-3xl px-4">
           <div className="flex h-14 items-center justify-between">
             {/* Left side - Meditation Title */}
             <div className="flex items-center">
@@ -742,14 +724,7 @@ export function MeditationWorkspace({
                 onGenerateAudio={() => handleGenerateStepAudio(index)}
                 isUILocked={isUILocked}
                 onSelect={() => {
-                  // On touch devices, toggle selection
-                  // On non-touch devices, we don't need to manage selection state
-                  // as hover will handle showing the action buttons
-                  if (isTouchDevice) {
-                    setSelectedStepIndex(
-                      selectedStepIndex === index ? null : index
-                    );
-                  }
+                  setSelectedStepIndex(index);
                 }}
               />
             );
@@ -760,7 +735,7 @@ export function MeditationWorkspace({
       {/* Bottom Navigation Bar - Fixed - Only shown when audio is available */}
       {isSynthesisComplete && audioUrl && (
         <div className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="mx-auto w-full max-w-5xl px-4">
+          <div className="mx-auto w-full max-w-3xl px-4">
             <div className="flex h-14 items-center justify-center">
               <div className="w-full max-w-md">
                 <div className="flex flex-col space-y-1">
