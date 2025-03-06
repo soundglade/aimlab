@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { createAudioUrl } from "./utils/audioUtils";
+import { createAudioUrl, getAudioBlob } from "./utils/audioUtils";
 import { downloadAudioFile } from "./utils/audioExporter";
 import { ShareResponse } from "./utils/shareService";
 import { MeditationStep } from "./MeditationStep";
@@ -462,9 +462,12 @@ export function MeditationWorkspace({
       saveEditForStep(index);
     }
 
-    // For now, we'll just start the full synthesis process
-    // In a real implementation, this would generate audio only for the specific step
-    // and update the meditation state accordingly
+    const step = meditation.steps[index];
+
+    // Only speech and heading steps can have audio
+    if (step.type !== "speech" && step.type !== "heading") {
+      return;
+    }
 
     // Set synthesis state to started with only this step as target
     onSynthesisStateUpdate({
@@ -473,8 +476,57 @@ export function MeditationWorkspace({
       completedStepIndices: [],
     });
 
-    // Start synthesis for all steps (in a real implementation, this would be for a single step)
-    await startSynthesis();
+    try {
+      // Call the synthesizeText API with the step text
+      const response = await fetch("/api/synthesize-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: step.text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Text synthesis failed");
+      }
+
+      const result = await response.json();
+
+      // Create a Blob from the base64 audio data
+      const audioBlob = getAudioBlob(result.audio, "audio/mp3");
+
+      // Save the audio blob to file storage
+      const fileId = await fileStorage.saveFile(audioBlob, {
+        projectId: "rila",
+        groupId: sessionId,
+        contentType: "audio/mp3",
+      });
+
+      // Update the meditation with the new audio file ID and duration
+      step.audioFileId = fileId;
+      step.durationMs = result.durationMs;
+
+      // Update the meditation
+      onMeditationUpdate(meditation);
+
+      // Update synthesis state to completed
+      onSynthesisStateUpdate({
+        started: false,
+        progress: 100,
+        completedStepIndices: [...synthesisState.completedStepIndices, index],
+      });
+    } catch (error) {
+      console.error("Error generating step audio:", error);
+
+      // Update synthesis state to indicate failure
+      onSynthesisStateUpdate({
+        started: false,
+        progress: 0,
+        completedStepIndices: synthesisState.completedStepIndices,
+      });
+    }
   };
 
   // Clear selection when UI is locked
