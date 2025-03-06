@@ -3,9 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
-import { Play, PenSquare, RefreshCw, Plus } from "lucide-react";
+import { Play, PenSquare, RefreshCw, Plus, MoreVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MeditationStep as MeditationStepType } from "./Rila";
+
+// Import dropdown components from shadcn/ui
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export interface MeditationStepProps {
   step: MeditationStepType;
@@ -63,18 +71,104 @@ export function MeditationStep({
     onSelect();
   };
 
+  // Determine if edit option should be shown
+  const showEditOption = !isUILocked;
+
+  // Determine if play option should be shown
+  const showPlayOption = isAudioGenerated && onPreview;
+
+  // Determine if generate/regenerate option should be shown
+  const showGenerateOption =
+    onGenerateAudio && (step.type === "speech" || step.type === "heading");
+
   return (
     <div
-      className="relative flex mb-4 group hover:bg-gradient-to-r hover:from-accent/20 hover:to-accent/50 transition-colors rounded-r"
+      className="relative flex mb-4 group transition-colors rounded-r"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
+      {/* Actions dropdown menu */}
+      <div
+        className={cn(
+          "absolute left-0 top-2 z-10",
+          // On desktop: show only on hover, on mobile: always show but dimmed
+          !isHovered && !isSelected ? "md:opacity-0 opacity-40" : "opacity-100",
+          isEditing || isUILocked ? "hidden" : "flex"
+        )}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            {showEditOption && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
+              >
+                <PenSquare className="h-4 w-4 mr-2" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            )}
+
+            {showPlayOption && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPreview!();
+                }}
+              >
+                <Play className="h-4 w-4 mr-2" />
+                <span>Play</span>
+              </DropdownMenuItem>
+            )}
+
+            {showGenerateOption && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onGenerateAudio!();
+                }}
+              >
+                {isAudioOutOfSync ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 text-amber-500" />
+                    <span>Regenerate Audio</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 mr-2" />
+                    <span>Generate Audio</span>
+                  </>
+                )}
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       {/* Status bar on the left */}
-      <div className={`w-1 self-stretch rounded-l ${getStatusColor()}`}></div>
+      <div
+        className={`w-1 self-stretch rounded-l ml-9 ${getStatusColor()}`}
+      ></div>
 
       {/* Main content area */}
-      <div className="flex-1 pl-4 pr-38 py-3 rounded-r">
+      <div
+        className={cn(
+          "flex-1 pl-4 pr-6 py-3 rounded-r",
+          isHovered ? "bg-accent/40" : "bg-transparent"
+        )}
+      >
         {isEditing ? (
           step.type === "pause" ? (
             <div className="flex items-center gap-4">
@@ -151,58 +245,6 @@ export function MeditationStep({
           </>
         )}
       </div>
-
-      {/* Action buttons that appear on hover/select */}
-      {showActions && (
-        <div className="absolute right-2 top-2 flex space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            className="h-8 w-8 rounded-full bg-background shadow-sm hover:bg-muted transition"
-          >
-            <PenSquare className="h-4 w-4" />
-          </Button>
-
-          {/* Show play button only if audio exists */}
-          {isAudioGenerated && onPreview && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                onPreview();
-              }}
-              className="h-8 w-8 rounded-full bg-background shadow-sm hover:bg-muted transition"
-            >
-              <Play className="h-4 w-4" />
-            </Button>
-          )}
-
-          {/* Show generate/regenerate button */}
-          {onGenerateAudio &&
-            (step.type === "speech" || step.type === "heading") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onGenerateAudio();
-                }}
-                className="h-8 w-8 rounded-full bg-background shadow-sm hover:bg-muted transition"
-              >
-                {isAudioOutOfSync ? (
-                  <RefreshCw className="h-4 w-4 text-amber-500" />
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-              </Button>
-            )}
-        </div>
-      )}
     </div>
   );
 }
