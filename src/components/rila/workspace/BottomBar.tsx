@@ -2,24 +2,35 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import { Meditation } from "../Rila";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   meditationAtom,
   isPlayingAtom,
   currentTimeMsAtom,
   isUILockedAtom,
+  audioElementAtom,
 } from "../MeditationWorkspace";
 
-interface BottomBarProps {
-  onTogglePlayback: () => void;
-}
-
-export function BottomBar({ onTogglePlayback }: BottomBarProps) {
+export function BottomBar() {
   // Use atoms instead of props
   const meditation = useAtomValue(meditationAtom);
-  const isPlaying = useAtomValue(isPlayingAtom);
+  const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
   const currentTimeMs = useAtomValue(currentTimeMsAtom);
   const isUILocked = useAtomValue(isUILockedAtom);
+  const audioElement = useAtomValue(audioElementAtom);
+
+  // Handle playback controls - moved from MeditationWorkspace
+  const togglePlayback = () => {
+    if (!audioElement) return;
+
+    if (isPlaying) {
+      audioElement.pause();
+    } else {
+      audioElement.play();
+    }
+
+    setIsPlaying(!isPlaying);
+  };
 
   // If meditation is null, don't render anything
   if (!meditation) return null;
@@ -47,7 +58,7 @@ export function BottomBar({ onTogglePlayback }: BottomBarProps) {
                 <Button
                   size="icon"
                   className="p-5"
-                  onClick={onTogglePlayback}
+                  onClick={togglePlayback}
                   disabled={isUILocked}
                 >
                   {isPlaying ? (

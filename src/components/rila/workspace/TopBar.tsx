@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useState, useEffect } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Download, Share2, Settings2, Loader, PenSquare } from "lucide-react";
@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Meditation, SynthesisState } from "../Rila";
 import { VoiceSettings, TtsPreset } from "../steps/voice/ttsTypes";
+import { createAudioUrl } from "../utils/audioUtils";
+import { downloadAudioFile } from "../utils/audioExporter";
+import { useSynthesis } from "../steps/synthesis/useSynthesis";
 import {
   meditationAtom,
   voiceSettingsAtom,
@@ -19,53 +22,152 @@ import {
   isSynthesisCompleteAtom,
   isUILockedAtom,
   synthesisStateAtom,
+  selectedStepIndexAtom,
 } from "../MeditationWorkspace";
 
 interface TopBarProps {
+  meditation: Meditation;
   voicePresets: TtsPreset[];
   onMeditationUpdate: (updatedMeditation: Meditation) => void;
-  onVoiceSettingsUpdate: (voiceSettings: VoiceSettings) => void;
-  onPresetChange: (presetId: string) => void;
-  onStartSynthesis: () => void;
-  onDownload: () => void;
-  onShare: () => void;
-  onCancel: () => void;
-  onStartEditingTitle: () => void;
-  onFinishEditing: () => void;
+  onSynthesisStateUpdate: (synthesisState: SynthesisState) => void;
+  onShareMeditation: () => Promise<any>;
+  fileStorage: any;
+  sessionId?: string;
+  onVoiceSettingsUpdate?: (voiceSettings: VoiceSettings) => void;
 }
 
 export function TopBar({
+  meditation,
   voicePresets,
   onMeditationUpdate,
+  onSynthesisStateUpdate,
+  onShareMeditation,
+  fileStorage,
+  sessionId,
   onVoiceSettingsUpdate,
-  onPresetChange,
-  onStartSynthesis,
-  onDownload,
-  onShare,
-  onCancel,
-  onStartEditingTitle,
-  onFinishEditing,
 }: TopBarProps) {
   // Use atoms instead of props
-  const [voiceSettings] = useAtom(voiceSettingsAtom);
-  const [selectedPreset] = useAtom(selectedPresetAtom);
-  const [isSharing] = useAtom(isSharingAtom);
-  const [editingTitle] = useAtom(editingTitleAtom);
-  const meditation = useAtomValue(meditationAtom);
+  const [, setMeditationAtom] = useAtom(meditationAtom);
+  const [voiceSettings, setVoiceSettings] = useAtom(voiceSettingsAtom);
+  const [selectedPreset, setSelectedPreset] = useAtom(selectedPresetAtom);
+  const [isSharing, setIsSharing] = useAtom(isSharingAtom);
+  const [editingTitle, setEditingTitle] = useAtom(editingTitleAtom);
+  const setSelectedStepIndex = useSetAtom(selectedStepIndexAtom);
+  const [synthesisState, setSynthesisState] = useAtom(synthesisStateAtom);
 
   // Read-only atoms
   const isUILocked = useAtomValue(isUILockedAtom);
   const isSynthesizing = useAtomValue(isSynthesizingAtom);
   const isGeneratingFullAudio = useAtomValue(isGeneratingFullAudioAtom);
   const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
-  const synthesisState = useAtomValue(synthesisStateAtom);
   const progress = synthesisState.progress;
 
+  // Local state
   const [showAdvancedVoiceSettings, setShowAdvancedVoiceSettings] =
     useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  // If meditation is null, don't render anything
-  if (!meditation) return null;
+  // Update meditation atom when prop changes
+  useEffect(() => {
+    setMeditationAtom(meditation);
+  }, [meditation, setMeditationAtom]);
+
+  // Synthesis functionality
+  const { handleCancel, startSynthesis } = useSynthesis(
+    meditation,
+    voiceSettings,
+    fileStorage,
+    onMeditationUpdate,
+    onSynthesisStateUpdate,
+    () => {
+      // Cancel handler
+      onSynthesisStateUpdate({
+        started: false,
+        progress: 0,
+        completedStepIndices: [],
+      });
+    },
+    synthesisState,
+    sessionId,
+    false // Don't start synthesis automatically
+  );
+
+  // Update voice settings
+  const updateVoiceSettings = (newSettings: VoiceSettings) => {
+    setVoiceSettings(newSettings);
+    if (onVoiceSettingsUpdate) {
+      onVoiceSettingsUpdate(newSettings);
+    }
+  };
+
+  // Handle voice preset change
+  const handlePresetChange = (presetId: string) => {
+    setSelectedPreset(presetId);
+
+    const preset = voicePresets.find((p) => p.id === presetId);
+    if (preset) {
+      updateVoiceSettings({
+        ttsService: preset.ttsService,
+        ttsSettings: {
+          ...voiceSettings.ttsSettings,
+          ...preset.settings,
+        },
+        isAdvancedMode: false,
+      });
+    }
+  };
+
+  // Handle download
+  const handleDownload = async () => {
+    if (meditation.fullAudioFileId) {
+      try {
+        const storedFile = await fileStorage.getFile(
+          meditation.fullAudioFileId
+        );
+        if (storedFile && storedFile.data) {
+          const url = createAudioUrl(storedFile.data);
+          downloadAudioFile(url, `${meditation.title}.wav`);
+        }
+      } catch (error) {
+        console.error("Error downloading audio:", error);
+      }
+    }
+  };
+
+  // Handle share
+  const handleShare = async () => {
+    setIsSharing(true);
+    try {
+      const response = await onShareMeditation();
+      if (response.shareUrl) {
+        setShareUrl(response.shareUrl);
+        setShareDialogOpen(true);
+      }
+    } catch (error) {
+      console.error("Error sharing meditation:", error);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  // Handle start synthesis
+  const handleStartSynthesis = () => {
+    startSynthesis();
+  };
+
+  // Start editing the title
+  const startEditingTitle = () => {
+    if (isUILocked) return;
+    setEditingTitle(true);
+    // Clear selection when editing title
+    setSelectedStepIndex(null);
+  };
+
+  // Finish editing and save changes
+  const finishEditing = () => {
+    setEditingTitle(false);
+  };
 
   return (
     <div className="fixed top-0 left-0 right-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -83,7 +185,7 @@ export function TopBar({
                   };
                   onMeditationUpdate(updatedMeditation);
                 }}
-                onBlur={onFinishEditing}
+                onBlur={finishEditing}
                 autoFocus
                 className="font-semibold text-lg border-none focus-visible:ring-0 p-0 max-w-[200px] sm:max-w-xs"
                 disabled={isUILocked}
@@ -91,7 +193,7 @@ export function TopBar({
             ) : (
               <div
                 className="group relative cursor-pointer font-semibold text-lg truncate max-w-[200px] sm:max-w-xs"
-                onClick={onStartEditingTitle}
+                onClick={startEditingTitle}
               >
                 {meditation.title}
                 <PenSquare className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-4 h-3.5 w-3.5 opacity-0 group-hover:opacity-70 transition-opacity" />
@@ -106,7 +208,7 @@ export function TopBar({
                 <select
                   id="voice-preset"
                   value={selectedPreset}
-                  onChange={(e) => onPresetChange(e.target.value)}
+                  onChange={(e) => handlePresetChange(e.target.value)}
                   className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {voicePresets.map((preset) => (
@@ -128,7 +230,7 @@ export function TopBar({
 
                 <Button
                   size="sm"
-                  onClick={onStartSynthesis}
+                  onClick={handleStartSynthesis}
                   disabled={isUILocked}
                 >
                   Generate Audio
@@ -141,7 +243,7 @@ export function TopBar({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onDownload}
+                  onClick={handleDownload}
                   disabled={isUILocked}
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -151,7 +253,7 @@ export function TopBar({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onShare}
+                  onClick={handleShare}
                   disabled={isUILocked || isSharing}
                 >
                   {isSharing ? (
@@ -181,7 +283,7 @@ export function TopBar({
                   step={0.1}
                   value={[voiceSettings.ttsSettings.speed]}
                   onValueChange={(value) =>
-                    onVoiceSettingsUpdate({
+                    updateVoiceSettings({
                       ...voiceSettings,
                       ttsSettings: {
                         ...voiceSettings.ttsSettings,
@@ -216,7 +318,7 @@ export function TopBar({
 
             {progress < 100 && (
               <div className="flex justify-end mt-1">
-                <Button variant="outline" size="sm" onClick={onCancel}>
+                <Button variant="outline" size="sm" onClick={handleCancel}>
                   Cancel
                 </Button>
               </div>

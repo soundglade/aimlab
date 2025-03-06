@@ -1,6 +1,6 @@
 import { MeditationStep } from "./MeditationStep";
-import { Meditation } from "../Rila";
-import { useAtom, useAtomValue } from "jotai";
+import { Meditation, SynthesisState } from "../Rila";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   meditationAtom,
   editableTextsAtom,
@@ -8,41 +8,238 @@ import {
   editingStepIndexAtom,
   selectedStepIndexAtom,
   isUILockedAtom,
+  isSynthesisCompleteAtom,
+  synthesisStateAtom,
 } from "../MeditationWorkspace";
+import { getAudioBlob } from "../utils/audioUtils";
 
 interface MeditationStepsListProps {
-  onStartEditing: (index: number) => void;
-  onTextChange: (index: number, text: string) => void;
-  onPauseDurationChange: (index: number, duration: number) => void;
-  onBlur: (index: number) => void;
+  meditation: Meditation;
+  fileStorage: any;
+  sessionId?: string;
+  onMeditationUpdate: (updatedMeditation: Meditation) => void;
+  onSynthesisStateUpdate: (synthesisState: SynthesisState) => void;
   onPreviewSection: (index: number) => void;
-  onGenerateStepAudio: (index: number) => void;
-  onSelectStep: (index: number) => void;
-  onContainerClick: (e: React.MouseEvent) => void;
-  isStepOutOfSync: (index: number) => boolean;
 }
 
 export function MeditationStepsList({
-  onStartEditing,
-  onTextChange,
-  onPauseDurationChange,
-  onBlur,
+  meditation,
+  fileStorage,
+  sessionId,
+  onMeditationUpdate,
+  onSynthesisStateUpdate,
   onPreviewSection,
-  onGenerateStepAudio,
-  onSelectStep,
-  onContainerClick,
-  isStepOutOfSync,
 }: MeditationStepsListProps) {
-  // Use atoms instead of props
-  const meditation = useAtomValue(meditationAtom);
+  // Use atoms for state
+  const [editableTexts, setEditableTexts] = useAtom(editableTextsAtom);
+  const [editablePauseDurations, setEditablePauseDurations] = useAtom(
+    editablePauseDurationsAtom
+  );
+  const [editingStepIndex, setEditingStepIndex] = useAtom(editingStepIndexAtom);
+  const [selectedStepIndex, setSelectedStepIndex] = useAtom(
+    selectedStepIndexAtom
+  );
+  const isUILocked = useAtomValue(isUILockedAtom);
+  const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
+  const synthesisState = useAtomValue(synthesisStateAtom);
 
-  // If meditation is null, don't render anything
-  if (!meditation) return null;
+  // Handle text changes and auto-save
+  const handleTextChange = (index: number, text: string) => {
+    setEditableTexts((prev) => ({ ...prev, [index]: text }));
+  };
+
+  // Handle pause duration changes and auto-save
+  const handlePauseDurationChange = (index: number, duration: number) => {
+    setEditablePauseDurations((prev) => ({ ...prev, [index]: duration }));
+  };
+
+  // Save edits for a specific step
+  const saveEditForStep = (index: number) => {
+    if (isUILocked) return;
+
+    const updatedSteps = [...meditation.steps];
+    const step = updatedSteps[index];
+
+    if (step.type === "speech" || step.type === "heading") {
+      if (
+        editableTexts[index] !== undefined &&
+        editableTexts[index] !== step.text
+      ) {
+        updatedSteps[index] = {
+          ...step,
+          text: editableTexts[index],
+          // Clear audio file ID if text has changed
+          audioFileId: undefined,
+        };
+      }
+    } else if (step.type === "pause") {
+      if (
+        editablePauseDurations[index] !== undefined &&
+        editablePauseDurations[index] * 1000 !== step.durationMs
+      ) {
+        updatedSteps[index] = {
+          ...step,
+          durationMs: editablePauseDurations[index] * 1000,
+        };
+      }
+    }
+
+    // Only update if changes were made
+    if (JSON.stringify(updatedSteps) !== JSON.stringify(meditation.steps)) {
+      const updatedMeditation = {
+        ...meditation,
+        steps: updatedSteps,
+        // Clear full audio file ID if any step has changed
+        fullAudioFileId: undefined,
+        timeline: undefined,
+      };
+
+      onMeditationUpdate(updatedMeditation);
+
+      // Reset synthesis state if changes were made
+      if (isSynthesisComplete) {
+        onSynthesisStateUpdate({
+          started: false,
+          progress: 0,
+          completedStepIndices: [],
+        });
+      }
+    }
+  };
+
+  // Auto-save on blur
+  const handleTextBlur = (index: number) => {
+    saveEditForStep(index);
+  };
+
+  // Auto-save pause duration on change
+  const handlePauseDurationBlur = (index: number) => {
+    saveEditForStep(index);
+  };
+
+  // Start editing a step
+  const startEditing = (index: number) => {
+    if (isUILocked) return;
+    setEditingStepIndex(index);
+    // Clear selection when editing starts
+    setSelectedStepIndex(null);
+  };
+
+  // Finish editing and save changes
+  const finishEditing = () => {
+    setEditingStepIndex(null);
+  };
+
+  // Handle click on the container to clear selection
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // Only clear selection if clicking directly on the container, not on a step
+    if (e.target === e.currentTarget) {
+      setSelectedStepIndex(null);
+    }
+  };
+
+  // Track if a step's text has been modified after audio generation
+  const isStepOutOfSync = (index: number) => {
+    const step = meditation.steps[index];
+    if (!step.audioFileId) return false;
+
+    if (step.type === "speech" || step.type === "heading") {
+      return editableTexts[index] !== step.text;
+    } else if (step.type === "pause") {
+      return editablePauseDurations[index] * 1000 !== step.durationMs;
+    }
+
+    return false;
+  };
+
+  // Generate audio for a specific step
+  const handleGenerateStepAudio = async (index: number) => {
+    // If the step is out of sync, we need to save the changes first
+    if (isStepOutOfSync(index)) {
+      saveEditForStep(index);
+    }
+
+    const step = meditation.steps[index];
+
+    // Only speech and heading steps can have audio
+    if (step.type !== "speech" && step.type !== "heading") {
+      return;
+    }
+
+    // Set synthesis state to started with only this step as target
+    onSynthesisStateUpdate({
+      started: true,
+      progress: 0,
+      completedStepIndices: [],
+    });
+
+    try {
+      // Call the synthesizeText API with the step text
+      const response = await fetch("/api/synthesize-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: step.text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Text synthesis failed");
+      }
+
+      const result = await response.json();
+
+      // Create a Blob from the base64 audio data
+      const audioBlob = getAudioBlob(result.audio, "audio/mp3");
+
+      // Save the audio blob to file storage
+      const fileId = await fileStorage.saveFile(audioBlob, {
+        projectId: "rila",
+        groupId: sessionId,
+        contentType: "audio/mp3",
+      });
+
+      // Update the meditation with the new audio file ID and duration
+      step.audioFileId = fileId;
+      step.durationMs = result.durationMs;
+
+      // Update the meditation
+      onMeditationUpdate(meditation);
+
+      // Update synthesis state to completed
+      onSynthesisStateUpdate({
+        started: false,
+        progress: 100,
+        completedStepIndices: [...synthesisState.completedStepIndices, index],
+      });
+    } catch (error) {
+      console.error("Error generating step audio:", error);
+
+      // Update synthesis state to indicate failure
+      onSynthesisStateUpdate({
+        started: false,
+        progress: 0,
+        completedStepIndices: synthesisState.completedStepIndices,
+      });
+    }
+  };
+
+  // Handle step blur
+  const handleStepBlur = (index: number) => {
+    if (meditation.steps[index].type === "pause") {
+      handlePauseDurationBlur(index);
+    } else {
+      handleTextBlur(index);
+    }
+    finishEditing();
+  };
 
   return (
     <div
       className="mx-auto max-w-3xl px-4 space-y-4 py-4"
-      onClick={onContainerClick}
+      onClick={handleContainerClick}
     >
       {meditation.steps.map((step, index) => {
         const isAudioGenerated = !!step.audioFileId;
@@ -53,19 +250,19 @@ export function MeditationStepsList({
             key={index}
             step={step}
             index={index}
-            onEdit={() => onStartEditing(index)}
-            onTextChange={(text) => onTextChange(index, text)}
+            onEdit={() => startEditing(index)}
+            onTextChange={(text) => handleTextChange(index, text)}
             onPauseDurationChange={(duration) =>
-              onPauseDurationChange(index, duration)
+              handlePauseDurationChange(index, duration)
             }
-            onBlur={() => onBlur(index)}
+            onBlur={() => handleStepBlur(index)}
             onPreview={
               step.audioFileId ? () => onPreviewSection(index) : undefined
             }
             isAudioGenerated={isAudioGenerated}
             isAudioOutOfSync={isOutOfSync}
-            onGenerateAudio={() => onGenerateStepAudio(index)}
-            onSelect={() => onSelectStep(index)}
+            onGenerateAudio={() => handleGenerateStepAudio(index)}
+            onSelect={() => setSelectedStepIndex(index)}
           />
         );
       })}

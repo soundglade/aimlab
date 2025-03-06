@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
-import { useSynthesis } from "./steps/synthesis/useSynthesis";
 import { useAudioPreview } from "./steps/synthesis/MeditationStepDisplay";
 import { createAudioUrl, getAudioBlob } from "./utils/audioUtils";
 import { downloadAudioFile } from "./utils/audioExporter";
@@ -85,6 +84,7 @@ export const synthesisStateAtom = atom<SynthesisState>({
   progress: 0,
   completedStepIndices: [],
 });
+export const audioElementAtom = atom<HTMLAudioElement | null>(null);
 
 // Derived atoms
 export const isSynthesizingAtom = atom((get) => {
@@ -142,6 +142,7 @@ export function MeditationWorkspace({
     selectedStepIndexAtom
   );
   const [, setSynthesisState] = useAtom(synthesisStateAtom);
+  const [, setAudioElement] = useAtom(audioElementAtom);
 
   // Set derived atoms
   const isSynthesizing = useAtomValue(isSynthesizingAtom);
@@ -155,9 +156,6 @@ export function MeditationWorkspace({
 
   // Local state (not shared with child components)
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
-    null
-  );
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
@@ -218,36 +216,8 @@ export function MeditationWorkspace({
     setEditablePauseDurations(pauseDurations);
   }, [meditation]);
 
-  // Synthesis functionality
-  const { handleCancel, startSynthesis } = useSynthesis(
-    meditation,
-    voiceSettings,
-    fileStorage,
-    onMeditationUpdate,
-    onSynthesisStateUpdate,
-    () => {
-      // Cancel handler
-      onSynthesisStateUpdate({
-        started: false,
-        progress: 0,
-        completedStepIndices: [],
-      });
-    },
-    synthesisState,
-    sessionId,
-    false // Don't start synthesis automatically
-  );
-
   // Audio preview functionality
   const { previewSection } = useAudioPreview(meditation, fileStorage);
-
-  // Update voice settings
-  const updateVoiceSettings = (newSettings: VoiceSettings) => {
-    setVoiceSettings(newSettings);
-    if (onVoiceSettingsUpdate) {
-      onVoiceSettingsUpdate(newSettings);
-    }
-  };
 
   // Load audio when synthesis is complete
   useEffect(() => {
@@ -281,297 +251,18 @@ export function MeditationWorkspace({
     loadAudio();
   }, [meditation.fullAudioFileId, fileStorage, audioUrl]);
 
-  // Handle text changes and auto-save
-  const handleTextChange = (index: number, text: string) => {
-    setEditableTexts((prev) => ({ ...prev, [index]: text }));
-  };
-
-  // Auto-save on blur
-  const handleTextBlur = (index: number) => {
-    saveEditForStep(index);
-  };
-
-  // Handle pause duration changes and auto-save
-  const handlePauseDurationChange = (index: number, duration: number) => {
-    setEditablePauseDurations((prev) => ({ ...prev, [index]: duration }));
-  };
-
-  // Auto-save pause duration on change
-  const handlePauseDurationBlur = (index: number) => {
-    saveEditForStep(index);
-  };
-
-  // Save edits for a specific step
-  const saveEditForStep = (index: number) => {
-    if (isUILocked) return;
-
-    const updatedSteps = [...meditation.steps];
-    const step = updatedSteps[index];
-
-    if (step.type === "speech" || step.type === "heading") {
-      if (
-        editableTexts[index] !== undefined &&
-        editableTexts[index] !== step.text
-      ) {
-        updatedSteps[index] = {
-          ...step,
-          text: editableTexts[index],
-          // Clear audio file ID if text has changed
-          audioFileId: undefined,
-        };
-      }
-    } else if (step.type === "pause") {
-      if (
-        editablePauseDurations[index] !== undefined &&
-        editablePauseDurations[index] * 1000 !== step.durationMs
-      ) {
-        updatedSteps[index] = {
-          ...step,
-          durationMs: editablePauseDurations[index] * 1000,
-        };
-      }
-    }
-
-    // Only update if changes were made
-    if (JSON.stringify(updatedSteps) !== JSON.stringify(meditation.steps)) {
-      const updatedMeditation = {
-        ...meditation,
-        steps: updatedSteps,
-        // Clear full audio file ID if any step has changed
-        fullAudioFileId: undefined,
-        timeline: undefined,
-      };
-
-      onMeditationUpdate(updatedMeditation);
-
-      // Reset synthesis state if changes were made
-      if (isSynthesisComplete) {
-        onSynthesisStateUpdate({
-          started: false,
-          progress: 0,
-          completedStepIndices: [],
-        });
-      }
-    }
-  };
-
-  // Handle voice preset change
-  const handlePresetChange = (presetId: string) => {
-    setSelectedPreset(presetId);
-
-    const preset = VOICE_PRESETS.find((p) => p.id === presetId);
-    if (preset) {
-      updateVoiceSettings({
-        ttsService: preset.ttsService,
-        ttsSettings: {
-          ...voiceSettings.ttsSettings,
-          ...preset.settings,
-        },
-        isAdvancedMode: false,
-      });
-    }
-  };
-
-  // Handle playback controls
-  const togglePlayback = () => {
-    if (!audioElement) return;
-
-    if (isPlaying) {
-      audioElement.pause();
-    } else {
-      audioElement.play();
-    }
-
-    setIsPlaying(!isPlaying);
-  };
-
-  // Handle download
-  const handleDownload = async () => {
-    if (meditation.fullAudioFileId) {
-      try {
-        const storedFile = await fileStorage.getFile(
-          meditation.fullAudioFileId
-        );
-        if (storedFile && storedFile.data) {
-          const url = createAudioUrl(storedFile.data);
-          downloadAudioFile(url, `${meditation.title}.wav`);
-        }
-      } catch (error) {
-        console.error("Error downloading audio:", error);
-      }
-    }
-  };
-
-  // Handle share
-  const handleShare = async () => {
-    setIsSharing(true);
-    try {
-      const response = await onShareMeditation();
-      if (response.shareUrl) {
-        setShareUrl(response.shareUrl);
-        setShareDialogOpen(true);
-      }
-    } catch (error) {
-      console.error("Error sharing meditation:", error);
-    } finally {
-      setIsSharing(false);
-    }
-  };
-
-  // Handle start synthesis
-  const handleStartSynthesis = () => {
-    startSynthesis();
-  };
-
-  // Start editing a step
-  const startEditing = (index: number) => {
-    if (isUILocked) return;
-    setEditingStepIndex(index);
-    // Clear selection when editing starts
-    setSelectedStepIndex(null);
-  };
-
-  // Start editing the title
-  const startEditingTitle = () => {
-    if (isUILocked) return;
-    setEditingTitle(true);
-    // Clear selection when editing title
-    setSelectedStepIndex(null);
-  };
-
-  // Finish editing and save changes
-  const finishEditing = () => {
-    setEditingStepIndex(null);
-    setEditingTitle(false);
-  };
-
-  // Handle click on the container to clear selection
-  const handleContainerClick = (e: React.MouseEvent) => {
-    // Only clear selection if clicking directly on the container, not on a step
-    if (e.target === e.currentTarget) {
-      setSelectedStepIndex(null);
-    }
-  };
-
-  // Track if a step's text has been modified after audio generation
-  const isStepOutOfSync = (index: number) => {
-    const step = meditation.steps[index];
-    if (!step.audioFileId) return false;
-
-    if (step.type === "speech" || step.type === "heading") {
-      return editableTexts[index] !== step.text;
-    } else if (step.type === "pause") {
-      return editablePauseDurations[index] * 1000 !== step.durationMs;
-    }
-
-    return false;
-  };
-
-  // Generate audio for a specific step
-  const handleGenerateStepAudio = async (index: number) => {
-    // If the step is out of sync, we need to save the changes first
-    if (isStepOutOfSync(index)) {
-      saveEditForStep(index);
-    }
-
-    const step = meditation.steps[index];
-
-    // Only speech and heading steps can have audio
-    if (step.type !== "speech" && step.type !== "heading") {
-      return;
-    }
-
-    // Set synthesis state to started with only this step as target
-    onSynthesisStateUpdate({
-      started: true,
-      progress: 0,
-      completedStepIndices: [],
-    });
-
-    try {
-      // Call the synthesizeText API with the step text
-      const response = await fetch("/api/synthesize-text", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: step.text,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Text synthesis failed");
-      }
-
-      const result = await response.json();
-
-      // Create a Blob from the base64 audio data
-      const audioBlob = getAudioBlob(result.audio, "audio/mp3");
-
-      // Save the audio blob to file storage
-      const fileId = await fileStorage.saveFile(audioBlob, {
-        projectId: "rila",
-        groupId: sessionId,
-        contentType: "audio/mp3",
-      });
-
-      // Update the meditation with the new audio file ID and duration
-      step.audioFileId = fileId;
-      step.durationMs = result.durationMs;
-
-      // Update the meditation
-      onMeditationUpdate(meditation);
-
-      // Update synthesis state to completed
-      onSynthesisStateUpdate({
-        started: false,
-        progress: 100,
-        completedStepIndices: [...synthesisState.completedStepIndices, index],
-      });
-    } catch (error) {
-      console.error("Error generating step audio:", error);
-
-      // Update synthesis state to indicate failure
-      onSynthesisStateUpdate({
-        started: false,
-        progress: 0,
-        completedStepIndices: synthesisState.completedStepIndices,
-      });
-    }
-  };
-
-  // Clear selection when UI is locked
-  useEffect(() => {
-    if (isUILocked) {
-      setSelectedStepIndex(null);
-    }
-  }, [isUILocked]);
-
-  // Handle step blur
-  const handleStepBlur = (index: number) => {
-    if (meditation.steps[index].type === "pause") {
-      handlePauseDurationBlur(index);
-    } else {
-      handleTextBlur(index);
-    }
-    finishEditing();
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
       <TopBar
+        meditation={meditation}
         voicePresets={VOICE_PRESETS}
         onMeditationUpdate={onMeditationUpdate}
-        onVoiceSettingsUpdate={updateVoiceSettings}
-        onPresetChange={handlePresetChange}
-        onStartSynthesis={handleStartSynthesis}
-        onDownload={handleDownload}
-        onShare={handleShare}
-        onCancel={handleCancel}
-        onStartEditingTitle={startEditingTitle}
-        onFinishEditing={finishEditing}
+        onSynthesisStateUpdate={onSynthesisStateUpdate}
+        onShareMeditation={onShareMeditation}
+        fileStorage={fileStorage}
+        sessionId={sessionId}
+        onVoiceSettingsUpdate={onVoiceSettingsUpdate}
       />
 
       {/* Main Content */}
@@ -581,20 +272,17 @@ export function MeditationWorkspace({
         }`}
       >
         <MeditationStepsList
-          onStartEditing={startEditing}
-          onTextChange={handleTextChange}
-          onPauseDurationChange={handlePauseDurationChange}
-          onBlur={handleStepBlur}
+          meditation={meditation}
+          fileStorage={fileStorage}
+          sessionId={sessionId}
+          onMeditationUpdate={onMeditationUpdate}
+          onSynthesisStateUpdate={onSynthesisStateUpdate}
           onPreviewSection={previewSection}
-          onGenerateStepAudio={handleGenerateStepAudio}
-          onSelectStep={setSelectedStepIndex}
-          onContainerClick={handleContainerClick}
-          isStepOutOfSync={isStepOutOfSync}
         />
       </div>
 
       {/* Bottom Playback Controls */}
-      <BottomBar onTogglePlayback={togglePlayback} />
+      <BottomBar />
 
       {/* Share Dialog */}
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
