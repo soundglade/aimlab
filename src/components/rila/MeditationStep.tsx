@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
-import { Play, PenSquare, RefreshCw, Plus } from "lucide-react";
+import { Play, PenSquare, RefreshCw, AudioLines } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MeditationStep as MeditationStepType } from "./Rila";
 
@@ -58,8 +58,8 @@ export function MeditationStep({
   const getStatusColor = () => {
     if (step.type !== "speech") return "bg-transparent";
     if (isAudioOutOfSync) return "bg-amber-500";
-    if (isAudioGenerated) return "bg-primary/50";
-    return "bg-gray-300";
+    if (isAudioGenerated) return "bg-primary/60";
+    return "bg-gray-200";
   };
 
   // Handle click on the step
@@ -86,9 +86,10 @@ export function MeditationStep({
   // Determine if play option should be shown
   const showPlayOption = isAudioGenerated && onPreview;
 
-  // Determine if generate/regenerate option should be shown
   const showGenerateOption =
-    onGenerateAudio && (step.type === "speech" || step.type === "heading");
+    onGenerateAudio &&
+    (step.type === "speech" || step.type === "heading") &&
+    !isAudioGenerated;
 
   return (
     <>
@@ -96,7 +97,6 @@ export function MeditationStep({
         <DropdownMenuTrigger className="hidden" />
         <DropdownMenuContent
           align="start"
-          className="w-48"
           style={{
             position: "fixed",
             top: `${dropdownPosition.y}px`,
@@ -104,19 +104,6 @@ export function MeditationStep({
           }}
           forceMount
         >
-          {showEditOption && (
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit();
-                setDropdownOpen(false);
-              }}
-            >
-              <PenSquare className="h-4 w-4 mr-2" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-          )}
-
           {showPlayOption && (
             <DropdownMenuItem
               onClick={(e) => {
@@ -127,6 +114,19 @@ export function MeditationStep({
             >
               <Play className="h-4 w-4 mr-2" />
               <span>Play</span>
+            </DropdownMenuItem>
+          )}
+
+          {showEditOption && (
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+                setDropdownOpen(false);
+              }}
+            >
+              <PenSquare className="h-4 w-4 mr-2" />
+              <span>Edit</span>
             </DropdownMenuItem>
           )}
 
@@ -141,12 +141,12 @@ export function MeditationStep({
               {isAudioOutOfSync ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 text-amber-500" />
-                  <span>Regenerate Audio</span>
+                  <span>Regenerate</span>
                 </>
               ) : (
                 <>
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span>Generate Audio</span>
+                  <AudioLines className="h-4 w-4 mr-2" />
+                  <span>Generate</span>
                 </>
               )}
             </DropdownMenuItem>
@@ -170,7 +170,11 @@ export function MeditationStep({
         <div
           className={cn(
             "flex-1 pl-4 pr-6 py-3 rounded-r",
-            isSelected ? "bg-accent/40" : "bg-transparent"
+            isSelected
+              ? isAudioGenerated
+                ? "bg-accent/40"
+                : "bg-gray-200/40"
+              : "bg-transparent"
           )}
         >
           {isEditing ? (
