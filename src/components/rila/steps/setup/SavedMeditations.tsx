@@ -75,14 +75,18 @@ export function SavedMeditations({
                   {index + 1}
                 </Badge>
                 <span className="truncate">{data.meditation.title}</span>
-                <button
-                  type="button"
-                  onClick={(e) => handleDeleteSession(e, id)}
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteSession(e, id);
+                  }}
                   className="absolute right-2 opacity-30 hover:opacity-100 hover:bg-muted rounded-full p-1 transition-all focus:outline-none"
                   aria-label="Delete meditation"
                 >
                   <X size={14} className="text-muted-foreground" />
-                </button>
+                </a>
               </div>
             </Button>
           ))}
