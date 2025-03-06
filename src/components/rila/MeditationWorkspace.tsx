@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
-import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
-import { useAudioPreview } from "./steps/synthesis/MeditationStepDisplay";
-import { createAudioUrl } from "./utils/audioUtils";
 import { ShareResponse } from "./utils/shareService";
 import { TopBar } from "./workspace/TopBar";
 import { BottomBar } from "./workspace/BottomBar";
@@ -114,28 +112,22 @@ export function MeditationWorkspace({
   voiceSettings: initialVoiceSettings,
   onVoiceSettingsUpdate,
 }: MeditationWorkspaceProps) {
-  // Initialize atoms with props
+  // Use atoms for state management
   const [, setMeditationAtom] = useAtom(meditationAtom);
+  const [, setSynthesisState] = useAtom(synthesisStateAtom);
+  const [, setIsUILocked] = useAtom(isUILockedAtom);
   const [, setVoiceSettings] = useAtom(voiceSettingsAtom);
   const [, setSelectedPreset] = useAtom(selectedPresetAtom);
-  const [, setIsPlaying] = useAtom(isPlayingAtom);
-  const [, setCurrentTimeMs] = useAtom(currentTimeMsAtom);
-  const [, setEditableTexts] = useAtom(editableTextsAtom);
-  const [, setEditablePauseDurations] = useAtom(editablePauseDurationsAtom);
-  const [, setSynthesisState] = useAtom(synthesisStateAtom);
-  const [, setAudioElement] = useAtom(audioElementAtom);
+
+  // Read-only atoms
+  const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
 
   // Set derived atoms
   const isSynthesizing = useAtomValue(isSynthesizingAtom);
   const isGeneratingFullAudio = useAtomValue(isGeneratingFullAudioAtom);
-  const isSynthesisComplete = useAtomValue(isSynthesisCompleteAtom);
-  const setIsUILocked = useSetAtom(isUILockedAtom);
 
   // Compute isUILocked locally for use in this component
   const isUILocked = isSynthesizing || isGeneratingFullAudio;
-
-  // Local state (not shared with child components)
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   // Initialize atoms with props on mount
   useEffect(() => {
@@ -170,65 +162,6 @@ export function MeditationWorkspace({
     setSelectedPreset,
   ]);
 
-  // Initialize editable texts from meditation steps
-  useEffect(() => {
-    const texts: Record<number, string> = {};
-    const pauseDurations: Record<number, number> = {};
-
-    meditation.steps.forEach((step, index) => {
-      if (step.type === "speech" || step.type === "heading") {
-        texts[index] = step.text;
-      } else if (step.type === "pause") {
-        pauseDurations[index] = step.durationMs ? step.durationMs / 1000 : 1;
-      }
-    });
-
-    setEditableTexts(texts);
-    setEditablePauseDurations(pauseDurations);
-  }, [meditation, setEditableTexts, setEditablePauseDurations]);
-
-  // Audio preview functionality
-  const { previewSection } = useAudioPreview(meditation, fileStorage);
-
-  // Load audio when synthesis is complete
-  useEffect(() => {
-    const loadAudio = async () => {
-      if (meditation.fullAudioFileId && !audioUrl) {
-        try {
-          const storedFile = await fileStorage.getFile(
-            meditation.fullAudioFileId
-          );
-          if (storedFile && storedFile.data) {
-            const url = createAudioUrl(storedFile.data);
-            setAudioUrl(url);
-
-            const audio = new Audio(url);
-            setAudioElement(audio);
-
-            audio.addEventListener("timeupdate", () => {
-              setCurrentTimeMs(audio.currentTime * 1000);
-            });
-
-            audio.addEventListener("ended", () => {
-              setIsPlaying(false);
-            });
-          }
-        } catch (error) {
-          console.error("Failed to load audio:", error);
-        }
-      }
-    };
-
-    loadAudio();
-  }, [
-    meditation.fullAudioFileId,
-    fileStorage,
-    audioUrl,
-    setAudioElement,
-    setCurrentTimeMs,
-    setIsPlaying,
-  ]);
-
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
@@ -246,7 +179,7 @@ export function MeditationWorkspace({
       {/* Main Content */}
       <div
         className={`pt-14 ${
-          isSynthesisComplete && audioUrl ? "pb-14" : "pb-4"
+          isSynthesisComplete && meditation.fullAudioFileId ? "pb-14" : "pb-4"
         }`}
       >
         <MeditationStepsList
@@ -255,7 +188,6 @@ export function MeditationWorkspace({
           sessionId={sessionId}
           onMeditationUpdate={onMeditationUpdate}
           onSynthesisStateUpdate={onSynthesisStateUpdate}
-          onPreviewSection={previewSection}
         />
       </div>
 

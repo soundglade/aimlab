@@ -23,6 +23,9 @@ import {
   isUILockedAtom,
   synthesisStateAtom,
   selectedStepIndexAtom,
+  audioElementAtom,
+  isPlayingAtom,
+  currentTimeMsAtom,
 } from "../MeditationWorkspace";
 
 interface TopBarProps {
@@ -54,6 +57,9 @@ export function TopBar({
   const [editingTitle, setEditingTitle] = useAtom(editingTitleAtom);
   const setSelectedStepIndex = useSetAtom(selectedStepIndexAtom);
   const [synthesisState, setSynthesisState] = useAtom(synthesisStateAtom);
+  const [, setAudioElement] = useAtom(audioElementAtom);
+  const [, setIsPlaying] = useAtom(isPlayingAtom);
+  const [, setCurrentTimeMs] = useAtom(currentTimeMsAtom);
 
   // Read-only atoms
   const isUILocked = useAtomValue(isUILockedAtom);
@@ -67,11 +73,51 @@ export function TopBar({
     useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   // Update meditation atom when prop changes
   useEffect(() => {
     setMeditationAtom(meditation);
   }, [meditation, setMeditationAtom]);
+
+  // Load audio when synthesis is complete
+  useEffect(() => {
+    const loadAudio = async () => {
+      if (meditation.fullAudioFileId && !audioUrl) {
+        try {
+          const storedFile = await fileStorage.getFile(
+            meditation.fullAudioFileId
+          );
+          if (storedFile && storedFile.data) {
+            const url = createAudioUrl(storedFile.data);
+            setAudioUrl(url);
+
+            const audio = new Audio(url);
+            setAudioElement(audio);
+
+            audio.addEventListener("timeupdate", () => {
+              setCurrentTimeMs(audio.currentTime * 1000);
+            });
+
+            audio.addEventListener("ended", () => {
+              setIsPlaying(false);
+            });
+          }
+        } catch (error) {
+          console.error("Failed to load audio:", error);
+        }
+      }
+    };
+
+    loadAudio();
+  }, [
+    meditation.fullAudioFileId,
+    fileStorage,
+    audioUrl,
+    setAudioElement,
+    setCurrentTimeMs,
+    setIsPlaying,
+  ]);
 
   // Synthesis functionality
   const { handleCancel, startSynthesis } = useSynthesis(
