@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Play, PenSquare, RefreshCw, AudioLines } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MeditationStep as MeditationStepType } from "./Rila";
+import { MeditationStep as MeditationStepType } from "../Rila";
 
 // Import dropdown components from shadcn/ui
 import {

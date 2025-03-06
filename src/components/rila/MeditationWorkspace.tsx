@@ -1,34 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import {
-  Play,
-  Pause,
-  SkipBack,
-  Download,
-  Share2,
-  Settings2,
-  Loader,
-  PenSquare,
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  Plus,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { Meditation, SynthesisState } from "./Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
 import { useSynthesis } from "./steps/synthesis/useSynthesis";
 import { useAudioPreview } from "./steps/synthesis/MeditationStepDisplay";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { createAudioUrl, getAudioBlob } from "./utils/audioUtils";
 import { downloadAudioFile } from "./utils/audioExporter";
 import { ShareResponse } from "./utils/shareService";
-import { MeditationStep } from "./MeditationStep";
 import {
   Dialog,
   DialogContent,
@@ -37,7 +17,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TopBar } from "./workspace/TopBar";
+import { BottomBar } from "./workspace/BottomBar";
+import { MeditationStepsList } from "./workspace/MeditationStepsList";
 
+// Voice presets definition
 const VOICE_PRESETS: TtsPreset[] = [
   {
     id: "meditation-default",
@@ -121,8 +105,6 @@ export function MeditationWorkspace({
     }
     return "meditation-default";
   });
-  const [showAdvancedVoiceSettings, setShowAdvancedVoiceSettings] =
-    useState(false);
 
   // Audio playback state
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -131,12 +113,11 @@ export function MeditationWorkspace({
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  // Editable text state - now we'll keep this always available
+  // Editable text state
   const [editableTexts, setEditableTexts] = useState<Record<number, string>>(
     {}
   );
@@ -509,168 +490,42 @@ export function MeditationWorkspace({
       setSelectedStepIndex(null);
     }
   }, [isUILocked]);
+
+  // Handle step blur
+  const handleStepBlur = (index: number) => {
+    if (meditation.steps[index].type === "pause") {
+      handlePauseDurationBlur(index);
+    } else {
+      handleTextBlur(index);
+    }
+    finishEditing();
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Top Navigation Bar - Fixed */}
-      <div className="fixed top-0 left-0 right-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto w-full max-w-3xl px-4">
-          <div className="flex h-14 items-center justify-between">
-            {/* Left side - Meditation Title */}
-            <div className="flex items-center">
-              {editingTitle ? (
-                <Input
-                  value={meditation.title}
-                  onChange={(e) => {
-                    const updatedMeditation = {
-                      ...meditation,
-                      title: e.target.value,
-                    };
-                    onMeditationUpdate(updatedMeditation);
-                  }}
-                  onBlur={() => finishEditing()}
-                  autoFocus
-                  className="font-semibold text-lg border-none focus-visible:ring-0 p-0 max-w-[200px] sm:max-w-xs"
-                  disabled={isUILocked}
-                />
-              ) : (
-                <div
-                  className="group relative cursor-pointer font-semibold text-lg truncate max-w-[200px] sm:max-w-xs"
-                  onClick={() => startEditingTitle()}
-                >
-                  {meditation.title}
-                  <PenSquare className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-4 h-3.5 w-3.5 opacity-0 group-hover:opacity-70 transition-opacity" />
-                </div>
-              )}
-            </div>
-
-            {/* Right side - Action Buttons */}
-            <div className="flex items-center gap-2">
-              {!isUILocked && !isSynthesisComplete && (
-                <div className="flex items-center gap-2">
-                  <select
-                    id="voice-preset"
-                    value={selectedPreset}
-                    onChange={(e) => handlePresetChange(e.target.value)}
-                    className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    {VOICE_PRESETS.map((preset) => (
-                      <option key={preset.id} value={preset.id}>
-                        {preset.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setShowAdvancedVoiceSettings(!showAdvancedVoiceSettings)
-                    }
-                  >
-                    <Settings2 className="h-4 w-4" />
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    onClick={handleStartSynthesis}
-                    disabled={isUILocked}
-                  >
-                    Generate Audio
-                  </Button>
-                </div>
-              )}
-
-              {isSynthesisComplete && !isUILocked && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDownload}
-                    disabled={isUILocked}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleShare}
-                    disabled={isUILocked || isSharing}
-                  >
-                    {isSharing ? (
-                      <Loader className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Share2 className="h-4 w-4 mr-2" />
-                    )}
-                    Share
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Advanced Voice Settings Panel */}
-          {showAdvancedVoiceSettings && !isUILocked && !isSynthesisComplete && (
-            <div className="py-2 border-t">
-              <div className="space-y-2">
-                <div className="flex items-center gap-4">
-                  <Label htmlFor="speed" className="w-20">
-                    Speed
-                  </Label>
-                  <Slider
-                    id="speed"
-                    min={0.5}
-                    max={2.0}
-                    step={0.1}
-                    value={[voiceSettings.ttsSettings.speed]}
-                    onValueChange={(value) =>
-                      updateVoiceSettings({
-                        ...voiceSettings,
-                        ttsSettings: {
-                          ...voiceSettings.ttsSettings,
-                          speed: value[0],
-                        },
-                      })
-                    }
-                    className="flex-1 max-w-xs"
-                  />
-                  <span className="w-12 text-right text-sm">
-                    {voiceSettings.ttsSettings.speed}x
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Synthesis Progress */}
-          {(isSynthesizing || isGeneratingFullAudio) && (
-            <div className="py-2 border-t">
-              <div className="flex justify-between items-center mb-1">
-                <p className="text-sm text-muted-foreground">
-                  {progress < 90
-                    ? `Creating "${meditation.title}" meditation audio...`
-                    : progress < 100
-                    ? `Generating full audio file...`
-                    : "Synthesis complete!"}
-                </p>
-                <div className="text-sm font-medium">
-                  {Math.round(progress)}%
-                </div>
-              </div>
-              <Progress value={progress} className="h-2" />
-
-              {progress < 100 && (
-                <div className="flex justify-end mt-1">
-                  <Button variant="outline" size="sm" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Top Navigation Bar */}
+      <TopBar
+        meditation={meditation}
+        isUILocked={isUILocked}
+        isSynthesizing={isSynthesizing}
+        isGeneratingFullAudio={isGeneratingFullAudio}
+        isSynthesisComplete={isSynthesisComplete}
+        progress={progress}
+        voiceSettings={voiceSettings}
+        selectedPreset={selectedPreset}
+        isSharing={isSharing}
+        editingTitle={editingTitle}
+        voicePresets={VOICE_PRESETS}
+        onMeditationUpdate={onMeditationUpdate}
+        onVoiceSettingsUpdate={updateVoiceSettings}
+        onPresetChange={handlePresetChange}
+        onStartSynthesis={handleStartSynthesis}
+        onDownload={handleDownload}
+        onShare={handleShare}
+        onCancel={handleCancel}
+        onStartEditingTitle={startEditingTitle}
+        onFinishEditing={finishEditing}
+      />
 
       {/* Main Content */}
       <div
@@ -678,95 +533,34 @@ export function MeditationWorkspace({
           isSynthesisComplete && audioUrl ? "pb-14" : "pb-4"
         }`}
       >
-        <div
-          className="mx-auto max-w-3xl px-4 space-y-4 py-4"
-          onClick={handleContainerClick}
-        >
-          {meditation.steps.map((step, index) => {
-            const isAudioGenerated = !!step.audioFileId;
-            const isOutOfSync = isStepOutOfSync(index);
-
-            return (
-              <MeditationStep
-                key={index}
-                step={step}
-                index={index}
-                isEditing={editingStepIndex === index}
-                isSelected={selectedStepIndex === index}
-                editableText={editableTexts[index] || ""}
-                editablePauseDuration={editablePauseDurations[index] || 1}
-                onEdit={() => startEditing(index)}
-                onTextChange={(text) => handleTextChange(index, text)}
-                onPauseDurationChange={(duration) =>
-                  handlePauseDurationChange(index, duration)
-                }
-                onBlur={() => {
-                  if (step.type === "pause") {
-                    handlePauseDurationBlur(index);
-                  } else {
-                    handleTextBlur(index);
-                  }
-                  finishEditing();
-                }}
-                onPreview={
-                  step.audioFileId ? () => previewSection(index) : undefined
-                }
-                isAudioGenerated={isAudioGenerated}
-                isAudioOutOfSync={isOutOfSync}
-                onGenerateAudio={() => handleGenerateStepAudio(index)}
-                isUILocked={isUILocked}
-                onSelect={() => {
-                  setSelectedStepIndex(index);
-                }}
-              />
-            );
-          })}
-        </div>
+        <MeditationStepsList
+          meditation={meditation}
+          editableTexts={editableTexts}
+          editablePauseDurations={editablePauseDurations}
+          editingStepIndex={editingStepIndex}
+          selectedStepIndex={selectedStepIndex}
+          isUILocked={isUILocked}
+          onStartEditing={startEditing}
+          onTextChange={handleTextChange}
+          onPauseDurationChange={handlePauseDurationChange}
+          onBlur={handleStepBlur}
+          onPreviewSection={previewSection}
+          onGenerateStepAudio={handleGenerateStepAudio}
+          onSelectStep={setSelectedStepIndex}
+          onContainerClick={handleContainerClick}
+          isStepOutOfSync={isStepOutOfSync}
+        />
       </div>
 
-      {/* Bottom Navigation Bar - Fixed */}
+      {/* Bottom Playback Controls */}
 
-      <div className="fixed bottom-0 left-0 right-0 py-3 z-10 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto w-full max-w-3xl px-4">
-          <div className="flex h-14 items-center justify-center">
-            <div className="w-full max-w-md">
-              <div className="flex flex-col space-y-2">
-                <Progress
-                  value={
-                    (currentTimeMs /
-                      (meditation.timeline?.totalDurationMs || 1)) *
-                    100
-                  }
-                  className="h-1.5"
-                />
-
-                <div className="flex items-center justify-center gap-2">
-                  <Button variant="outline" size="icon" disabled={isUILocked}>
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  <Button
-                    size="icon"
-                    className="p-5"
-                    onClick={togglePlayback}
-                    disabled={isUILocked}
-                  >
-                    {isPlaying ? (
-                      <Pause className="h-4 w-4" />
-                    ) : (
-                      <Play className="h-4 w-4" />
-                    )}
-                  </Button>
-
-                  <Button variant="outline" size="icon" disabled={isUILocked}>
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <BottomBar
+        meditation={meditation}
+        isPlaying={isPlaying}
+        currentTimeMs={currentTimeMs}
+        isUILocked={isUILocked}
+        onTogglePlayback={togglePlayback}
+      />
 
       {/* Share Dialog */}
       <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
