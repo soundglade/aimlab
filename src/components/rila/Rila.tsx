@@ -24,6 +24,49 @@ import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
 import { KOKORO_SERVICE } from "./steps/voice/KokoroSettings";
 import { ELEVENLABS_SERVICE } from "./steps/voice/ElevenLabsSettings";
 
+// -------------------------------------------------------------------------
+// Types and Interfaces
+// -------------------------------------------------------------------------
+
+// Enhanced types for frontend use with audio capabilities
+export type MeditationStep = FormattedScript["steps"][number] & {
+  audioFileId?: string;
+  durationMs?: number;
+};
+
+export interface Meditation {
+  title: string;
+  steps: MeditationStep[];
+  timeline?: {
+    timings: Timing[];
+    totalDurationMs: number;
+  };
+  fullAudioFileId?: string;
+}
+
+// Define the synthesis state type
+export interface SynthesisState {
+  started: boolean;
+  progress: number;
+  completedStepIndices: number[];
+}
+
+// Define the session type without steps
+export interface RilaSession {
+  meditation?: Meditation;
+  voiceSettings?: VoiceSettings;
+  synthesisState: SynthesisState;
+}
+
+interface RilaPageProps {
+  sessionId?: string;
+  isPrivate: boolean;
+}
+
+// -------------------------------------------------------------------------
+// Constants
+// -------------------------------------------------------------------------
+
 // Collection of all available TTS services
 const TTS_SERVICES = [KOKORO_SERVICE, ELEVENLABS_SERVICE];
 
@@ -73,35 +116,9 @@ const persistentFileStorage = initializeFileStorage("rila", {
 });
 const ephemeralFileStorage = initializeFileStorage("rila", { ephemeral: true });
 
-// Enhanced types for frontend use with audio capabilities
-export type MeditationStep = FormattedScript["steps"][number] & {
-  audioFileId?: string;
-  durationMs?: number;
-};
-
-export interface Meditation {
-  title: string;
-  steps: MeditationStep[];
-  timeline?: {
-    timings: Timing[];
-    totalDurationMs: number;
-  };
-  fullAudioFileId?: string;
-}
-
-// Define the synthesis state type
-export interface SynthesisState {
-  started: boolean;
-  progress: number;
-  completedStepIndices: number[];
-}
-
-// Define the session type without steps
-export interface RilaSession {
-  meditation?: Meditation;
-  voiceSettings?: VoiceSettings;
-  synthesisState: SynthesisState;
-}
+// -------------------------------------------------------------------------
+// Helper Functions
+// -------------------------------------------------------------------------
 
 // Helper function to convert from backend FormattedScript to frontend Meditation
 export function enhanceMeditation(script: FormattedScript): Meditation {
@@ -115,14 +132,32 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
   };
 }
 
-interface RilaPageProps {
-  sessionId?: string;
-  isPrivate: boolean;
-}
-
 // Utility function to get the base path based on privacy setting
 const getBasePath = (isPrivate: boolean) =>
   isPrivate ? "/rila/private" : "/rila";
+
+// Helper to generate container classes based on state
+const getContainerClasses = (isPrivate: boolean, hasMeditation: boolean) => {
+  const baseClasses = "min-h-screen flex flex-col relative border-8";
+  const privacyClasses = isPrivate
+    ? "bg-slate-300 border-slate-500"
+    : "border-transparent";
+
+  let backgroundClasses = "";
+  if (!hasMeditation) {
+    backgroundClasses = isPrivate
+      ? "bg-gradient-to-b from-slate-200 to-slate-300"
+      : "bg-gradient-to-b from-background to-muted";
+  } else {
+    backgroundClasses = isPrivate ? "bg-slate-300" : "bg-background";
+  }
+
+  return `${baseClasses} ${privacyClasses} ${backgroundClasses}`;
+};
+
+// -------------------------------------------------------------------------
+// Main Component
+// -------------------------------------------------------------------------
 
 export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   const router = useRouter();
@@ -130,6 +165,10 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   // Choose the appropriate storage based on privacy mode
   const sessionStorage = isPrivate ? ephemeralStorage : persistentStorage;
   const fileStorage = isPrivate ? ephemeralFileStorage : persistentFileStorage;
+
+  // -------------------------------------------------------------------------
+  // State Management
+  // -------------------------------------------------------------------------
 
   // Initialize session state
   const [session, updateSession] = useSessionState<RilaSession>(
@@ -148,10 +187,63 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Default to Kokoro TTS
+  const defaultSettings: VoiceSettings = {
+    ttsService: KOKORO_SERVICE.id,
+    ttsSettings: KOKORO_SERVICE.defaultSettings,
+    isAdvancedMode: false,
+  };
+
+  const voiceSettings = session.voiceSettings;
+
+  // Voice settings state
+  const [settings, setSettings] = useState<VoiceSettings>(
+    voiceSettings || defaultSettings
+  );
+  const [isAdvancedMode, setIsAdvancedMode] = useState(settings.isAdvancedMode);
+  const [selectedPreset, setSelectedPreset] = useState(0);
+  const [previewTextInput, setPreviewTextInput] = useState(
+    TTS_SERVICES.find((s) => s.id === settings.ttsService)
+      ?.defaultPreviewText || KOKORO_SERVICE.defaultPreviewText
+  );
+
+  // -------------------------------------------------------------------------
+  // Effects
+  // -------------------------------------------------------------------------
+
   // Clean up old sessions on component mount
   useEffect(() => {
     sessionStorage.cleanupOldSessions();
   }, [sessionStorage]);
+
+  // Update state if props change
+  useEffect(() => {
+    if (voiceSettings) {
+      setSettings(voiceSettings);
+      setIsAdvancedMode(voiceSettings.isAdvancedMode);
+
+      // Find matching preset for simple mode
+      if (!voiceSettings.isAdvancedMode) {
+        const presetIndex = VOICE_PRESETS.findIndex((preset) => {
+          const presetVoiceId = preset.settings.voiceId;
+          const currentVoiceId = voiceSettings.ttsSettings.voiceId;
+          const presetService = preset.ttsService;
+          const currentService = voiceSettings.ttsService;
+          return (
+            presetVoiceId === currentVoiceId && presetService === currentService
+          );
+        });
+
+        if (presetIndex !== -1) {
+          setSelectedPreset(presetIndex);
+        }
+      }
+    }
+  }, [voiceSettings]);
+
+  // -------------------------------------------------------------------------
+  // Event Handlers
+  // -------------------------------------------------------------------------
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,7 +328,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
   };
 
-  const handleGenerateAudio = async (settings: VoiceSettings) => {
+  const handleVoiceSettingsUpdate = async (settings: VoiceSettings) => {
     updateSession({
       voiceSettings: settings,
       synthesisState: {
@@ -257,14 +349,6 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     });
   };
 
-  const handleCompleteSynthesis = () => {
-    // No need to change step anymore
-  };
-
-  const handleBackFromPlayer = () => {
-    // No need to change step anymore
-  };
-
   const handleShareMeditation = async () => {
     if (!session.meditation) {
       throw new Error("No meditation to share");
@@ -283,52 +367,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     });
   };
 
-  // Default to Kokoro TTS
-  const defaultSettings: VoiceSettings = {
-    ttsService: KOKORO_SERVICE.id,
-    ttsSettings: KOKORO_SERVICE.defaultSettings,
-    isAdvancedMode: false,
-  };
-
-  const voiceSettings = session.voiceSettings;
-
-  // State
-  const [settings, setSettings] = useState<VoiceSettings>(
-    voiceSettings || defaultSettings
-  );
-  const [isAdvancedMode, setIsAdvancedMode] = useState(settings.isAdvancedMode);
-  const [selectedPreset, setSelectedPreset] = useState(0);
-  const [previewTextInput, setPreviewTextInput] = useState(
-    TTS_SERVICES.find((s) => s.id === settings.ttsService)
-      ?.defaultPreviewText || KOKORO_SERVICE.defaultPreviewText
-  );
-
-  // Update state if props change
-  useEffect(() => {
-    if (voiceSettings) {
-      setSettings(voiceSettings);
-      setIsAdvancedMode(voiceSettings.isAdvancedMode);
-
-      // Find matching preset for simple mode
-      if (!voiceSettings.isAdvancedMode) {
-        const presetIndex = VOICE_PRESETS.findIndex((preset) => {
-          const presetVoiceId = preset.settings.voiceId;
-          const currentVoiceId = voiceSettings.ttsSettings.voiceId;
-          const presetService = preset.ttsService;
-          const currentService = voiceSettings.ttsService;
-          return (
-            presetVoiceId === currentVoiceId && presetService === currentService
-          );
-        });
-
-        if (presetIndex !== -1) {
-          setSelectedPreset(presetIndex);
-        }
-      }
-    }
-  }, [voiceSettings]);
-
-  // Toggle between simple and advanced modes
+  // Toggle between simple and advanced voice settings modes
   const handleModeToggle = (advanced: boolean) => {
     setIsAdvancedMode(advanced);
 
@@ -380,7 +419,10 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     });
   };
 
-  // Render the appropriate content based on whether we have a meditation
+  // -------------------------------------------------------------------------
+  // Rendering Logic
+  // -------------------------------------------------------------------------
+
   const renderContent = () => {
     if (!session.meditation) {
       return (
@@ -561,22 +603,12 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
         </div>
       );
     }
+
+    return null;
   };
 
   return (
-    <div
-      className={`min-h-screen flex flex-col relative border-8 ${
-        isPrivate ? "bg-slate-300 border-slate-500" : "border-transparent"
-      } ${
-        !session.meditation
-          ? isPrivate
-            ? "bg-gradient-to-b from-slate-200 to-slate-300"
-            : "bg-gradient-to-b from-background to-muted"
-          : isPrivate
-          ? "bg-slate-300"
-          : "bg-background"
-      }`}
-    >
+    <div className={getContainerClasses(isPrivate, !!session.meditation)}>
       {isPrivate && (
         <div className="absolute top-0 left-0 right-0 bg-slate-300">
           <div className="py-2 text-sm text-center opacity-80">
