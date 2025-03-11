@@ -45,6 +45,16 @@ For more details see [src/components/rila/README.md](src/components/rila/README.
 - `/scripts` - On-off utility scripts for various project tasks
 - `/tests` - Unit and integration tests
 
+### Cursor Rules
+
+The `/.cursor/rules` directory contains special markdown documents (`.mdc` files) that provide guidance for both AI assistants and human developers:
+
+- [Design Principles](/.cursor/rules/design-principles.mdc) - Core design philosophy and aesthetic guidelines
+- [UI Components](/.cursor/rules/ui-components.mdc) - Component usage and UI pattern guidelines
+- [Project Architecture](/.cursor/rules/project-architecture.mdc) - Technical implementation and code organization
+
+These documents serve as living documentation for the project's design system and development practices.
+
 ### Scripts
 
 The `/scripts` directory contains utility scripts for various project tasks. Currently includes:
