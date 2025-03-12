@@ -4,8 +4,6 @@ date: "June 15, 2023"
 excerpt: "Exploring how artificial intelligence can create effective meditation scripts and what this means for meditation practices."
 ---
 
-# The Science Behind AI-Generated Meditations
-
 Artificial intelligence has entered nearly every aspect of our lives, from the mundane to the profound. At AIM Lab, we're exploring a particularly interesting intersection: AI and meditation. But what exactly happens when we use AI to generate meditation scripts? Is there science behind this approach, and can it be effective?
 
 ## How AI Understands Meditation

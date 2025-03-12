@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/active-card";
 import { ArrowRight, Github } from "lucide-react";
-import { Layout } from "@/components/layouts/Layout";
+import { Layout } from "@/components/layout/Layout";
 
 // Changelog visibility toggle
 const DISPLAY_CHANGELOG = false;
@@ -332,7 +332,7 @@ export default function LandingPage() {
       </section>
 
       {/* About */}
-      <section className="w-full max-w-5xl px-4 mb-24">
+      <section className="w-full max-w-5xl px-4 mb-10">
         <h2 className="text-2xl font-medium mb-6">How This Works</h2>
         <Card>
           <CardContent className="pt-6 space-y-2">

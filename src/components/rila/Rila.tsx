@@ -18,7 +18,7 @@ import { SavedMeditations } from "./steps/setup/SavedMeditations";
 import { AdvancedVoiceSettings } from "./steps/voice/AdvancedVoiceSettings";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Play, Settings2 } from "lucide-react";
-import { Layout } from "@/components/layouts/Layout";
+import { Layout } from "@/components/layout/Layout";
 
 // Import TTS services and types
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";

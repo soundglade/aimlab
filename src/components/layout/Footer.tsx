@@ -3,7 +3,7 @@ import { Github } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full py-6 mt-auto">
+    <footer className="w-full py-6 mt-10">
       <div className="max-w-3xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="flex items-center gap-2 mb-1">

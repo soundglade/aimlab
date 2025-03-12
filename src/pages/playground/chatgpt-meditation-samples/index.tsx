@@ -4,7 +4,7 @@ import path from "path";
 import matter from "gray-matter";
 import Link from "next/link";
 import { useState } from "react";
-import PlaygroundLayout from "@/components/layouts/PlaygroundLayout";
+import PlaygroundLayout from "@/components/dashboard/PlaygroundLayout";
 
 interface MeditationSample {
   slug: string;
