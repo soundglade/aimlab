@@ -147,7 +147,7 @@ const getContainerClasses = (isPrivate: boolean, hasMeditation: boolean) => {
   if (!hasMeditation) {
     backgroundClasses = isPrivate
       ? "bg-gradient-to-b from-slate-200 to-slate-300"
-      : "bg-gradient-to-b from-background to-muted";
+      : "bg-gradient-to-b from-white via-sky-50 to-white";
   } else {
     backgroundClasses = isPrivate ? "bg-slate-300" : "bg-background";
   }
@@ -430,7 +430,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
           <main className="max-w-4xl w-full space-y-8">
             <div className="space-y-8 max-w-3xl mx-auto">
               <div className="space-y-6 text-center">
-                <h1 className="text-4xl font-bold text-foreground">
+                <h1 className="text-4xl font-medium tracking-tight text-foreground">
                   Create Your Guided Meditation
                 </h1>
 
