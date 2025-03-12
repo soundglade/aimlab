@@ -1,19 +1,22 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
+  ActiveCard,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/active-card";
 import { ArrowRight, Github } from "lucide-react";
 
 // Changelog visibility toggle
 const DISPLAY_CHANGELOG = false;
 
 export default function LandingPage() {
+  const router = useRouter();
   const experiments = [
     {
       title: "Create from Script",
@@ -168,7 +171,20 @@ export default function LandingPage() {
         <h2 className="text-2xl font-medium mb-6">Experiments</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {experiments.map((experiment, index) => (
-            <Card key={index}>
+            <ActiveCard
+              key={index}
+              disabled={experiment.status !== "available"}
+              onClick={
+                experiment.status === "available" && experiment.link
+                  ? () => router.push(experiment.link)
+                  : undefined
+              }
+              className={
+                experiment.status === "available" && experiment.link
+                  ? "cursor-pointer"
+                  : ""
+              }
+            >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{experiment.title}</CardTitle>
@@ -204,7 +220,7 @@ export default function LandingPage() {
                   </Button>
                 )}
               </CardFooter>
-            </Card>
+            </ActiveCard>
           ))}
         </div>
       </section>
