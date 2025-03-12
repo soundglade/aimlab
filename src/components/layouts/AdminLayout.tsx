@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
-import BaseLayout from "../layouts/BaseLayout";
+import BaseLayout from "./DashboardLayout";
 
 interface AdminLayoutProps {
   children: ReactNode;

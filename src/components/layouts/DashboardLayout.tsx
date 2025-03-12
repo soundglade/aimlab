@@ -5,7 +5,7 @@ interface BaseLayoutProps {
   sidebarContent: ReactNode;
 }
 
-export default function BaseLayout({
+export default function Dashboard({
   children,
   sidebarContent,
 }: BaseLayoutProps) {

@@ -1,4 +1,4 @@
-import PlaygroundLayout from "@/components/playground/PlaygroundLayout";
+import PlaygroundLayout from "@/components/layouts/PlaygroundLayout";
 
 export default function PlaygroundDashboard() {
   return (

@@ -18,6 +18,7 @@ import { SavedMeditations } from "./steps/setup/SavedMeditations";
 import { AdvancedVoiceSettings } from "./steps/voice/AdvancedVoiceSettings";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Play, Settings2 } from "lucide-react";
+import { Layout } from "@/components/layouts/Layout";
 
 // Import TTS services and types
 import { VoiceSettings, TtsPreset } from "./steps/voice/ttsTypes";
@@ -60,6 +61,7 @@ export interface RilaSession {
 
 interface RilaPageProps {
   sessionId?: string;
+  isPrivate?: boolean;
 }
 
 // -------------------------------------------------------------------------
@@ -129,7 +131,10 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
 // Main Component
 // -------------------------------------------------------------------------
 
-export default function RilaPage({ sessionId }: RilaPageProps) {
+export default function RilaPage({
+  sessionId,
+  isPrivate = false,
+}: RilaPageProps) {
   const router = useRouter();
 
   // -------------------------------------------------------------------------
@@ -537,6 +542,8 @@ export default function RilaPage({ sessionId }: RilaPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative">{renderContent()}</div>
+    <Layout>
+      <div className="w-full flex flex-col relative">{renderContent()}</div>
+    </Layout>
   );
 }

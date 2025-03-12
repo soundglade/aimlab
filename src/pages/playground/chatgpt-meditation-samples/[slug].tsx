@@ -5,7 +5,7 @@ import matter from "gray-matter";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { useState } from "react";
-import PlaygroundLayout from "@/components/playground/PlaygroundLayout";
+import PlaygroundLayout from "@/components/layouts/PlaygroundLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

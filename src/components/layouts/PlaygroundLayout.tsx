@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
-import BaseLayout from "../layouts/BaseLayout";
+import Dashboard from "./DashboardLayout";
 
 interface PlaygroundLayoutProps {
   children: ReactNode;
@@ -30,5 +30,5 @@ export default function PlaygroundLayout({ children }: PlaygroundLayoutProps) {
     </nav>
   );
 
-  return <BaseLayout sidebarContent={sidebarContent}>{children}</BaseLayout>;
+  return <Dashboard sidebarContent={sidebarContent}>{children}</Dashboard>;
 }
