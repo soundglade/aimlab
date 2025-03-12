@@ -60,7 +60,6 @@ export interface RilaSession {
 
 interface RilaPageProps {
   sessionId?: string;
-  isPrivate: boolean;
 }
 
 // -------------------------------------------------------------------------
@@ -106,15 +105,9 @@ const VOICE_PRESETS: TtsPreset[] = [
   },
 ];
 
-// Initialize both storage instances outside the component
-const persistentStorage = initializeStorage("rila", { ephemeral: false });
-const ephemeralStorage = initializeStorage("rila", { ephemeral: true });
-
-// Initialize both file storage instances
-const persistentFileStorage = initializeFileStorage("rila", {
-  ephemeral: false,
-});
-const ephemeralFileStorage = initializeFileStorage("rila", { ephemeral: true });
+// Initialize storage instances
+const sessionStorage = initializeStorage("rila", { ephemeral: false });
+const fileStorage = initializeFileStorage("rila", { ephemeral: false });
 
 // -------------------------------------------------------------------------
 // Helper Functions
@@ -132,39 +125,12 @@ export function enhanceMeditation(script: FormattedScript): Meditation {
   };
 }
 
-// Utility function to get the base path based on privacy setting
-const getBasePath = (isPrivate: boolean) =>
-  isPrivate ? "/rila/private" : "/rila";
-
-// Helper to generate container classes based on state
-const getContainerClasses = (isPrivate: boolean, hasMeditation: boolean) => {
-  const baseClasses = "min-h-screen flex flex-col relative border-8";
-  const privacyClasses = isPrivate
-    ? "bg-slate-300 border-slate-500"
-    : "border-transparent";
-
-  let backgroundClasses = "";
-  if (!hasMeditation) {
-    backgroundClasses = isPrivate
-      ? "bg-gradient-to-b from-slate-200 to-slate-300"
-      : "bg-gradient-to-b from-white via-sky-50 to-white";
-  } else {
-    backgroundClasses = isPrivate ? "bg-slate-300" : "bg-background";
-  }
-
-  return `${baseClasses} ${privacyClasses} ${backgroundClasses}`;
-};
-
 // -------------------------------------------------------------------------
 // Main Component
 // -------------------------------------------------------------------------
 
-export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
+export default function RilaPage({ sessionId }: RilaPageProps) {
   const router = useRouter();
-
-  // Choose the appropriate storage based on privacy mode
-  const sessionStorage = isPrivate ? ephemeralStorage : persistentStorage;
-  const fileStorage = isPrivate ? ephemeralFileStorage : persistentFileStorage;
 
   // -------------------------------------------------------------------------
   // State Management
@@ -258,7 +224,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
         },
         body: JSON.stringify({
           script,
-          mode: isPrivate ? "private" : "standard",
+          mode: "standard",
         }),
       });
 
@@ -325,7 +291,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
     sessionStorage.saveSession(newSessionId, newSession);
 
     // Redirect to the new session
-    router.push(`${getBasePath(isPrivate)}/${newSessionId}`);
+    router.push(`/rila/${newSessionId}`);
   };
 
   const handleVoiceSettingsUpdate = async (settings: VoiceSettings) => {
@@ -358,7 +324,7 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   };
 
   const handleLoadSession = (loadSessionId: string) => {
-    router.push(`${getBasePath(isPrivate)}/${loadSessionId}`);
+    router.push(`/rila/${loadSessionId}`);
   };
 
   const handleMeditationUpdate = (updatedMeditation: Meditation) => {
@@ -433,50 +399,13 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
                 <h1 className="text-4xl font-medium tracking-tight text-foreground">
                   Create Your Guided Meditation
                 </h1>
-
-                <div className="space-y-4">
-                  <p className="text-xl text-muted-foreground">
-                    How would you like to practice?
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4">
-                    {[
-                      { label: "Save Practice", value: false },
-                      { label: "Private Session", value: true },
-                    ].map((option) => (
-                      <Button
-                        key={option.label}
-                        type="button"
-                        onClick={() => {
-                          // Redirect to the appropriate URL when privacy mode changes
-                          if (option.value !== isPrivate) {
-                            router.push(getBasePath(option.value));
-                          }
-                        }}
-                        variant={
-                          isPrivate === option.value ? "outline" : "ghost"
-                        }
-                        size="lg"
-                        className="rounded-full md:min-w-32"
-                      >
-                        {option.label}
-                      </Button>
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {isPrivate
-                      ? "Your practice remains yours alone and is not saved"
-                      : "Keep the option to save your meditation for future sessions"}
-                  </p>
-                </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {!isPrivate && (
-                  <SavedMeditations
-                    sessionStorage={sessionStorage}
-                    onLoadSession={handleLoadSession}
-                  />
-                )}
+                <SavedMeditations
+                  sessionStorage={sessionStorage}
+                  onLoadSession={handleLoadSession}
+                />
 
                 <Card>
                   <CardContent>
@@ -608,16 +537,6 @@ export default function RilaPage({ sessionId, isPrivate }: RilaPageProps) {
   };
 
   return (
-    <div className={getContainerClasses(isPrivate, !!session.meditation)}>
-      {isPrivate && (
-        <div className="absolute top-0 left-0 right-0 bg-slate-300">
-          <div className="py-2 text-sm text-center opacity-80">
-            Private Session - Leave no trace
-          </div>
-        </div>
-      )}
-
-      {renderContent()}
-    </div>
+    <div className="min-h-screen flex flex-col relative">{renderContent()}</div>
   );
 }
