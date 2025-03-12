@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>AI Meditation Lab</title>
+        <title>AIM Lab</title>
       </Head>
       <Component {...pageProps} />
     </>
