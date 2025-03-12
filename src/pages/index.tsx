@@ -16,19 +16,20 @@ const DISPLAY_CHANGELOG = false;
 export default function LandingPage() {
   const experiments = [
     {
-      title: "Rila",
+      title: "Create from Script",
       description:
         "Generate a meditation script with ChatGPT, then listen to it with a voice generator.",
       status: "available",
-      duration: "5-10 minutes",
       link: "/rila",
       linkText: "Start Experiment",
+      codeName: "rila",
     },
     {
       title: "Live AI Meditation Guide",
       description:
         "Experience live meditation guided by AI using advanced voice mode for a real-time meditation experience.",
       status: "coming",
+      codeName: "bodh",
     },
   ];
 
@@ -152,7 +153,7 @@ export default function LandingPage() {
         <p className="text-muted-foreground max-w-2xl mb-10">
           An open-source laboratory where AI and meditation meet. Explore our
           experiments and join us in discovering new ways to experience
-          mindfulness.
+          meditation.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
@@ -179,14 +180,6 @@ export default function LandingPage() {
                 </div>
                 <CardDescription>{experiment.description}</CardDescription>
               </CardHeader>
-              <CardContent>
-                {experiment.duration && (
-                  <div className="flex items-center text-xs text-muted-foreground mb-4">
-                    <span className="inline-block h-1 w-1 rounded-full bg-muted-foreground mr-2"></span>
-                    {experiment.duration}
-                  </div>
-                )}
-              </CardContent>
               <CardFooter>
                 {experiment.link ? (
                   <Button
@@ -371,7 +364,7 @@ export default function LandingPage() {
       <section className="w-full max-w-5xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6">About AIM Lab</h2>
         <Card>
-          <CardContent className="pt-6 space-y-4">
+          <CardContent className="pt-6 space-y-2">
             <p className="text-muted-foreground">
               The AI Meditation Lab (AIM Lab) is an open-source project
               exploring the intersection of artificial intelligence and
@@ -409,7 +402,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full border-t border-border/30 py-6 mt-auto">
+      <footer className="w-full py-6 mt-auto">
         <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2 mb-1">
@@ -486,24 +479,8 @@ export default function LandingPage() {
             </ul>
           </div>
         </div>
-        <div className="max-w-5xl mx-auto px-4 mt-6 pt-4 border-t border-border/20 flex justify-between">
-          <p className="text-xs text-muted-foreground">
-            © 2023 SoundGlade. AIM Lab is an open-source project.
-          </p>
-          <div className="flex gap-4">
-            <Link
-              href="/privacy"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Terms of Use
-            </Link>
-          </div>
+        <div className="max-w-5xl mx-auto px-4 mt-6 pt-4 flex justify-between">
+          <p className="text-xs text-muted-foreground"></p>
         </div>
       </footer>
     </div>
