@@ -107,9 +107,6 @@ export default function LandingPage() {
       {/* Navigation */}
       <header className="w-full max-w-5xl px-4 py-6 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-primary text-sm font-medium">AI</span>
-          </div>
           <span className="font-medium">AIM Lab</span>
         </Link>
 
@@ -146,9 +143,9 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="flex flex-col items-center text-center mt-16 mb-24 px-4 max-w-3xl">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-4">
-          AI Meditation Lab
+          AIM Lab
         </h1>
-        <p className="text-lg text-muted-foreground mb-3">
+        <p className="text-lg font-medium text-muted-foreground mb-3">
           The AI Meditation Petri Dish
         </p>
         <p className="text-muted-foreground max-w-2xl mb-10">
@@ -418,9 +415,6 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2 mb-1">
-              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-primary text-xs font-medium">AI</span>
-              </div>
               <span className="text-sm font-medium">AIM Lab</span>
             </div>
             <p className="text-xs text-muted-foreground">
