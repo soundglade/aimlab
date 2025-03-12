@@ -42,7 +42,7 @@ export default function LandingPage() {
       title: "The Science Behind AI-Generated Meditations",
       date: "June 15, 2023",
       excerpt:
-        "Exploring how artificial intelligence can create effective meditation scripts and what this means for mindfulness practices.",
+        "Exploring how artificial intelligence can create effective meditation scripts and what this means for meditation practices.",
       link: "/blog/science-behind-ai-meditations",
     },
     {
@@ -114,13 +114,12 @@ export default function LandingPage() {
           The AI Meditation Petri Dish
         </p>
         <p className="text-muted-foreground max-w-2xl mb-10">
-          An open-source laboratory where AI and meditation meet. Explore our
-          experiments and join us in discovering new ways to experience
-          meditation.
+          Where AI and meditation collide in an open experiment. Everything is
+          public. Everything is evolving. You're invited to explore with us.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
-            Try Our First Experiment
+            Try an Experiment
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>
@@ -245,11 +244,9 @@ export default function LandingPage() {
 
       {/* Recent Community Meditations */}
       <section className="w-full max-w-5xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-3">
-          Recent Community Meditations
-        </h2>
+        <h2 className="text-2xl font-medium mb-3">Public Lab</h2>
         <p className="text-muted-foreground mb-6">
-          Explore meditations created by the community. These meditations are
+          See what others are experimenting with. These meditations are
           generated through our Rila experiment and shared publicly.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -295,7 +292,7 @@ export default function LandingPage() {
       {/* Latest from the Blog */}
       <section className="w-full max-w-5xl px-4 mb-24">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-medium">Latest from the Blog</h2>
+          <h2 className="text-2xl font-medium">Latest from the Lab</h2>
           <Button variant="ghost" asChild size="sm">
             <Link
               href="/blog"
@@ -336,7 +333,7 @@ export default function LandingPage() {
 
       {/* About */}
       <section className="w-full max-w-5xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-6">About AIM Lab</h2>
+        <h2 className="text-2xl font-medium mb-6">How This Works</h2>
         <Card>
           <CardContent className="pt-6 space-y-2">
             <p className="text-muted-foreground">
@@ -345,17 +342,18 @@ export default function LandingPage() {
               meditation.
             </p>
             <p className="text-muted-foreground">
-              We're creating a space for playful experimentation, where
-              technology meets mindfulness in sometimes unexpected ways.
+              This is a place to test ideas, explore possibilities, and learn
+              from what works (and what doesn't). We're creating a space for
+              playful experimentation.
             </p>
             <p className="text-muted-foreground">
-              Our experiments may occasionally be glitchy or imperfect - that's
-              part of the exploration process and the ethos of the project.
+              Our experiments may occasionally glitch or break—that's part of
+              the process and the ethos of the project.
             </p>
             <p className="text-muted-foreground">
-              We invite you to join us in this journey of discovery, as we
-              explore how AI can enhance, evolve, or reimagine meditation
-              practices.
+              What happens when AI guides human meditation? We don't fully know
+              yet—but that's what AIM Lab is here to explore. Join us in this
+              journey of discovery.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
               <Button asChild variant="outline">

@@ -1,9 +1,3 @@
----
-description: Core design philosophy and aesthetic guidelines for AIM Lab
-globs: *.tsx
-alwaysApply: true
----
-
 # AIM Lab Design Principles
 
 ## Core Philosophy
@@ -13,16 +7,19 @@ AIM Lab embraces a minimalist, airy aesthetic that reflects its experimental nat
 ## Visual Design
 
 ### Floating Aesthetic
+
 - **Center gravity:** Content floats in the center rather than being anchored top-to-bottom
 - **Visual lightness:** UI elements feel weightless and unobtrusive
 - **Generous whitespace:** Creates a sense of openness and calm
 
 ### Laboratory-Inspired Design
+
 - **Experimental nature:** Honest about its work-in-progress, sometimes "glitchy" character
 - **Clean simplicity:** Reflects the laboratory concept through uncluttered design
 - **Content-first approach:** Prioritizes meditation experiments over structural elements
 
 ### Minimal Structure
+
 - **Reduced navigation:** Avoids heavy navigation elements that anchor the page
 - **Contextual UI:** Introduces elements only when necessary
 - **Absence of containment:** Content isn't enclosed by obvious boundaries
@@ -52,6 +49,7 @@ AIM Lab embraces a minimalist, airy aesthetic that reflects its experimental nat
 ## Adapting for Growth
 
 As AIM Lab evolves:
+
 - Add only the minimum structure needed for usability
 - Maintain the central floating quality as features expand
 - Question whether new elements support the experimental, laboratory-like feel

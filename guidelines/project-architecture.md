@@ -1,9 +1,3 @@
----
-description: Technical implementation and code organization
-globs: *.tsx
-alwaysApply: false
----
-
 # AIM Lab Project Architecture
 
 ## Project Structure
@@ -27,11 +21,13 @@ alwaysApply: false
 ## Code Conventions
 
 ### Architectural Patterns
+
 - Prefer functional programming patterns over classes
 - Use pure functions and immutable data structures when possible
 - Separate business logic from presentation components
 
 ### Implementation Notes
+
 - Follow the floating aesthetic principles when implementing navigation
 - Implement contextual UI that appears when needed rather than fixed elements
 - Create components that support the laboratory-inspired, experimental design philosophy
