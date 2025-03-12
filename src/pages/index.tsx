@@ -40,7 +40,6 @@ export default function LandingPage() {
     {
       title: "The Science Behind AI-Generated Meditations",
       date: "June 15, 2023",
-      readTime: "8 min read",
       excerpt:
         "Exploring how artificial intelligence can create effective meditation scripts and what this means for mindfulness practices.",
       link: "/blog/science-behind-ai-meditations",
@@ -48,7 +47,6 @@ export default function LandingPage() {
     {
       title: "5 Ways to Enhance Your Meditation Practice with Technology",
       date: "May 22, 2023",
-      readTime: "6 min read",
       excerpt:
         "Discover how modern technology, including AI tools, can deepen your meditation practice rather than distract from it.",
       link: "/blog/enhance-meditation-with-technology",
@@ -225,50 +223,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Latest from the Blog */}
-      <section className="w-full max-w-5xl px-4 mb-24">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-medium">Latest from the Blog</h2>
-          <Button variant="ghost" asChild size="sm">
-            <Link
-              href="/blog"
-              className="text-muted-foreground flex items-center"
-            >
-              View all
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {blogPosts.map((post, index) => (
-            <Card key={index}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">{post.title}</CardTitle>
-                <div className="flex items-center text-xs text-muted-foreground">
-                  <span>{post.date}</span>
-                  <span className="mx-2">•</span>
-                  <span>{post.readTime}</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{post.excerpt}</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="ghost" asChild className="px-0">
-                  <Link
-                    href={post.link}
-                    className="text-primary flex items-center"
-                  >
-                    Read article
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </section>
-
       {/* Latest Updates */}
       {DISPLAY_CHANGELOG && (
         <section className="w-full max-w-5xl px-4 mb-24">
@@ -368,6 +322,48 @@ export default function LandingPage() {
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
                     Play Meditation
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Latest from the Blog */}
+      <section className="w-full max-w-5xl px-4 mb-24">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-medium">Latest from the Blog</h2>
+          <Button variant="ghost" asChild size="sm">
+            <Link
+              href="/blog"
+              className="text-muted-foreground flex items-center"
+            >
+              View all
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {blogPosts.map((post, index) => (
+            <Card key={index}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">{post.title}</CardTitle>
+                <div className="flex items-center text-xs text-muted-foreground">
+                  <span>{post.date}</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{post.excerpt}</p>
+              </CardContent>
+              <CardFooter>
+                <Button variant="ghost" asChild className="px-0">
+                  <Link
+                    href={post.link}
+                    className="text-primary flex items-center"
+                  >
+                    Read article
+                    <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
               </CardFooter>
