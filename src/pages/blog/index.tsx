@@ -15,8 +15,8 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
           Latest from the Lab
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Explore our thoughts on AI meditation, experimental findings, and the
-          evolving intersection of technology.
+          Explore our thoughts on AI meditation and the evolving intersection of
+          technology.
         </p>
       </header>
 

@@ -192,9 +192,3 @@
 | **Error Message**     | "Hmm, something glitched. Let's try that again."        |
 | **Loading Message**   | "Synthesizing wisdom… Hang tight."                      |
 | **Feedback Prompt**   | "Help refine this experiment—what worked, what didn't?" |
-
----
-
-This combined document provides **both high-level principles and concrete UI copy examples**, ensuring that **AIM Lab's voice remains consistent and engaging throughout.**
-
-Does this fully meet your needs, or is there anything you'd like to tweak?
