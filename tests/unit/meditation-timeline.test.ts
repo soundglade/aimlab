@@ -92,8 +92,6 @@ describe("Meditation Timeline", () => {
           {
             type: "heading",
             text: "Section 1",
-            level: 1,
-            readAloud: false,
           },
           {
             type: "speech",
@@ -137,13 +135,12 @@ describe("Meditation Timeline", () => {
       const meditationWithNonAudio: Meditation = {
         title: "Test",
         steps: [
-          { type: "heading", text: "Welcome", level: 1, readAloud: false },
+          { type: "heading", text: "Welcome" },
           {
             type: "speech",
             text: "Hello",
             durationMs: 3000,
           },
-          { type: "direction", text: "Sit comfortably" },
         ],
       };
 
@@ -167,8 +164,6 @@ describe("Meditation Timeline", () => {
             type: "pause",
             duration: 3,
             durationMs: 3000,
-            canExtend: false,
-            waitForUserInput: false,
           },
           {
             type: "speech",

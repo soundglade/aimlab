@@ -29,8 +29,7 @@ export function calculateTimings(meditation: Meditation): Timing[] {
       index,
       hasAudio:
         (step.type === "speech" && (step.durationMs || step.text)) ||
-        (step.type === "pause" && step.durationMs) ||
-        (step.type === "sound" && step.durationMs),
+        (step.type === "pause" && step.durationMs),
     }))
     .filter((item) => item.hasAudio)
     .map((item) => item.index);
@@ -45,13 +44,7 @@ export function calculateTimings(meditation: Meditation): Timing[] {
       stepDurationMs = step.durationMs || (step.text.length / 15) * 1000;
     } else if (step.type === "pause") {
       stepDurationMs = step.durationMs || 0;
-    } else if (step.type === "sound" && step.durationMs) {
-      stepDurationMs = step.durationMs;
-    } else if (
-      step.type === "heading" ||
-      step.type === "direction" ||
-      step.type === "aside"
-    ) {
+    } else if (step.type === "heading") {
       // Non-audio steps have no duration in the timeline
       continue; // Skip adding to timeline
     }
