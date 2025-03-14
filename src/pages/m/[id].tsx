@@ -2,8 +2,8 @@ import { GetServerSideProps } from "next";
 import { Card } from "@/components/ui/card";
 import path from "path";
 import fs from "fs/promises";
-import { MeditationPlayer } from "@/components/[legacy]/MeditationPlayer";
-import { Meditation } from "@/components/[legacy]/Rila";
+import { MeditationPlayer } from "@/components/rila/meditation-player";
+import { Meditation } from "@/components/rila/types";
 import { Layout } from "@/components/layout/Layout";
 
 // Type for the meditation metadata

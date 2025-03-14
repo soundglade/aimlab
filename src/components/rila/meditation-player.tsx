@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { Meditation } from "./Rila";
+import { Meditation } from "./types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, SkipBack, SkipForward, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
-import * as meditationTimeline from "../rila/utils/meditation-timeline";
+import * as meditationTimeline from "./utils/meditation-timeline";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -195,9 +195,6 @@ export function MeditationPlayer({
           <div className="max-h-[55vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
             <div className="space-y-2">
               {meditation.steps.map((step, idx) => {
-                if (step.type === "heading" && step.level === 1) {
-                  return null;
-                }
                 return (
                   <div
                     key={idx}
@@ -219,16 +216,7 @@ export function MeditationPlayer({
                     }
                   >
                     {step.type === "heading" && (
-                      <div
-                        className={cn(
-                          "font-medium",
-                          step.level === 1
-                            ? "text-xl"
-                            : step.level === 2
-                            ? "text-lg"
-                            : "text-base"
-                        )}
-                      >
+                      <div className={cn("font-medium text-lg")}>
                         {step.text}
                       </div>
                     )}
@@ -236,16 +224,6 @@ export function MeditationPlayer({
                     {step.type === "pause" && (
                       <p className="text-muted-foreground italic">
                         {step.duration}s pause
-                        {step.canExtend && " (can be extended)"}
-                        {step.waitForUserInput && " (waiting for user)"}
-                      </p>
-                    )}
-                    {step.type === "direction" && (
-                      <p className="text-primary italic">{step.text}</p>
-                    )}
-                    {step.type === "aside" && (
-                      <p className="text-muted-foreground italic">
-                        {step.text}
                       </p>
                     )}
                   </div>
