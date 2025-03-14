@@ -36,8 +36,12 @@ export default async function handler(
     onProgress: (progress) => {
       sendEvent("progress", { progress });
     },
-    onComplete: () => {
-      sendEvent("complete", { success: true, progress: 100 });
+    onComplete: (success, audioBuffer, updatedMeditation) => {
+      sendEvent("complete", {
+        success,
+        progress: 100,
+        meditation: updatedMeditation,
+      });
       stream.push(null);
     },
     onError: handleError,
