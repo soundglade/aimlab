@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { synthesizeMeditation } from "@/pages/api/synthesize-meditation";
+import { synthesizeMeditation } from "@/lib/synthesize-meditation";
 import { Meditation } from "@/components/rila/types";
 
 describe("synthesizeMeditation", () => {
