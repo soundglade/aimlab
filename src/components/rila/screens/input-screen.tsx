@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,73 +17,81 @@ const InputScreen = () => {
   const [, setStep] = useAtom(stepAtom);
   const [, setStructuredMeditation] = useAtom(structuredMeditationAtom);
   const [, setEditableMarkdown] = useAtom(editableMarkdownAtom);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleContinue = () => {
-    // Sample structured meditation for preview
-    const sampleFormattedScript: FormattedScript = {
-      title: "Micro Meditation",
-      steps: [
-        {
-          type: "heading",
-          text: "Introduction",
-        },
-        {
-          type: "speech",
-          text: "Take a deep breath in",
-        },
-        {
-          type: "heading",
-          text: "Body",
-        },
-        {
-          type: "speech",
-          text: "Exhale smiling",
-        },
-        {
-          type: "pause",
-          duration: 5,
-        },
-        {
-          type: "speech",
-          text: "Continue to breathe naturally, allowing your thoughts to come and go.",
-        },
-        {
-          type: "pause",
-          duration: 10,
-        },
-        {
-          type: "heading",
-          text: "Closing",
-        },
-        {
-          type: "speech",
-          text: "Slowly bring your awareness back to your surroundings. When you're ready, open your eyes.",
-        },
-      ],
-    };
+  const handleContinue = async () => {
+    setIsLoading(true);
+    setError(null);
 
-    setStructuredMeditation(sampleFormattedScript);
+    try {
+      const response = await fetch("/api/format-meditation-script", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          script: meditationScript,
+          mode: "standard",
+        }),
+      });
 
-    const markdown =
-      `# ${sampleFormattedScript.title}\n\n` +
-      sampleFormattedScript.steps
-        .filter((item) => item.type === "heading")
-        .map((heading) => `## ${heading.text}\n`)
-        .join("\n") +
-      sampleFormattedScript.steps
-        .filter((item) => item.type !== "heading")
-        .map((item) => {
-          if (item.type === "speech") {
-            return `${item.text}\n`;
-          } else if (item.type === "pause") {
-            return `PAUSE: ${item.duration} seconds\n`;
-          }
-          return "";
-        })
-        .join("\n");
+      if (!response.ok) {
+        throw new Error("Failed to format script");
+      }
 
-    setEditableMarkdown(markdown);
-    setStep(2);
+      const formattedResult = await response.json();
+
+      // Handle rejection case
+      if (formattedResult.isRejected) {
+        setError(
+          formattedResult.rejectionReason ||
+            "The meditation script could not be processed."
+        );
+        return;
+      }
+
+      // Only proceed to next step if we have a valid script
+      if (!formattedResult.script) {
+        setError("No valid meditation script was generated.");
+        return;
+      }
+
+      // Success case - store the formatted script
+      const formattedScript: FormattedScript = formattedResult.script;
+      setStructuredMeditation(formattedScript);
+
+      // Generate markdown from the formatted script
+      const markdown =
+        `# ${formattedScript.title}\n\n` +
+        formattedScript.steps
+          .filter((item) => item.type === "heading")
+          .map((heading) => `## ${heading.text}\n`)
+          .join("\n") +
+        formattedScript.steps
+          .filter((item) => item.type !== "heading")
+          .map((item) => {
+            if (item.type === "speech") {
+              return `${item.text}\n`;
+            } else if (item.type === "pause") {
+              return `PAUSE: ${item.duration} seconds\n`;
+            }
+            return "";
+          })
+          .join("\n");
+
+      setEditableMarkdown(markdown);
+      setStep(2);
+    } catch (error) {
+      console.error("Error formatting script:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred while processing your script."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -104,6 +112,12 @@ const InputScreen = () => {
         </AlertDescription>
       </Alert>
 
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="space-y-2">
         <label className="font-medium">Meditation Script</label>
         <Textarea
@@ -111,6 +125,7 @@ const InputScreen = () => {
           className="min-h-[200px] max-h-[300px] overflow-y-auto"
           value={meditationScript}
           onChange={(e) => setMeditationScript(e.target.value)}
+          disabled={isLoading}
         />
       </div>
 
@@ -129,6 +144,7 @@ const InputScreen = () => {
             variant="outline"
             size="sm"
             className="flex-shrink-0 w-8 h-8 p-0"
+            disabled={isLoading}
           >
             <Play className="h-4 w-4" />
           </Button>
@@ -139,9 +155,9 @@ const InputScreen = () => {
         <Button
           className="w-full"
           onClick={handleContinue}
-          disabled={!meditationScript.trim()}
+          disabled={isLoading || !meditationScript.trim()}
         >
-          Continue to Review
+          {isLoading ? "Processing..." : "Continue to Review"}
         </Button>
       </div>
     </div>
