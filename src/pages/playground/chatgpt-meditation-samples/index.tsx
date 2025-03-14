@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -17,7 +17,7 @@ interface PageProps {
   samples: MeditationSample[];
 }
 
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async () => {
   const meditationsDir = path.join(
     process.cwd(),
     "scripts/simulate-chatgpt-meditations/meditations"

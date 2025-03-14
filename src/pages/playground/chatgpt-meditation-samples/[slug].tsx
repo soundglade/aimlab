@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -21,24 +21,9 @@ interface PageProps {
   sample: MeditationSample;
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const meditationsDir = path.join(
-    process.cwd(),
-    "scripts/simulate-chatgpt-meditations/meditations"
-  );
-  const files = await fs.readdir(meditationsDir);
-
-  const paths = files.map((filename) => ({
-    params: { slug: filename.replace(".md", "") },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({
+  params,
+}) => {
   const slug = params?.slug as string;
   const filePath = path.join(
     process.cwd(),
@@ -46,20 +31,27 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     `${slug}.md`
   );
 
-  const fileContent = await fs.readFile(filePath, "utf8");
-  const { data, content } = matter(fileContent);
+  try {
+    const fileContent = await fs.readFile(filePath, "utf8");
+    const { data, content } = matter(fileContent);
 
-  return {
-    props: {
-      sample: {
-        slug,
-        personaId: data["persona-id"] || "",
-        persona: data.persona || "",
-        prompt: data.prompt || "",
-        content: content.trim(),
+    return {
+      props: {
+        sample: {
+          slug,
+          personaId: data["persona-id"] || "",
+          persona: data.persona || "",
+          prompt: data.prompt || "",
+          content: content.trim(),
+        },
       },
-    },
-  };
+    };
+  } catch (error) {
+    // Handle case where file doesn't exist
+    return {
+      notFound: true,
+    };
+  }
 };
 
 export default function MeditationSampleDetail({ sample }: PageProps) {
