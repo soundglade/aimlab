@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { Play, Edit, Check, Clock } from "lucide-react";
+import { Play, Edit, Check, Clock, Info } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 // Define types for the component props
 interface RilaFlowDialogProps {
@@ -159,10 +164,10 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-3xl max-h-[98vh] overflow-y-auto">
         <div className="p-1">
           <div className="bg-muted text-muted-foreground rounded-full px-4 py-2 inline-flex items-center space-x-2 mb-8">
-            <span className="font-medium">Rila Experiment</span>
+            <span className="font-medium text-sm">Rila Experiment</span>
             <div className="flex space-x-1">
               <div
                 className={`w-2 h-2 rounded-full ${
@@ -205,31 +210,11 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
                 </AlertDescription>
               </Alert>
 
-              <div className="space-y-4">
-                <h3 className="font-medium text-lg">
-                  How to use this experiment:
-                </h3>
-                <ol className="space-y-2 list-decimal list-inside">
-                  <li>
-                    Use ChatGPT or another AI tool to generate a meditation
-                    script based on your preferences.
-                  </li>
-                  <li>
-                    Copy and paste the generated script into the text area
-                    below.
-                  </li>
-                  <li>Preview the default voice for your meditation.</li>
-                  <li>
-                    Create your meditation and review the structured format.
-                  </li>
-                </ol>
-              </div>
-
               <div className="space-y-2">
                 <label className="font-medium">Meditation Script</label>
                 <Textarea
                   placeholder="Paste your meditation script here..."
-                  className="min-h-[200px]"
+                  className="min-h-[200px] max-h-[300px] overflow-y-auto"
                   value={meditationScript}
                   onChange={(e) => setMeditationScript(e.target.value)}
                 />
@@ -277,13 +262,6 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
                   sure it looks good.
                 </p>
               </div>
-
-              <Alert>
-                <AlertDescription>
-                  This is how your meditation will be read and displayed. Make
-                  sure everything looks correct before proceeding.
-                </AlertDescription>
-              </Alert>
 
               <div className="space-y-6 bg-card border rounded-md p-4 max-h-[400px] overflow-y-auto">
                 <h1 className="text-2xl font-bold">
@@ -344,38 +322,39 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
                 <h2 className="text-2xl font-bold">
                   Edit Your Meditation Script
                 </h2>
-                <p className="text-muted-foreground">
-                  Edit your meditation script using Markdown format. You can use
-                  headings, paragraphs, and special pause markers.
-                </p>
-              </div>
-
-              <div className="bg-muted p-4 rounded-md space-y-2">
-                <h3 className="font-medium">Markdown Guide:</h3>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>
-                    <code># Title</code> - Main title of your meditation
-                  </p>
-                  <p>
-                    <code>## Section</code> - Section headings (Introduction,
-                    Body, Closing)
-                  </p>
-                  <p>
-                    <code>PAUSE: X seconds</code> - Add a timed pause
-                  </p>
-                  <p>Empty lines create new paragraphs</p>
-                </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="font-medium">Edit Script</label>
-                  <span className="text-sm text-muted-foreground">
-                    Markdown format
-                  </span>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <span className="text-sm text-muted-foreground flex items-center cursor-pointer">
+                        Markdown format <Info className="h-4 w-4 ml-1" />
+                      </span>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h3 className="font-medium">Markdown Guide:</h3>
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <p>
+                            <code># Title</code> - Main title of your meditation
+                          </p>
+                          <p>
+                            <code>## Section</code> - Section headings
+                            (Introduction, Body, Closing)
+                          </p>
+                          <p>
+                            <code>PAUSE: X seconds</code> - Add a timed pause
+                          </p>
+                          <p>Empty lines create new paragraphs</p>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 </div>
                 <Textarea
-                  className="font-mono text-sm min-h-[300px]"
+                  className="font-mono text-sm min-h-[300px] max-h-[500px] overflow-y-auto"
                   value={editableMarkdown}
                   onChange={(e) => setEditableMarkdown(e.target.value)}
                 />
