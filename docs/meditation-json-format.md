@@ -14,8 +14,7 @@ A meditation script is represented as an **array** of **step objects**. Each obj
 [
   {
     "type": "heading",
-    "text": "Guided Meditation for Grounding",
-    "readAloud": false
+    "text": "Guided Meditation for Grounding"
   },
   {
     "type": "speech",
@@ -50,17 +49,13 @@ Represents a visual section heading or title within the meditation.
 
 - `type`: "heading"
 - `text`: (string) The heading text
-- `readAloud`: (boolean) Indicates whether this heading should be spoken by TTS engines.
-  - `true`: The heading text will be read aloud.
-  - `false`: The heading is shown visually but not read out loud.
 
 **Example:**
 
 ```json
 {
   "type": "heading",
-  "text": "Body Scan Meditation",
-  "readAloud": false
+  "text": "Body Scan Meditation"
 }
 ```
 
@@ -104,9 +99,8 @@ Represents a period of silence or waiting.
 
 Below are the core features supported in this format, along with how the meditation player or editor might respond.
 
-### 1. Headings with Optional Speech
+### 1. Headings
 
-- `heading.readAloud` can be used to quickly toggle whether headings are spoken.
 - Visually, headings can help chunk a meditation into sections.
 
 ### 2. Speech Blocks
@@ -126,8 +120,7 @@ Below is a complete JSON example that demonstrates all step types in one coheren
 [
   {
     "type": "heading",
-    "text": "Calming Evening Meditation",
-    "readAloud": false
+    "text": "Calming Evening Meditation"
   },
   {
     "type": "speech",
@@ -139,8 +132,7 @@ Below is a complete JSON example that demonstrates all step types in one coheren
   },
   {
     "type": "heading",
-    "text": "Breath Awareness",
-    "readAloud": false
+    "text": "Breath Awareness"
   },
   {
     "type": "speech",
@@ -152,8 +144,7 @@ Below is a complete JSON example that demonstrates all step types in one coheren
   },
   {
     "type": "heading",
-    "text": "Body Relaxation",
-    "readAloud": false
+    "text": "Body Relaxation"
   },
   {
     "type": "speech",
@@ -169,8 +160,7 @@ Below is a complete JSON example that demonstrates all step types in one coheren
   },
   {
     "type": "heading",
-    "text": "Closing",
-    "readAloud": false
+    "text": "Closing"
   },
   {
     "type": "speech",

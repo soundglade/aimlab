@@ -6,7 +6,6 @@ import { zodResponseFormat } from "openai/helpers/zod";
 const HeadingStep = z.object({
   type: z.literal("heading"),
   text: z.string(),
-  readAloud: z.boolean(),
 });
 
 const SpeechStep = z.object({
@@ -86,8 +85,7 @@ Steps to follow:
        "heading", "speech", "pause"
    - For each piece of user-facing guidance, use "speech".
    - For silent intervals, use "pause", with an approximate "duration" in seconds.
-   - For headings or titles, use "type": "heading" with:
-     * "readAloud": true/false as desired
+   - For headings or titles, use "type": "heading" with the text content.
    - If some parts of the script can't be handled perfectly, produce them in the nearest workable format 
      AND add a note in the "warnings" array.
 4) OUTPUT:
