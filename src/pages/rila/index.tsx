@@ -4,8 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Plus, Clock, Calendar, Trash2, X } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
+import RilaFlowDialog from "@/components/rila/rila-flow-dialog";
+import { useState } from "react";
 
 export default function RilaExperiment() {
+  const [open, setOpen] = useState(false);
+
   const examplePrompts = [
     {
       text: '"Write a 5-minute guided meditation script focused on relieving anxiety, using deep breathing and body awareness techniques."',
@@ -124,7 +128,11 @@ export default function RilaExperiment() {
 
           {/* Create Your Meditation */}
           <div className="flex justify-center mb-12">
-            <Button size="lg" className="flex items-center gap-2">
+            <Button
+              onClick={() => setOpen(true)}
+              size="lg"
+              className="flex items-center gap-2"
+            >
               Create Your Meditation
             </Button>
           </div>
@@ -248,6 +256,7 @@ export default function RilaExperiment() {
           </div>
         </div>
       </div>
+      <RilaFlowDialog open={open} onOpenChange={setOpen} />
     </Layout>
   );
 }

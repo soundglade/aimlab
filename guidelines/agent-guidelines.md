@@ -12,9 +12,15 @@
 ### Code Style and Approach
 
 - Favor functional programming patterns over object-oriented approaches.
-- Use TypeScript/JavaScript best practices for Next.js projects.
 - Keep code DRY (Don't Repeat Yourself) but don't over-abstract prematurely.
 - Write clean, maintainable code that others can easily understand.
+
+### Minimal TypeScript Usage
+
+- Default to no types - only add TypeScript when it provides clear value
+- Let TypeScript infer types whenever possible
+- Avoid complex type definitions that hurt readability
+- Prefer simple solutions over perfect type safety
 
 ### Comments and Documentation
 

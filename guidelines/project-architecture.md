@@ -10,6 +10,12 @@
 - **@src/styles/**: Global styles and CSS modules
 - **@src/lib/**: Utility functions and shared logic
 
+## File Naming Conventions
+
+- Use kebab-case for all file names (e.g., `user-profile.tsx`, `data-visualization.css`)
+- Component files should be named after their primary function (e.g., `user-card.tsx`, `data-table.tsx`)
+- Utility files should be named descriptively based on their purpose (e.g., `format-date.ts`, `api-helpers.ts`)
+
 ## Routing
 
 - We use Next.js Pages Router (not App Router)
