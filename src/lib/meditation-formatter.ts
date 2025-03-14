@@ -6,7 +6,6 @@ import { zodResponseFormat } from "openai/helpers/zod";
 const HeadingStep = z.object({
   type: z.literal("heading"),
   text: z.string(),
-  level: z.enum(["1", "2", "3"]).transform((val) => parseInt(val, 10)),
   readAloud: z.boolean(),
 });
 
@@ -18,33 +17,12 @@ const SpeechStep = z.object({
 const PauseStep = z.object({
   type: z.literal("pause"),
   duration: z.number(),
-  canExtend: z.boolean(),
-  waitForUserInput: z.boolean(),
-});
-
-const SoundStep = z.object({
-  type: z.literal("sound"),
-  soundId: z.string(),
-  description: z.string().optional(),
-});
-
-const AsideStep = z.object({
-  type: z.literal("aside"),
-  text: z.string(),
-});
-
-const DirectionStep = z.object({
-  type: z.literal("direction"),
-  text: z.string(),
 });
 
 const MeditationStep = z.discriminatedUnion("type", [
   HeadingStep,
   SpeechStep,
   PauseStep,
-  SoundStep,
-  AsideStep,
-  DirectionStep,
 ]);
 
 const FormattedScript = z.object({
@@ -97,8 +75,7 @@ Steps to follow:
    - Check if this is indeed a meditation script or if it includes content that cannot be supported 
      (e.g., extremely vague or purely theoretical text that can't be turned into guided instructions).
    - Check if we can transform its features into the supported JSON format. If any core aspect 
-     (like branching storylines, or other advanced features not supported) is mandatory 
-     and can't be approximated, we must reject the script.
+     is mandatory and can't be approximated, we must reject the script.
    - If the script is invalid or not feasible, respond with: 
        { "isRejected": true, "rejectionReason": "some reason" }
      and DO NOT provide any "script".
@@ -106,18 +83,11 @@ Steps to follow:
    - If the script is valid, transform it into a structured format with:
      * A concise title that represents the meditation
      * An array of steps with these possible types:
-       "heading", "speech", "pause", "sound", "aside", "direction"
+       "heading", "speech", "pause"
    - For each piece of user-facing guidance, use "speech".
-   - For silent intervals, use "pause", with an approximate "duration" in seconds. 
-     Mark if it can be extended ("canExtend": boolean) or must wait for user input ("waitForUserInput": boolean).
+   - For silent intervals, use "pause", with an approximate "duration" in seconds.
    - For headings or titles, use "type": "heading" with:
-     * "level": 1 for the main title (h1) - there should never be more than one
-     * "level": 2 for section headings (h2)
-     * "level": 3 for subsection headings (h3)
      * "readAloud": true/false as desired
-   - If there's a mention of a bell or chime, use "sound" type with "soundId" and optional "description".
-   - For teacher-only notes or advanced instructions that shouldn't be spoken, use "aside".
-   - For performance or voice instructions, use "direction".
    - If some parts of the script can't be handled perfectly, produce them in the nearest workable format 
      AND add a note in the "warnings" array.
 4) OUTPUT:
