@@ -4,6 +4,40 @@ import { Meditation } from "@/components/rila/types";
 import { synthesizeMeditation } from "@/lib/synthesize-meditation";
 import { saveMeditation } from "@/lib/save-meditation";
 
+/**
+ * API endpoint for synthesizing a meditation into audio
+ *
+ * @description This API takes a meditation object and synthesizes it into audio,
+ * saving the result and returning a URL to access it.
+ *
+ * @input
+ * - req.body: A Meditation object containing steps to synthesize
+ *
+ * @output
+ * A stream of JSON events, each on a new line:
+ *
+ * 1. Progress events:
+ *    {
+ *      "type": "progress",
+ *      "progress": number // 0-100 indicating percentage complete
+ *    }
+ *
+ * 2. Complete event (success):
+ *    {
+ *      "type": "complete",
+ *      "success": true,
+ *      "progress": 100,
+ *      "meditation": Meditation, // The updated meditation with timeline
+ *      "url": string // URL to access the saved meditation
+ *    }
+ *
+ * 3. Complete event (failure):
+ *    {
+ *      "type": "complete",
+ *      "success": false,
+ *      "error": string // Error message
+ *    }
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
