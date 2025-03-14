@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
 import { Meditation } from "@/components/rila/types";
 import { synthesizeMeditation } from "@/lib/synthesize-meditation";
+import { saveMeditation } from "@/lib/save-meditation";
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,11 +37,17 @@ export default async function handler(
     onProgress: (progress) => {
       sendEvent("progress", { progress });
     },
-    onComplete: (success, audioBuffer, updatedMeditation) => {
+    onComplete: async (success, audioBuffer, updatedMeditation) => {
+      let url: string | null = null;
+      if (success && audioBuffer && updatedMeditation) {
+        url = await saveMeditation(audioBuffer, updatedMeditation);
+      }
+
       sendEvent("complete", {
         success,
         progress: 100,
         meditation: updatedMeditation,
+        url,
       });
       stream.push(null);
     },
