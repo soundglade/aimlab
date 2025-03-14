@@ -32,17 +32,17 @@ const ReviewScreen = () => {
           # {structuredMeditation?.title || "Micro Meditation"}
         </h1>
 
-        {structuredMeditation?.sections.map((item, index) => {
-          if (item.type === "section") {
+        {structuredMeditation?.steps.map((item, index) => {
+          if (item.type === "heading") {
             return (
               <h2 key={index} className="text-xl font-semibold mt-6">
-                {item.title}
+                {item.text}
               </h2>
             );
-          } else if (item.type === "step") {
+          } else if (item.type === "speech") {
             return (
               <p key={index} className="my-3">
-                Step {item.number}: {item.content}
+                {item.text}
               </p>
             );
           } else if (item.type === "pause") {
@@ -55,13 +55,8 @@ const ReviewScreen = () => {
                 seconds
               </div>
             );
-          } else {
-            return (
-              <p key={index} className="my-3">
-                {item.content}
-              </p>
-            );
           }
+          return null;
         })}
       </div>
 

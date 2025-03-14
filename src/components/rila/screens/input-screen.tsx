@@ -10,7 +10,7 @@ import {
   structuredMeditationAtom,
   editableMarkdownAtom,
 } from "../atoms";
-import { StructuredMeditation } from "../types";
+import type { FormattedScript } from "@/lib/meditation-formatter";
 
 const InputScreen = () => {
   const [meditationScript, setMeditationScript] = useAtom(meditationScriptAtom);
@@ -20,73 +20,65 @@ const InputScreen = () => {
 
   const handleContinue = () => {
     // Sample structured meditation for preview
-    const sampleStructuredMeditation: StructuredMeditation = {
+    const sampleFormattedScript: FormattedScript = {
       title: "Micro Meditation",
-      sections: [
+      steps: [
         {
-          type: "section",
-          title: "Introduction",
-          content: [],
+          type: "heading",
+          text: "Introduction",
         },
         {
-          type: "step",
-          number: 1,
-          content: "Take a deep breath in",
+          type: "speech",
+          text: "Take a deep breath in",
         },
         {
-          type: "section",
-          title: "Body",
-          content: [],
+          type: "heading",
+          text: "Body",
         },
         {
-          type: "step",
-          number: 2,
-          content: "Exhale smiling",
+          type: "speech",
+          text: "Exhale smiling",
         },
         {
           type: "pause",
           duration: 5,
         },
         {
-          type: "text",
-          content:
-            "Continue to breathe naturally, allowing your thoughts to come and go.",
+          type: "speech",
+          text: "Continue to breathe naturally, allowing your thoughts to come and go.",
         },
         {
           type: "pause",
           duration: 10,
         },
         {
-          type: "section",
-          title: "Closing",
-          content: [],
+          type: "heading",
+          text: "Closing",
         },
         {
-          type: "text",
-          content:
-            "Slowly bring your awareness back to your surroundings. When you're ready, open your eyes.",
+          type: "speech",
+          text: "Slowly bring your awareness back to your surroundings. When you're ready, open your eyes.",
         },
       ],
     };
 
-    setStructuredMeditation(sampleStructuredMeditation);
+    setStructuredMeditation(sampleFormattedScript);
 
     const markdown =
-      `# ${sampleStructuredMeditation.title}\n\n` +
-      sampleStructuredMeditation.sections
-        .filter((item) => item.type === "section")
-        .map((section) => `## ${section.title}\n`)
+      `# ${sampleFormattedScript.title}\n\n` +
+      sampleFormattedScript.steps
+        .filter((item) => item.type === "heading")
+        .map((heading) => `## ${heading.text}\n`)
         .join("\n") +
-      sampleStructuredMeditation.sections
-        .filter((item) => item.type !== "section")
+      sampleFormattedScript.steps
+        .filter((item) => item.type !== "heading")
         .map((item) => {
-          if (item.type === "step") {
-            return `Step ${item.number}: ${item.content}\n`;
+          if (item.type === "speech") {
+            return `${item.text}\n`;
           } else if (item.type === "pause") {
             return `PAUSE: ${item.duration} seconds\n`;
-          } else {
-            return `${item.content}\n`;
           }
+          return "";
         })
         .join("\n");
 

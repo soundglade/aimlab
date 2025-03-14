@@ -1,19 +1,10 @@
-// Define types for meditation structure
-export interface MeditationSection {
-  type: string;
-  title?: string;
-  content?: string | never[];
-  number?: number;
-  duration?: number;
-}
-
-export interface StructuredMeditation {
-  title: string;
-  sections: MeditationSection[];
-}
+import type { FormattedScript } from "@/lib/meditation-formatter";
 
 // Define types for the component props
 export interface RilaFlowDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+// Re-export FormattedScript type for convenience
+export type { FormattedScript };
