@@ -1,52 +1,39 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, Check } from "lucide-react";
+import { Play, Check, AlertCircle } from "lucide-react";
 import { progressAtom, isCompletedAtom } from "../atoms";
 
 interface CreationScreenProps {
   onPlayMeditation: () => void;
+  error: string | null;
 }
 
-const CreationScreen = ({ onPlayMeditation }: CreationScreenProps) => {
-  const [progress, setProgress] = useAtom(progressAtom);
-  const [isCompleted, setIsCompleted] = useAtom(isCompletedAtom);
-
-  useEffect(() => {
-    // Reset progress and completion status when component mounts
-    setProgress(0);
-    setIsCompleted(false);
-
-    // Start the progress simulation
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += 5;
-      setProgress(currentProgress);
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        setIsCompleted(true);
-      }
-    }, 500);
-
-    // Clean up interval on unmount
-    return () => clearInterval(interval);
-  }, [setProgress, setIsCompleted]);
+const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
+  const [progress] = useAtom(progressAtom);
+  const [isCompleted] = useAtom(isCompletedAtom);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] space-y-8 text-center">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">
-          {isCompleted ? "Meditation Created" : "Creating Your Meditation"}
+          {error
+            ? "Meditation Creation Failed"
+            : isCompleted
+            ? "Meditation Created"
+            : "Creating Your Meditation"}
         </h2>
         <p className="text-muted-foreground">
-          {isCompleted
+          {error
+            ? "There was an error creating your meditation."
+            : isCompleted
             ? "Your meditation has been successfully generated."
             : "We're generating your meditation. This may take a minute or two."}
         </p>
       </div>
 
-      {!isCompleted && (
+      {!isCompleted && !error && (
         <>
           <Progress value={progress} className="w-full max-w-md" />
           <p className="text-muted-foreground">Generating audio segments...</p>
@@ -56,9 +43,21 @@ const CreationScreen = ({ onPlayMeditation }: CreationScreenProps) => {
       <div
         className={`bg-muted rounded-md p-6 max-w-md ${
           isCompleted ? "border border-primary/30" : ""
-        }`}
+        } ${error ? "border border-destructive/30" : ""}`}
       >
-        {!isCompleted ? (
+        {error ? (
+          <>
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center">
+                <AlertCircle className="h-6 w-6 text-destructive" />
+              </div>
+            </div>
+            <p className="text-destructive mb-4">{error}</p>
+            <p className="text-muted-foreground mb-4">
+              Please try again or contact support if the issue persists.
+            </p>
+          </>
+        ) : !isCompleted ? (
           <>
             <div className="flex justify-center mb-4">
               <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">

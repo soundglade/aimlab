@@ -5,7 +5,11 @@ import { Edit, Check } from "lucide-react";
 import { Clock } from "lucide-react";
 import { stepAtom, structuredMeditationAtom } from "../atoms";
 
-const ReviewScreen = () => {
+interface ReviewScreenProps {
+  onStartSynthesis: () => void;
+}
+
+const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
   const [, setStep] = useAtom(stepAtom);
   const [structuredMeditation] = useAtom(structuredMeditationAtom);
 
@@ -14,7 +18,7 @@ const ReviewScreen = () => {
   };
 
   const handleContinue = () => {
-    setStep(4);
+    onStartSynthesis();
   };
 
   return (
