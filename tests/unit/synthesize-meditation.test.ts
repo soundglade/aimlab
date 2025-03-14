@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { synthesizeMeditation } from "@/pages/api/synthesize-meditation";
+import { Meditation } from "@/components/rila/types";
 
 describe("synthesizeMeditation", () => {
   // Mock speech functions
@@ -7,12 +8,15 @@ describe("synthesizeMeditation", () => {
   const mockDurationCalculator = vi.fn().mockResolvedValue(3000);
 
   // Test data
-  const testSteps = [
-    { type: "speech", text: "Welcome to meditation" },
-    { type: "speech", text: "Take a deep breath" },
-    { type: "other", text: "Not a speech step" },
-    { type: "speech", text: "Relax your body" },
-  ];
+  const testMeditation: Meditation = {
+    title: "Test Meditation",
+    steps: [
+      { type: "speech", text: "Welcome to meditation" },
+      { type: "speech", text: "Take a deep breath" },
+      { type: "pause", duration: 5 },
+      { type: "speech", text: "Relax your body" },
+    ],
+  };
 
   it("should process all speech steps and report progress", async () => {
     const progressUpdates: number[] = [];
@@ -20,7 +24,7 @@ describe("synthesizeMeditation", () => {
     const onComplete = vi.fn();
     const onError = vi.fn();
 
-    const result = await synthesizeMeditation(testSteps, {
+    const result = await synthesizeMeditation(testMeditation, {
       speechGenerator: mockSpeechGenerator,
       durationCalculator: mockDurationCalculator,
       onProgress,
@@ -63,7 +67,7 @@ describe("synthesizeMeditation", () => {
     const onComplete = vi.fn();
     const onError = vi.fn();
 
-    const result = await synthesizeMeditation(testSteps, {
+    const result = await synthesizeMeditation(testMeditation, {
       speechGenerator: failingSpeechGenerator,
       durationCalculator: mockDurationCalculator,
       onProgress,

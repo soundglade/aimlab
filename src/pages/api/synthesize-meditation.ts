@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
 import { generateSpeech, getAudioDurationMs } from "@/lib/speech";
+import { Meditation } from "@/components/rila/types";
 
 export async function synthesizeMeditation(
-  steps,
+  meditation: Meditation,
   {
     speechGenerator = generateSpeech,
     durationCalculator = getAudioDurationMs,
@@ -13,7 +14,9 @@ export async function synthesizeMeditation(
   } = {}
 ) {
   try {
-    const speechSteps = steps.filter((step) => step.type === "speech");
+    const speechSteps = meditation.steps.filter(
+      (step) => step.type === "speech"
+    );
     const totalSteps = speechSteps.length;
 
     const calculateProgress = (current, total) => {
@@ -71,7 +74,9 @@ export default async function handler(
   res.setHeader("Transfer-Encoding", "chunked");
   stream.pipe(res);
 
-  await synthesizeMeditation(req.body.steps, {
+  const meditation = req.body as Meditation;
+
+  await synthesizeMeditation(meditation, {
     onProgress: (progress) => {
       sendEvent("progress", { progress });
     },
