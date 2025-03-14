@@ -1,5 +1,5 @@
 import { Meditation } from "@/components/rila/types";
-import { AudioBuffer, GainNode, OfflineAudioContext } from "node-web-audio-api";
+import { OfflineAudioContext } from "web-audio-engine";
 import audioBufferToWav from "audiobuffer-to-wav";
 
 /**
@@ -38,7 +38,8 @@ export async function createConcatenatedAudio(
         source.buffer = audioBuffer;
 
         // Connect to destination
-        const gain = new GainNode(audioContext, { gain: 1.0 });
+        const gain = audioContext.createGain();
+        gain.gain.value = 1.0;
         source.connect(gain);
         gain.connect(audioContext.destination);
 
