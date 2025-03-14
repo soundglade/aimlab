@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import * as meditationTimeline from "@/components/rila/utils/meditationTimeline";
-import { Meditation } from "@/components/rila/Rila";
+import * as meditationTimeline from "@/components/[legacy]/utils/meditationTimeline";
+import { Meditation } from "@/components/[legacy]/Rila";
 
 describe("Meditation Timeline", () => {
   let sampleMeditation: Meditation;
