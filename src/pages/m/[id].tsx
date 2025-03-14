@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs/promises";
 import { MeditationPlayer } from "@/components/[legacy]/MeditationPlayer";
 import { Meditation } from "@/components/[legacy]/Rila";
+import { Layout } from "@/components/layout/Layout";
 
 // Type for the meditation metadata
 interface SharedMeditationProps {
@@ -57,7 +58,7 @@ export default function SharedMeditation({
 }: SharedMeditationProps) {
   if (error || !metadata || !audioUrl) {
     return (
-      <div className="container max-w-3xl mx-auto py-8 px-4">
+      <Layout>
         <Card className="p-6">
           <h1 className="text-2xl font-medium text-center mb-6">
             Meditation Not Found
@@ -66,16 +67,18 @@ export default function SharedMeditation({
             {error || "Failed to load meditation"}
           </p>
         </Card>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="container max-w-3xl mx-auto py-8 px-4">
-      <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
-        {metadata.title}
-      </h1>
-      <MeditationPlayer meditation={metadata} audioUrl={audioUrl} />
-    </div>
+    <Layout>
+      <div className="container max-w-3xl mx-auto py-8 px-4">
+        <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
+          {metadata.title}
+        </h1>
+        <MeditationPlayer meditation={metadata} audioUrl={audioUrl} />
+      </div>
+    </Layout>
   );
 }
