@@ -12,6 +12,22 @@ import {
 } from "../atoms";
 import type { Meditation } from "../types";
 
+// Process the meditation script returned from the API
+const processMeditationScript = (script: Meditation): Meditation => {
+  return {
+    ...script,
+    steps: script.steps.map((step) => {
+      if (step.type === "pause" && step.duration) {
+        return {
+          ...step,
+          durationMs: step.duration * 1000,
+        };
+      }
+      return step;
+    }),
+  };
+};
+
 const InputScreen = () => {
   const [meditationScript, setMeditationScript] = useAtom(meditationScriptAtom);
   const [, setStep] = useAtom(stepAtom);
@@ -59,7 +75,8 @@ const InputScreen = () => {
 
       // Success case - store the formatted script
       const formattedScript: Meditation = formattedResult.script;
-      setStructuredMeditation(formattedScript);
+      const processedScript = processMeditationScript(formattedScript);
+      setStructuredMeditation(processedScript);
 
       // Generate markdown from the formatted script
       const markdown =
