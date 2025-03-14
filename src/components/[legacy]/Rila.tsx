@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Timing } from "./utils/meditationTimeline";
+import { Timing } from "../rila/utils/meditation-timeline";
 
 import type { FormattedScript } from "@/lib/meditation-formatter";
 import { initializeStorage } from "@/lib/session-storage";

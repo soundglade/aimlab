@@ -1,4 +1,5 @@
 import type { FormattedScript } from "@/lib/meditation-formatter";
+import { Timing } from "./utils/meditation-timeline";
 
 // Define types for the component props
 export interface RilaFlowDialogProps {
@@ -6,5 +7,17 @@ export interface RilaFlowDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Re-export FormattedScript type for convenience
-export type { FormattedScript };
+export type MeditationStep = FormattedScript["steps"][number] & {
+  audioFileId?: string;
+  durationMs?: number;
+};
+
+export interface Meditation {
+  title: string;
+  steps: MeditationStep[];
+  timeline?: {
+    timings: Timing[];
+    totalDurationMs: number;
+  };
+  fullAudioFileId?: string;
+}

@@ -10,7 +10,7 @@ import {
   structuredMeditationAtom,
   editableMarkdownAtom,
 } from "../atoms";
-import type { FormattedScript } from "@/lib/meditation-formatter";
+import type { Meditation } from "../types";
 
 const InputScreen = () => {
   const [meditationScript, setMeditationScript] = useAtom(meditationScriptAtom);
@@ -58,7 +58,7 @@ const InputScreen = () => {
       }
 
       // Success case - store the formatted script
-      const formattedScript: FormattedScript = formattedResult.script;
+      const formattedScript: Meditation = formattedResult.script;
       setStructuredMeditation(formattedScript);
 
       // Generate markdown from the formatted script

@@ -1,4 +1,4 @@
-import { Meditation } from "../Rila";
+import { Meditation } from "../../[legacy]/Rila";
 
 /**
  * Interface for timing information

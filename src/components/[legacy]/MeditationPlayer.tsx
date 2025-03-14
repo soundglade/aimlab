@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, SkipBack, SkipForward, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
-import * as meditationTimeline from "./utils/meditationTimeline";
+import * as meditationTimeline from "../rila/utils/meditation-timeline";
 
 interface MeditationPlayerProps {
   meditation: Meditation;

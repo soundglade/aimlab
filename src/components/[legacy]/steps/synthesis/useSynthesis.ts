@@ -3,7 +3,7 @@ import { Meditation, SynthesisState } from "../../Rila";
 import { FileStorageApi } from "@/lib/file-storage";
 import { VoiceSettings } from "../voice/ttsTypes";
 import * as synthesisService from "../../utils/synthesisService";
-import * as meditationTimeline from "../../utils/meditationTimeline";
+import * as meditationTimeline from "../../../rila/utils/meditation-timeline";
 import { exportMeditationAudio } from "../../utils/audioExporter";
 
 export function useSynthesis(
