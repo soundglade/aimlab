@@ -104,7 +104,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <Layout showHeader={false}>
+    <Layout>
       {/* Hero */}
       <section className="flex flex-col items-center text-center mt-16 mb-24 px-4 max-w-3xl">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-4">

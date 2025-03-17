@@ -5,7 +5,7 @@ const DISPLAY_CHANGELOG = false;
 
 export function Header() {
   return (
-    <header className="w-full max-w-3xl px-4 py-6 flex justify-between items-center">
+    <header className="w-full max-w-5xl px-4 py-6 flex justify-between items-center">
       <Link href="/" className="flex items-center gap-2">
         <span className="font-medium">AIM Lab</span>
       </Link>
