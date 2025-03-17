@@ -4,7 +4,7 @@ import { Github } from "lucide-react";
 export function Footer() {
   return (
     <footer className="w-full py-6 mt-10">
-      <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium">AIM Lab</span>

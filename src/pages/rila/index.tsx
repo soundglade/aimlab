@@ -65,9 +65,8 @@ export default function RilaExperiment() {
 
   return (
     <Layout>
-      {/* Hero */}
-      <div className="pt-8 pb-12 px-4">
-        <div className="max-w-2xl mx-auto">
+      <div className="pt-8 pb-12">
+        <div className="max-w-4xl mx-auto px-4">
           <div className="mb-8">
             <span className="text-sm text-blue-500 bg-blue-50 px-3 py-1 rounded-full">
               Rila Experiment
@@ -83,7 +82,7 @@ export default function RilaExperiment() {
             everyone could generate personalized, high-quality meditations using{" "}
             <span className="font-bold">ChatGPT</span>? This experiment lets you
             transform AI-generated text scripts into{" "}
-            <span className="font-bold">playable audio</span>. Let's find out!
+            <span className="font-bold">playable audio</span>. Let's find out.
           </p>
 
           {/* How to use this experiment */}

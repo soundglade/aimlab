@@ -128,7 +128,7 @@ export default function LandingPage() {
       <div id="experiments" className="relative -top-4 invisible"></div>
 
       {/* Experiments */}
-      <section className="w-full max-w-5xl px-4 mb-24">
+      <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6">Experiments</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {experiments.map((experiment, index) => (
@@ -188,7 +188,7 @@ export default function LandingPage() {
 
       {/* Latest Updates */}
       {DISPLAY_CHANGELOG && (
-        <section className="w-full max-w-5xl px-4 mb-24">
+        <section className="w-full max-w-4xl px-4 mb-24">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-medium">Latest Updates</h2>
             <div className="flex items-center gap-2">
@@ -245,7 +245,7 @@ export default function LandingPage() {
       )}
 
       {/* Recent Community Meditations */}
-      <section className="w-full max-w-5xl px-4 mb-24">
+      <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-3">Public Lab</h2>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
@@ -292,7 +292,7 @@ export default function LandingPage() {
       </section>
 
       {/* Latest from the Blog */}
-      <section className="w-full max-w-5xl px-4 mb-24">
+      <section className="w-full max-w-4xl px-4 mb-24">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-medium">Latest from the Lab</h2>
           <Button variant="ghost" asChild size="sm">
@@ -336,7 +336,7 @@ export default function LandingPage() {
       <div id="about" className="relative -top-4 invisible"></div>
 
       {/* About */}
-      <section className="w-full max-w-5xl px-4 mb-10">
+      <section className="w-full max-w-4xl px-4 mb-10">
         <h2 className="text-2xl font-medium mb-6">How This Works</h2>
         <Card>
           <CardContent className="pt-6 space-y-2">
