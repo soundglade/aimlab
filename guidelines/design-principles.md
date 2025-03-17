@@ -2,7 +2,7 @@
 
 ## Core Philosophy
 
-AIM Lab embraces a minimalist, airy aesthetic that reflects its experimental nature as an "AI meditation petri dish." This document outlines the foundational principles that define the AIM Lab experience.
+AIM Lab embraces a minimalist, airy aesthetic that reflects its experimental nature as an "AI meditation playground." This document outlines the foundational principles that define the AIM Lab experience.
 
 ## Visual Design
 

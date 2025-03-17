@@ -10,7 +10,7 @@ export function Footer() {
             <span className="text-sm font-medium">AIM Lab</span>
           </Link>
           <p className="text-xs text-muted-foreground">
-            The AI Meditation Petri Dish
+            The AI Meditation Playground
           </p>
         </div>
 

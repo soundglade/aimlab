@@ -111,7 +111,7 @@ export default function LandingPage() {
           AIM Lab
         </h1>
         <p className="text-lg font-medium text-muted-foreground mb-3">
-          The AI Meditation Petri Dish
+          The AI Meditation Playground
         </p>
         <p className="text-muted-foreground max-w-2xl mb-10">
           Where AI and meditation collide in an open experiment. Everything is

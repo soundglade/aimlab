@@ -1,4 +1,4 @@
-# AIM Lab: The AI Meditation Petri Dish
+# AIM Lab: The AI Meditation Playground
 
 ## What is AIM Lab?
 

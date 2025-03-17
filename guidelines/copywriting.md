@@ -69,7 +69,7 @@
 
 #### **Tagline (Main Heading)**
 
-**"The AI Meditation Petri Dish"**
+**"The AI Meditation Playground"**
 
 #### **Subheading**
 
@@ -184,7 +184,7 @@
 
 | **UI Element**        | **Recommended Copy**                                    |
 | --------------------- | ------------------------------------------------------- |
-| **Tagline**           | "The AI Meditation Petri Dish"                          |
+| **Tagline**           | "The AI Meditation Playground"                          |
 | **CTA Button**        | "Try an Experiment"                                     |
 | **Primary Action**    | "Generate a Meditation"                                 |
 | **Navigation Label**  | "Experiments"                                           |
