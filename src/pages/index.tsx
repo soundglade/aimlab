@@ -125,6 +125,8 @@ export default function LandingPage() {
         </Button>
       </section>
 
+      <div id="experiments" className="relative -top-4 invisible"></div>
+
       {/* Experiments */}
       <section className="w-full max-w-5xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6">Experiments</h2>
@@ -330,6 +332,8 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
+      <div id="about" className="relative -top-4 invisible"></div>
 
       {/* About */}
       <section className="w-full max-w-5xl px-4 mb-10">
