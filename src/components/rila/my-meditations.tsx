@@ -10,6 +10,11 @@ export default function MyMeditations() {
     useMyMeditations();
   const router = useRouter();
 
+  // If there are no meditations, don't render anything
+  if (meditations.length === 0) {
+    return null;
+  }
+
   // Handle click on a meditation button
   const handleMeditationClick = (url: string) => {
     router.push(url);
@@ -18,7 +23,7 @@ export default function MyMeditations() {
   return (
     <div className="mb-12">
       <Card>
-        <CardContent className="pt-6">
+        <CardContent>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-sm font-medium">Your saved meditations:</h2>
             <Button

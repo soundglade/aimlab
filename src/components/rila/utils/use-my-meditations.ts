@@ -61,7 +61,13 @@ export function useMyMeditations() {
     setMeditations(updatedMeditations);
   };
 
-  const clearMeditations = () => {
+  const clearMeditations = async () => {
+    const currentMeditationsIds = getMeditations().map((med) => med.id);
+
+    for (const meditationId of currentMeditationsIds) {
+      await deleteMeditation(meditationId);
+    }
+
     setMeditations([]);
   };
 
