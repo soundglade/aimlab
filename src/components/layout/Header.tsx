@@ -10,7 +10,7 @@ export function Header() {
         <span className="font-medium">AIM Lab</span>
       </Link>
 
-      <nav className="flex items-center gap-6">
+      <nav className="flex items-center gap-3 md:gap-6">
         <Link
           href="/#about"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
