@@ -29,6 +29,12 @@ export function Header() {
         >
           Blog
         </Link>
+        <Link
+          href="/feedback"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Feedback
+        </Link>
         {DISPLAY_CHANGELOG && (
           <Link
             href="/changelog"
