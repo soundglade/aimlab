@@ -188,6 +188,22 @@ export function MeditationPlayer({
     audioRef.current.currentTime = clickPercentage * audioRef.current.duration;
   };
 
+  const handleDownload = () => {
+    // Create an anchor element
+    const downloadLink = document.createElement("a");
+    downloadLink.href = audioUrl;
+
+    const filename = `${meditation.title
+      .replace(/\s+/g, "-")
+      .toLowerCase()}.mp3`;
+    downloadLink.download = filename;
+
+    // Append to the document, click it, and remove it
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   return (
     <>
       <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
@@ -195,7 +211,7 @@ export function MeditationPlayer({
       </h1>
       {/* Additional action buttons */}
       <div className="flex justify-center gap-3 m-4">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={handleDownload}>
           <Download className="mr-2 h-4 w-4" />
           Download
         </Button>
