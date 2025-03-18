@@ -6,9 +6,12 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import RilaFlowDialog from "@/components/rila/rila-flow-dialog";
 import { useState } from "react";
+import { useMyMeditations } from "@/components/rila/utils/use-my-meditations";
 
 export default function RilaExperiment() {
   const [open, setOpen] = useState(false);
+  const { meditations, deleteMeditation, clearMeditations } =
+    useMyMeditations();
 
   const examplePrompts = [
     {
@@ -19,15 +22,6 @@ export default function RilaExperiment() {
     },
     {
       text: '"Generate a brief morning meditation focused on setting positive intentions for the day ahead."',
-    },
-  ];
-
-  const myMeditations = [
-    {
-      title: "Morning Clarity Practice",
-    },
-    {
-      title: "Deep Relaxation Journey",
     },
   ];
 
@@ -148,15 +142,16 @@ export default function RilaExperiment() {
                     variant="outline"
                     size="sm"
                     className="h-8 px-2 text-xs"
+                    onClick={clearMeditations}
                   >
                     <Trash2 size={14} className="mr-1" />
                     Clear all
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {myMeditations.map((meditation, index) => (
+                  {meditations.map((meditation, index) => (
                     <Button
-                      key={index}
+                      key={meditation.id}
                       type="button"
                       variant="outline"
                       className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors group relative"
@@ -174,6 +169,7 @@ export default function RilaExperiment() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            deleteMeditation(meditation.id);
                           }}
                           className="absolute right-2 opacity-30 hover:opacity-100 hover:bg-muted rounded-full p-1 transition-all focus:outline-none"
                           aria-label="Delete meditation"

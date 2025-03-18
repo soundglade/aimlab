@@ -20,6 +20,7 @@ import {
 
 // Import types
 import { RilaFlowDialogProps } from "./types";
+import { useMyMeditations } from "./utils/use-my-meditations";
 
 const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
   // Get atoms
@@ -33,6 +34,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
   const [, setIsCompleted] = useAtom(isCompletedAtom);
   const [meditationUrl, setMeditationUrl] = useAtom(meditationUrlAtom);
   const [error, setError] = useState<string | null>(null);
+  const { addMeditation } = useMyMeditations();
 
   // Reset state when dialog is closed
   const handleOpenChange = (newOpen: boolean) => {
@@ -123,6 +125,20 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
                 // Store the URL and updated meditation data
                 if (event.url) {
                   setMeditationUrl(event.url);
+
+                  // Save meditation to localStorage if we have all required data
+                  if (
+                    event.meditationId &&
+                    event.ownerKey &&
+                    event.meditation
+                  ) {
+                    addMeditation({
+                      id: event.meditationId,
+                      title: event.meditation.title,
+                      url: event.url,
+                      ownerKey: event.ownerKey,
+                    });
+                  }
                 }
 
                 if (event.meditation) {
