@@ -27,8 +27,6 @@ export default function FeedbackIndex() {
 
       if (response.ok) {
         setSubmitStatus("success");
-        setMessage("");
-        setContact("");
       } else {
         setSubmitStatus("error");
       }
@@ -41,12 +39,17 @@ export default function FeedbackIndex() {
 
   return (
     <Layout variant="page">
-      <header className="mb-12 text-center">
-        <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-3">
+      <header className="mb-12">
+        <h1 className="text-3xl text-center md:text-4xl font-medium tracking-tight mb-3">
           Feedback
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Share your thoughts, suggestions, and feedback with us.
+        <p className="text-muted-foreground max-w-2xl">
+          Thank you for taking the time to share your feedback with us. Whether
+          you'd like to report bugs, suggest new features, or share what you
+          appreciate about the project - we welcome it all. If you provide
+          contact information, we'll do our best to follow up with you directly.
+          As a collaborative project, your input is invaluable in helping us
+          improve and grow. 🙏
         </p>
       </header>
 
@@ -57,7 +60,7 @@ export default function FeedbackIndex() {
             <Textarea
               id="message"
               placeholder="Share your suggestions, report bugs, or tell us what you think..."
-              className="min-h-32"
+              className="min-h-64 bg-background"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -70,24 +73,22 @@ export default function FeedbackIndex() {
             </Label>
             <Input
               id="contact"
+              className="bg-background"
               placeholder="Email address or social media handle for follow-up"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
             />
-            <p className="text-sm text-muted-foreground">
-              Leave your contact information if you'd like us to follow up on
-              your feedback.
-            </p>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-2 flex justify-center">
             <Button
               type="submit"
-              disabled={isSubmitting || !message.trim()}
-              variant="outline"
-              className="w-full md:w-auto"
+              disabled={
+                isSubmitting || submitStatus === "success" || !message.trim()
+              }
+              className="w-full md:w-40 mx-auto"
             >
-              {isSubmitting ? "Submitting..." : "Submit feedback"}
+              {isSubmitting ? "Submitting..." : "Send"}
             </Button>
           </div>
 
