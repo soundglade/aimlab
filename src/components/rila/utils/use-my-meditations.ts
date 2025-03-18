@@ -80,11 +80,16 @@ export function useMyMeditations() {
     return addMeditation({ id, title, url, ownerKey });
   };
 
+  const ownsMeditation = (id: string): boolean => {
+    return getMeditations().some((meditation) => meditation.id === id);
+  };
+
   return {
     meditations: getMeditations(),
     addMeditation,
     deleteMeditation,
     clearMeditations,
     saveMeditation,
+    ownsMeditation,
   };
 }

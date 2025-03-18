@@ -3,16 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Download, Share, Trash } from "lucide-react";
 import { toast } from "sonner";
-
-interface MeditationActionButtonsProps {
-  audioUrl: string;
-  meditationTitle: string;
-}
+import { useMyMeditations } from "./utils/use-my-meditations";
 
 export function MeditationActionButtons({
+  meditationId,
   audioUrl,
   meditationTitle,
-}: MeditationActionButtonsProps) {
+}) {
+  const { ownsMeditation, deleteMeditation } = useMyMeditations();
+  const canDelete = ownsMeditation(meditationId);
   const handleDownload = () => {
     const downloadLink = document.createElement("a");
     downloadLink.href = audioUrl;
@@ -54,14 +53,17 @@ export function MeditationActionButtons({
         Share
       </Button>
 
-      <Button
-        variant="outline"
-        size="sm"
-        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-      >
-        <Trash className="mr-2 h-4 w-4" />
-        Delete
-      </Button>
+      {canDelete && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          onClick={() => deleteMeditation(meditationId)}
+        >
+          <Trash className="mr-2 h-4 w-4" />
+          Delete
+        </Button>
+      )}
     </div>
   );
 }

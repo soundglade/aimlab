@@ -6,16 +6,7 @@ import { MeditationPlayer } from "@/components/rila/meditation-player";
 import { Meditation } from "@/components/rila/types";
 import { Layout } from "@/components/layout/Layout";
 
-// Type for the meditation metadata
-interface SharedMeditationProps {
-  metadata: Meditation | null;
-  audioUrl: string | null;
-  error?: string;
-}
-
-export const getServerSideProps: GetServerSideProps<
-  SharedMeditationProps
-> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
     const id = params?.id as string;
     const meditationDir = path.join(
@@ -34,6 +25,7 @@ export const getServerSideProps: GetServerSideProps<
 
     return {
       props: {
+        meditationId: id,
         metadata,
         audioUrl,
       },
@@ -51,11 +43,17 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-export default function SharedMeditation({
+export default function PublicMeditation({
+  meditationId,
   metadata,
   audioUrl,
   error,
-}: SharedMeditationProps) {
+}: {
+  meditationId: string;
+  metadata: Meditation | null;
+  audioUrl: string | null;
+  error?: string;
+}) {
   if (error || !metadata || !audioUrl) {
     return (
       <Layout>
@@ -74,7 +72,11 @@ export default function SharedMeditation({
   return (
     <Layout>
       <div className="container max-w-3xl mx-auto py-8 px-4">
-        <MeditationPlayer meditation={metadata} audioUrl={audioUrl} />
+        <MeditationPlayer
+          meditation={metadata}
+          meditationId={meditationId}
+          audioUrl={audioUrl}
+        />
       </div>
     </Layout>
   );

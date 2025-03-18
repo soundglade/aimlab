@@ -19,6 +19,7 @@ const MeditationActionButtons = dynamic(
 
 interface MeditationPlayerProps {
   meditation: Meditation;
+  meditationId: string;
   audioUrl: string;
   className?: string;
   onAudioLoaded?: () => void;
@@ -26,6 +27,7 @@ interface MeditationPlayerProps {
 
 export function MeditationPlayer({
   meditation,
+  meditationId,
   audioUrl,
   className,
   onAudioLoaded,
@@ -197,6 +199,7 @@ export function MeditationPlayer({
 
       {/* Use the dynamically loaded action buttons component */}
       <MeditationActionButtons
+        meditationId={meditationId}
         audioUrl={audioUrl}
         meditationTitle={meditation.title}
       />
