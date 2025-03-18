@@ -28,7 +28,33 @@ export function useMyMeditations() {
     return newMeditation;
   };
 
-  const deleteMeditation = (id: string) => {
+  const deleteMeditation = async (id: string) => {
+    // Find the meditation to get the ownerKey
+    const meditation = getMeditations().find((med) => med.id === id);
+
+    if (meditation) {
+      try {
+        // Call the API to delete the meditation
+        const response = await fetch("/api/delete-meditation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meditationId: id,
+            ownerKey: meditation.ownerKey,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to delete meditation from server");
+        }
+      } catch (error) {
+        console.error("Error deleting meditation:", error);
+      }
+    }
+
+    // Update local storage regardless of API success
     const updatedMeditations = getMeditations().filter(
       (meditation) => meditation.id !== id
     );
