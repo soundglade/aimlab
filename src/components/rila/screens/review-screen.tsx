@@ -1,7 +1,7 @@
 import React from "react";
 import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
-import { Edit, Check } from "lucide-react";
+import { Undo, Check, Edit } from "lucide-react";
 import { Clock } from "lucide-react";
 import { stepAtom, structuredMeditationAtom } from "../atoms";
 
@@ -14,7 +14,7 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
   const [structuredMeditation] = useAtom(structuredMeditationAtom);
 
   const handleEdit = () => {
-    setStep(3);
+    setStep(1);
   };
 
   const handleContinue = () => {
@@ -66,7 +66,7 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
 
       <div className="flex space-x-4 pt-4">
         <Button variant="outline" className="flex-1" onClick={handleEdit}>
-          <Edit className="h-4 w-4 mr-2" /> Edit Draft
+          <Undo className="h-4 w-4 mr-2" /> Edit
         </Button>
         <Button className="flex-1" onClick={handleContinue}>
           <Check className="h-4 w-4 mr-2" /> Confirm & Create

@@ -5,7 +5,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 // Import screen components
 import InputScreen from "./screens/input-screen";
 import ReviewScreen from "./screens/review-screen";
-import EditScreen from "./screens/edit-screen";
 import CreationScreen from "./screens/creation-screen";
 
 // Import atoms
@@ -56,7 +55,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
   // Handle starting the meditation synthesis process
   const handleStartSynthesis = async () => {
     // Move to creation screen
-    setStep(4);
+    setStep(3);
 
     // Reset states
     setProgress(0);
@@ -164,7 +163,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
           <div className="bg-muted text-muted-foreground rounded-full px-4 py-2 inline-flex items-center space-x-2 mb-8">
             <span className="font-medium text-sm">Rila Experiment</span>
             <div className="flex space-x-1">
-              {[1, 2, 3, 4].map((i) => (
+              {[1, 2, 3].map((i) => (
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full ${
@@ -180,8 +179,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
           {step === 2 && (
             <ReviewScreen onStartSynthesis={handleStartSynthesis} />
           )}
-          {step === 3 && <EditScreen />}
-          {step === 4 && (
+          {step === 3 && (
             <CreationScreen
               onPlayMeditation={handlePlayMeditation}
               error={error}
