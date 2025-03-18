@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, Send } from "lucide-react";
 
 export default function FeedbackIndex() {
   const [message, setMessage] = useState("");
@@ -90,7 +90,14 @@ export default function FeedbackIndex() {
               }
               className="w-full md:w-40 mx-auto"
             >
-              {isSubmitting ? "Submitting..." : "Send"}
+              {isSubmitting ? (
+                "Submitting..."
+              ) : (
+                <>
+                  Send
+                  <Send className="h-4 w-4" />
+                </>
+              )}
             </Button>
           </div>
 
