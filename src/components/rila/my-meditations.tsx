@@ -91,61 +91,62 @@ export default function MyMeditations() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {meditations.map((meditation, index) => (
-              <Button
-                key={meditation.id}
-                type="button"
-                variant="outline"
-                className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors group relative"
-                onClick={() => handleMeditationClick(meditation.url)}
-              >
-                <div className="flex items-center gap-2 text-left overflow-hidden w-full">
-                  <Badge
-                    variant="secondary"
-                    className="h-6 min-w-6 flex items-center justify-center rounded-full text-xs shrink-0"
-                  >
-                    {index + 1}
-                  </Badge>
-                  <span className="truncate">{meditation.title}</span>
-                  <AlertDialog
-                    open={meditationToDelete === meditation.id}
-                    onOpenChange={(open) => {
-                      if (!open) setMeditationToDelete(null);
-                    }}
-                  >
-                    <AlertDialogTrigger asChild>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setMeditationToDelete(meditation.id);
-                        }}
-                        className="absolute right-2 opacity-30 hover:opacity-100 hover:bg-muted rounded-full p-1 transition-all focus:outline-none"
-                        aria-label="Delete meditation"
+              <div key={meditation.id} className="relative">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors group w-full"
+                  onClick={() => handleMeditationClick(meditation.url)}
+                >
+                  <div className="flex items-center gap-2 text-left overflow-hidden w-full">
+                    <Badge
+                      variant="secondary"
+                      className="h-6 min-w-6 flex items-center justify-center rounded-full text-xs shrink-0"
+                    >
+                      {index + 1}
+                    </Badge>
+                    <span className="truncate">{meditation.title}</span>
+                  </div>
+                </Button>
+                <AlertDialog
+                  open={meditationToDelete === meditation.id}
+                  onOpenChange={(open) => {
+                    if (!open) setMeditationToDelete(null);
+                  }}
+                >
+                  <AlertDialogTrigger asChild>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setMeditationToDelete(meditation.id);
+                      }}
+                      className="absolute right-2 top-[10px] opacity-30 hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground rounded-full p-1 transition-all focus:outline-none"
+                      aria-label="Delete meditation"
+                    >
+                      <X size={14} />
+                    </a>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete meditation</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete "{meditation.title}"?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        onClick={handleConfirmDelete}
                       >
-                        <X size={14} className="text-muted-foreground" />
-                      </a>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete meditation</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete "{meditation.title}"?
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          onClick={handleConfirmDelete}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </Button>
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             ))}
           </div>
         </CardContent>
