@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Download, Share, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "./utils/use-my-meditations";
+import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function MeditationActionButtons({
   meditationId,
@@ -12,6 +15,9 @@ export function MeditationActionButtons({
 }) {
   const { ownsMeditation, deleteMeditation } = useMyMeditations();
   const canDelete = ownsMeditation(meditationId);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const router = useRouter();
+
   const handleDownload = () => {
     const downloadLink = document.createElement("a");
     downloadLink.href = audioUrl;
@@ -41,6 +47,12 @@ export function MeditationActionButtons({
     }
   };
 
+  const handleConfirmDelete = () => {
+    deleteMeditation(meditationId);
+    setShowDeleteDialog(false);
+    router.push("/");
+  };
+
   return (
     <div className="flex justify-center gap-3 m-4">
       <Button variant="outline" size="sm" onClick={handleDownload}>
@@ -54,15 +66,23 @@ export function MeditationActionButtons({
       </Button>
 
       {canDelete && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={() => deleteMeditation(meditationId)}
+        <ConfirmDestructiveDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          title="Delete meditation"
+          description={`Are you sure you want to delete "${meditationTitle}"?`}
+          confirmText="Delete"
+          onConfirm={handleConfirmDelete}
         >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete
+          </Button>
+        </ConfirmDestructiveDialog>
       )}
     </div>
   );

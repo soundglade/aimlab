@@ -4,17 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, X } from "lucide-react";
 import { useMyMeditations } from "./utils/use-my-meditations";
 import { useRouter } from "next/router";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 
 export default function MyMeditations() {
@@ -56,38 +46,19 @@ export default function MyMeditations() {
         <CardContent>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-sm font-medium">Your saved meditations:</h2>
-            <AlertDialog
+            <ConfirmDestructiveDialog
               open={showClearAllDialog}
               onOpenChange={setShowClearAllDialog}
+              title="Clear all meditations"
+              description="Are you sure? This will remove all your saved meditations."
+              confirmText="Clear all"
+              onConfirm={handleConfirmClearAll}
             >
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2 text-xs"
-                >
-                  <Trash2 size={14} className="mr-1" />
-                  Clear all
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Clear all meditations</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure? This will remove all your saved meditations.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={handleConfirmClearAll}
-                  >
-                    Clear all
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+              <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
+                <Trash2 size={14} className="mr-1" />
+                Clear all
+              </Button>
+            </ConfirmDestructiveDialog>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {meditations.map((meditation, index) => (
@@ -108,44 +79,29 @@ export default function MyMeditations() {
                     <span className="truncate">{meditation.title}</span>
                   </div>
                 </Button>
-                <AlertDialog
+                <ConfirmDestructiveDialog
                   open={meditationToDelete === meditation.id}
                   onOpenChange={(open) => {
                     if (!open) setMeditationToDelete(null);
                   }}
+                  title="Delete meditation"
+                  description={`Are you sure you want to delete "${meditation.title}"?`}
+                  confirmText="Delete"
+                  onConfirm={handleConfirmDelete}
                 >
-                  <AlertDialogTrigger asChild>
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setMeditationToDelete(meditation.id);
-                      }}
-                      className="absolute right-2 top-[10px] opacity-30 hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground rounded-full p-1 transition-all focus:outline-none"
-                      aria-label="Delete meditation"
-                    >
-                      <X size={14} />
-                    </a>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete meditation</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete "{meditation.title}"?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        onClick={handleConfirmDelete}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMeditationToDelete(meditation.id);
+                    }}
+                    className="absolute right-2 top-[10px] opacity-30 hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground rounded-full p-1 transition-all focus:outline-none"
+                    aria-label="Delete meditation"
+                  >
+                    <X size={14} />
+                  </a>
+                </ConfirmDestructiveDialog>
               </div>
             ))}
           </div>
