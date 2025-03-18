@@ -3,19 +3,19 @@ import { Card } from "@/components/ui/card";
 import { Meditation } from "./types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Loader,
-  Download,
-  Share,
-  Trash,
-} from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as meditationTimeline from "./utils/meditation-timeline";
-import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+// Import the action buttons component dynamically
+const MeditationActionButtons = dynamic(
+  () =>
+    import("./meditation-action-buttons").then(
+      (mod) => mod.MeditationActionButtons
+    ),
+  { ssr: false }
+);
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -189,63 +189,18 @@ export function MeditationPlayer({
     audioRef.current.currentTime = clickPercentage * audioRef.current.duration;
   };
 
-  const handleDownload = () => {
-    // Create an anchor element
-    const downloadLink = document.createElement("a");
-    downloadLink.href = audioUrl;
-
-    const filename = `${meditation.title
-      .replace(/\s+/g, "-")
-      .toLowerCase()}.mp3`;
-    downloadLink.download = filename;
-
-    // Append to the document, click it, and remove it
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
-
-  const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(window.location.href)
-        .then(() => {
-          toast.success("URL copied to clipboard");
-        })
-        .catch(() => {
-          toast.error("Failed to copy URL");
-        });
-    } else {
-      toast.error("Clipboard access not available");
-    }
-  };
-
   return (
     <>
       <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
         {meditation.title}
       </h1>
-      {/* Additional action buttons */}
-      <div className="flex justify-center gap-3 m-4">
-        <Button variant="outline" size="sm" onClick={handleDownload}>
-          <Download className="mr-2 h-4 w-4" />
-          Download
-        </Button>
 
-        <Button variant="outline" size="sm" onClick={handleShare}>
-          <Share className="mr-2 h-4 w-4" />
-          Share
-        </Button>
+      {/* Use the dynamically loaded action buttons component */}
+      <MeditationActionButtons
+        audioUrl={audioUrl}
+        meditationTitle={meditation.title}
+      />
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <Trash className="mr-2 h-4 w-4" />
-          Delete
-        </Button>
-      </div>
       <Card className={cn("p-4 sm:p-6", className)}>
         {/* Loading state */}
         {playerState.isLoading && (
