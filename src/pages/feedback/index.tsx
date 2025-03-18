@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function FeedbackIndex() {
   const [message, setMessage] = useState("");
@@ -93,13 +95,25 @@ export default function FeedbackIndex() {
           </div>
 
           {submitStatus === "success" && (
-            <p className="text-primary">Thank you for your feedback!</p>
+            <Alert variant="default" className="bg-primary/10 border-primary">
+              <CheckCircle className="h-4 w-4 text-primary" />
+              <AlertTitle>Thank you!</AlertTitle>
+              <AlertDescription>
+                Your feedback has been successfully submitted. We appreciate
+                your input!
+              </AlertDescription>
+            </Alert>
           )}
 
           {submitStatus === "error" && (
-            <p className="text-destructive">
-              Something went wrong. Please try again.
-            </p>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Something went wrong while submitting your feedback. Please try
+                again later.
+              </AlertDescription>
+            </Alert>
           )}
         </form>
       </div>
