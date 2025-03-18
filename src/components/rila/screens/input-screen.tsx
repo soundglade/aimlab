@@ -3,7 +3,8 @@ import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Play } from "lucide-react";
+import { Speech, Pause } from "lucide-react";
+import useSound from "use-sound";
 import {
   meditationScriptAtom,
   stepAtom,
@@ -35,6 +36,30 @@ const InputScreen = () => {
   const [, setEditableMarkdown] = useAtom(editableMarkdownAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [play, { stop }] = useSound("/assets/nicole-kokoro-voice-sample.mp3", {
+    onend: () => setIsPlaying(false),
+  });
+
+  // Stop audio when component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (isPlaying) {
+        stop();
+      }
+    };
+  }, [isPlaying, stop]);
+
+  const handlePlayback = () => {
+    if (isPlaying) {
+      stop();
+      setIsPlaying(false);
+    } else {
+      play();
+      setIsPlaying(true);
+    }
+  };
 
   const handleContinue = async () => {
     setIsLoading(true);
@@ -149,22 +174,27 @@ const InputScreen = () => {
       <div className="space-y-2">
         <label className="font-medium">Voice Selection</label>
         <div className="flex items-center space-x-2 border p-2 rounded-md bg-card">
-          <div className="flex-grow">
-            <div className="flex items-center justify-between">
-              <span>Sarah (Default)</span>
-              <div className="text-sm text-primary">
-                More voices coming soon
-              </div>
-            </div>
-          </div>
           <Button
             variant="outline"
             size="sm"
             className="flex-shrink-0 w-8 h-8 p-0"
             disabled={isLoading}
+            onClick={handlePlayback}
           >
-            <Play className="h-4 w-4" />
+            {isPlaying ? (
+              <Pause className="h-4 w-4 text-primary" />
+            ) : (
+              <Speech className="h-4 w-4 text-primary" />
+            )}
           </Button>
+          <div className="flex-grow">
+            <div className="flex items-center justify-between">
+              <span>Nicole (Kokoro TTS)</span>
+              <div className="text-sm text-muted-foreground hidden md:block">
+                More voices coming soon
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
