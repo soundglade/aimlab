@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as meditationTimeline from "./utils/meditation-timeline";
+import { toast } from "sonner";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -204,6 +205,21 @@ export function MeditationPlayer({
     document.body.removeChild(downloadLink);
   };
 
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          toast.success("URL copied to clipboard");
+        })
+        .catch(() => {
+          toast.error("Failed to copy URL");
+        });
+    } else {
+      toast.error("Clipboard access not available");
+    }
+  };
+
   return (
     <>
       <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
@@ -216,7 +232,7 @@ export function MeditationPlayer({
           Download
         </Button>
 
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={handleShare}>
           <Share className="mr-2 h-4 w-4" />
           Share
         </Button>
