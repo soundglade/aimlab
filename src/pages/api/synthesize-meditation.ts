@@ -28,7 +28,9 @@ import { saveMeditation } from "@/lib/save-meditation";
  *      "success": true,
  *      "progress": 100,
  *      "meditation": Meditation, // The updated meditation with timeline
- *      "url": string // URL to access the saved meditation
+ *      "url": string, // URL to access the saved meditation
+ *      "meditationId": string, // Unique ID of the meditation
+ *      "ownerKey": string // Key to prove ownership of the meditation
  *    }
  *
  * 3. Complete event (failure):
@@ -73,8 +75,16 @@ export default async function handler(
     },
     onComplete: async (success, audioBuffer, updatedMeditation) => {
       let url: string | null = null;
+      let meditationId: string | null = null;
+      let ownerKey: string | null = null;
+
       if (success && audioBuffer && updatedMeditation) {
-        url = await saveMeditation(audioBuffer, updatedMeditation);
+        const result = await saveMeditation(audioBuffer, updatedMeditation);
+        if (result) {
+          url = result.url;
+          meditationId = result.meditationId;
+          ownerKey = result.ownerKey;
+        }
       }
 
       sendEvent("complete", {
@@ -82,6 +92,8 @@ export default async function handler(
         progress: 100,
         meditation: updatedMeditation,
         url,
+        meditationId,
+        ownerKey,
       });
       stream.push(null);
     },
