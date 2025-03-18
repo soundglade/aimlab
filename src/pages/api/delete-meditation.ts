@@ -51,7 +51,7 @@ export default async function handler(
       meditationId
     );
     const metadataFile = path.join(meditationDir, "metadata.json");
-    const audioFile = path.join(meditationDir, "audio.wav");
+    const audioFile = path.join(meditationDir, "audio.mp3");
 
     // Delete files and directory
     await Promise.all([

@@ -21,7 +21,7 @@ function generateOwnerKey(meditationId: string): string {
 
 /**
  * Saves a meditation and its audio to the file system and returns access information
- * @param audioBuffer The audio buffer containing the meditation audio
+ * @param audioBuffer The audio buffer containing the meditation audio (in MP3 format)
  * @param meditation The meditation object with metadata
  * @returns Object containing url, meditationId and ownerKey, or null if saving failed
  */
@@ -50,8 +50,8 @@ export async function saveMeditation(
       JSON.stringify(meditation, null, 2)
     );
 
-    // Save audio file
-    await fs.writeFile(path.join(saveDir, "audio.wav"), audioBuffer);
+    // Save audio file (already in MP3 format from createConcatenatedAudio)
+    await fs.writeFile(path.join(saveDir, "audio.mp3"), audioBuffer);
 
     // Generate URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";

@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const metadata = JSON.parse(metadataContent);
 
     // Generate the audio URL
-    const audioUrl = `/storage/rila/shared-meditations/${id}/audio.wav`;
+    const audioUrl = `/storage/rila/shared-meditations/${id}/audio.mp3`;
 
     return {
       props: {
