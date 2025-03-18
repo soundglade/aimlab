@@ -7,11 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import RilaFlowDialog from "@/components/rila/rila-flow-dialog";
 import { useState } from "react";
 import { useMyMeditations } from "@/components/rila/utils/use-my-meditations";
+import { useRouter } from "next/router";
 
 export default function RilaExperiment() {
   const [open, setOpen] = useState(false);
   const { meditations, deleteMeditation, clearMeditations } =
     useMyMeditations();
+  const router = useRouter();
 
   const examplePrompts = [
     {
@@ -56,6 +58,11 @@ export default function RilaExperiment() {
       link: "/meditations/creative-flow",
     },
   ];
+
+  // Handle click on a meditation button
+  const handleMeditationClick = (url: string) => {
+    router.push(url);
+  };
 
   return (
     <Layout>
@@ -155,6 +162,7 @@ export default function RilaExperiment() {
                       type="button"
                       variant="outline"
                       className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors group relative"
+                      onClick={() => handleMeditationClick(meditation.url)}
                     >
                       <div className="flex items-center gap-2 text-left overflow-hidden w-full">
                         <Badge
