@@ -13,7 +13,7 @@ import {
 import {
   ArrowRight,
   Github,
-  Lightbulb,
+  Sparkles,
   Wrench,
   Users,
   BookOpen,
@@ -22,7 +22,6 @@ import {
   Clock,
   Activity,
   Play,
-  Sparkles,
   Music,
   Mic,
   ExternalLink,
@@ -137,7 +136,7 @@ export default function LandingPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="flex flex-col items-center text-center mt-10 mb-24 px-4 w-full">
+      <section className="flex flex-col items-center text-center mt-12 mb-24 px-4 w-full">
         <h1 className="text-primary font-semibold text-5xl tracking-tighter mb-3">
           AIM Lab
         </h1>
@@ -151,7 +150,6 @@ export default function LandingPage() {
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
-            <Sparkles className="mr-2 h-4 w-4" />
             Create a Meditation with ChatGPT
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -163,7 +161,7 @@ export default function LandingPage() {
       {/* Experiments */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6 flex items-center gap-2">
-          <Lightbulb className="h-5 w-5" />
+          <Sparkles className="h-5 w-5" />
           Experiments
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -219,11 +217,6 @@ export default function LandingPage() {
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg flex items-center">
-                    {tool.title.includes("Composer") ? (
-                      <Music className="h-4 w-4 mr-2" />
-                    ) : (
-                      <Mic className="h-4 w-4 mr-2" />
-                    )}
                     {tool.title}
                   </CardTitle>
                   {tool.status !== "available" && (

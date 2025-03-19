@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Lightbulb, Wrench, Users, MessageSquare } from "lucide-react";
+import { Sparkles, Wrench, Users, MessageSquare } from "lucide-react";
 
 export function Header() {
   return (
@@ -13,7 +13,7 @@ export function Header() {
           href="/#experiments"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <Lightbulb className="h-4 w-4 hidden md:block" />
+          <Sparkles className="h-4 w-4 hidden md:block" />
           <span>Experiments</span>
         </Link>
         <Link
