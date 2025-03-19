@@ -10,11 +10,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/active-card";
-import { ArrowRight, Github } from "lucide-react";
+import {
+  ArrowRight,
+  Github,
+  Lightbulb,
+  Wrench,
+  Users,
+  BookOpen,
+  Info,
+  MessageSquare,
+  Clock,
+  Activity,
+  Play,
+  Sparkles,
+  Music,
+  Mic,
+  ExternalLink,
+  Calendar,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
-
-// Changelog visibility toggle
-const DISPLAY_CHANGELOG = false;
 
 export default function LandingPage() {
   const router = useRouter();
@@ -137,6 +151,7 @@ export default function LandingPage() {
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
+            <Sparkles className="mr-2 h-4 w-4" />
             Create a Meditation with ChatGPT
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -147,7 +162,10 @@ export default function LandingPage() {
 
       {/* Experiments */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-6">Experiments</h2>
+        <h2 className="text-2xl font-medium mb-6 flex items-center gap-2">
+          <Lightbulb className="h-5 w-5" />
+          Experiments
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {experiments.map((experiment, index) => (
             <ActiveCard
@@ -180,7 +198,10 @@ export default function LandingPage() {
 
       {/* Tools */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-6">Tools</h2>
+        <h2 className="text-2xl font-medium mb-6 flex items-center gap-2">
+          <Wrench className="h-5 w-5" />
+          Tools
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {tools.map((tool, index) => (
             <ActiveCard
@@ -197,7 +218,14 @@ export default function LandingPage() {
             >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{tool.title}</CardTitle>
+                  <CardTitle className="text-lg flex items-center">
+                    {tool.title.includes("Composer") ? (
+                      <Music className="h-4 w-4 mr-2" />
+                    ) : (
+                      <Mic className="h-4 w-4 mr-2" />
+                    )}
+                    {tool.title}
+                  </CardTitle>
                   {tool.status !== "available" && (
                     <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">
                       Coming Soon
@@ -235,69 +263,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Latest Updates */}
-      {DISPLAY_CHANGELOG && (
-        <section className="w-full max-w-4xl px-4 mb-24">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-medium">Latest Updates</h2>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                Version 0.2.0 • July 15, 2023
-              </span>
-              <Button variant="ghost" asChild size="sm">
-                <Link
-                  href="/changelog"
-                  className="text-muted-foreground flex items-center"
-                >
-                  Full changelog
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-          <Card>
-            <CardContent className="pt-6">
-              <ul className="space-y-3">
-                {updates.map((update, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span
-                      className={`
-                      text-xs px-2 py-1 rounded-full
-                      ${
-                        update.type === "new"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                          : ""
-                      }
-                      ${
-                        update.type === "improved"
-                          ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400"
-                          : ""
-                      }
-                      ${
-                        update.type === "fixed"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : ""
-                      }
-                    `}
-                    >
-                      {update.type}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {update.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
-      )}
-
       <div id="community" className="relative -top-4 invisible"></div>
 
       {/* Recent Community Meditations */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-3">Community</h2>
+        <h2 className="text-2xl font-medium mb-3 flex items-center gap-2">
+          <Users className="h-5 w-5" />
+          Community
+        </h2>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
           generated through our Meditation Composer and shared publicly.
@@ -311,9 +284,10 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center text-xs text-muted-foreground">
-                  <span className="inline-block h-1 w-1 rounded-full bg-muted-foreground mr-2"></span>
+                  <Clock className="h-3 w-3 mr-1" />
                   {meditation.duration}
-                  <span className="ml-auto">{meditation.timeAgo}</span>
+                  <Activity className="h-3 w-3 ml-auto mr-1" />
+                  {meditation.timeAgo}
                 </div>
               </CardContent>
               <CardFooter>
@@ -324,15 +298,7 @@ export default function LandingPage() {
                   className="w-full justify-center"
                 >
                   <Link href={meditation.link} className="flex items-center">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
+                    <Play className="h-4 w-4 mr-2" />
                     Play Meditation
                   </Link>
                 </Button>
@@ -344,7 +310,10 @@ export default function LandingPage() {
 
       {/* Reddit Posts */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-3">From Reddit</h2>
+        <h2 className="text-2xl font-medium mb-3 flex items-center gap-2">
+          <MessageSquare className="h-5 w-5" />
+          From Reddit
+        </h2>
         <p className="text-muted-foreground mb-6">
           Recent discussions from the meditation community on Reddit.
         </p>
@@ -390,7 +359,7 @@ export default function LandingPage() {
                       className="flex items-center"
                     >
                       View on Reddit
-                      <ArrowRight className="ml-1 h-4 w-4" />
+                      <ExternalLink className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -403,7 +372,10 @@ export default function LandingPage() {
       {/* Latest from the Blog */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-medium">Latest from the Lab</h2>
+          <h2 className="text-2xl font-medium flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            Latest from the Lab
+          </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
               href="/blog"
@@ -420,6 +392,7 @@ export default function LandingPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">{post.title}</CardTitle>
                 <div className="flex items-center text-xs text-muted-foreground">
+                  <Calendar className="h-3 w-3 mr-1" />
                   <span>{post.date}</span>
                 </div>
               </CardHeader>
@@ -444,7 +417,10 @@ export default function LandingPage() {
 
       {/* About */}
       <section className="w-full max-w-4xl px-4 mb-10">
-        <h2 className="text-2xl font-medium mb-6">How This Works</h2>
+        <h2 className="text-2xl font-medium mb-6 flex items-center gap-2">
+          <Info className="h-5 w-5" />
+          How This Works
+        </h2>
         <Card>
           <CardContent className="pt-6 space-y-2">
             <p className="text-muted-foreground">

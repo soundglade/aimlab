@@ -1,7 +1,5 @@
 import Link from "next/link";
-
-// Changelog visibility toggle
-const DISPLAY_CHANGELOG = false;
+import { Lightbulb, Wrench, Users, MessageSquare } from "lucide-react";
 
 export function Header() {
   return (
@@ -13,42 +11,32 @@ export function Header() {
       <nav className="flex items-center gap-2 mt-[1px] md:gap-5">
         <Link
           href="/#experiments"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          Experiments
+          <Lightbulb className="h-4 w-4" />
+          <span>Experiments</span>
         </Link>
         <Link
           href="/#tools"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          Tools
+          <Wrench className="h-4 w-4" />
+          <span>Tools</span>
         </Link>
         <Link
           href="/#community"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          Community
-        </Link>
-        <Link
-          href="/blog"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
-        >
-          Blog
+          <Users className="h-4 w-4" />
+          <span>Community</span>
         </Link>
         <Link
           href="/feedback"
-          className="text-sm bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary px-3 py-1 rounded-md transition-colors font-medium"
+          className="text-sm bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary px-3 py-1 rounded-md transition-colors font-medium flex items-center gap-1"
         >
-          Feedback
+          <MessageSquare className="h-4 w-4" />
+          <span>Feedback</span>
         </Link>
-        {DISPLAY_CHANGELOG && (
-          <Link
-            href="/changelog"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Changelog
-          </Link>
-        )}
       </nav>
     </header>
   );
