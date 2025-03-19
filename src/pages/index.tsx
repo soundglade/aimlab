@@ -143,6 +143,8 @@ export default function LandingPage() {
         </Button>
       </section>
 
+      <div id="experiments" className="relative -top-4 invisible"></div>
+
       {/* Experiments */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6">Experiments</h2>
@@ -291,12 +293,14 @@ export default function LandingPage() {
         </section>
       )}
 
+      <div id="community" className="relative -top-4 invisible"></div>
+
       {/* Recent Community Meditations */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-3">Community</h2>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
-          generated through our Rila experiment and shared publicly.
+          generated through our Meditation Composer and shared publicly.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {communityMeditations.map((meditation, index) => (

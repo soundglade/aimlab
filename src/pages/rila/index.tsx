@@ -77,7 +77,7 @@ export default function RilaExperiment() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-8">
             <span className="text-sm text-blue-500 bg-blue-50 px-3 py-1 rounded-full">
-              Rila Experiment
+              Meditation Composer
             </span>
           </div>
 

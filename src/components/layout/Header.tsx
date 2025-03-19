@@ -10,7 +10,7 @@ export function Header() {
         <span className="font-medium">AIM Lab</span>
       </Link>
 
-      <nav className="flex items-center gap-1 mt-[1px] md:gap-5">
+      <nav className="flex items-center gap-2 mt-[1px] md:gap-5">
         <Link
           href="/#experiments"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -37,7 +37,7 @@ export function Header() {
         </Link>
         <Link
           href="/feedback"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary px-3 py-1 rounded-md transition-colors font-medium"
         >
           Feedback
         </Link>

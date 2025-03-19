@@ -12,7 +12,7 @@ At AIM Lab, we're exploring this intersection, and we've discovered several ways
 
 Traditional meditation scripts follow certain patterns and approaches that have evolved over centuries. AI can analyze these patterns and generate new scripts that maintain the essence of effective meditation while introducing novel elements.
 
-Our Rila experiment allows you to generate custom meditation scripts tailored to your specific needs or interests. The AI can create content that might not have occurred to human teachers, potentially opening new avenues for exploration in your practice.
+Our Meditation Composer allows you to generate custom meditation scripts tailored to your specific needs or interests. The AI can create content that might not have occurred to human teachers, potentially opening new avenues for exploration in your practice.
 
 ## 2. Voice Technology for Guided Sessions
 
