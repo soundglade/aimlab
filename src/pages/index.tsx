@@ -18,7 +18,7 @@ const DISPLAY_CHANGELOG = false;
 
 export default function LandingPage() {
   const router = useRouter();
-  const experiments = [
+  const tools = [
     {
       title: "Create from Script",
       description:
@@ -106,20 +106,21 @@ export default function LandingPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="flex flex-col items-center text-center mt-16 mb-24 px-4 max-w-3xl">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-4">
+      <section className="flex flex-col items-center text-center mt-10 mb-24 px-4 w-full">
+        <h1 className="text-primary font-semibold text-5xl tracking-tighter mb-3">
           AIM Lab
         </h1>
-        <p className="text-lg font-medium text-muted-foreground mb-3">
+        <h2 className="text-2xl tracking-tight mb-4 text-secondary-foreground">
           The AI Meditation Playground
-        </p>
-        <p className="text-muted-foreground max-w-2xl mb-10">
-          Where AI and meditation collide in an open experiment. Everything is
-          public. Everything is evolving. You're invited to explore with us.
+        </h2>
+        <p className="text-muted-foreground max-w-3xl mb-10">
+          A creative lab where you can explore the fascinating frontier where
+          artificial intelligence meets meditation. We've designed this space to
+          empower you to craft your own meditative experiences.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
-            Try an Experiment
+            Create a Meditation with ChatGPT
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>
@@ -129,44 +130,42 @@ export default function LandingPage() {
 
       {/* Experiments */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-6">Experiments</h2>
+        <h2 className="text-2xl font-medium mb-6">Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {experiments.map((experiment, index) => (
+          {tools.map((tool, index) => (
             <ActiveCard
               key={index}
-              disabled={experiment.status !== "available"}
+              disabled={tool.status !== "available"}
               onClick={
-                experiment.status === "available" && experiment.link
-                  ? () => router.push(experiment.link)
+                tool.status === "available" && tool.link
+                  ? () => router.push(tool.link)
                   : undefined
               }
               className={
-                experiment.status === "available" && experiment.link
-                  ? "cursor-pointer"
-                  : ""
+                tool.status === "available" && tool.link ? "cursor-pointer" : ""
               }
             >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{experiment.title}</CardTitle>
-                  {experiment.status !== "available" && (
+                  <CardTitle className="text-lg">{tool.title}</CardTitle>
+                  {tool.status !== "available" && (
                     <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">
                       Coming Soon
                     </span>
                   )}
                 </div>
-                <CardDescription>{experiment.description}</CardDescription>
+                <CardDescription>{tool.description}</CardDescription>
               </CardHeader>
               <CardFooter>
-                {experiment.link ? (
+                {tool.link ? (
                   <Button
                     asChild
                     variant="outline"
                     className="w-full justify-center"
                   >
-                    <Link href={experiment.link}>
-                      {experiment.linkText}
-                      {experiment.status === "available" && (
+                    <Link href={tool.link}>
+                      {tool.linkText}
+                      {tool.status === "available" && (
                         <ArrowRight className="ml-2 h-4 w-4" />
                       )}
                     </Link>
@@ -246,7 +245,7 @@ export default function LandingPage() {
 
       {/* Recent Community Meditations */}
       <section className="w-full max-w-4xl px-4 mb-24">
-        <h2 className="text-2xl font-medium mb-3">Public Lab</h2>
+        <h2 className="text-2xl font-medium mb-3">Community</h2>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
           generated through our Rila experiment and shared publicly.
@@ -291,6 +290,64 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Reddit Posts */}
+      <section className="w-full max-w-4xl px-4 mb-24">
+        <h2 className="text-2xl font-medium mb-3">From Reddit</h2>
+        <p className="text-muted-foreground mb-6">
+          Recent discussions from the meditation community on Reddit.
+        </p>
+        <Card>
+          <CardContent>
+            <div className="space-y-4">
+              {REDDIT_POSTS.slice(0, 4).map((post) => (
+                <div
+                  key={post.id}
+                  className="border-b border-border pb-4 last:border-0 last:pb-0"
+                >
+                  <div className="mb-2">
+                    <Link
+                      href={`https://reddit.com${post.permalink}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary transition-colors"
+                    >
+                      <h3 className="text-base font-medium">{post.title}</h3>
+                    </Link>
+                    <div className="flex items-center text-xs text-muted-foreground mt-1">
+                      <span>by {post.author}</span>
+                      <span className="ml-2">{post.num_comments} comments</span>
+                    </div>
+                  </div>
+
+                  {post.selftext && (
+                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">
+                      {post.selftext}
+                    </p>
+                  )}
+
+                  <Button
+                    variant="ghost"
+                    asChild
+                    size="sm"
+                    className="px-0 text-primary"
+                  >
+                    <Link
+                      href={`https://reddit.com${post.permalink}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center"
+                    >
+                      View on Reddit
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* Latest from the Blog */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <div className="flex justify-between items-center mb-6">
@@ -332,8 +389,6 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
-
-      <div id="about" className="relative -top-4 invisible"></div>
 
       {/* About */}
       <section className="w-full max-w-4xl px-4 mb-10">
@@ -379,3 +434,136 @@ export default function LandingPage() {
     </Layout>
   );
 }
+
+const REDDIT_POSTS = [
+  {
+    id: "1jeq0c5",
+    title:
+      "The Eightfold Path (featuring Sam, Joseph Goldstein, and Dan Harris)",
+    author: "Exsufflicate-",
+    score: 17,
+    num_comments: 10,
+    created_utc: 1742362456,
+    permalink:
+      "/r/Wakingupapp/comments/1jeq0c5/the_eightfold_path_featuring_sam_joseph_goldstein/",
+    is_self: false,
+    selftext:
+      "I haven't listened to this yet but I am quite excited to listen to these 3 discuss the fundamentals of Buddhist philosophy if my understanding of the series is correct.",
+    thumbnail:
+      "https://a.thumbs.redditmedia.com/oeTzd2Vy-2p6yj2_9C0U8sbWbvyTcDxPJEoOnPE3wn0.jpg",
+  },
+  {
+    id: "1jezcgc",
+    title:
+      "I Understand That I Am Not My Thoughts—But It Still Feels Like I Am",
+    author: "KryptoniansDontBleed",
+    score: 2,
+    num_comments: 0,
+    created_utc: 1742397337,
+    permalink:
+      "/r/Wakingupapp/comments/1jezcgc/i_understand_that_i_am_not_my_thoughtsbut_it/",
+    is_self: true,
+    selftext:
+      "Hey everyone,\n\nI've been trying to internalize the idea that I am not my thoughts—that I'm just the observer, not the thinker. I get it on an intellectual level: thoughts arise on their own, and I don't have to identify with them. In theory, this should help with emotional detachment and make it easier to let go.\n\nBut in practice? It's not clicking.",
+  },
+  {
+    id: "1jenbj0",
+    title: "Tulku Urgyen Rinpoche - Pointing out Nature of Mind, Rigpa",
+    author: "GurtGB",
+    score: 12,
+    num_comments: 2,
+    created_utc: 1742352706,
+    permalink:
+      "/r/Wakingupapp/comments/1jenbj0/tulku_urgyen_rinpoche_pointing_out_nature_of_mind/",
+    is_self: false,
+  },
+  {
+    id: "1je83yu",
+    title: "A few tips to consider",
+    author: "mergersandacquisitio",
+    score: 31,
+    num_comments: 5,
+    created_utc: 1742312924,
+    permalink: "/r/Wakingupapp/comments/1je83yu/a_few_tips_to_consider/",
+    is_self: true,
+    selftext:
+      "Thought I'd toss in a few tips based on a couple years of practice - I'm not by any means an expert but there's some things it's easy to forget that are worth putting top of mind",
+  },
+  {
+    id: "1jej5mg",
+    title: "Do I always have to close my eyes in guided Meditation?",
+    author: "TheBoulder101",
+    score: 1,
+    num_comments: 4,
+    created_utc: 1742340334,
+    permalink:
+      "/r/Wakingupapp/comments/1jej5mg/do_i_always_have_to_close_my_eyes_in_guided/",
+    is_self: true,
+    selftext:
+      "Before I got the waking up app I had always practiced meditating with my eyes open. I find that I'm able to focus much less on the present and sometimes even fall asleep if I close my eyes. Is there any benefit to having your eyes closed compared to open when meditating? Should I not close my eyes even if it is suggested at the beginning of a guided meditation? Thanks!",
+  },
+  {
+    id: "1jeasg5",
+    title: "Beyond the I Am -background sound.",
+    author: "Jealous-Might4266",
+    score: 1,
+    num_comments: 2,
+    created_utc: 1742319484,
+    permalink:
+      "/r/Wakingupapp/comments/1jeasg5/beyond_the_i_am_background_sound/",
+    is_self: true,
+    selftext:
+      "Anyone know where I can find just the background sound? The sound is used in other guides meditations, but I can't seem to find just the sound anywhere. I'd like to meditate just using the sound. Thanks.",
+  },
+  {
+    id: "1jdykzx",
+    title: "What to do during self meditation after 20 days of the into course",
+    author: "cryptoizkewl",
+    score: 1,
+    num_comments: 1,
+    created_utc: 1742278630,
+    permalink:
+      "/r/Wakingupapp/comments/1jdykzx/what_to_do_during_self_meditation_after_20_days/",
+    is_self: true,
+    selftext:
+      "Hey yall, so my experience before waking up app was focused breathing I'd usually do to help sleep or when feeling over whelmed. I'm now 20 days into the intro course, I generally do that session in the morning and now I'm trying to add an afternoon session by myself.",
+  },
+  {
+    id: "1jdpccp",
+    title: "Anyone else absolutely love the Soft Butter meditation",
+    author: "Acceptable_Cheek_727",
+    score: 2,
+    num_comments: 3,
+    created_utc: 1742249393,
+    permalink:
+      "/r/Wakingupapp/comments/1jdpccp/anyone_else_absolutely_love_the_soft_butter/",
+    is_self: true,
+  },
+  {
+    id: "1je5t2u",
+    title: "I Passed Out at the Wheel of a Moving Car So You Don't Have To",
+    author: "American-Dreaming",
+    score: 0,
+    num_comments: 1,
+    created_utc: 1742306903,
+    permalink:
+      "/r/Wakingupapp/comments/1je5t2u/i_passed_out_at_the_wheel_of_a_moving_car_so_you/",
+    is_self: true,
+    selftext:
+      "A cautionary tale about the importance of maintaining a healthy work-life balance.",
+  },
+  {
+    id: "1jcvna8",
+    title:
+      "Reflections on My First Meditation Retreat: U Tejaniya Style at IMS",
+    author: "Forgot_the_Jacobian",
+    score: 39,
+    num_comments: 3,
+    created_utc: 1742158902,
+    permalink:
+      "/r/Wakingupapp/comments/1jcvna8/reflections_on_my_first_meditation_retreat_u/",
+    is_self: false,
+    thumbnail:
+      "https://b.thumbs.redditmedia.com/TSdz8u6Vwdfu2G8xrHuNbW8hgNd7kmZ_C2j6CZX7PXc.jpg",
+  },
+];
