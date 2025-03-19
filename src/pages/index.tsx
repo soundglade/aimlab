@@ -18,22 +18,39 @@ const DISPLAY_CHANGELOG = false;
 
 export default function LandingPage() {
   const router = useRouter();
-  const tools = [
+  const experiments = [
     {
-      title: "Create from Script",
+      title: "Create Your Own Meditations with ChatGPT",
       description:
         "Generate a meditation script with ChatGPT, then listen to it with a voice generator.",
+      link: "/abc",
+    },
+    {
+      title: "Create A Series of Meditations using AI",
+      description:
+        "How to create a series of guided meditations, following a common theme.",
+      link: "/def",
+    },
+    {
+      title: "Mindful Comptemplation of Artwork",
+      description: "Use AI to create a meditation on a piece of artwork.",
+      link: "/ghi",
+    },
+  ];
+
+  const tools = [
+    {
+      title: "Meditation Composer",
+      description: "Synthesize a meditation script with a voice generator.",
       status: "available",
       link: "/rila",
-      linkText: "Start Experiment",
-      codeName: "rila",
+      linkText: "Try it out",
     },
     {
       title: "Live AI Meditation Guide",
       description:
         "Experience live meditation guided by AI using advanced voice mode for a real-time meditation experience.",
       status: "coming",
-      codeName: "bodh",
     },
   ];
 
@@ -126,9 +143,40 @@ export default function LandingPage() {
         </Button>
       </section>
 
-      <div id="experiments" className="relative -top-4 invisible"></div>
-
       {/* Experiments */}
+      <section className="w-full max-w-4xl px-4 mb-24">
+        <h2 className="text-2xl font-medium mb-6">Experiments</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {experiments.map((experiment, index) => (
+            <ActiveCard
+              key={index}
+              onClick={() => router.push(experiment.link)}
+              className="cursor-pointer"
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">{experiment.title}</CardTitle>
+                <CardDescription>{experiment.description}</CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-center"
+                >
+                  <Link href={experiment.link}>
+                    Try it out
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </ActiveCard>
+          ))}
+        </div>
+      </section>
+
+      <div id="tools" className="relative -top-4 invisible"></div>
+
+      {/* Tools */}
       <section className="w-full max-w-4xl px-4 mb-24">
         <h2 className="text-2xl font-medium mb-6">Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
