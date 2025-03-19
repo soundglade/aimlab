@@ -13,28 +13,28 @@ export function Header() {
           href="/#experiments"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <Lightbulb className="h-4 w-4" />
+          <Lightbulb className="h-4 w-4 hidden md:block" />
           <span>Experiments</span>
         </Link>
         <Link
           href="/#tools"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <Wrench className="h-4 w-4" />
+          <Wrench className="h-4 w-4 hidden md:block" />
           <span>Tools</span>
         </Link>
         <Link
           href="/#community"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <Users className="h-4 w-4" />
+          <Users className="h-4 w-4 hidden md:block" />
           <span>Community</span>
         </Link>
         <Link
           href="/feedback"
           className="text-sm bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary px-3 py-1 rounded-md transition-colors font-medium flex items-center gap-1"
         >
-          <MessageSquare className="h-4 w-4" />
+          <MessageSquare className="h-4 w-4 hidden md:block" />
           <span>Feedback</span>
         </Link>
       </nav>
