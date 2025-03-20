@@ -152,7 +152,7 @@ export default function LandingPage() {
         <Button asChild size="lg" className="group">
           <Link href="/rila">
             Create a Meditation with ChatGPT
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
       </section>
@@ -161,11 +161,11 @@ export default function LandingPage() {
 
       {/* Experiments */}
       <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center mb-6 text-2xl font-medium gap-2">
+        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
           <Sparkles className="w-5 h-5" />
           Experiments
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {experiments.map((experiment, index) => (
             <ActiveCard
               key={index}
@@ -197,11 +197,11 @@ export default function LandingPage() {
 
       {/* Tools */}
       <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center mb-6 text-2xl font-medium gap-2">
+        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
           <Wrench className="w-5 h-5" />
           Tools
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {tools.map((tool, index) => (
             <ActiveCard
               key={index}
@@ -261,7 +261,7 @@ export default function LandingPage() {
 
       {/* Recent Community Meditations */}
       <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center mb-3 text-2xl font-medium gap-2">
+        <h2 className="flex items-center gap-2 mb-3 text-2xl tracking-tight">
           <Users className="w-5 h-5" />
           Community
         </h2>
@@ -269,7 +269,7 @@ export default function LandingPage() {
           See what others are experimenting with. These meditations are
           generated through our Meditation Composer and shared publicly.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {communityMeditations.map((meditation, index) => (
             <Card key={index}>
               <CardHeader className="pb-2">
@@ -304,7 +304,7 @@ export default function LandingPage() {
 
       {/* Reddit Posts */}
       <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center mb-3 text-2xl font-medium gap-2">
+        <h2 className="flex items-center gap-2 mb-3 text-2xl tracking-tight">
           <MessageSquare className="w-5 h-5" />
           From Reddit
         </h2>
@@ -324,7 +324,7 @@ export default function LandingPage() {
                       href={`https://reddit.com${post.permalink}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-primary transition-colors"
+                      className="transition-colors hover:text-primary"
                     >
                       <h3 className="text-base font-medium">{post.title}</h3>
                     </Link>
@@ -339,23 +339,6 @@ export default function LandingPage() {
                       {post.selftext}
                     </p>
                   )}
-
-                  <Button
-                    variant="ghost"
-                    asChild
-                    size="sm"
-                    className="px-0 text-primary"
-                  >
-                    <Link
-                      href={`https://reddit.com${post.permalink}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center"
-                    >
-                      View on Reddit
-                      <ExternalLink className="w-4 h-4 ml-1" />
-                    </Link>
-                  </Button>
                 </div>
               ))}
             </div>
@@ -366,7 +349,7 @@ export default function LandingPage() {
       {/* Latest from the Blog */}
       <section className="w-full max-w-4xl px-4 mb-20">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="flex items-center text-2xl font-medium gap-2">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <BookOpen className="w-5 h-5" />
             Latest from the Blog
           </h2>
@@ -380,7 +363,7 @@ export default function LandingPage() {
             </Link>
           </Button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {blogPosts.map((post, index) => (
             <Card key={index}>
               <CardHeader className="pb-2">
@@ -411,7 +394,7 @@ export default function LandingPage() {
 
       {/* About */}
       <section className="w-full max-w-4xl px-4 mb-10">
-        <h2 className="flex items-center mb-6 text-2xl font-medium gap-2">
+        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
           <Info className="w-5 h-5" />
           How This Works
         </h2>
@@ -436,7 +419,7 @@ export default function LandingPage() {
               yet—but that's what AIM Lab is here to explore. Join us in this
               journey of discovery.
             </p>
-            <div className="flex flex-wrap pt-2 gap-4">
+            <div className="flex flex-wrap gap-4 pt-2">
               <Button asChild variant="outline">
                 <Link
                   href="https://github.com/soundglade/aimlab"
