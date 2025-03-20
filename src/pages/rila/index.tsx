@@ -76,7 +76,7 @@ export default function RilaExperiment() {
       <div className="pt-8 pb-12">
         <div className="max-w-4xl px-4 mx-auto">
           <div className="mb-8">
-            <span className="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-50">
+            <span className="px-3 py-1 text-sm rounded-full text-secondary-foreground bg-secondary">
               Meditation Composer
             </span>
           </div>
@@ -174,7 +174,7 @@ export default function RilaExperiment() {
               Explore meditations created and shared by the community in this
               public experiment.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {communityMeditations.map((meditation, index) => (
                 <Card key={index} className="overflow-hidden">
                   <CardContent className="p-6">
