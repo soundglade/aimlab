@@ -22,7 +22,16 @@ import {
   Calendar,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
-import LastMeditations from "./last-meditations";
+import dynamic from "next/dynamic";
+
+const LatestMeditations = dynamic(() => import("./latest-meditations"), {
+  ssr: false,
+  loading: () => (
+    <p className="text-center text-muted-foreground">
+      Loading community meditations...
+    </p>
+  ),
+});
 
 export default function LandingPage() {
   const router = useRouter();
@@ -215,7 +224,7 @@ export default function LandingPage() {
           See what others are experimenting with. These meditations are
           generated through our Meditation Composer and shared publicly.
         </p>
-        <LastMeditations />
+        <LatestMeditations />
       </section>
 
       {/* Reddit Posts */}

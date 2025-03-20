@@ -1,5 +1,6 @@
 # custom
 .tmp
+/cache
 
 # dependencies
 /node_modules
