@@ -1,33 +1,39 @@
-<!-- Lotus SVG icon similar to the reference image -->
 <svg
-       width="24"
-       height="24"
-       viewBox="0 0 24 24"
-       fill="#38BDF9"
-       xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg"
 >
-       <!-- Center petal -->
-       <path d="
-    M12 4
-    C 7 10, 7 16, 12 20
-    C 17 16, 17 10, 12 4
-    Z
-  " />
+  <!-- Background circle -->
+  <circle
+    cx="12"
+    cy="12"
+    r="12"
+    fill="#788CF2"
+  />
 
-       <!-- Left petal -->
-       <path d="
-    M7 6
-    C 2 12, 2 16, 8 19
-    C 6 15, 6 10, 7 6
-    Z
-  " />
+  <!-- Container for petals with transform to scale them down -->
+  <g transform="scale(0.8) translate(3, 3)">
+    <!-- Petals in white -->
+    <path d="
+      M12 4
+      C 7 10, 7 16, 12 20
+      C 17 16, 17 10, 12 4
+      Z
+    "
+      fill="white" />
 
-       <!-- Right petal (mirroring the left) -->
-       <path d="
-    M17 6
-    C 22 12, 22 16, 16 19
-    C 18 15, 18 10, 17 6
-    Z
-  " />
+    <path d="
+      M7 6
+      C 2 12, 2 16, 8 19
+      C 6 15, 6 10, 7 6
+      Z
+    " fill="white" />
 
+    <path d="
+      M17 6
+      C 22 12, 22 16, 16 19
+      C 18 15, 18 10, 17 6
+      Z
+    "
+      fill="white" />
+  </g>
 </svg>
