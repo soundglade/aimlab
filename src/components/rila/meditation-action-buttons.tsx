@@ -77,7 +77,7 @@ export function MeditationActionButtons({
           <Button
             variant="outline"
             size="sm"
-            className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
+            className="hover:text-destructive-foreground hover:bg-destructive"
           >
             <Trash className="w-4 h-4 mr-2" />
             Delete
