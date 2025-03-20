@@ -144,9 +144,10 @@ export default function LandingPage() {
           The AI Meditation Playground
         </h2>
         <p className="text-muted-foreground max-w-3xl mb-10">
-          A creative lab where you can explore the fascinating frontier where
-          artificial intelligence meets meditation. We've designed this space to
-          empower you to craft your own meditative experiences.
+          Welcome to AIM Lab, a creative hub to explore the encounter between
+          artificial intelligence and the world of meditation. We've designed
+          this space to empower you to experience your own meditative
+          experiences.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/rila">
