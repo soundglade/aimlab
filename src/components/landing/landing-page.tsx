@@ -27,7 +27,7 @@ import dynamic from "next/dynamic";
 const LatestMeditations = dynamic(() => import("./latest-meditations"), {
   ssr: false,
   loading: () => (
-    <p className="text-center text-muted-foreground">
+    <p className="text-muted-foreground text-center">
       Loading community meditations...
     </p>
   ),
@@ -91,14 +91,14 @@ export default function LandingPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="flex flex-col items-center w-full px-4 mt-6 mb-20 text-center md:mt-12">
-        <h1 className="mb-3 text-5xl font-semibold tracking-tighter text-primary">
+      <section className="mb-20 mt-6 flex w-full flex-col items-center px-4 text-center md:mt-12">
+        <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
         </h1>
-        <h2 className="mb-4 text-2xl tracking-tight text-secondary-foreground">
+        <h2 className="text-secondary-foreground mb-4 text-2xl tracking-tight">
           The AI Meditation Playground
         </h2>
-        <p className="max-w-3xl mb-10 text-muted-foreground">
+        <p className="text-muted-foreground mb-10 max-w-3xl">
           Welcome to AIM Lab, a creative hub to explore the encounter between
           artificial intelligence and the world of meditation. We've designed
           this space to empower you to experience your own meditative
@@ -107,17 +107,17 @@ export default function LandingPage() {
         <Button asChild size="lg" className="group">
           <Link href="/rila">
             Create a Meditation with ChatGPT
-            <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
       </section>
 
-      <div id="experiments" className="relative invisible -top-4"></div>
+      <div id="experiments" className="invisible relative -top-4"></div>
 
       {/* Experiments */}
-      <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
-          <Sparkles className="w-5 h-5" />
+      <section className="mb-20 w-full max-w-4xl px-4">
+        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
+          <Sparkles className="h-5 w-5" />
           Experiments
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -135,11 +135,11 @@ export default function LandingPage() {
                 <Button
                   asChild
                   variant="outline"
-                  className="justify-center w-full"
+                  className="w-full justify-center"
                 >
                   <Link href={experiment.link}>
                     Try it out
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </CardFooter>
@@ -148,12 +148,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <div id="tools" className="relative invisible -top-4"></div>
+      <div id="tools" className="invisible relative -top-4"></div>
 
       {/* Tools */}
-      <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
-          <Wrench className="w-5 h-5" />
+      <section className="mb-20 w-full max-w-4xl px-4">
+        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
+          <Wrench className="h-5 w-5" />
           Tools
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -176,7 +176,7 @@ export default function LandingPage() {
                     {tool.title}
                   </CardTitle>
                   {tool.status !== "available" && (
-                    <span className="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900/30 dark:text-blue-400">
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                       Coming Soon
                     </span>
                   )}
@@ -188,12 +188,12 @@ export default function LandingPage() {
                   <Button
                     asChild
                     variant="outline"
-                    className="justify-center w-full"
+                    className="w-full justify-center"
                   >
                     <Link href={tool.link}>
                       {tool.linkText}
                       {tool.status === "available" && (
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        <ArrowRight className="ml-2 h-4 w-4" />
                       )}
                     </Link>
                   </Button>
@@ -201,7 +201,7 @@ export default function LandingPage() {
                   <Button
                     variant="outline"
                     disabled
-                    className="justify-center w-full"
+                    className="w-full justify-center"
                   >
                     Coming Soon
                   </Button>
@@ -212,15 +212,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <div id="community" className="relative invisible -top-4"></div>
+      <div id="community" className="invisible relative -top-4"></div>
 
       {/* Recent Community Meditations */}
-      <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center gap-2 mb-3 text-2xl tracking-tight">
-          <Users className="w-5 h-5" />
+      <section className="mb-20 w-full max-w-4xl px-4">
+        <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
+          <Users className="h-5 w-5" />
           Community
         </h2>
-        <p className="mb-6 text-muted-foreground">
+        <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
           generated through our Meditation Composer and shared publicly.
         </p>
@@ -228,12 +228,12 @@ export default function LandingPage() {
       </section>
 
       {/* Reddit Posts */}
-      <section className="w-full max-w-4xl px-4 mb-20">
-        <h2 className="flex items-center gap-2 mb-3 text-2xl tracking-tight">
-          <MessageSquare className="w-5 h-5" />
+      <section className="mb-20 w-full max-w-4xl px-4">
+        <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
+          <MessageSquare className="h-5 w-5" />
           From Reddit
         </h2>
-        <p className="mb-6 text-muted-foreground">
+        <p className="text-muted-foreground mb-6">
           Recent discussions from the meditation community on Reddit.
         </p>
         <Card>
@@ -242,25 +242,25 @@ export default function LandingPage() {
               {REDDIT_POSTS.slice(0, 4).map((post) => (
                 <div
                   key={post.id}
-                  className="pb-4 border-b border-border last:border-0 last:pb-0"
+                  className="border-border border-b pb-4 last:border-0 last:pb-0"
                 >
                   <div className="mb-2">
                     <Link
                       href={`https://reddit.com${post.permalink}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition-colors hover:text-primary"
+                      className="hover:text-primary transition-colors"
                     >
                       <h3 className="text-base font-medium">{post.title}</h3>
                     </Link>
-                    <div className="flex items-center mt-1 text-xs text-muted-foreground">
+                    <div className="text-muted-foreground mt-1 flex items-center text-xs">
                       <span>by {post.author}</span>
                       <span className="ml-2">{post.num_comments} comments</span>
                     </div>
                   </div>
 
                   {post.selftext && (
-                    <p className="mb-2 text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-muted-foreground mb-2 line-clamp-2 text-sm">
                       {post.selftext}
                     </p>
                   )}
@@ -272,19 +272,19 @@ export default function LandingPage() {
       </section>
 
       {/* Latest from the Blog */}
-      <section className="w-full max-w-4xl px-4 mb-20">
-        <div className="flex items-center justify-between mb-6">
+      <section className="mb-20 hidden w-full max-w-4xl px-4">
+        <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <BookOpen className="w-5 h-5" />
+            <BookOpen className="h-5 w-5" />
             Latest from the Blog
           </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
               href="/blog"
-              className="flex items-center text-muted-foreground"
+              className="text-muted-foreground flex items-center"
             >
               View all
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -293,8 +293,8 @@ export default function LandingPage() {
             <Card key={index}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">{post.title}</CardTitle>
-                <div className="flex items-center text-xs text-muted-foreground">
-                  <Calendar className="w-3 h-3 mr-1" />
+                <div className="text-muted-foreground flex items-center text-xs">
+                  <Calendar className="mr-1 h-3 w-3" />
                   <span>{post.date}</span>
                 </div>
               </CardHeader>
@@ -305,10 +305,10 @@ export default function LandingPage() {
                 <Button variant="ghost" asChild className="px-0">
                   <Link
                     href={post.link}
-                    className="flex items-center text-primary"
+                    className="text-primary flex items-center"
                   >
                     Read article
-                    <ArrowRight className="w-4 h-4 ml-1" />
+                    <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
               </CardFooter>
@@ -318,13 +318,13 @@ export default function LandingPage() {
       </section>
 
       {/* About */}
-      <section className="w-full max-w-4xl px-4 mb-10">
-        <h2 className="flex items-center gap-2 mb-6 text-2xl tracking-tight">
-          <Info className="w-5 h-5" />
+      <section className="mb-10 w-full max-w-4xl px-4">
+        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
+          <Info className="h-5 w-5" />
           How This Works
         </h2>
         <Card>
-          <CardContent className="pt-6 space-y-2">
+          <CardContent className="space-y-2 pt-6">
             <p className="text-muted-foreground">
               The AI Meditation Lab (AIM Lab) is an open-source project
               exploring the intersection of artificial intelligence and
@@ -350,7 +350,7 @@ export default function LandingPage() {
                   href="https://github.com/soundglade/aimlab"
                   className="flex items-center gap-2"
                 >
-                  <Github className="w-4 h-4" />
+                  <Github className="h-4 w-4" />
                   Join on GitHub
                 </Link>
               </Button>
