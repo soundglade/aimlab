@@ -85,7 +85,7 @@ export default function RilaExperiment() {
             Bring AI Meditation Scripts to Life
           </h1>
 
-          <p className="text-foreground/70 mb-9">
+          <p className="text-muted-foreground mb-9">
             What if creating guided meditations wasn't limited to apps? What if
             everyone could generate personalized, high-quality meditations using{" "}
             <span className="font-bold">ChatGPT</span>? This experiment lets you

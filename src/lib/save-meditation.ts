@@ -39,7 +39,7 @@ export async function saveMeditation(
     // Create directory
     const saveDir = path.join(
       process.cwd(),
-      "public/storage/rila/shared-meditations",
+      "public/storage/meditations",
       meditationId
     );
     await fs.mkdir(saveDir, { recursive: true });

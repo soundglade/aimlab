@@ -47,7 +47,7 @@ export default async function handler(
     // Define paths
     const meditationDir = path.join(
       process.cwd(),
-      "public/storage/rila/shared-meditations",
+      "public/storage/meditations",
       meditationId
     );
     const metadataFile = path.join(meditationDir, "metadata.json");

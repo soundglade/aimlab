@@ -11,7 +11,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const id = params?.id as string;
     const meditationDir = path.join(
       process.cwd(),
-      "public/storage/rila/shared-meditations",
+      "public/storage/meditations",
       id
     );
 
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const metadata = JSON.parse(metadataContent);
 
     // Generate the audio URL
-    const audioUrl = `/storage/rila/shared-meditations/${id}/audio.mp3`;
+    const audioUrl = `/storage/meditations/${id}/audio.mp3`;
 
     return {
       props: {

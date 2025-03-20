@@ -54,7 +54,7 @@ export function MeditationActionButtons({
   };
 
   return (
-    <div className="flex justify-center m-4 gap-3">
+    <div className="flex justify-center gap-3 m-4">
       <Button variant="outline" size="sm" onClick={handleDownload}>
         <Download className="w-4 h-4 mr-2" />
         Download
@@ -77,7 +77,7 @@ export function MeditationActionButtons({
           <Button
             variant="outline"
             size="sm"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
           >
             <Trash className="w-4 h-4 mr-2" />
             Delete

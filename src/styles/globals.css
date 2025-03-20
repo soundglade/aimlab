@@ -56,7 +56,7 @@
 
 .dark {
   --background: var(--color-gray-900);
-  --foreground: oklch(0.98 0 0);
+  --foreground: #fff;
   --card: var(--color-gray-900);
   --card-foreground: oklch(0.98 0 0);
   --popover: oklch(0.14 0 285.82);
@@ -66,10 +66,10 @@
   --secondary: var(--color-slate-800);
   --secondary-foreground: oklch(0.985 0.002 247.839);
   --muted: oklch(0.278 0.033 256.848);
-  --muted-foreground: oklch(0.707 0.022 261.325);
+  --muted-foreground: var(--color-slate-300);
   --accent: hsl(230, 38%, 23%);
   --accent-foreground: var(--color-gray-200);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: hsl(350, 98%, 56%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
