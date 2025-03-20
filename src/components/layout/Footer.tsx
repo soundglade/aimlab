@@ -4,9 +4,9 @@ import { Github } from "lucide-react";
 export function Footer() {
   return (
     <footer className="w-full py-6 mt-10">
-      <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="flex flex-col items-center justify-between max-w-4xl px-4 mx-auto gap-6 md:flex-row">
         <div className="flex flex-col items-center md:items-start">
-          <Link href="/" className="flex items-center gap-2 mb-1">
+          <Link href="/" className="flex items-center mb-1 gap-2">
             <span className="text-sm font-medium">AIM Lab</span>
           </Link>
           <p className="text-xs text-muted-foreground">
@@ -15,8 +15,8 @@ export function Footer() {
         </div>
 
         <div className="text-center md:text-right">
-          <p className="text-muted-foreground text-xs mb-1">Sponsored By</p>
-          <div className="text-sm flex items-center">
+          <p className="mb-1 text-xs text-muted-foreground">Sponsored By</p>
+          <div className="flex items-center text-sm">
             <a className="hover:underline" href="https://soundglade.com">
               SoundGlade
             </a>
@@ -28,25 +28,25 @@ export function Footer() {
             <li>
               <Link
                 href="https://bsky.app/profile/soundglade.bsky.social"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                className="flex items-center text-xs gap-2 transition-colors text-muted-foreground hover:text-foreground"
               >
-                <div className="h-4 w-4 rounded-full bg-blue-400"></div>
+                <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
                 SoundGlade on Bluesky
               </Link>
             </li>
             <li>
               <Link
                 href="https://github.com/soundglade/aimlab"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                className="flex items-center text-xs gap-2 transition-colors text-muted-foreground hover:text-foreground"
               >
-                <Github className="h-4 w-4" />
+                <Github className="w-4 h-4" />
                 GitHub Repository
               </Link>
             </li>
           </ul>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto px-4 mt-6 pt-4 flex justify-between">
+      <div className="flex justify-between max-w-5xl px-4 pt-4 mx-auto mt-6">
         <p className="text-xs text-muted-foreground"></p>
       </div>
     </footer>

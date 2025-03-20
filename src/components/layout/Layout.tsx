@@ -16,12 +16,12 @@ export function Layout({
   showFooter = true,
 }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-sky-50 to-white flex flex-col items-center">
+    <div className="flex flex-col items-center min-h-screen bg-gradient-to-b from-white via-sky-50 to-white">
       {variant === "page" ? (
         <>
           {showHeader && <Header />}
-          <main className="flex-1 w-full flex flex-col items-center">
-            <div className="max-w-4xl md:bg-white md:shadow-sm md:border-1 md:mt-10 md:mb-5 rounded-xl mx-auto px-4 md:px-19 py-12">
+          <main className="flex flex-col items-center flex-1 w-full">
+            <div className="max-w-4xl px-4 py-12 mx-auto md:bg-white md:shadow-sm md:border-1 md:mt-10 md:mb-5 rounded-xl md:px-19">
               {children}
             </div>
           </main>
@@ -30,7 +30,7 @@ export function Layout({
       ) : (
         <>
           {showHeader && <Header />}
-          <main className="flex-1 w-full flex flex-col items-center">
+          <main className="flex flex-col items-center flex-1 w-full">
             {children}
           </main>
           {showFooter && <Footer />}

@@ -42,10 +42,10 @@ export default function FeedbackIndex() {
   return (
     <Layout variant="page">
       <header className="mb-12">
-        <h1 className="text-3xl text-center md:text-4xl font-medium tracking-tight mb-3">
+        <h1 className="mb-3 text-3xl font-medium tracking-tight text-center md:text-4xl">
           Feedback
         </h1>
-        <p className="text-muted-foreground max-w-2xl">
+        <p className="max-w-2xl text-muted-foreground">
           Thank you for taking the time to share your feedback with us. Whether
           you'd like to report bugs, suggest new features, or share what you
           appreciate about the project - we welcome it all. If you provide
@@ -82,20 +82,20 @@ export default function FeedbackIndex() {
             />
           </div>
 
-          <div className="pt-2 flex justify-center">
+          <div className="flex justify-center pt-2">
             <Button
               type="submit"
               disabled={
                 isSubmitting || submitStatus === "success" || !message.trim()
               }
-              className="w-full md:w-40 mx-auto"
+              className="w-full mx-auto md:w-40"
             >
               {isSubmitting ? (
                 "Submitting..."
               ) : (
                 <>
                   Send
-                  <Send className="h-4 w-4" />
+                  <Send className="w-4 h-4" />
                 </>
               )}
             </Button>
@@ -103,7 +103,7 @@ export default function FeedbackIndex() {
 
           {submitStatus === "success" && (
             <Alert variant="default" className="bg-primary/10 border-primary">
-              <CheckCircle className="h-4 w-4 text-primary" />
+              <CheckCircle className="w-4 h-4 text-primary" />
               <AlertTitle>Thank you!</AlertTitle>
               <AlertDescription>
                 Your feedback has been successfully submitted. We appreciate
@@ -114,7 +114,7 @@ export default function FeedbackIndex() {
 
           {submitStatus === "error" && (
             <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className="w-4 h-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
                 Something went wrong while submitting your feedback. Please try

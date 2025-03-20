@@ -77,7 +77,7 @@ export default function MeditationSampleDetail({ sample }: PageProps) {
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <svg
-              className="h-5 w-5"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -96,9 +96,9 @@ export default function MeditationSampleDetail({ sample }: PageProps) {
         <div className="space-y-4">
           <Card>
             <CardContent className="pt-6">
-              <div className="space-y-3 text-sm">
+              <div className="text-sm space-y-3">
                 <div>
-                  <p className="font-medium mt-2">Persona:</p>
+                  <p className="mt-2 font-medium">Persona:</p>
                   <p className="mt-1">{sample.persona}</p>
                 </div>
                 <div className="pt-3 border-t border-border">
@@ -110,7 +110,7 @@ export default function MeditationSampleDetail({ sample }: PageProps) {
           </Card>
 
           <Card className="relative">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+            <CardHeader className="flex flex-row items-center justify-between pb-6 space-y-0">
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -132,7 +132,7 @@ export default function MeditationSampleDetail({ sample }: PageProps) {
             </CardHeader>
             <CardContent className="pt-0">
               {showRaw ? (
-                <pre className="whitespace-pre-wrap text-sm font-mono bg-muted/50 p-4 rounded-md">
+                <pre className="p-4 font-mono text-sm whitespace-pre-wrap bg-muted/50 rounded-md">
                   {sample.content}
                 </pre>
               ) : (

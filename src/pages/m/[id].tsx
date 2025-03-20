@@ -58,10 +58,10 @@ export default function PublicMeditation({
     return (
       <Layout>
         <Card className="p-6">
-          <h1 className="text-2xl font-medium text-center mb-6">
+          <h1 className="mb-6 text-2xl font-medium text-center">
             Meditation Not Found
           </h1>
-          <p className="text-muted-foreground text-center">
+          <p className="text-center text-muted-foreground">
             {error || "Failed to load meditation"}
           </p>
         </Card>
@@ -71,7 +71,7 @@ export default function PublicMeditation({
 
   return (
     <Layout>
-      <div className="container max-w-3xl mx-auto py-8 px-4">
+      <div className="container max-w-3xl px-4 py-8 mx-auto">
         <MeditationPlayer
           meditation={metadata}
           meditationId={meditationId}

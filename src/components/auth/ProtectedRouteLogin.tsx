@@ -59,11 +59,11 @@ export default function ProtectedRouteLogin({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 p-8">
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="w-full max-w-md p-8 space-y-8">
         <div className="text-center">
           <h2 className="text-2xl">{title}</h2>
-          <p className="text-muted-foreground mt-2">{description}</p>
+          <p className="mt-2 text-muted-foreground">{description}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -84,7 +84,7 @@ export default function ProtectedRouteLogin({
           </div>
 
           {error && (
-            <div className="text-destructive text-sm text-center">{error}</div>
+            <div className="text-sm text-center text-destructive">{error}</div>
           )}
 
           <Button type="submit" className="w-full" disabled={isLoading}>

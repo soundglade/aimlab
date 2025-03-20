@@ -44,7 +44,7 @@ export default function MyMeditations() {
     <div className="mb-12">
       <Card>
         <CardContent>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-medium">Your saved meditations:</h2>
             <ConfirmDestructiveDialog
               open={showClearAllDialog}
@@ -66,13 +66,13 @@ export default function MyMeditations() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="justify-start h-auto py-2 px-3 hover:bg-accent transition-colors group w-full"
+                  className="justify-start w-full h-auto px-3 py-2 hover:bg-accent transition-colors group"
                   onClick={() => handleMeditationClick(meditation.url)}
                 >
-                  <div className="flex items-center gap-2 text-left overflow-hidden w-full">
+                  <div className="flex items-center w-full overflow-hidden text-left gap-2">
                     <Badge
                       variant="secondary"
-                      className="h-6 min-w-6 flex items-center justify-center rounded-full text-xs shrink-0"
+                      className="flex items-center justify-center h-6 text-xs rounded-full min-w-6 shrink-0"
                     >
                       {index + 1}
                     </Badge>

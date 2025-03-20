@@ -3,39 +3,39 @@ import { Sparkles, Wrench, Users, MessageSquare } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="w-full max-w-4xl px-4 py-6 flex justify-between items-center">
+    <header className="flex items-center justify-between w-full max-w-4xl px-4 py-6">
       <Link href="/" className="flex items-center gap-2">
         <span className="font-medium">AIM Lab</span>
       </Link>
 
-      <nav className="flex items-center gap-2 mt-[1px] md:gap-5">
+      <nav className="flex items-center gap-4 mt-[1px] md:gap-5">
         <Link
           href="/#experiments"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors gap-1"
         >
-          <Sparkles className="h-4 w-4 hidden md:block" />
-          <span>Experiments</span>
+          <Sparkles className="w-4 h-4" />
+          <span className="hidden md:block">Experiments</span>
         </Link>
         <Link
           href="/#tools"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors gap-1"
         >
-          <Wrench className="h-4 w-4 hidden md:block" />
-          <span>Tools</span>
+          <Wrench className="w-4 h-4" />
+          <span className="hidden md:block">Tools</span>
         </Link>
         <Link
           href="/#community"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors gap-1"
         >
-          <Users className="h-4 w-4 hidden md:block" />
-          <span>Community</span>
+          <Users className="w-4 h-4" />
+          <span className="hidden md:block">Community</span>
         </Link>
         <Link
           href="/feedback"
-          className="text-sm bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary px-3 py-1 rounded-md transition-colors font-medium flex items-center gap-1"
+          className="flex items-center px-3 py-1 text-sm font-medium bg-accent text-accent-foreground hover:text-primary-foreground hover:bg-primary rounded-md transition-colors gap-1"
         >
-          <MessageSquare className="h-4 w-4 hidden md:block" />
-          <span>Feedback</span>
+          <MessageSquare className="w-4 h-4" />
+          <span className="hidden md:block">Feedback</span>
         </Link>
       </nav>
     </header>

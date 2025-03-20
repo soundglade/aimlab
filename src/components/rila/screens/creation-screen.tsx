@@ -48,19 +48,19 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
         {error ? (
           <>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center">
-                <AlertCircle className="h-6 w-6 text-destructive" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-destructive/20">
+                <AlertCircle className="w-6 h-6 text-destructive" />
               </div>
             </div>
-            <p className="text-destructive mb-4">{error}</p>
-            <p className="text-muted-foreground mb-4">
+            <p className="mb-4 text-destructive">{error}</p>
+            <p className="mb-4 text-muted-foreground">
               Please try again or contact support if the issue persists.
             </p>
           </>
         ) : !isCompleted ? (
           <>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20">
                 <div className="w-8 h-8 rounded-full bg-primary/40 animate-pulse"></div>
               </div>
             </div>
@@ -71,15 +71,15 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
         ) : (
           <>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <Check className="h-6 w-6 text-primary" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20">
+                <Check className="w-6 h-6 text-primary" />
               </div>
             </div>
-            <p className="text-primary mb-4">
+            <p className="mb-4 text-primary">
               Your meditation is ready to play! Experience it now.
             </p>
             <Button className="w-full" onClick={onPlayMeditation}>
-              <Play className="h-4 w-4 mr-2" /> Play Meditation
+              <Play className="w-4 h-4 mr-2" /> Play Meditation
             </Button>
           </>
         )}

@@ -39,7 +39,7 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
         {structuredMeditation?.steps.map((item, index) => {
           if (item.type === "heading") {
             return (
-              <h2 key={index} className="text-xl font-semibold mt-6">
+              <h2 key={index} className="mt-6 text-xl font-semibold">
                 {item.text}
               </h2>
             );
@@ -53,9 +53,9 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
             return (
               <div
                 key={index}
-                className="bg-muted text-primary rounded-md px-3 py-2 inline-flex items-center my-3"
+                className="inline-flex items-center px-3 py-2 my-3 bg-muted text-primary rounded-md"
               >
-                <Clock className="h-4 w-4 mr-2" /> Pause: {item.duration}{" "}
+                <Clock className="w-4 h-4 mr-2" /> Pause: {item.duration}{" "}
                 seconds
               </div>
             );
@@ -64,12 +64,12 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
         })}
       </div>
 
-      <div className="flex space-x-4 pt-4">
+      <div className="flex pt-4 space-x-4">
         <Button variant="outline" className="flex-1" onClick={handleEdit}>
-          <Undo className="h-4 w-4 mr-2" /> Edit
+          <Undo className="w-4 h-4 mr-2" /> Edit
         </Button>
         <Button className="flex-1" onClick={handleContinue}>
-          <Check className="h-4 w-4 mr-2" /> Confirm & Create
+          <Check className="w-4 h-4 mr-2" /> Confirm & Create
         </Button>
       </div>
     </div>

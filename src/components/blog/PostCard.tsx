@@ -30,10 +30,10 @@ export function PostCard({ post }: PostCardProps) {
         <Button variant="ghost" asChild className="px-0">
           <Link
             href={`/blog/${post.slug}`}
-            className="text-primary flex items-center"
+            className="flex items-center text-primary"
           >
             Read article
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </Button>
       </CardFooter>

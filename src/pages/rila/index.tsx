@@ -74,14 +74,14 @@ export default function RilaExperiment() {
   return (
     <Layout>
       <div className="pt-8 pb-12">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl px-4 mx-auto">
           <div className="mb-8">
-            <span className="text-sm text-blue-500 bg-blue-50 px-3 py-1 rounded-full">
+            <span className="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-50">
               Meditation Composer
             </span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-4">
+          <h1 className="mb-4 text-3xl font-medium tracking-tight md:text-4xl">
             Bring AI Meditation Scripts to Life
           </h1>
 
@@ -94,8 +94,8 @@ export default function RilaExperiment() {
           </p>
 
           {/* How to use this experiment */}
-          <div className="bg-card border-accent border-1 text-muted-foreground rounded-lg p-6 mb-8">
-            <h2 className="text-lg font-medium mb-4">
+          <div className="p-6 mb-8 rounded-lg bg-card border-accent border-1 text-muted-foreground">
+            <h2 className="mb-4 text-lg font-medium">
               How to use this experiment:
             </h2>
             <ol className="space-y-3">
@@ -149,15 +149,15 @@ export default function RilaExperiment() {
 
           {/* Example AI Prompts */}
           <div className="mb-12">
-            <h2 className="text-xl font-medium mb-4">Example AI Prompts</h2>
-            <p className="text-muted-foreground mb-4">
+            <h2 className="mb-4 text-xl font-medium">Example AI Prompts</h2>
+            <p className="mb-4 text-muted-foreground">
               Not sure what to ask ChatGPT? Try one of these prompts:
             </p>
             <div className="space-y-3">
               {examplePrompts.map((prompt, index) => (
                 <div
                   key={index}
-                  className="border-l-4 border-blue-500 pl-4 py-1"
+                  className="py-1 pl-4 border-l-4 border-blue-500"
                 >
                   <p className="text-sm">{prompt.text}</p>
                 </div>
@@ -167,10 +167,10 @@ export default function RilaExperiment() {
 
           {/* Recent Community Meditations */}
           <div>
-            <h2 className="text-xl font-medium mb-4">
+            <h2 className="mb-4 text-xl font-medium">
               Recent Community Meditations
             </h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="mb-6 text-muted-foreground">
               Explore meditations created and shared by the community in this
               public experiment.
             </p>
@@ -178,26 +178,26 @@ export default function RilaExperiment() {
               {communityMeditations.map((meditation, index) => (
                 <Card key={index} className="overflow-hidden">
                   <CardContent className="p-6">
-                    <h3 className="font-medium mb-2">{meditation.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <h3 className="mb-2 font-medium">{meditation.title}</h3>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       {meditation.description}
                     </p>
-                    <div className="flex items-center text-xs text-muted-foreground mb-4">
-                      <Clock className="h-3 w-3 mr-1" />
+                    <div className="flex items-center mb-4 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3 mr-1" />
                       <span className="mr-3">{meditation.duration}</span>
-                      <Calendar className="h-3 w-3 mr-1" />
+                      <Calendar className="w-3 h-3 mr-1" />
                       <span>{meditation.timeAgo}</span>
                     </div>
                     <Button
                       variant="outline"
                       size="sm"
                       asChild
-                      className="w-full flex items-center justify-center"
+                      className="flex items-center justify-center w-full"
                     >
                       <Link href={meditation.link}>
                         <svg
                           viewBox="0 0 24 24"
-                          className="h-4 w-4 mr-2"
+                          className="w-4 h-4 mr-2"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"

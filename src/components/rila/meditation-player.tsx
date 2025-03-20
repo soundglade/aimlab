@@ -193,7 +193,7 @@ export function MeditationPlayer({
 
   return (
     <>
-      <h1 className="text-xl sm:text-2xl font-medium text-center mb-5">
+      <h1 className="mb-5 text-xl font-medium text-center sm:text-2xl">
         {meditation.title}
       </h1>
 
@@ -208,7 +208,7 @@ export function MeditationPlayer({
         {/* Loading state */}
         {playerState.isLoading && (
           <div className="flex flex-col items-center justify-center p-8">
-            <Loader className="animate-spin mb-4" size={32} />
+            <Loader className="mb-4 animate-spin" size={32} />
             <p className="text-muted-foreground">Loading meditation audio...</p>
           </div>
         )}
@@ -248,7 +248,7 @@ export function MeditationPlayer({
                       )}
                       {step.type === "speech" && <p>{step.text}</p>}
                       {step.type === "pause" && (
-                        <p className="text-muted-foreground italic">
+                        <p className="italic text-muted-foreground">
                           {step.duration}s pause
                         </p>
                       )}
@@ -293,7 +293,7 @@ export function MeditationPlayer({
                 <Button
                   variant="default"
                   size="lg"
-                  className="rounded-full w-12 h-12"
+                  className="w-12 h-12 rounded-full"
                   onClick={
                     playerState.isPlaying ? pausePlayback : startPlayback
                   }

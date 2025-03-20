@@ -176,8 +176,8 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
       <DialogContent className="sm:max-w-3xl max-h-[98vh] overflow-y-auto">
         <div className="p-1">
           {/* Progress indicator */}
-          <div className="bg-muted text-muted-foreground rounded-full px-4 py-2 inline-flex items-center space-x-2 mb-8">
-            <span className="font-medium text-sm">Rila Experiment</span>
+          <div className="inline-flex items-center px-4 py-2 mb-8 rounded-full bg-muted text-muted-foreground space-x-2">
+            <span className="text-sm font-medium">Rila Experiment</span>
             <div className="flex space-x-1">
               {[1, 2, 3].map((i) => (
                 <div

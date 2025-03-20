@@ -11,10 +11,10 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
   return (
     <Layout variant="page">
       <header className="mb-20 text-center">
-        <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-3">
+        <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
           Latest from the Lab
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        <p className="max-w-2xl mx-auto text-muted-foreground">
           Explore our thoughts on AI meditation and the evolving intersection of
           technology.
         </p>
@@ -37,7 +37,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
                   })}
                 </p>
               )}
-              <h2 className="text-xl md:text-2xl font-medium group-hover:text-primary transition-colors">
+              <h2 className="text-xl font-medium md:text-2xl group-hover:text-primary transition-colors">
                 {post.title}
               </h2>
               {post.excerpt && (
@@ -49,7 +49,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
       </div>
 
       {posts.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-muted-foreground">
             No posts available yet. Check back soon!
           </p>

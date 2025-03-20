@@ -12,10 +12,10 @@ export default function Dashboard({
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex min-h-screen">
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
+          className="fixed inset-0 z-40 bg-black opacity-50 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -25,14 +25,14 @@ export default function Dashboard({
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:relative md:translate-x-0`}
       >
-        <div className="flex items-center justify-between md:hidden mb-4">
+        <div className="flex items-center justify-between mb-4 md:hidden">
           <h2 className="text-lg font-bold">Menu</h2>
           <button
             onClick={() => setSidebarOpen(false)}
             className="text-primary"
           >
             <svg
-              className="h-6 w-6"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -50,10 +50,10 @@ export default function Dashboard({
       </aside>
 
       <div className="flex-1">
-        <header className="md:hidden p-4 border-b border-border">
+        <header className="p-4 border-b md:hidden border-border">
           <button onClick={() => setSidebarOpen(true)} className="text-primary">
             <svg
-              className="h-6 w-6"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

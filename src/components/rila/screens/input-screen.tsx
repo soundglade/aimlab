@@ -173,7 +173,7 @@ const InputScreen = () => {
 
       <div className="space-y-2">
         <label className="font-medium">Voice Selection</label>
-        <div className="flex items-center space-x-2 border p-2 rounded-md bg-card">
+        <div className="flex items-center p-2 border space-x-2 rounded-md bg-card">
           <Button
             variant="outline"
             size="sm"
@@ -182,15 +182,15 @@ const InputScreen = () => {
             onClick={handlePlayback}
           >
             {isPlaying ? (
-              <Pause className="h-4 w-4 text-primary" />
+              <Pause className="w-4 h-4 text-primary" />
             ) : (
-              <Speech className="h-4 w-4 text-primary" />
+              <Speech className="w-4 h-4 text-primary" />
             )}
           </Button>
           <div className="flex-grow">
             <div className="flex items-center justify-between">
               <span>Nicole (Kokoro TTS)</span>
-              <div className="text-sm text-muted-foreground hidden md:block">
+              <div className="hidden text-sm text-muted-foreground md:block">
                 More voices coming soon
               </div>
             </div>

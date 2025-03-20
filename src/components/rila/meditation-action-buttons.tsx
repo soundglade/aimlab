@@ -54,14 +54,14 @@ export function MeditationActionButtons({
   };
 
   return (
-    <div className="flex justify-center gap-3 m-4">
+    <div className="flex justify-center m-4 gap-3">
       <Button variant="outline" size="sm" onClick={handleDownload}>
-        <Download className="mr-2 h-4 w-4" />
+        <Download className="w-4 h-4 mr-2" />
         Download
       </Button>
 
       <Button variant="outline" size="sm" onClick={handleShare}>
-        <Share className="mr-2 h-4 w-4" />
+        <Share className="w-4 h-4 mr-2" />
         Share
       </Button>
 
@@ -79,7 +79,7 @@ export function MeditationActionButtons({
             size="sm"
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
           >
-            <Trash className="mr-2 h-4 w-4" />
+            <Trash className="w-4 h-4 mr-2" />
             Delete
           </Button>
         </ConfirmDestructiveDialog>
