@@ -87,6 +87,7 @@
     "eslint-config-next": "15.1.7",
     "fake-indexeddb": "^6.0.0",
     "jsdom": "^26.0.0",
+    "tailwind-scrollbar": "^4.0.1",
     "tsx": "^4.19.3",
     "typescript": "^5",
     "vitest": "^3.0.7"

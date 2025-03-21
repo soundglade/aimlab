@@ -193,7 +193,7 @@ export function MeditationPlayer({
 
   return (
     <>
-      <h1 className="mb-5 text-xl font-medium text-center sm:text-2xl">
+      <h1 className="mb-5 text-center text-xl font-medium sm:text-2xl">
         {meditation.title}
       </h1>
 
@@ -216,7 +216,7 @@ export function MeditationPlayer({
         {/* Meditation script display */}
         {!playerState.isLoading && (
           <>
-            <div className="max-h-[55vh] rounded-md bg-background/50 text-foreground/60 overflow-y-auto">
+            <div className="scrollbar-thin bg-background/50 text-foreground/60 max-h-[55vh] overflow-y-auto rounded-md">
               <div className="space-y-2">
                 {meditation.steps.map((step, idx) => {
                   return (
@@ -248,7 +248,7 @@ export function MeditationPlayer({
                       )}
                       {step.type === "speech" && <p>{step.text}</p>}
                       {step.type === "pause" && (
-                        <p className="italic text-muted-foreground">
+                        <p className="text-muted-foreground italic">
                           {step.duration}s pause
                         </p>
                       )}
@@ -268,9 +268,9 @@ export function MeditationPlayer({
                   title="Click to seek"
                 >
                   <Progress value={playerState.progress} className="h-2" />
-                  <div className="absolute inset-0 opacity-0 hover:opacity-10 bg-primary transition-opacity"></div>
+                  <div className="bg-primary absolute inset-0 opacity-0 transition-opacity hover:opacity-10"></div>
                 </div>
-                <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="text-muted-foreground flex justify-between text-xs">
                   <span>
                     {formatTime(playerState.currentTimeMs)} /{" "}
                     {formatTime(playerState.totalDurationMs)}
@@ -293,7 +293,7 @@ export function MeditationPlayer({
                 <Button
                   variant="default"
                   size="lg"
-                  className="w-12 h-12 rounded-full"
+                  className="h-12 w-12 rounded-full"
                   onClick={
                     playerState.isPlaying ? pausePlayback : startPlayback
                   }
