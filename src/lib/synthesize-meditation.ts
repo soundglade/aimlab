@@ -24,6 +24,7 @@ export async function synthesizeMeditation(
   } = {}
 ) {
   try {
+    const speechService = voiceId === "nicole" ? "kokoro" : "elevenlabs";
     const speechSteps = meditation.steps.filter(
       (step) => step.type === "speech"
     );
@@ -57,7 +58,7 @@ export async function synthesizeMeditation(
       onProgress(calculateProgress(i, totalSteps, "speech"));
 
       try {
-        const audioBuffer = await speechGenerator(step.text);
+        const audioBuffer = await speechGenerator(step.text, speechService);
         audioBuffers.set(stepIndex, audioBuffer);
 
         // Update step with duration
