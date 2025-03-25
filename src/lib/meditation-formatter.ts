@@ -120,7 +120,7 @@ const formatMeditationScript = async (
     ];
 
     const completion = await openai.beta.chat.completions.parse({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages,
       response_format: zodResponseFormat(
         MeditationFormatter,

@@ -1,7 +1,7 @@
 import { ElevenLabsClient } from "elevenlabs";
 import { Readable } from "stream";
 
-const DEFAULT_VOICE_ID = "XDlm17VvOo1F44DA2MnT";
+const DEFAULT_VOICE_ID = "CiwzbDpaN3pQXjTgx3ML";
 const DEFAULT_MODEL_ID = "eleven_multilingual_v2";
 
 /**
