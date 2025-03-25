@@ -135,8 +135,8 @@ const InputScreen = () => {
         </Alert>
       )}
 
-      <div className="space-y-2">
-        <label className="font-medium">Meditation Script</label>
+      <div>
+        <label className="mb-2 block font-medium">Meditation Script</label>
         <Textarea
           placeholder="Paste your meditation script here..."
           className="max-h-[300px] min-h-[200px] overflow-y-auto"
