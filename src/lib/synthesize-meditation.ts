@@ -13,6 +13,7 @@ export async function synthesizeMeditation(
     speechGenerator = generateSpeech,
     durationCalculator = getAudioDurationMs,
     audioConcatenator = createConcatenatedAudio,
+    voiceId = "nicole",
     onProgress = (progress: number) => {},
     onComplete = (
       success: boolean,
@@ -97,6 +98,7 @@ export async function synthesizeMeditation(
       return false;
     }
   } catch (error) {
+    console.error("Synthesis error:", error);
     onError("Synthesis failed");
     return false;
   }

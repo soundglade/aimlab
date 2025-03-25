@@ -86,38 +86,37 @@ const VoiceSelection = ({ isDisabled = false }: VoiceSelectionProps) => {
           const isSelected = voice.id === voiceId;
 
           return (
-            <div
-              key={voice.id}
-              className={`flex items-center space-x-2 rounded-md border p-2 transition-colors ${
-                !isDisabled ? "cursor-pointer" : ""
-              }
-                ${
-                  isSelected
-                    ? "bg-primary/10 border-primary shadow-sm"
-                    : "bg-card hover:bg-accent/50"
-                }`}
-              onClick={() => !isDisabled && handleSelectVoice(voice.id)}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 flex-shrink-0 p-0"
-                disabled={isDisabled}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlayVoice(voice.id, voice.previewFile);
-                }}
-              >
-                {playingVoiceId === voice.id ? (
-                  <Pause className="text-primary h-4 w-4" />
-                ) : (
-                  <Speech className="text-primary h-4 w-4" />
-                )}
-              </Button>
+            <TooltipProvider key={voice.id}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className={`flex items-center space-x-2 rounded-md border p-2 transition-colors ${
+                      !isDisabled ? "cursor-pointer" : ""
+                    }
+                      ${
+                        isSelected
+                          ? "bg-primary/10 border-primary shadow-sm"
+                          : "bg-card hover:bg-accent/50"
+                      }`}
+                    onClick={() => !isDisabled && handleSelectVoice(voice.id)}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 flex-shrink-0 p-0"
+                      disabled={isDisabled}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlayVoice(voice.id, voice.previewFile);
+                      }}
+                    >
+                      {playingVoiceId === voice.id ? (
+                        <Pause className="text-primary h-4 w-4" />
+                      ) : (
+                        <Speech className="text-primary h-4 w-4" />
+                      )}
+                    </Button>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
                     <div className="flex-grow">
                       <div className="flex items-center justify-between">
                         <span
@@ -129,15 +128,17 @@ const VoiceSelection = ({ isDisabled = false }: VoiceSelectionProps) => {
                         </span>
                       </div>
                     </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{voice.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
 
-              {isSelected && <Check className="text-primary mr-1 h-4 w-4" />}
-            </div>
+                    {isSelected && (
+                      <Check className="text-primary mr-1 h-4 w-4" />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{voice.description}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           );
         })}
       </div>

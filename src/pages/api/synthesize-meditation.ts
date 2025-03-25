@@ -11,7 +11,8 @@ import { saveMeditation } from "@/lib/save-meditation";
  * saving the result and returning a URL to access it.
  *
  * @input
- * - req.body: A Meditation object containing steps to synthesize
+ * - req.body.structuredMeditation: A Meditation object containing steps to synthesize
+ * - req.body.voiceId: The voice ID to use for the synthesis
  *
  * @output
  * A stream of JSON events, each on a new line:
@@ -67,9 +68,11 @@ export default async function handler(
   res.setHeader("Transfer-Encoding", "chunked");
   stream.pipe(res);
 
-  const meditation = req.body as Meditation;
+  const meditation = req.body.structuredMeditation as Meditation;
+  const voiceId = req.body.voiceId || "nicole";
 
   await synthesizeMeditation(meditation, {
+    voiceId,
     onProgress: (progress) => {
       sendEvent("progress", { progress });
     },

@@ -16,6 +16,7 @@ import {
   progressAtom,
   isCompletedAtom,
   meditationUrlAtom,
+  voiceIdAtom,
 } from "./atoms";
 
 // Import types
@@ -34,6 +35,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
   const [, setIsCompleted] = useAtom(isCompletedAtom);
   const [meditationUrl, setMeditationUrl] = useAtom(meditationUrlAtom);
   const [error, setError] = useState<string | null>(null);
+  const [voiceId] = useAtom(voiceIdAtom);
   const { addMeditation } = useMyMeditations();
 
   // Reset state when dialog is closed
@@ -77,7 +79,10 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(structuredMeditation),
+        body: JSON.stringify({
+          structuredMeditation,
+          voiceId,
+        }),
       });
 
       if (!response.ok) {
@@ -173,10 +178,10 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[98vh] overflow-y-auto">
+      <DialogContent className="max-h-[98vh] overflow-y-auto sm:max-w-3xl">
         <div className="p-1">
           {/* Progress indicator */}
-          <div className="inline-flex items-center px-4 py-2 mb-8 rounded-full bg-muted text-muted-foreground space-x-2">
+          <div className="bg-muted text-muted-foreground mb-8 inline-flex items-center space-x-2 rounded-full px-4 py-2">
             <span className="text-sm font-medium">Rila Experiment</span>
             <div className="flex space-x-1">
               {[1, 2, 3].map((i) => (
