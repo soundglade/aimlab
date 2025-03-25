@@ -9,3 +9,4 @@ export const editableMarkdownAtom = atom<string>("");
 export const progressAtom = atom<number>(0);
 export const isCompletedAtom = atom<boolean>(false);
 export const meditationUrlAtom = atom<string | null>(null);
+export const voiceIdAtom = atom<string>("nicole");
