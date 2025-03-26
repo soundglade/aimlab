@@ -3,8 +3,6 @@ import Link from "next/link";
 import { getSortedPostsData, BlogPost } from "@/lib/blog";
 import { Layout } from "@/components/layout/Layout";
 
-const HIDDEN = true;
-
 interface BlogIndexProps {
   posts: BlogPost[];
 }
@@ -62,15 +60,6 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (HIDDEN) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
   const posts = getSortedPostsData();
   return {
     props: {

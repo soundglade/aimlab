@@ -93,7 +93,7 @@ export default function LandingPage() {
       </section>
 
       {/* Latest from the Blog */}
-      <section className={`${sectionBaseClasses} hidden max-w-4xl`}>
+      <section className={`${sectionBaseClasses} max-w-4xl`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <BookOpen className="h-5 w-5" />
