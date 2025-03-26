@@ -100,9 +100,8 @@ export default function LandingPage() {
         </h2>
         <p className="text-muted-foreground mb-10 max-w-3xl">
           Welcome to AIM Lab, a creative hub to explore the encounter between
-          artificial intelligence and the world of meditation. We've designed
-          this space to empower you to experience your own meditative
-          experiences.
+          artificial intelligence and meditation. We've designed this space to
+          empower you to do your own experiments.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/composer">
@@ -228,7 +227,7 @@ export default function LandingPage() {
       </section>
 
       {/* Reddit Posts */}
-      <section className="mb-20 w-full max-w-4xl px-4">
+      <section className="mb-20 hidden w-full max-w-4xl px-4">
         <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
           <MessageSquare className="h-5 w-5" />
           From Reddit
@@ -318,7 +317,7 @@ export default function LandingPage() {
       </section>
 
       {/* About */}
-      <section className="mb-10 w-full max-w-4xl px-4">
+      <section className="mb-10 hidden w-full max-w-4xl px-4">
         <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
           <Info className="h-5 w-5" />
           How This Works
