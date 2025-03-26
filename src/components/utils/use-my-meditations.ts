@@ -18,6 +18,10 @@ export function useMyMeditations() {
 
   const getMeditations = () => meditations || [];
 
+  const getSortedMeditations = () => {
+    return getMeditations().sort((a, b) => b.createdAt - a.createdAt);
+  };
+
   const addMeditation = (meditation: Omit<SavedMeditation, "createdAt">) => {
     const newMeditation = {
       ...meditation,
@@ -85,7 +89,7 @@ export function useMyMeditations() {
   };
 
   return {
-    meditations: getMeditations(),
+    meditations: getSortedMeditations(),
     addMeditation,
     deleteMeditation,
     clearMeditations,

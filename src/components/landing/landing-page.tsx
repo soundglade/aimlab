@@ -15,6 +15,7 @@ import {
   Github,
   Sparkles,
   Wrench,
+  Save,
   Users,
   BookOpen,
   Info,
@@ -32,6 +33,11 @@ const LatestMeditations = dynamic(() => import("./latest-meditations"), {
     </p>
   ),
 });
+
+const MyMeditations = dynamic(
+  () => import("@/components/composer/my-meditations"),
+  { ssr: false }
+);
 
 export default function LandingPage() {
   const router = useRouter();
@@ -99,9 +105,9 @@ export default function LandingPage() {
           The AI Meditation Playground
         </h2>
         <p className="text-muted-foreground mb-10 max-w-3xl">
-          Welcome to AIM Lab, a creative hub to explore the encounter between
-          artificial intelligence and meditation. We've designed this space to
-          empower you to do your own experiments.
+          Welcome to AIM Lab, a creative hub to explore the intersection of AI
+          and meditation. We've designed this space to empower you to do your
+          own experiments.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/composer">
@@ -114,7 +120,7 @@ export default function LandingPage() {
       <div id="experiments" className="invisible relative -top-4"></div>
 
       {/* Experiments */}
-      <section className="mb-20 w-full max-w-4xl px-4">
+      <section className="mb-20 hidden w-full max-w-4xl px-4">
         <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
           <Sparkles className="h-5 w-5" />
           Experiments
@@ -145,6 +151,14 @@ export default function LandingPage() {
             </ActiveCard>
           ))}
         </div>
+      </section>
+
+      <section className="mb-20 w-full max-w-4xl px-4">
+        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
+          <Save className="h-5 w-5" />
+          My Meditations
+        </h2>
+        <MyMeditations />
       </section>
 
       <div id="tools" className="invisible relative -top-4"></div>

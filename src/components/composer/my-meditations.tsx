@@ -45,7 +45,7 @@ export default function MyMeditations() {
       <Card>
         <CardContent>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-medium">Your saved meditations:</h2>
+            <h2 className="text-sm font-medium">Saved meditations:</h2>
             <ConfirmDestructiveDialog
               open={showClearAllDialog}
               onOpenChange={setShowClearAllDialog}
