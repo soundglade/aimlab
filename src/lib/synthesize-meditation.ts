@@ -1,6 +1,6 @@
 import { generateSpeech, getAudioDurationMs } from "@/lib/speech";
-import { Meditation } from "@/components/rila/types";
-import { addTimelineToMeditation } from "@/components/rila/utils/meditation-timeline";
+import { Meditation } from "@/components/types";
+import { addTimelineToMeditation } from "@/components/utils/meditation-timeline";
 import { createConcatenatedAudio } from "@/lib/audio";
 
 // Progress allocation constants

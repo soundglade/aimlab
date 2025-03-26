@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, X } from "lucide-react";
-import { useMyMeditations } from "./utils/use-my-meditations";
+import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { useRouter } from "next/router";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
@@ -44,7 +44,7 @@ export default function MyMeditations() {
     <div className="mb-12">
       <Card>
         <CardContent>
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-medium">Your saved meditations:</h2>
             <ConfirmDestructiveDialog
               open={showClearAllDialog}
@@ -60,19 +60,19 @@ export default function MyMeditations() {
               </Button>
             </ConfirmDestructiveDialog>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {meditations.map((meditation, index) => (
               <div key={meditation.id} className="relative">
                 <Button
                   type="button"
                   variant="outline"
-                  className="justify-start w-full h-auto px-3 py-2 hover:bg-accent transition-colors group"
+                  className="hover:bg-accent group h-auto w-full justify-start px-3 py-2 transition-colors"
                   onClick={() => handleMeditationClick(meditation.url)}
                 >
-                  <div className="flex items-center w-full overflow-hidden text-left gap-2">
+                  <div className="flex w-full items-center gap-2 overflow-hidden text-left">
                     <Badge
                       variant="secondary"
-                      className="flex items-center justify-center h-6 text-xs rounded-full min-w-6 shrink-0"
+                      className="min-w-6 flex h-6 shrink-0 items-center justify-center rounded-full text-xs"
                     >
                       {index + 1}
                     </Badge>
@@ -96,7 +96,7 @@ export default function MyMeditations() {
                       e.stopPropagation();
                       setMeditationToDelete(meditation.id);
                     }}
-                    className="absolute right-2 top-[10px] opacity-30 hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground rounded-full p-1 transition-all focus:outline-none"
+                    className="hover:bg-destructive hover:text-destructive-foreground absolute right-2 top-[10px] rounded-full p-1 opacity-30 transition-all hover:opacity-100 focus:outline-none"
                     aria-label="Delete meditation"
                   >
                     <X size={14} />

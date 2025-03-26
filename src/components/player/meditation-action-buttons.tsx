@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Download, Share, Trash } from "lucide-react";
 import { toast } from "sonner";
-import { useMyMeditations } from "./utils/use-my-meditations";
+import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

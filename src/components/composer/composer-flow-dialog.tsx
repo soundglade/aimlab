@@ -19,11 +19,17 @@ import {
   voiceIdAtom,
 } from "./atoms";
 
-// Import types
-import { RilaFlowDialogProps } from "./types";
-import { useMyMeditations } from "./utils/use-my-meditations";
+import { useMyMeditations } from "@/components/utils/use-my-meditations";
 
-const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
+interface ComposerFlowDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const ComposerFlowDialog = ({
+  open,
+  onOpenChange,
+}: ComposerFlowDialogProps) => {
   // Get atoms
   const [step, setStep] = useAtom(stepAtom);
   const [, setMeditationScript] = useAtom(meditationScriptAtom);
@@ -182,7 +188,7 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
         <div className="p-1">
           {/* Progress indicator */}
           <div className="bg-muted text-muted-foreground mb-8 inline-flex items-center space-x-2 rounded-full px-4 py-2">
-            <span className="text-sm font-medium">Rila Experiment</span>
+            <span className="text-sm font-medium">Meditation Composer</span>
             <div className="flex space-x-1">
               {[1, 2, 3].map((i) => (
                 <div
@@ -212,4 +218,4 @@ const RilaFlowDialog = ({ open, onOpenChange }: RilaFlowDialogProps) => {
   );
 };
 
-export default RilaFlowDialog;
+export default ComposerFlowDialog;

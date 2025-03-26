@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
-import { Meditation } from "@/components/rila/types";
+import { Meditation } from "@/components/types";
 import { synthesizeMeditation } from "@/lib/synthesize-meditation";
 import { saveMeditation } from "@/lib/save-meditation";
 

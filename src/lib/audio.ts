@@ -1,4 +1,4 @@
-import { Meditation } from "@/components/rila/types";
+import { Meditation } from "@/components/types";
 import { OfflineAudioContext } from "web-audio-engine";
 import * as lamejs from "@breezystack/lamejs";
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { synthesizeMeditation } from "@/lib/synthesize-meditation";
-import { Meditation } from "@/components/rila/types";
+import { Meditation } from "@/components/types";
 
 describe("synthesizeMeditation", () => {
   // Mock functions

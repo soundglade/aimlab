@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import type { Meditation } from "./types";
+import type { Meditation } from "../types";
 
 // Define atoms for shared state
 export const stepAtom = atom<number>(1);

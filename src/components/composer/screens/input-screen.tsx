@@ -10,7 +10,7 @@ import {
   editableMarkdownAtom,
 } from "../atoms";
 import VoiceSelection from "../voice-selection";
-import type { Meditation } from "../types";
+import type { Meditation } from "../../types";
 
 // Process the meditation script returned from the API
 const processMeditationScript = (script: Meditation): Meditation => {

@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { customAlphabet } from "nanoid";
-import { Meditation } from "@/components/rila/types";
+import { Meditation } from "@/components/types";
 import crypto from "crypto";
 
 const generateMeditationId = customAlphabet(

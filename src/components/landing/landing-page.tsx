@@ -60,7 +60,7 @@ export default function LandingPage() {
       title: "Meditation Composer",
       description: "Synthesize a meditation script with a voice generator.",
       status: "available",
-      link: "/rila",
+      link: "/composer",
       linkText: "Try it out",
     },
     {
@@ -105,7 +105,7 @@ export default function LandingPage() {
           experiences.
         </p>
         <Button asChild size="lg" className="group">
-          <Link href="/rila">
+          <Link href="/composer">
             Create a Meditation with ChatGPT
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>

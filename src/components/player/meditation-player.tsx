@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { Meditation } from "./types";
+import { Meditation } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, SkipBack, SkipForward, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
-import * as meditationTimeline from "./utils/meditation-timeline";
+import * as meditationTimeline from "@/components/utils/meditation-timeline";
 import dynamic from "next/dynamic";
 
 // Import the action buttons component dynamically

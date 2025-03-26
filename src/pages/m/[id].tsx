@@ -2,8 +2,8 @@ import { GetServerSideProps } from "next";
 import { Card } from "@/components/ui/card";
 import path from "path";
 import fs from "fs/promises";
-import { MeditationPlayer } from "@/components/rila/meditation-player";
-import { Meditation } from "@/components/rila/types";
+import { MeditationPlayer } from "@/components/player/meditation-player";
+import { Meditation } from "@/components/types";
 import { Layout } from "@/components/layout/Layout";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -58,10 +58,10 @@ export default function PublicMeditation({
     return (
       <Layout>
         <Card className="p-6">
-          <h1 className="mb-6 text-2xl font-medium text-center">
+          <h1 className="mb-6 text-center text-2xl font-medium">
             Meditation Not Found
           </h1>
-          <p className="text-center text-muted-foreground">
+          <p className="text-muted-foreground text-center">
             {error || "Failed to load meditation"}
           </p>
         </Card>
@@ -71,7 +71,7 @@ export default function PublicMeditation({
 
   return (
     <Layout>
-      <div className="container max-w-3xl px-4 py-8 mx-auto">
+      <div className="container mx-auto max-w-3xl px-4 py-8">
         <MeditationPlayer
           meditation={metadata}
           meditationId={meditationId}

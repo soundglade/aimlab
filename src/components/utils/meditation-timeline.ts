@@ -1,4 +1,4 @@
-import { Meditation } from "../types";
+import { Meditation } from "@/components/types";
 
 /**
  * Interface for timing information

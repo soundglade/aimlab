@@ -2,13 +2,11 @@
 
 An open-source project exploring the intersection of AI and meditation practices.
 
-## Current Experiments
+## Current Tools
 
-### RILA
+### Meditation Composer
 
 Generate guided meditations from scripts created by AI language models like ChatGPT. Simply paste your meditation script and transform it into a guided meditation.
-
-For more details see [src/components/rila/README.md](src/components/rila/README.md).
 
 ## Project Structure
 
@@ -16,7 +14,7 @@ For more details see [src/components/rila/README.md](src/components/rila/README.
 
 - **Public Website** - The main public-facing website accessible to all users
 
-  - Contains public experiments like RILA
+  - Contains public tools like Meditation Composer
   - Available at the root URL
   - Features a modern, user-friendly interface
 
