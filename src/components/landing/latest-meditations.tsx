@@ -47,11 +47,11 @@ export default function LatestMeditations() {
 
   // Fallback states
   if (loading) {
-    return <div className="text-center p-4">Loading latest meditations...</div>;
+    return <div className="p-4 text-center">Loading latest meditations...</div>;
   }
 
   if (error) {
-    return <div className="text-center text-red-500 p-4">{error}</div>;
+    return <div className="p-4 text-center text-red-500">{error}</div>;
   }
 
   // Fallback to example data if no meditations found
@@ -73,7 +73,7 @@ export default function LatestMeditations() {
               "Start your day with mental clarity and positive energy.",
             duration: "10 mins",
             timeAgo: "1 day ago",
-            link: "/meditations/morning-clarity",
+            link: "/m/morning-clarity",
           },
           {
             title: "Deep Sleep Preparation",
@@ -82,13 +82,6 @@ export default function LatestMeditations() {
             duration: "15 mins",
             timeAgo: "2 days ago",
             link: "/meditations/deep-sleep",
-          },
-          {
-            title: "Creative Flow Meditation",
-            description: "Open your mind to creative inspiration and ideas.",
-            duration: "12 mins",
-            timeAgo: "3 days ago",
-            link: "/meditations/creative-flow",
           },
         ];
 
@@ -101,10 +94,10 @@ export default function LatestMeditations() {
             <CardDescription>{meditation.description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <Clock className="w-3 h-3 mr-1" />
+            <div className="text-muted-foreground flex items-center text-xs">
+              <Clock className="mr-1 h-3 w-3" />
               {meditation.duration}
-              <Activity className="w-3 h-3 ml-auto mr-1" />
+              <Activity className="ml-auto mr-1 h-3 w-3" />
               {meditation.timeAgo}
             </div>
           </CardContent>
@@ -113,10 +106,10 @@ export default function LatestMeditations() {
               variant="outline"
               size="sm"
               asChild
-              className="justify-center w-full"
+              className="w-full justify-center"
             >
               <Link href={meditation.link} className="flex items-center">
-                <Play className="w-4 h-4 mr-2" />
+                <Play className="mr-2 h-4 w-4" />
                 Play Meditation
               </Link>
             </Button>

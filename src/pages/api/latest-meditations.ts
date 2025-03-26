@@ -53,7 +53,7 @@ export default async function handler(
               ...metadata,
               timestamp: stats.mtimeMs,
               timeAgo: getTimeAgo(stats.mtimeMs),
-              link: `/meditations/${dirent.name}`,
+              link: `/m/${dirent.name}`,
             };
           } catch (error) {
             console.error(`Error parsing metadata for ${dirent.name}:`, error);
