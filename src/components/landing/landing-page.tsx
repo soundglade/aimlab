@@ -1,22 +1,18 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
-  ActiveCard,
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/active-card";
+} from "@/components/ui/card";
 import {
   ArrowRight,
   Github,
-  Wrench,
   Users,
   BookOpen,
-  Info,
+  Sparkles,
   Calendar,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -32,24 +28,7 @@ const LatestMeditations = dynamic(() => import("./latest-meditations"), {
 });
 
 export default function LandingPage() {
-  const router = useRouter();
   const sectionBaseClasses = "mb-20 w-full px-4";
-
-  const tools = [
-    {
-      title: "Meditation Composer",
-      description: "Synthesize a meditation script with a voice generator.",
-      status: "available",
-      link: "/composer",
-      linkText: "Try it out",
-    },
-    {
-      title: "Live AI Meditation Guide",
-      description:
-        "Experience live meditation guided by AI using advanced voice mode for a real-time meditation experience.",
-      status: "coming",
-    },
-  ];
 
   const blogPosts = [
     {
@@ -80,79 +59,18 @@ export default function LandingPage() {
         <h2 className="text-secondary-foreground mb-4 text-2xl tracking-tight">
           The AI Meditation Playground
         </h2>
-        <p className="text-muted-foreground mb-10 max-w-3xl">
+        <p className="text-muted-foreground mb-10 max-w-2xl">
           Welcome to AIM Lab, a creative hub to explore the intersection of AI
-          and meditation. We've designed this space to empower you to do your
-          own experiments.
+          and meditation.
+          <br className="hidden md:block" />
+          We've designed this space to empower you to do your own experiments.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/composer">
-            Create a Meditation with ChatGPT
+            Create a Meditation
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Button>
-      </section>
-
-      {/* Tools */}
-      <section className={`${sectionBaseClasses} max-w-4xl`}>
-        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
-          <Wrench className="h-5 w-5" />
-          Tools
-        </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {tools.map((tool, index) => (
-            <ActiveCard
-              key={index}
-              disabled={tool.status !== "available"}
-              onClick={
-                tool.status === "available" && tool.link
-                  ? () => router.push(tool.link)
-                  : undefined
-              }
-              className={
-                tool.status === "available" && tool.link ? "cursor-pointer" : ""
-              }
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="flex items-center text-lg">
-                    {tool.title}
-                  </CardTitle>
-                  {tool.status !== "available" && (
-                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                      Coming Soon
-                    </span>
-                  )}
-                </div>
-                <CardDescription>{tool.description}</CardDescription>
-              </CardHeader>
-              <CardFooter>
-                {tool.link ? (
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="w-full justify-center"
-                  >
-                    <Link href={tool.link}>
-                      {tool.linkText}
-                      {tool.status === "available" && (
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      )}
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    disabled
-                    className="w-full justify-center"
-                  >
-                    Coming Soon
-                  </Button>
-                )}
-              </CardFooter>
-            </ActiveCard>
-          ))}
-        </div>
       </section>
 
       <div id="community" className="invisible relative -top-4"></div>
@@ -218,50 +136,6 @@ export default function LandingPage() {
             </Card>
           ))}
         </div>
-      </section>
-
-      {/* About */}
-      <section className={`${sectionBaseClasses} mb-10 hidden max-w-4xl`}>
-        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
-          <Info className="h-5 w-5" />
-          How This Works
-        </h2>
-        <Card>
-          <CardContent className="space-y-2 pt-6">
-            <p className="text-muted-foreground">
-              The AI Meditation Lab (AIM Lab) is an open-source project
-              exploring the intersection of AI and meditation.
-            </p>
-            <p className="text-muted-foreground">
-              This is a place to test ideas, explore possibilities, and learn
-              from what works (and what doesn't). We're creating a space for
-              playful experimentation.
-            </p>
-            <p className="text-muted-foreground">
-              Our experiments may occasionally glitch or break—that's part of
-              the process and the ethos of the project.
-            </p>
-            <p className="text-muted-foreground">
-              What happens when AI guides human meditation? We don't fully know
-              yet—but that's what AIM Lab is here to explore. Join us in this
-              journey of discovery.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Button asChild variant="outline">
-                <Link
-                  href="https://github.com/soundglade/aimlab"
-                  className="flex items-center gap-2"
-                >
-                  <Github className="h-4 w-4" />
-                  Join on GitHub
-                </Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link href="/experiments">Try an Experiment</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </section>
     </Layout>
   );

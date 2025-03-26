@@ -67,7 +67,7 @@
   --primary-foreground: white;
   --secondary: var(--color-slate-800);
   --secondary-foreground: oklch(0.985 0.002 247.839);
-  --muted: oklch(0.278 0.033 256.848);
+  --muted: var(--color-slate-800);
   --muted-foreground: var(--color-slate-300);
   --accent: hsl(230, 38%, 23%);
   --accent-foreground: var(--color-gray-200);

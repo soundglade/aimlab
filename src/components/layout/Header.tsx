@@ -20,25 +20,17 @@ export function Header() {
 
       <nav className="mt-[1px] flex items-center gap-4 md:gap-5">
         <Link
-          href="/#experiments"
-          className="text-muted-foreground hover:text-foreground flex hidden items-center gap-1 text-sm transition-colors"
-        >
-          <Sparkles className="h-4 w-4" />
-          <span className="hidden md:block">Experiments</span>
-        </Link>
-        <Link
-          href="/#tools"
-          className="text-muted-foreground hover:text-foreground flex hidden items-center gap-1 text-sm transition-colors"
-        >
-          <Wrench className="h-4 w-4" />
-          <span className="hidden md:block">Tools</span>
-        </Link>
-        <Link
           href="/#community"
           className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors"
         >
           <Users className="h-4 w-4" />
           <span className="hidden md:block">Community</span>
+        </Link>
+        <Link
+          href="/composer"
+          className="text-muted-foreground hover:text-foreground md:hover:bg-accent -mx-2 -mr-3 flex items-center rounded-md px-2 py-1 text-sm transition-colors md:-mr-1"
+        >
+          <Sparkles className="h-4 w-4" />
         </Link>
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
