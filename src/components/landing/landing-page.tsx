@@ -221,7 +221,7 @@ export default function LandingPage() {
         </h2>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
-          generated through our Meditation Composer and shared publicly.
+          generated through our Meditation Composer.
         </p>
         <LatestMeditations />
       </section>
@@ -326,8 +326,7 @@ export default function LandingPage() {
           <CardContent className="space-y-2 pt-6">
             <p className="text-muted-foreground">
               The AI Meditation Lab (AIM Lab) is an open-source project
-              exploring the intersection of artificial intelligence and
-              meditation.
+              exploring the intersection of AI and meditation.
             </p>
             <p className="text-muted-foreground">
               This is a place to test ideas, explore possibilities, and learn

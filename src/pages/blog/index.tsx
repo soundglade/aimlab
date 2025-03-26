@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getSortedPostsData, BlogPost } from "@/lib/blog";
 import { Layout } from "@/components/layout/Layout";
 
+const HIDDEN = true;
+
 interface BlogIndexProps {
   posts: BlogPost[];
 }
@@ -14,7 +16,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
         <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
           Latest from the Lab
         </h1>
-        <p className="max-w-2xl mx-auto text-muted-foreground">
+        <p className="text-muted-foreground mx-auto max-w-2xl">
           Explore our thoughts on AI meditation and the evolving intersection of
           technology.
         </p>
@@ -25,11 +27,11 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
           <Link
             href={`/blog/${post.slug}`}
             key={post.slug}
-            className="block group"
+            className="group block"
           >
             <article className="space-y-3">
               {post.date && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -37,7 +39,7 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
                   })}
                 </p>
               )}
-              <h2 className="text-xl font-medium md:text-2xl group-hover:text-primary transition-colors">
+              <h2 className="group-hover:text-primary text-xl font-medium transition-colors md:text-2xl">
                 {post.title}
               </h2>
               {post.excerpt && (
@@ -60,6 +62,15 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  if (HIDDEN) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const posts = getSortedPostsData();
   return {
     props: {
