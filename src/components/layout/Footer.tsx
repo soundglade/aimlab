@@ -3,14 +3,15 @@ import { Github } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="mt-10 w-full py-6">
-      <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-6 px-4 md:flex-row">
-        <div className="flex flex-col items-center md:items-start">
+    <footer className="mt-0 w-full py-6 md:mt-6">
+      <div className="mx-auto flex max-w-4xl flex-row items-center justify-around px-4">
+        <div className="flex flex-col items-start">
           <Link href="/" className="mb-1 flex items-center gap-2">
             <span className="text-sm font-medium">AIM Lab</span>
           </Link>
           <p className="text-muted-foreground text-xs">
-            The AI Meditation Playground
+            <span className="hidden md:inline">The AI Meditation</span>{" "}
+            Playground
           </p>
         </div>
 
@@ -23,7 +24,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="hidden md:block">
+        <div className="md:block">
           <ul className="space-y-1">
             <li>
               <Link
@@ -31,7 +32,8 @@ export function Footer() {
                 className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-xs transition-colors"
               >
                 <BlueSkyIcon className="h-4 w-4" />
-                SoundGlade on Bluesky
+                <span className="-mr-1 hidden md:inline">SoundGlade on</span>
+                Bluesky
               </Link>
             </li>
             <li>
@@ -40,7 +42,7 @@ export function Footer() {
                 className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-xs transition-colors"
               >
                 <Github className="h-4 w-4" />
-                GitHub Repository
+                GitHub<span className="-ml-1 hidden md:inline">Repository</span>
               </Link>
             </li>
           </ul>
