@@ -41,7 +41,7 @@ export default function MyMeditations() {
   };
 
   return (
-    <div className="mb-12">
+    <div>
       <Card>
         <CardContent>
           <div className="mb-4 flex items-center justify-between">

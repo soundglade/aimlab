@@ -41,6 +41,7 @@ const MyMeditations = dynamic(
 
 export default function LandingPage() {
   const router = useRouter();
+  const sectionBaseClasses = "mb-20 w-full px-4";
   const experiments = [
     {
       title: "Create Your Own Meditations with ChatGPT",
@@ -97,7 +98,9 @@ export default function LandingPage() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="mb-20 mt-6 flex w-full flex-col items-center px-4 text-center md:mt-12">
+      <section
+        className={`${sectionBaseClasses} mt-6 flex flex-col items-center text-center md:mt-12`}
+      >
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
         </h1>
@@ -120,7 +123,7 @@ export default function LandingPage() {
       <div id="experiments" className="invisible relative -top-4"></div>
 
       {/* Experiments */}
-      <section className="mb-20 hidden w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} hidden max-w-4xl`}>
         <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
           <Sparkles className="h-5 w-5" />
           Experiments
@@ -153,18 +156,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mb-20 w-full max-w-4xl px-4">
-        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
-          <Save className="h-5 w-5" />
-          My Meditations
-        </h2>
-        <MyMeditations />
-      </section>
-
       <div id="tools" className="invisible relative -top-4"></div>
 
       {/* Tools */}
-      <section className="mb-20 w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} max-w-4xl`}>
         <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
           <Wrench className="h-5 w-5" />
           Tools
@@ -225,10 +220,18 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className={`${sectionBaseClasses} max-w-4xl`}>
+        <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
+          <Save className="h-5 w-5" />
+          My Meditations
+        </h2>
+        <MyMeditations />
+      </section>
+
       <div id="community" className="invisible relative -top-4"></div>
 
       {/* Recent Community Meditations */}
-      <section className="mb-20 w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} max-w-4xl`}>
         <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
           <Users className="h-5 w-5" />
           Community
@@ -241,7 +244,7 @@ export default function LandingPage() {
       </section>
 
       {/* Reddit Posts */}
-      <section className="mb-20 hidden w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} hidden max-w-4xl`}>
         <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
           <MessageSquare className="h-5 w-5" />
           From Reddit
@@ -285,7 +288,7 @@ export default function LandingPage() {
       </section>
 
       {/* Latest from the Blog */}
-      <section className="mb-20 hidden w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} hidden max-w-4xl`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <BookOpen className="h-5 w-5" />
@@ -331,7 +334,7 @@ export default function LandingPage() {
       </section>
 
       {/* About */}
-      <section className="mb-10 hidden w-full max-w-4xl px-4">
+      <section className={`${sectionBaseClasses} mb-10 hidden max-w-4xl`}>
         <h2 className="mb-6 flex items-center gap-2 text-2xl tracking-tight">
           <Info className="h-5 w-5" />
           How This Works

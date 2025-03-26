@@ -145,7 +145,9 @@ export default function MeditationComposer() {
           </div>
 
           {/* My Meditations */}
-          <MyMeditations />
+          <div className="mb-12">
+            <MyMeditations />
+          </div>
 
           {/* Example AI Prompts */}
           <div className="mb-12">
