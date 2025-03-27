@@ -15,7 +15,7 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
   const [isCompleted] = useAtom(isCompletedAtom);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] space-y-8 text-center">
+    <div className="flex min-h-[400px] flex-col items-center justify-center space-y-8 text-center">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">
           {error
@@ -47,39 +47,37 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
       >
         {error ? (
           <>
-            <div className="flex justify-center mb-4">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-destructive/20">
-                <AlertCircle className="w-6 h-6 text-destructive" />
+            <div className="mb-4 flex justify-center">
+              <div className="bg-destructive/20 flex h-12 w-12 items-center justify-center rounded-full">
+                <AlertCircle className="text-destructive h-6 w-6" />
               </div>
             </div>
-            <p className="mb-4 text-destructive">{error}</p>
-            <p className="mb-4 text-muted-foreground">
+            <p className="text-destructive mb-4">{error}</p>
+            <p className="text-muted-foreground mb-4">
               Please try again or contact support if the issue persists.
             </p>
           </>
         ) : !isCompleted ? (
           <>
-            <div className="flex justify-center mb-4">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20">
-                <div className="w-8 h-8 rounded-full bg-primary/40 animate-pulse"></div>
+            <div className="mb-4 flex justify-center">
+              <div className="bg-primary/20 flex h-12 w-12 items-center justify-center rounded-full">
+                <div className="bg-primary/40 h-8 w-8 animate-pulse rounded-full"></div>
               </div>
             </div>
-            <p className="text-primary">
-              Your meditation is being generated with AI voice synthesis.
-            </p>
+            <p className="text-primary">Your meditation is being generated.</p>
           </>
         ) : (
           <>
-            <div className="flex justify-center mb-4">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20">
-                <Check className="w-6 h-6 text-primary" />
+            <div className="mb-4 flex justify-center">
+              <div className="bg-primary/20 flex h-12 w-12 items-center justify-center rounded-full">
+                <Check className="text-primary h-6 w-6" />
               </div>
             </div>
-            <p className="mb-4 text-primary">
+            <p className="text-primary mb-4">
               Your meditation is ready to play! Experience it now.
             </p>
             <Button className="w-full" onClick={onPlayMeditation}>
-              <Play className="w-4 h-4 mr-2" /> Play Meditation
+              <Play className="mr-2 h-4 w-4" /> Play Meditation
             </Button>
           </>
         )}

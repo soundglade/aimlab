@@ -77,10 +77,21 @@ export default function LandingPage() {
 
       {/* Recent Community Meditations */}
       <section className={`${sectionBaseClasses} max-w-4xl`}>
-        <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
-          <Users className="h-5 w-5" />
-          Community
-        </h2>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
+            <Users className="h-5 w-5" />
+            Community
+          </h2>
+          <Button variant="ghost" asChild size="sm">
+            <Link
+              href="/community"
+              className="text-muted-foreground flex items-center"
+            >
+              View all
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
         <p className="text-muted-foreground mb-6">
           See what others are experimenting with. These meditations are
           generated with the{" "}
