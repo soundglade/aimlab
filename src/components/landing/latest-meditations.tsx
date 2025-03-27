@@ -57,6 +57,7 @@ export default function LatestMeditations() {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {displayMeditations.map((meditation, index) => (
         <Button
+          key={index}
           type="button"
           variant="outline"
           className="hover:bg-accent group h-auto w-full justify-start px-4 py-2 transition-colors"
