@@ -1,8 +1,8 @@
-import { GetStaticProps } from "next";
 import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
 import { Meditation } from "@/lib/latest-meditations";
 import { getLatestMeditations } from "@/lib/latest-meditations";
+import { GetServerSideProps } from "next";
 
 interface CommunityIndexProps {
   latestMeditations: Meditation[];
@@ -49,7 +49,7 @@ export default function CommunityIndex({
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const latestMeditations = await getLatestMeditations(Infinity);
   return {
     props: {
