@@ -17,6 +17,7 @@ import {
   isCompletedAtom,
   meditationUrlAtom,
   voiceIdAtom,
+  resetAtoms,
 } from "./atoms";
 
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
@@ -49,14 +50,7 @@ const ComposerFlowDialog = ({
     if (!newOpen) {
       // Reset all state variables when dialog is closed
       setTimeout(() => {
-        setStep(1);
-        setMeditationScript("");
-        setStructuredMeditation(null);
-        setEditableMarkdown("");
-        setProgress(0);
-        setIsCompleted(false);
-        setMeditationUrl(null);
-        setError(null);
+        resetAtoms();
       }, 300); // Small delay to ensure dialog is closed before resetting state
     }
     onOpenChange(newOpen);
