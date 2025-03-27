@@ -1,69 +1,63 @@
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { getSortedPostsData, BlogPost } from "@/lib/blog";
 import { Layout } from "@/components/layout/Layout";
+import { Meditation } from "@/lib/latest-meditations";
+import { getLatestMeditations } from "@/lib/latest-meditations";
 
-interface BlogIndexProps {
-  posts: BlogPost[];
+interface CommunityIndexProps {
+  latestMeditations: Meditation[];
 }
 
-export default function BlogIndex({ posts }: BlogIndexProps) {
+export default function CommunityIndex({
+  latestMeditations,
+}: CommunityIndexProps) {
   return (
     <Layout variant="page">
       <header className="mb-20 text-center">
         <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
-          Latest from the Lab
+          Community Meditations
         </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
-          Explore our thoughts on AI meditation and the evolving intersection of
-          technology.
+          Explore meditations shared by our community
         </p>
       </header>
 
-      <div className="space-y-12">
-        {posts.map((post) => (
-          <Link
-            href={`/blog/${post.slug}`}
-            key={post.slug}
-            className="group block"
-          >
-            <article className="space-y-3">
-              {post.date && (
-                <p className="text-muted-foreground text-sm">
-                  {new Date(post.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              )}
-              <h2 className="group-hover:text-primary text-xl font-medium transition-colors md:text-2xl">
-                {post.title}
-              </h2>
-              {post.excerpt && (
-                <p className="text-muted-foreground">{post.excerpt}</p>
-              )}
-            </article>
-          </Link>
-        ))}
-      </div>
-
-      {posts.length === 0 && (
-        <div className="py-12 text-center">
-          <p className="text-muted-foreground">
-            No posts available yet. Check back soon!
+      <div className="space-y-6">
+        {latestMeditations.length > 0 ? (
+          <ul className="space-y-4">
+            {latestMeditations.map((meditation) => (
+              <li
+                key={meditation.link}
+                className="hover:bg-muted/50 rounded-lg border p-4 transition-colors"
+              >
+                <Link href={meditation.link} className="block space-y-2">
+                  <h2 className="text-lg font-medium">{meditation.title}</h2>
+                  <p className="text-muted-foreground">
+                    {meditation.description}
+                  </p>
+                  <div className="text-muted-foreground flex justify-between text-sm">
+                    <span>{meditation.duration}</span>
+                    <span>{meditation.timeAgo}</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted-foreground text-center">
+            No meditations found
           </p>
-        </div>
-      )}
+        )}
+      </div>
     </Layout>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const posts = getSortedPostsData();
+  const latestMeditations = await getLatestMeditations(Infinity);
   return {
     props: {
-      posts,
+      latestMeditations,
     },
   };
 };
