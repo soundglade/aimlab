@@ -7,25 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ArrowRight,
-  Github,
-  Users,
-  BookOpen,
-  Sparkles,
-  Calendar,
-} from "lucide-react";
+import { ArrowRight, Users, BookOpen, Calendar } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
-import dynamic from "next/dynamic";
-
-const LatestMeditations = dynamic(() => import("./latest-meditations"), {
-  ssr: false,
-  loading: () => (
-    <p className="text-muted-foreground text-center">
-      Loading community meditations...
-    </p>
-  ),
-});
+import LatestMeditations from "./latest-meditations";
 
 export default function LandingPage() {
   const sectionBaseClasses = "mb-20 w-full px-4";

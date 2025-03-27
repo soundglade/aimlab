@@ -38,7 +38,7 @@ export default function LatestMeditations() {
 
   // Fallback states
   if (loading) {
-    return <div className="p-4 text-center">Loading latest meditations...</div>;
+    return null;
   }
 
   if (error) {
