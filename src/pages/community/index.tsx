@@ -12,8 +12,8 @@ export default function CommunityIndex({
   latestMeditations,
 }: CommunityIndexProps) {
   return (
-    <Layout variant="page">
-      <header className="mb-20 text-center">
+    <Layout>
+      <header className="mb-10 mt-10 text-center md:mt-14">
         <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
           Community Meditations
         </h1>
@@ -22,23 +22,19 @@ export default function CommunityIndex({
         </p>
       </header>
 
-      <div className="space-y-6">
+      <div className="space-y-6 px-2">
         {latestMeditations.length > 0 ? (
           <ul className="space-y-4">
             {latestMeditations.map((meditation) => (
-              <li
-                key={meditation.link}
-                className="hover:bg-muted/50 rounded-lg border p-4 transition-colors"
-              >
-                <Link href={meditation.link} className="block space-y-2">
-                  <h2 className="text-lg font-medium">{meditation.title}</h2>
-                  <p className="text-muted-foreground">
-                    {meditation.description}
-                  </p>
-                  <div className="text-muted-foreground flex justify-between text-sm">
-                    <span>{meditation.duration}</span>
-                    <span>{meditation.timeAgo}</span>
-                  </div>
+              <li key={meditation.link}>
+                <Link
+                  href={meditation.link}
+                  className="hover:bg-accent flex justify-between gap-6 rounded-lg border p-4 transition-colors"
+                >
+                  <h2 className="text-md">{meditation.title}</h2>
+                  <span className="text-muted-foreground text-sm">
+                    {meditation.timeAgo}
+                  </span>
                 </Link>
               </li>
             ))}
