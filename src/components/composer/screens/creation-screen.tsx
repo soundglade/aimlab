@@ -36,7 +36,6 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
       {!isCompleted && !error && (
         <>
           <Progress value={progress} className="w-full max-w-md" />
-          <p className="text-muted-foreground">Generating audio segments...</p>
         </>
       )}
 

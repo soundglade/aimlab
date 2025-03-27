@@ -1,8 +1,21 @@
 import { ElevenLabsClient } from "elevenlabs";
 import { Readable } from "stream";
 
-const DEFAULT_VOICE_ID = "CiwzbDpaN3pQXjTgx3ML";
-const DEFAULT_MODEL_ID = "eleven_multilingual_v2";
+const DEFAULT_VOICE_ID = "wgHvco1wiREKN0BdyVx5";
+const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
+
+/**
+ * Transforms speech text by adding pauses between sentences
+ * @param text Text to transform
+ * @returns Text with pause markers added between sentences
+ */
+export function transformSpeechText(text: string): string {
+  const pauseMarker = '<break time="2s" />';
+
+  // Regular expression to match the end of sentences followed by space
+  // Uses capturing groups to preserve the original spacing after sentence ending
+  return text.replace(/([.!?])(\s+)/g, `$1 ${pauseMarker}$2`);
+}
 
 /**
  * Generate speech using ElevenLabs TTS and convert PCM to WAV
@@ -15,12 +28,18 @@ export async function generateSpeech(text: string): Promise<ArrayBuffer> {
       apiKey: process.env.ELEVENLABS_API_KEY,
     });
 
+    // Transform the text to add pauses between sentences
+    const transformedText = transformSpeechText(text);
+
     // Request PCM data from ElevenLabs
     const audio = await elevenlabs.generate({
       voice: DEFAULT_VOICE_ID,
-      text,
+      text: transformedText,
       model_id: DEFAULT_MODEL_ID,
       output_format: "pcm_24000",
+      voice_settings: {
+        speed: 0.85,
+      },
     });
 
     // Convert stream to PCM buffer

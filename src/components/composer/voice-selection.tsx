@@ -19,16 +19,10 @@ export const VOICES = [
     previewFile: "/assets/nicole-kokoro-voice-sample.mp3",
   },
   {
-    id: "michael",
-    name: "Michael",
-    description: "Kokoro TTS",
-    previewFile: "/assets/nicole-kokoro-voice-sample.mp3", // Using same file for demo
-  },
-  {
-    id: "emma",
-    name: "Emma",
-    description: "Kokoro TTS",
-    previewFile: "/assets/nicole-kokoro-voice-sample.mp3", // Using same file for demo
+    id: "drew",
+    name: "Drew",
+    description: "ElevenLabs",
+    previewFile: "/assets/drew-elevenlabs-voice-sample.mp3",
   },
 ];
 

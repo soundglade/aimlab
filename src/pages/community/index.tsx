@@ -22,7 +22,7 @@ export default function CommunityIndex({
         </p>
       </header>
 
-      <div className="space-y-6 px-2">
+      <div className="mb-10 space-y-6 px-2">
         {latestMeditations.length > 0 ? (
           <ul className="space-y-4">
             {latestMeditations.map((meditation) => (
