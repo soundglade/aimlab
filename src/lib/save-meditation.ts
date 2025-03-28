@@ -3,6 +3,7 @@ import path from "path";
 import { customAlphabet } from "nanoid";
 import { Meditation } from "@/components/types";
 import crypto from "crypto";
+import { flushMeditationCache } from "@/lib/latest-meditations";
 
 const generateMeditationId = customAlphabet(
   "0123456789abcdefghijklmnopqrstuvwxyz",
@@ -56,6 +57,8 @@ export async function saveMeditation(
     // Generate URL
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const url = `${baseUrl}/m/${meditationId}`;
+
+    flushMeditationCache();
 
     return { url, meditationId, ownerKey };
   } catch (error) {
