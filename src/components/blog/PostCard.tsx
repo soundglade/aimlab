@@ -19,7 +19,7 @@ export function PostCard({ post }: PostCardProps) {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">{post.title}</CardTitle>
-        <div className="flex items-center text-xs text-muted-foreground">
+        <div className="text-muted-foreground flex items-center text-xs">
           <span>{post.date}</span>
         </div>
       </CardHeader>
@@ -29,11 +29,11 @@ export function PostCard({ post }: PostCardProps) {
       <CardFooter>
         <Button variant="ghost" asChild className="px-0">
           <Link
-            href={`/blog/${post.slug}`}
-            className="flex items-center text-primary"
+            href={`/articles/${post.slug}`}
+            className="text-primary flex items-center"
           >
             Read article
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </Button>
       </CardFooter>

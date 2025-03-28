@@ -92,11 +92,11 @@ export default function LandingPage({
           <BookOpen className="h-5 w-5" />
           Articles
         </h2>
-        <div className="md:border-1 mt-8 max-w-4xl rounded-xl px-0 py-4 md:mb-5 md:mt-10 md:bg-white md:px-10 md:py-10 dark:md:bg-gray-900">
+        <div className="border-1 mt-8 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:mb-5 md:mt-10 md:px-10 md:py-10">
           <div className="space-y-12">
             {blogPosts.map((post) => (
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/articles/${post.slug}`}
                 key={post.slug}
                 className="group block"
               >
