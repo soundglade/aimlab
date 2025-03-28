@@ -86,13 +86,13 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Latest from the Blog */}
+      {/* Articles */}
       <section className={`${sectionBaseClasses} max-w-4xl`}>
         <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
           <BookOpen className="h-5 w-5" />
           Articles
         </h2>
-        <div className="border-1 mt-8 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:mb-5 md:mt-10 md:px-10 md:py-10">
+        <div className="border-1 mt-8 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:mt-10 md:px-10 md:py-10">
           <div className="space-y-12">
             {blogPosts.map((post) => (
               <Link
