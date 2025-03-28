@@ -33,10 +33,10 @@ export default function LandingPage({
           The AI Meditation Playground
         </h2>
         <p className="text-muted-foreground mb-10 max-w-2xl">
-          Welcome to AIM Lab, a creative hub to explore the intersection of AI
-          and meditation.
+          Welcome to AIM Lab, a creative hub to explore AI and meditation.
           <br className="hidden md:block" />
-          We've designed this space to empower you to do your own experiments.
+          We've designed this space for collaborative experimentation and
+          discovery.
         </p>
         <Button asChild size="lg" className="group">
           <Link href="/composer">
@@ -53,7 +53,7 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
             <Users className="h-5 w-5" />
-            Community
+            Community Meditations
           </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
@@ -65,10 +65,7 @@ export default function LandingPage({
             </Link>
           </Button>
         </div>
-        <p className="text-muted-foreground mb-6">
-          See what others are experimenting with. Here are the latest
-          meditations generated.
-        </p>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {latestMeditations.map((meditation, index) => (
             <Button

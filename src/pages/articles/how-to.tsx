@@ -385,17 +385,22 @@ Find a comfortable position — sitting or lying down — and gently allow your 
 
 Begin by taking a deep breath in through the nose…  
 and slowly out through the mouth.  
+[pause]
+
 One more time — breathe in deeply…  
-and exhale fully, letting go.
+and exhale fully, letting go.  
+[pause]
 
 Now, let your breath return to a natural rhythm.  
 No need to change it. Just observe it.  
 Feel the gentle rise and fall of your chest…  
-the subtle movement of air in and out of your nostrils.
+the subtle movement of air in and out of your nostrils.  
+[pause]
 
 With each inhale, feel your body receive.  
 With each exhale, feel it release.  
-Let go of any tension. Let go of any effort.
+Let go of any tension. Let go of any effort.  
+[pause]
 
 If thoughts arise — that’s okay. That’s natural.  
 Acknowledge them, then gently guide your attention back to the breath.  
@@ -403,22 +408,24 @@ Back to this moment.
 
 Notice where you feel the breath the most —  
 Maybe in your belly, your chest, or the tip of your nose.  
-Rest your awareness there.
+Rest your awareness there.  
+[pause]
 
 With each breath, allow yourself to soften a little more.  
 Imagine the breath as a gentle wave, arriving… departing…  
-bringing you home to yourself.
+bringing you home to yourself.  
+[pause]
 
 For these next few moments, rest in stillness.  
-There is nothing to do. Nowhere to be. Just this breath.
-
+There is nothing to do. Nowhere to be. Just this breath.  
 [pause for 30–60 seconds]
 
 And now, gently bring your awareness back to your body.  
 Wiggle your fingers and toes…  
 Notice the support beneath you.  
 Take one more deep, nourishing breath in…  
-and slowly exhale.
+and slowly exhale.  
+[pause]
 
 When you're ready, open your eyes.
 
