@@ -10,26 +10,10 @@ import {
 import { ArrowRight, Users, BookOpen, Calendar } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import LatestMeditations from "./latest-meditations";
+import { BlogPost } from "@/lib/blog";
 
-export default function LandingPage() {
+export default function LandingPage({ blogPosts }: { blogPosts: BlogPost[] }) {
   const sectionBaseClasses = "mb-20 w-full px-4";
-
-  const blogPosts = [
-    {
-      title: "The Science Behind AI-Generated Meditations",
-      date: "June 15, 2023",
-      excerpt:
-        "Exploring how artificial intelligence can create effective meditation scripts and what this means for meditation practices.",
-      link: "/blog/science-behind-ai-meditations",
-    },
-    {
-      title: "5 Ways to Enhance Your Meditation Practice with Technology",
-      date: "May 22, 2023",
-      excerpt:
-        "Discover how modern technology, including AI tools, can deepen your meditation practice rather than distract from it.",
-      link: "/blog/enhance-meditation-with-technology",
-    },
-  ];
 
   return (
     <Layout>
@@ -100,7 +84,7 @@ export default function LandingPage() {
             </Link>
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6">
           {blogPosts.map((post, index) => (
             <Card key={index}>
               <CardHeader className="pb-2">
@@ -116,7 +100,7 @@ export default function LandingPage() {
               <CardFooter>
                 <Button variant="ghost" asChild className="px-0">
                   <Link
-                    href={post.link}
+                    href={`/blog/${post.slug}`}
                     className="text-primary flex items-center"
                   >
                     Read article
