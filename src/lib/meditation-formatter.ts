@@ -86,6 +86,7 @@ Steps to follow:
    - For each piece of user-facing guidance, use "speech".
    - For silent intervals, use "pause", with an approximate "duration" in seconds.
    - For headings or titles, use "type": "heading" with the text content.
+   - IMPORTANT: Do not split sentences between steps. Keep complete sentences together within the same step.
    - If some parts of the script can't be handled perfectly, produce them in the nearest workable format 
      AND add a note in the "warnings" array.
 4) OUTPUT:
