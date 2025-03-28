@@ -10,7 +10,7 @@ const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
  * @returns Text with pause markers added between sentences
  */
 export function transformSpeechText(text: string): string {
-  const pauseMarker = '<break time="2s" />';
+  const pauseMarker = '<break time="1.5s" />';
 
   // Regular expression to match the end of sentences followed by space
   // Uses capturing groups to preserve the original spacing after sentence ending

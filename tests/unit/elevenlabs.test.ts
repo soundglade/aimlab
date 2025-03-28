@@ -6,7 +6,7 @@ describe("ElevenLabs utilities", () => {
     it("should add pause markers between sentences", () => {
       const input = "Take a deep breath. Exhale smiling.";
       const expected =
-        'Take a deep breath. <break time="2s" /> Exhale smiling.';
+        'Take a deep breath. <break time="1.5s" /> Exhale smiling.';
 
       expect(transformSpeechText(input)).toBe(expected);
     });
@@ -14,7 +14,7 @@ describe("ElevenLabs utilities", () => {
     it("should handle multiple sentences with different punctuation", () => {
       const input = "Hello there! How are you? I'm doing well. Thank you.";
       const expected =
-        'Hello there! <break time="2s" /> How are you? <break time="2s" /> I\'m doing well. <break time="2s" /> Thank you.';
+        'Hello there! <break time="1.5s" /> How are you? <break time="1.5s" /> I\'m doing well. <break time="1.5s" /> Thank you.';
 
       expect(transformSpeechText(input)).toBe(expected);
     });
@@ -39,7 +39,8 @@ describe("ElevenLabs utilities", () => {
 
     it("should handle sentences with multiple spaces between them", () => {
       const input = "First sentence.  Second sentence.";
-      const expected = 'First sentence. <break time="2s" />  Second sentence.';
+      const expected =
+        'First sentence. <break time="1.5s" />  Second sentence.';
 
       expect(transformSpeechText(input)).toBe(expected);
     });
