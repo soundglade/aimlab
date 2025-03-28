@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, BookOpen } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 
-import { BlogPost } from "@/lib/blog";
+import { BlogPost } from "@/pages/index";
 import { Meditation } from "@/lib/latest-meditations";
 import { useRouter } from "next/router";
 export default function LandingPage({
