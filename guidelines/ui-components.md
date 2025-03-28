@@ -3,7 +3,7 @@
 ## Component Library
 
 - We use shadcn/ui as our primary component library
-- Install missing shadcn/ui components using `npx shadcn@canary add componentname`
+- Install missing shadcn/ui components using `npx shadcn@latest add componentname`
 - Follow the implementation patterns in existing components for consistency
 
 ## UX Guidelines

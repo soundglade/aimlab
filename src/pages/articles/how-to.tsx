@@ -1,4 +1,16 @@
 import { PostLayout } from "@/components/blog/PostLayout";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import Markdown from "react-markdown";
+import Link from "next/link";
+
+function MarkdownChatSample({ content }: { content: string }) {
+  return (
+    <ScrollArea className="bg-muted border-1 h-[500px] rounded-md px-4 py-4 md:h-[600px] md:px-12 md:py-12">
+      <Markdown>{content}</Markdown>
+    </ScrollArea>
+  );
+}
 
 export default function HowToBlogPost() {
   return (
@@ -42,9 +54,11 @@ export default function HowToBlogPost() {
 
           <p>In a nutshell:</p>
           <ol>
-            <li>Gather inspiration</li>
+            <li>Gather inspiration material (optional)</li>
             <li>Generate and refine with chatbot</li>
-            <li>Synthesize with Meditation Composer</li>
+            <li>
+              Synthesize with <Link href="/composer">Meditation Composer</Link>
+            </li>
           </ol>
 
           <p>
@@ -67,19 +81,23 @@ export default function HowToBlogPost() {
           </p>
 
           <blockquote>
-            Generate a meditation script for a 10mn guided meditation.
+            Generate a short meditation script for a guided meditation.
           </blockquote>
 
-          <p>It's really as simple as that!</p>
+          <p>
+            It's really as simple as that! Here is an example of an answer you
+            can get from the chatbot:
+          </p>
 
-          <blockquote>[example here - summary that is togglable]</blockquote>
+          <MarkdownChatSample content={answerSample} />
 
           <h3>Pauses</h3>
 
           <p>
-            Except, there is an extra important step I recommend: ask it to
-            refine the script further by adding proper{" "}
-            <strong>pauses markers</strong>.
+            You can keep refining the script with the chatbot as much as you
+            like. An important aspect to consider is to make sure the script has
+            appropriate <strong>pauses markers</strong>. If there are none, you
+            can ask it to add them.
           </p>
 
           <blockquote>
@@ -100,8 +118,6 @@ export default function HowToBlogPost() {
             that the Meditation Player could allow you to customize the length
             further at the moment of play.
           </p>
-
-          <p>Here is the script refined</p>
 
           <h3>The Meditation Composer</h3>
 
@@ -357,3 +373,58 @@ export default function HowToBlogPost() {
     />
   );
 }
+
+const answerSample = `Absolutely — here’s a short and calming meditation script you can use for a 5–7 minute guided meditation. It's centered on breath awareness and present-moment grounding.
+
+---
+
+**Title: "Coming Home to the Breath"**
+
+Welcome.  
+Find a comfortable position — sitting or lying down — and gently allow your eyes to close, or soften your gaze.
+
+Begin by taking a deep breath in through the nose…  
+and slowly out through the mouth.  
+One more time — breathe in deeply…  
+and exhale fully, letting go.
+
+Now, let your breath return to a natural rhythm.  
+No need to change it. Just observe it.  
+Feel the gentle rise and fall of your chest…  
+the subtle movement of air in and out of your nostrils.
+
+With each inhale, feel your body receive.  
+With each exhale, feel it release.  
+Let go of any tension. Let go of any effort.
+
+If thoughts arise — that’s okay. That’s natural.  
+Acknowledge them, then gently guide your attention back to the breath.  
+Back to this moment.
+
+Notice where you feel the breath the most —  
+Maybe in your belly, your chest, or the tip of your nose.  
+Rest your awareness there.
+
+With each breath, allow yourself to soften a little more.  
+Imagine the breath as a gentle wave, arriving… departing…  
+bringing you home to yourself.
+
+For these next few moments, rest in stillness.  
+There is nothing to do. Nowhere to be. Just this breath.
+
+[pause for 30–60 seconds]
+
+And now, gently bring your awareness back to your body.  
+Wiggle your fingers and toes…  
+Notice the support beneath you.  
+Take one more deep, nourishing breath in…  
+and slowly exhale.
+
+When you're ready, open your eyes.
+
+Welcome back.
+
+---
+
+Let me know if you'd like it themed differently — like nature-based, body scan, loving-kindness, or something more playful or poetic.
+`;

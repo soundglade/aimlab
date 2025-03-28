@@ -13,6 +13,12 @@ export type BlogPost = {
 // Hardcoded blog posts data
 const blogPosts: BlogPost[] = [
   {
+    slug: "first-experiments",
+    title: "Creative examples",
+    date: "March 28, 2025",
+    excerpt: "An inspiring list of creative ways to generate meditations",
+  },
+  {
     slug: "how-to",
     title: "How-to create guided meditations",
     date: "March 27, 2025",
@@ -25,12 +31,6 @@ const blogPosts: BlogPost[] = [
     date: "March 26, 2025",
     excerpt:
       "A personal intro to AIMlab. What is it, why I've created and some more important considerations.",
-  },
-  {
-    slug: "first-experiments",
-    title: "Creative examples",
-    date: "March 28, 2025",
-    excerpt: "An inspiring list of creative ways to generate meditations",
   },
 ];
 
