@@ -72,7 +72,7 @@ export default function LandingPage({
               key={index}
               type="button"
               variant="outline"
-              className="hover:bg-accent group h-auto w-full justify-start px-4 py-2 transition-colors"
+              className="hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors"
               onClick={() => handleMeditationClick(meditation.link)}
             >
               <div className="flex w-full items-center gap-2 overflow-hidden text-left">

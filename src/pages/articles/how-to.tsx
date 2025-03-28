@@ -186,11 +186,13 @@ export default function HowToBlogPost() {
           </p>
 
           <p>
-            Ok, so we just created our first meditation! Here is how the daily
+            Ok, so we just created our first meditation! Here is how the
             meditation looks like in the Meditation Player.
           </p>
 
-          <blockquote>link here</blockquote>
+          <Link href="https://aimlab.soundglade.com/m/jftmpv6">
+            Play to the meditation
+          </Link>
 
           <h2>Adding sources of inspirations</h2>
 
