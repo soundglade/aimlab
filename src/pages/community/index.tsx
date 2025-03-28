@@ -18,7 +18,7 @@ export default function CommunityIndex({
           Community Meditations
         </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
-          Explore meditations shared by our community
+          Explore all meditations created and shared
         </p>
       </header>
 

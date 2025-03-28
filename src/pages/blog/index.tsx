@@ -14,10 +14,6 @@ export default function BlogIndex({ posts }: BlogIndexProps) {
         <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
           Latest from the Blog
         </h1>
-        <p className="text-muted-foreground mx-auto max-w-2xl">
-          Explore our thoughts on AI meditation and the evolving intersection of
-          technology.
-        </p>
       </header>
 
       <div className="space-y-12">
