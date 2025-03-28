@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import { flushMeditationCache } from "@/lib/latest-meditations";
 
 // Validate meditation ID format to prevent directory traversal
 function isValidMeditationId(id: string): boolean {
@@ -60,6 +61,8 @@ export default async function handler(
     ]);
 
     await fs.rmdir(meditationDir).catch(() => {});
+
+    flushMeditationCache();
 
     return res.status(200).json({ success: true });
   } catch (error) {

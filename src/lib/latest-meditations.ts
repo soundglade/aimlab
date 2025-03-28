@@ -79,6 +79,24 @@ export async function getLatestMeditations(
   }
 }
 
+/**
+ * Flushes the meditation cache by removing the cache file.
+ * This forces getLatestMeditations to regenerate the cache on next call.
+ * @returns {boolean} True if cache was successfully flushed, false if there was an error
+ */
+export function flushMeditationCache(): boolean {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      fs.unlinkSync(CACHE_FILE);
+      return true;
+    }
+    return false; // Cache file didn't exist
+  } catch (error) {
+    console.error("Error flushing meditation cache:", error);
+    return false;
+  }
+}
+
 function getTimeAgo(timestamp: number) {
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
 
