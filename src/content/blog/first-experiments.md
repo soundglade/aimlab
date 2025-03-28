@@ -1,7 +1,7 @@
 ---
-title: "First experiments"
+title: "Creative examples"
 date: "March 28, 2025"
-excerpt: "A step-by-step guide on creating custom guided meditations by using AI chatbots to generate personalized scripts, adding pause markers, and synthesizing them with the Meditation Composer."
+excerpt: "An inspiring list of creative ways to generate meditations"
 ---
 
 Hi there,

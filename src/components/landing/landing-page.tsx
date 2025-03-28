@@ -2,11 +2,23 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, BookOpen } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
-import LatestMeditations from "./latest-meditations";
-import { BlogPost } from "@/lib/blog";
 
-export default function LandingPage({ blogPosts }: { blogPosts: BlogPost[] }) {
+import { BlogPost } from "@/lib/blog";
+import { Meditation } from "@/lib/latest-meditations";
+import { useRouter } from "next/router";
+export default function LandingPage({
+  blogPosts,
+  latestMeditations,
+}: {
+  blogPosts: BlogPost[];
+  latestMeditations: Meditation[];
+}) {
+  const router = useRouter();
   const sectionBaseClasses = "mb-20 w-full px-4";
+
+  const handleMeditationClick = (url: string) => {
+    router.push(url);
+  };
 
   return (
     <Layout>
@@ -57,16 +69,30 @@ export default function LandingPage({ blogPosts }: { blogPosts: BlogPost[] }) {
           See what others are experimenting with. Here are the latest
           meditations generated.
         </p>
-        <LatestMeditations />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {latestMeditations.map((meditation, index) => (
+            <Button
+              key={index}
+              type="button"
+              variant="outline"
+              className="hover:bg-accent group h-auto w-full justify-start px-4 py-2 transition-colors"
+              onClick={() => handleMeditationClick(meditation.link)}
+            >
+              <div className="flex w-full items-center gap-2 overflow-hidden text-left">
+                <span className="truncate">{meditation.title}</span>
+              </div>
+            </Button>
+          ))}
+        </div>
       </section>
 
       {/* Latest from the Blog */}
       <section className={`${sectionBaseClasses} max-w-4xl`}>
         <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
           <BookOpen className="h-5 w-5" />
-          Blog
+          Articles
         </h2>
-        <div className="md:border-1 md:px-19 mt-10 max-w-4xl rounded-xl px-4 py-6 md:mb-5 md:bg-white md:py-12 md:shadow-sm dark:md:bg-gray-900">
+        <div className="md:border-1 mt-8 max-w-4xl rounded-xl px-0 py-4 md:mb-5 md:mt-10 md:bg-white md:px-10 md:py-10 dark:md:bg-gray-900">
           <div className="space-y-12">
             {blogPosts.map((post) => (
               <Link
