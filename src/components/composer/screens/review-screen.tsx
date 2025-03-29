@@ -24,22 +24,22 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold">Review Your Meditation</h2>
+        <h2 className="text-2xl tracking-tight">Review Your Meditation</h2>
         <p className="text-muted-foreground">
           We've structured your meditation script. Review it to make sure it
           looks good.
         </p>
       </div>
 
-      <div className="space-y-6 bg-card border rounded-md p-4 max-h-[400px] overflow-y-auto">
-        <h1 className="text-2xl font-bold">
-          # {structuredMeditation?.title || "Micro Meditation"}
+      <div className="text-muted-foreground max-h-[400px] overflow-y-auto rounded-md border p-4">
+        <h1 className="text-foreground text-xl">
+          {structuredMeditation?.title || "Micro Meditation"}
         </h1>
 
         {structuredMeditation?.steps.map((item, index) => {
           if (item.type === "heading") {
             return (
-              <h2 key={index} className="mt-6 text-xl font-semibold">
+              <h2 key={index} className="text-foreground mt-6 text-lg">
                 {item.text}
               </h2>
             );
@@ -53,9 +53,9 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
             return (
               <div
                 key={index}
-                className="inline-flex items-center px-3 py-2 my-3 bg-muted text-primary rounded-md"
+                className="bg-muted my-3 inline-flex items-center rounded-md px-3 py-2"
               >
-                <Clock className="w-4 h-4 mr-2" /> Pause: {item.duration}{" "}
+                <Clock className="mr-2 h-4 w-4" /> Pause: {item.duration}{" "}
                 seconds
               </div>
             );
@@ -64,12 +64,12 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
         })}
       </div>
 
-      <div className="flex pt-4 space-x-4">
+      <div className="flex space-x-4 pt-4">
         <Button variant="outline" className="flex-1" onClick={handleEdit}>
-          <Undo className="w-4 h-4 mr-2" /> Edit
+          <Undo className="mr-2 h-4 w-4" /> Edit
         </Button>
         <Button className="flex-1" onClick={handleContinue}>
-          <Check className="w-4 h-4 mr-2" /> Confirm & Create
+          <Check className="mr-2 h-4 w-4" /> Confirm & Create
         </Button>
       </div>
     </div>

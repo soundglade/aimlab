@@ -17,7 +17,7 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center space-y-8 text-center">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-2xl tracking-tight">
           {error
             ? "Meditation Creation Failed"
             : isCompleted
@@ -73,10 +73,10 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
               </div>
             </div>
             <p className="text-primary mb-4">
-              Your meditation is ready to play! Experience it now.
+              Your meditation is ready to play!
             </p>
             <Button className="w-full" onClick={onPlayMeditation}>
-              <Play className="mr-2 h-4 w-4" /> Play Meditation
+              Play Meditation <Play className="mr-2 h-4 w-4" />
             </Button>
           </>
         )}
