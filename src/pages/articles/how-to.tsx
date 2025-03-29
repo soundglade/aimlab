@@ -1,5 +1,6 @@
 import { PostLayout } from "@/components/blog/PostLayout";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 import Markdown from "react-markdown";
 import Link from "next/link";
@@ -12,7 +13,7 @@ function MarkdownChatSample({ content }: { content: string }) {
   );
 }
 
-export default function HowToBlogPost() {
+export default function BlogPost() {
   return (
     <PostLayout
       title="How-to create guided meditations"
@@ -186,13 +187,20 @@ export default function HowToBlogPost() {
           </p>
 
           <p>
-            Ok, so we just created our first meditation! Here is how the
-            meditation looks like in the Meditation Player.
+            Ok! We just created our first meditation! Here is how the meditation
+            looks like in the Meditation Player.
           </p>
 
-          <Link href="https://aimlab.soundglade.com/m/jftmpv6">
-            Play to the meditation
-          </Link>
+          <div className="flex justify-center">
+            <Button asChild variant="default" className="mb-10 mt-10">
+              <Link
+                href="https://aimlab.soundglade.com/m/jftmpv6"
+                className="no-underline"
+              >
+                Play Meditation
+              </Link>
+            </Button>
+          </div>
 
           <h2>Adding sources of inspirations</h2>
 
@@ -376,7 +384,7 @@ export default function HowToBlogPost() {
   );
 }
 
-const answerSample = `Absolutely — here’s a short and calming meditation script you can use for a 5–7 minute guided meditation. It's centered on breath awareness and present-moment grounding.
+const answerSample = `Absolutely — here's a short and calming meditation script you can use for a 5–7 minute guided meditation. It's centered on breath awareness and present-moment grounding.
 
 ---
 
@@ -404,7 +412,7 @@ With each exhale, feel it release.
 Let go of any tension. Let go of any effort.  
 [pause]
 
-If thoughts arise — that’s okay. That’s natural.  
+If thoughts arise — that's okay. That's natural.  
 Acknowledge them, then gently guide your attention back to the breath.  
 Back to this moment.
 
@@ -416,10 +424,6 @@ Rest your awareness there.
 With each breath, allow yourself to soften a little more.  
 Imagine the breath as a gentle wave, arriving… departing…  
 bringing you home to yourself.  
-[pause]
-
-For these next few moments, rest in stillness.  
-There is nothing to do. Nowhere to be. Just this breath.  
 [pause for 30–60 seconds]
 
 And now, gently bring your awareness back to your body.  

@@ -1,6 +1,6 @@
 import { PostLayout } from "@/components/blog/PostLayout";
 
-export default function FirstExperimentsBlogPost() {
+export default function BlogPost() {
   return (
     <PostLayout
       title="Creative examples"
@@ -36,9 +36,9 @@ export default function FirstExperimentsBlogPost() {
           </p>
 
           <blockquote>
-            Generate a meditation script for a 10mn daily guided meditation in
-            the style of Sam Harris's Waking Up app. Add pause markers in the
-            format [pause for xx seconds]
+            Generate a meditation script for a daily guided meditation in the
+            style of Sam Harris's Waking Up app. Add pause markers in the format
+            [pause for xx seconds]
           </blockquote>
 
           <p>

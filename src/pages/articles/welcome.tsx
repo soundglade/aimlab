@@ -1,6 +1,6 @@
 import { PostLayout } from "@/components/blog/PostLayout";
 
-export default function WelcomeBlogPost() {
+export default function BlogPost() {
   return (
     <PostLayout
       title="Welcome to AIMlab: what and why"
