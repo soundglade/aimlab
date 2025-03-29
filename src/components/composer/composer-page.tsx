@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Lightbulb, Users, CircleHelp } from "lucide-react";
+import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
 import dynamic from "next/dynamic";
@@ -30,14 +31,14 @@ export default function ComposerPage() {
             <ul className="list-inside space-y-2 md:list-disc">
               <li>
                 Use{" "}
-                <a
+                <Link
                   href="https://chatgpt.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
                   ChatGPT
-                </a>{" "}
+                </Link>{" "}
                 or another AI tool to generate and refine a meditation script
                 based on your preferences
               </li>
@@ -95,36 +96,36 @@ const ResourcesInfoBar = () => {
       <div className="text-muted-foreground flex flex-col items-center space-y-4 md:flex-row md:space-x-6 md:space-y-0">
         <div className="flex items-center">
           <CircleHelp className="mr-2 h-4 w-4" />
-          <a
+          <Link
             href="/articles/how-to"
             className="text-primary hover:text-primary hover:underline"
           >
             How to Create Meditations
-          </a>
+          </Link>
         </div>
 
         <div className="bg-border hidden h-4 w-px md:block"></div>
 
         <div className="flex items-center">
           <Lightbulb className="mr-2 h-4 w-4" />
-          <a
+          <Link
             href="/articles/creative-examples"
             className="text-primary hover:text-primary hover:underline"
           >
             Creative Ways to Create Meditations
-          </a>
+          </Link>
         </div>
 
         <div className="bg-border hidden h-4 w-px md:block"></div>
 
         <div className="flex items-center">
           <Users className="mr-2 h-4 w-4" />
-          <a
+          <Link
             href="/community"
             className="text-primary hover:text-primary hover:underline"
           >
             Check out community meditations
-          </a>
+          </Link>
         </div>
       </div>
     </div>

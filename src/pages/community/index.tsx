@@ -13,10 +13,8 @@ export default function CommunityIndex({
 }: CommunityIndexProps) {
   return (
     <Layout>
-      <header className="mb-10 mt-10 text-center md:mt-14">
-        <h1 className="mb-3 text-3xl font-medium tracking-tight md:text-4xl">
-          Community Meditations
-        </h1>
+      <header className="mb-10 mt-8 text-center md:mt-14">
+        <h1 className="mb-3 text-3xl tracking-tight">Community Meditations</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
           Explore all meditations created and shared
         </p>
@@ -24,12 +22,12 @@ export default function CommunityIndex({
 
       <div className="mb-10 space-y-6 px-2">
         {latestMeditations.length > 0 ? (
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             {latestMeditations.map((meditation) => (
               <li key={meditation.link}>
                 <Link
                   href={meditation.link}
-                  className="hover:bg-accent flex justify-between gap-6 rounded-lg border p-4 transition-colors"
+                  className="hover:bg-accent flex justify-between gap-6 rounded-lg border px-3 py-2 transition-colors"
                 >
                   <h2 className="text-md">{meditation.title}</h2>
                   <span className="text-muted-foreground text-sm">
