@@ -193,7 +193,7 @@ export function MeditationPlayer({
 
   return (
     <>
-      <h1 className="mb-5 text-center text-xl font-medium sm:text-2xl">
+      <h1 className="mb-5 text-center text-2xl tracking-tight">
         {meditation.title}
       </h1>
 
@@ -242,9 +242,7 @@ export function MeditationPlayer({
                       }
                     >
                       {step.type === "heading" && (
-                        <div className={cn("font-medium text-lg")}>
-                          {step.text}
-                        </div>
+                        <div className={cn("text-lg")}>{step.text}</div>
                       )}
                       {step.type === "speech" && <p>{step.text}</p>}
                       {step.type === "pause" && (

@@ -58,9 +58,7 @@ export default function PublicMeditation({
     return (
       <Layout>
         <Card className="p-6">
-          <h1 className="mb-6 text-center text-2xl font-medium">
-            Meditation Not Found
-          </h1>
+          <h1 className="mb-6 text-center text-2xl">Meditation Not Found</h1>
           <p className="text-muted-foreground text-center">
             {error || "Failed to load meditation"}
           </p>

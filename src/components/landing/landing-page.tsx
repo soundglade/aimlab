@@ -57,10 +57,10 @@ export default function LandingPage({
           <Button variant="ghost" asChild size="sm">
             <Link
               href="/community"
-              className="text-muted-foreground flex items-center"
+              className="text-muted-foreground mt-1 flex items-center md:mr-0"
             >
-              View all
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <span className="hidden md:inline">View all</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
             </Link>
           </Button>
         </div>
