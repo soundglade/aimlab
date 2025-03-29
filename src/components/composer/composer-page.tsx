@@ -17,16 +17,16 @@ export default function ComposerPage() {
     <Layout>
       <div className="pb-0 pt-8">
         <div className="mx-auto max-w-4xl px-4">
-          <h1 className="mb-1 text-3xl tracking-tight">
+          <h1 className="mb-2 text-center text-3xl tracking-tight">
             Generate Meditations from AI Scripts
           </h1>
 
-          <p className="text-muted-foreground mb-9">
-            Compose and synthesize your own guided meditations with high quality
-            speech.
+          <p className="text-muted-foreground mb-9 text-center">
+            Compose and synthesize your own guided meditations starting from a
+            script.
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mb-10 rounded-lg p-4 text-sm md:p-6">
+          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-10 max-w-3xl rounded-lg p-4 text-sm md:p-6">
             <ul className="list-inside space-y-2 md:list-disc">
               <li>
                 Use{" "}
