@@ -3,7 +3,7 @@ import { PostLayout } from "@/components/blog/PostLayout";
 export default function BlogPost() {
   return (
     <PostLayout
-      title="Creative examples"
+      title="First creative examples"
       date="March 28, 2025"
       content={
         <>

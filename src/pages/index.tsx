@@ -13,7 +13,7 @@ export type BlogPost = {
 // Hardcoded blog posts data
 const blogPosts: BlogPost[] = [
   {
-    slug: "first-experiments",
+    slug: "creative-examples",
     title: "Creative examples",
     date: "March 28, 2025",
     excerpt: "An inspiring list of creative ways to generate meditations",

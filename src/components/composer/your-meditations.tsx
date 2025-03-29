@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Trash2, X } from "lucide-react";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { useRouter } from "next/router";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 
-export default function MyMeditations() {
+export default function YourMeditations() {
   const { meditations, deleteMeditation, clearMeditations } =
     useMyMeditations();
   const router = useRouter();
@@ -44,8 +43,10 @@ export default function MyMeditations() {
     <div>
       <Card>
         <CardContent>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-medium">Saved meditations:</h2>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-muted-foreground text-xl leading-tight">
+              Your Meditations
+            </h2>
             <ConfirmDestructiveDialog
               open={showClearAllDialog}
               onOpenChange={setShowClearAllDialog}
@@ -54,28 +55,26 @@ export default function MyMeditations() {
               confirmText="Clear all"
               onConfirm={handleConfirmClearAll}
             >
-              <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                className="-mt-1 mr-1 h-8 px-2 text-xs"
+              >
                 <Trash2 size={14} className="mr-1" />
                 Clear all
               </Button>
             </ConfirmDestructiveDialog>
           </div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {meditations.map((meditation, index) => (
               <div key={meditation.id} className="relative">
                 <Button
                   type="button"
                   variant="outline"
-                  className="hover:bg-accent group h-auto w-full justify-start px-3 py-2 transition-colors"
+                  className="hover:bg-accent group h-auto w-full justify-start px-3 py-2 shadow-none transition-colors"
                   onClick={() => handleMeditationClick(meditation.url)}
                 >
-                  <div className="flex w-full items-center gap-2 overflow-hidden text-left">
-                    <Badge
-                      variant="secondary"
-                      className="min-w-6 flex h-6 shrink-0 items-center justify-center rounded-full text-xs"
-                    >
-                      {index + 1}
-                    </Badge>
+                  <div className="mr-5 flex w-full items-center gap-2 overflow-hidden text-left font-normal">
                     <span className="truncate">{meditation.title}</span>
                   </div>
                 </Button>
