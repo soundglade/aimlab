@@ -51,7 +51,7 @@ export default function LandingPage({
       {/* Recent Community Meditations */}
       <section className={`${sectionBaseClasses} max-w-4xl`}>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Users className="h-5 w-5" />
             Community Meditations
           </h2>
@@ -85,19 +85,19 @@ export default function LandingPage({
 
       {/* Articles */}
       <section className={`${sectionBaseClasses} max-w-4xl`}>
-        <h2 className="mb-3 flex items-center gap-2 text-2xl tracking-tight">
+        <h2 className="flex items-center gap-2 text-2xl tracking-tight">
           <BookOpen className="h-5 w-5" />
           Articles
         </h2>
-        <div className="border-1 mt-8 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:mt-10 md:px-10 md:py-10">
-          <div className="space-y-12">
+        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+          <div className="space-y-10">
             {blogPosts.map((post) => (
               <Link
                 href={`/articles/${post.slug}`}
                 key={post.slug}
                 className="group block"
               >
-                <article className="space-y-3">
+                <article className="space-y-2">
                   {post.date && (
                     <p className="text-muted-foreground text-xs">
                       {new Date(post.date).toLocaleDateString("en-US", {
@@ -107,7 +107,7 @@ export default function LandingPage({
                       })}
                     </p>
                   )}
-                  <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
+                  <h2 className="group-hover:text-primary text-medium mb-1 text-xl transition-colors">
                     {post.title}
                   </h2>
                   {post.excerpt && (
