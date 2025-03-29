@@ -14,7 +14,6 @@ export default function LandingPage({
   latestMeditations: Meditation[];
 }) {
   const router = useRouter();
-  const sectionBaseClasses = "mb-20 w-full px-4";
 
   const handleMeditationClick = (url: string) => {
     router.push(url);
@@ -24,7 +23,7 @@ export default function LandingPage({
     <Layout>
       {/* Hero */}
       <section
-        className={`${sectionBaseClasses} mt-6 flex flex-col items-center text-center md:mt-12`}
+        className={`mb-20 mt-6 flex w-full flex-col items-center px-4 text-center md:mt-12`}
       >
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
@@ -49,7 +48,7 @@ export default function LandingPage({
       <div id="community" className="invisible relative -top-4"></div>
 
       {/* Recent Community Meditations */}
-      <section className={`${sectionBaseClasses} max-w-4xl`}>
+      <section className={`mb-20 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Users className="h-5 w-5" />
@@ -84,7 +83,7 @@ export default function LandingPage({
       </section>
 
       {/* Articles */}
-      <section className={`${sectionBaseClasses} max-w-4xl`}>
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
         <h2 className="flex items-center gap-2 text-2xl tracking-tight">
           <BookOpen className="h-5 w-5" />
           Articles
@@ -97,7 +96,7 @@ export default function LandingPage({
                 key={post.slug}
                 className="group block"
               >
-                <article className="space-y-2">
+                <article className="space-y-1">
                   {post.date && (
                     <p className="text-muted-foreground text-xs">
                       {new Date(post.date).toLocaleDateString("en-US", {
@@ -107,7 +106,7 @@ export default function LandingPage({
                       })}
                     </p>
                   )}
-                  <h2 className="group-hover:text-primary text-medium mb-1 text-xl transition-colors">
+                  <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
                     {post.title}
                   </h2>
                   {post.excerpt && (
