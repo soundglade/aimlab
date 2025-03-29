@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertDescription, Alert } from "@/components/ui/alert";
+import { ArrowRight, Info } from "lucide-react";
 import {
   meditationScriptAtom,
   stepAtom,
@@ -112,31 +113,17 @@ const InputScreen = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-bold">Create Your Meditation</h2>
+    <div className="space-y-5">
+      <div className="mb-8 space-y-2">
+        <h2 className="text-2xl tracking-tight">Script and Voice</h2>
         <p className="text-muted-foreground">
           Paste your AI-generated meditation script below and choose a voice for
           your guided meditation.
         </p>
       </div>
 
-      <Alert>
-        <AlertDescription>
-          This is an experimental public space. Any meditation you create will
-          be visible to others. Please don't include personal or sensitive
-          information.
-        </AlertDescription>
-      </Alert>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       <div>
-        <label className="mb-2 block font-medium">Meditation Script</label>
+        <label className="mb-2 block">Meditation Script</label>
         <Textarea
           placeholder="Paste your meditation script here..."
           className="max-h-[300px] min-h-[200px] overflow-y-auto"
@@ -146,6 +133,18 @@ const InputScreen = () => {
         />
       </div>
 
+      <p className="text-muted-foreground -mt-2 mb-8 flex items-center gap-1 text-sm">
+        <Info className="mr-1 h-3 w-3" />
+        All meditations are public. Please avoid including personal or sensitive
+        information.
+      </p>
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <VoiceSelection isDisabled={isLoading} />
 
       <div className="pt-4">
@@ -154,7 +153,8 @@ const InputScreen = () => {
           onClick={handleContinue}
           disabled={isLoading || !meditationScript.trim()}
         >
-          {isLoading ? "Processing..." : "Continue to Review"}
+          Continue to Review
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Button>
       </div>
     </div>

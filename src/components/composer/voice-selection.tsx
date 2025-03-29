@@ -74,7 +74,7 @@ const VoiceSelection = ({ isDisabled = false }: VoiceSelectionProps) => {
 
   return (
     <div>
-      <label className="mb-2 block font-medium">Voice Selection</label>
+      <label className="mb-2 block">Voice Selection</label>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
         {VOICES.map((voice) => {
           const isSelected = voice.id === voiceId;
