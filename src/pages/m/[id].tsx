@@ -1,46 +1,17 @@
 import { GetServerSideProps } from "next";
 import { Card } from "@/components/ui/card";
-import path from "path";
-import fs from "fs/promises";
 import { MeditationPlayer } from "@/components/player/meditation-player";
 import { Meditation } from "@/components/types";
 import { Layout } from "@/components/layout/Layout";
+import { fetchMeditationData } from "@/lib/fetch-meditation";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  try {
-    const id = params?.id as string;
-    const meditationDir = path.join(
-      process.cwd(),
-      "public/storage/meditations",
-      id
-    );
+  const id = params?.id as string;
+  const meditationData = await fetchMeditationData(id);
 
-    // Read and parse the metadata file
-    const metadataPath = path.join(meditationDir, "metadata.json");
-    const metadataContent = await fs.readFile(metadataPath, "utf-8");
-    const metadata = JSON.parse(metadataContent);
-
-    // Generate the audio URL
-    const audioUrl = `/storage/meditations/${id}/audio.mp3`;
-
-    return {
-      props: {
-        meditationId: id,
-        metadata,
-        audioUrl,
-      },
-    };
-  } catch (error) {
-    console.error("Error loading shared meditation:", error);
-    return {
-      props: {
-        metadata: null,
-        audioUrl: null,
-        error:
-          "Failed to load meditation. It may have expired or been deleted.",
-      },
-    };
-  }
+  return {
+    props: meditationData,
+  };
 };
 
 export default function PublicMeditation({

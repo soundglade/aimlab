@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { ReceiptText } from "lucide-react";
+import { MeditationPlayerDialog } from "@/components/player/meditation-player-dialog";
 
 export default function BlogPost() {
   return (
@@ -44,7 +45,7 @@ export default function BlogPost() {
           <ChatbotResponse content={samHarrisResponse} />
 
           <PlayButton
-            href="https://aimlab.soundglade.com/m/76v1bxm"
+            id="76v1bxm"
             title="Play Sam Harris-Inspired Daily Meditation"
           />
 
@@ -120,8 +121,8 @@ function ChatbotResponse({ content }: { content: string }) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[98vh] overflow-y-auto sm:max-w-md md:max-w-2xl lg:max-w-4xl">
-          <div className="prose prose-headings:font-normal prose-headings:tracking-tight dark:prose-invert text-muted-foreground max-w-none">
+        <DialogContent className="max-h-[98vh] overflow-y-auto sm:max-w-[90vw] lg:max-w-4xl">
+          <div className="prose prose-headings:font-normal prose-headings:tracking-tight dark:prose-invert text-muted-foreground max-w-none md:p-4">
             <Markdown>{content}</Markdown>
           </div>
         </DialogContent>
@@ -130,14 +131,18 @@ function ChatbotResponse({ content }: { content: string }) {
   );
 }
 
-function PlayButton({ href, title }: { href: string; title: string }) {
+function PlayButton({ id, title }: { id: string; title: string }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const meditationId = id;
+
   return (
-    <div className="mt-10 flex justify-center">
-      <Button asChild>
-        <Link href={href} className="no-underline">
-          {title}
-        </Link>
-      </Button>
+    <div className="mt-4 flex justify-center">
+      <Button onClick={() => setDialogOpen(true)}>{title}</Button>
+      <MeditationPlayerDialog
+        meditationId={meditationId}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </div>
   );
 }

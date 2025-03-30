@@ -2,6 +2,9 @@ import { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
+export const gradientBackgroundClasses =
+  "bg-gradient-to-b from-white via-sky-50 to-white dark:from-gray-900 dark:via-slate-850 dark:to-gray-900";
+
 interface LayoutProps {
   children: ReactNode;
   showHeader?: boolean;
@@ -16,12 +19,14 @@ export function Layout({
   showFooter = true,
 }: LayoutProps) {
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gradient-to-b from-white via-sky-50 to-white dark:from-gray-900 dark:via-slate-850 dark:to-gray-900">
+    <div
+      className={`flex flex-col items-center min-h-screen ${gradientBackgroundClasses}`}
+    >
       {variant === "page" ? (
         <>
           {showHeader && <Header />}
-          <main className="flex flex-col items-center flex-1 w-full">
-            <div className="max-w-4xl px-4 py-6 mx-auto md:py-12 md:bg-white dark:md:bg-gray-900 md:shadow-sm md:border-1 md:mt-10 md:mb-5 rounded-xl md:px-19">
+          <main className="flex w-full flex-1 flex-col items-center">
+            <div className="md:border-1 md:px-19 mx-auto max-w-4xl rounded-xl px-4 py-6 md:mb-5 md:mt-10 md:bg-white md:py-12 md:shadow-sm dark:md:bg-gray-900">
               {children}
             </div>
           </main>
@@ -30,7 +35,7 @@ export function Layout({
       ) : (
         <>
           {showHeader && <Header />}
-          <main className="flex flex-col items-center flex-1 w-full">
+          <main className="flex w-full flex-1 flex-col items-center">
             {children}
           </main>
           {showFooter && <Footer />}
