@@ -25,7 +25,7 @@ export default function BlogPost() {
             your own experiments.
           </p>
 
-          <h3>Daily meditation in a particular style</h3>
+          <h2>Daily meditation in a particular style</h2>
 
           <p>
             Let's start with a very simple example. I'd like to try to create
@@ -47,6 +47,31 @@ export default function BlogPost() {
             href="https://aimlab.soundglade.com/m/76v1bxm"
             title="Play Sam Harris-Inspired Daily Meditation"
           />
+
+          <p>
+            I'd say the result is quite interesting. It seems theoratically
+            sound, although perhaps the stylistically not so close. Sam doesn't
+            usually share so much guidance on posture, for instance. But also,
+            the initial focus onbreath reminds more of traditional mindfulness
+            instead of non-dual awareness.
+          </p>
+          <p>Here are some interesting highlights where it gets it right:</p>
+          <ul>
+            <li>
+              <i>
+                Notice that everything that appears in your experience – every
+                thought, sensation, emotion, and perception – arises and passes
+                away within the field of awareness itself.
+              </i>
+            </li>
+            <li>
+              <i>
+                See if you can rest as this awareness – not as a person having
+                experiences, but as the knowing space in which all experiences
+                arise and dissolve.
+              </i>
+            </li>
+          </ul>
         </>
       }
     />
