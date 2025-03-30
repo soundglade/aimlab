@@ -19,11 +19,9 @@ export function PostLayout({ title, date, content }: PostLayoutProps) {
         </Link>
       </Button>
 
-      <article className="prose prose-headings:font-medium dark:prose-invert max-w-none">
+      <article className="prose prose-headings:font-normal prose-headings:tracking-tight dark:prose-invert max-w-none">
         <header className="mb-8">
-          <h1 className="mb-3 text-3xl font-medium leading-10 tracking-tight">
-            {title}
-          </h1>
+          <h1 className="mb-3 text-3xl font-normal tracking-tight">{title}</h1>
           <div className="text-muted-foreground text-sm">{date}</div>
         </header>
 
