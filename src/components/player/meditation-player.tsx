@@ -216,7 +216,7 @@ export function MeditationPlayer({
         {/* Meditation script display */}
         {!playerState.isLoading && (
           <>
-            <div className="scrollbar-thin bg-background/50 text-foreground/60 max-h-[55vh] overflow-y-auto rounded-md">
+            <div className="scrollbar-thin bg-background/50 text-foreground/60 max-h-[50vh] overflow-y-auto rounded-md">
               <div className="space-y-2">
                 {meditation.steps.map((step, idx) => {
                   return (

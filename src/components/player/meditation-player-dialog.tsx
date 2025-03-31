@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { MeditationPlayer } from "./meditation-player";
-import { Loader } from "lucide-react";
 
 interface MeditationPlayerDialogProps {
   meditationId: string;
@@ -66,7 +65,6 @@ export function MeditationPlayerDialog({
       <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
         {loading && (
           <div className="flex flex-col items-center justify-center p-12">
-            <Loader className="mb-4 h-8 w-8 animate-spin" />
             <p className="text-muted-foreground">Loading meditation...</p>
           </div>
         )}
@@ -82,7 +80,7 @@ export function MeditationPlayerDialog({
           meditationData &&
           meditationData.metadata &&
           meditationData.audioUrl && (
-            <div className="mx-auto flex max-w-3xl flex-col items-center justify-center px-0 py-4">
+            <div className="mx-auto max-w-3xl">
               <MeditationPlayer
                 meditation={meditationData.metadata}
                 meditationId={meditationData.meditationId}
