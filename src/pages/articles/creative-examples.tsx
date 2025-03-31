@@ -3,14 +3,9 @@ import { Button } from "@/components/ui/button";
 import Markdown from "react-markdown";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-import { Box, ReceiptText } from "lucide-react";
+import { Play, ReceiptText } from "lucide-react";
 import { MeditationPlayerDialog } from "@/components/player/meditation-player-dialog";
 
 export default function BlogPost() {
@@ -41,7 +36,7 @@ export default function BlogPost() {
 
           <PlayButton
             id="dra65y7"
-            title="Play Awareness and Non-Duality Meditation"
+            title="Awareness and Non-Duality Meditation"
           />
 
           <p>
@@ -75,8 +70,8 @@ export default function BlogPost() {
           </p>
 
           <iframe
-            className="aspect-video w-full"
-            src="https://www.youtube.com/embed/it38xrSZUWc?si=xcdERcq5T02hRWfU"
+            className="mx-auto aspect-video w-full max-w-xl"
+            src="https://www.youtube.com/embed/it38xrSZUWc?si=xcdERcq5T02hRWfU&iv_load_policy=3&rel=0"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -99,7 +94,7 @@ export default function BlogPost() {
 
           <PlayButton
             id="lenf5p7"
-            title="Play Effortless Mindfulness and Limitless Awareness"
+            title="Effortless Mindfulness and Limitless Awareness"
           />
 
           <p>
@@ -145,6 +140,100 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
 `}
             </Markdown>
           </ChatBotBox>
+
+          <h2>Creative Remixes</h2>
+
+          <p>
+            So far we just expanded the lenght of a meditation. But there are so
+            many interesting ways in which we can derive new meditation scripts.
+            I've asked a chatbot (Gemini 2.5) for some ideas.
+          </p>
+
+          <ChatbotResponse content={creativeRemixesResponse} truncateAt={246} />
+
+          <p>
+            I've generated two of the suggested meditations. The first one is a
+            rewrite of the script to focus on <b>gratitude</b>. The language
+            chosen is quite interesting. It creatively diverges from Loch's
+            usual style. Towards the end, for example, it uses the term{" "}
+            <b>
+              <i>grateful awareness</i>
+            </b>
+            , in a similar way to the more commonly used{" "}
+            <b>
+              <i>loving awareness</i>
+            </b>
+            .
+          </p>
+          <PlayButton id="yce40ap" title="Gratitude Flow Meditation" />
+
+          <p>
+            Finally, I was curious to try a version of the meditation that is
+            more suitable for children. The result is quite cute, mentioning{" "}
+            <i>"the magic bubble of awareness"</i> and the <i>"big sky mind"</i>
+            .
+          </p>
+          <PlayButton
+            id="bv50mf2"
+            title="Floating Bubble: A Gentle Mind-Clearing Meditation for Children"
+          />
+
+          <h2>Meditation inpired by talks</h2>
+
+          <p>
+            In this experiment we are taking things a bit further. Here I've
+            given the AI another transcript, but this time instead of using a
+            mediation as source of inspiration I've chosen a talk by Henry
+            Shukman.
+          </p>
+
+          <iframe
+            className="mx-auto aspect-video w-full max-w-xl"
+            src="https://www.youtube.com/embed/K9Ox9UG3ako?si=tTtKUA9HDrz4Xmz3&iv_load_policy=3&rel=0"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+
+          <p>I'm sharing here the link to the whole chat session.</p>
+
+          <Link
+            href="https://chatgpt.com/share/67eaebab-7f94-8005-b175-1df00c5979eb"
+            target="_blank"
+          >
+            https://chatgpt.com/share/67eaebab-7f94-8005-b175-1df00c5979eb
+          </Link>
+
+          <p>
+            As you can see, this time I didn't use a single prompt, but instead
+            had a discussion with ChatGPT first.
+          </p>
+
+          <p>
+            I asked it for a summary, then asked for suggestions for a guided
+            meditations that would capture the essence of the talk. Finally, I
+            accepted one of the suggestions it offered me and asked for the
+            meditation script.
+          </p>
+
+          <Prompt>
+            I'd like to explore creating a guided meditation that capture the
+            essence of this talk, perhaps a brief meditation that could follow
+            listening to the talk itself. Can you suggest how this meditation
+            may be? What could be the main topic and structure? Please do not
+            generate yet the script. Let's discuss it first.
+          </Prompt>
+          <p>
+            The final meditation is quite fascinating... In a way, it feels like
+            by giving it Henry's talk as a source also infused it with a
+            creative touch.
+          </p>
+
+          <PlayButton
+            id="amx24n7"
+            title="The Mind of Beauty: A Zen-Inspired Meditation"
+          />
         </>
       }
     />
@@ -175,7 +264,13 @@ function ChatBotBox({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ChatbotResponse({ content }: { content: string }) {
+function ChatbotResponse({
+  content,
+  truncateAt = 180,
+}: {
+  content: string;
+  truncateAt?: number;
+}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
@@ -189,7 +284,7 @@ function ChatbotResponse({ content }: { content: string }) {
       : text.substring(0, lastSpaceIndex) + "...";
   };
 
-  const truncatedContent = truncateText(content, 180);
+  const truncatedContent = truncateText(content, truncateAt);
 
   return (
     <ChatBotBox>
@@ -225,7 +320,10 @@ function PlayButton({ id, title }: { id: string; title: string }) {
 
   return (
     <div className="mt-6 flex justify-center">
-      <Button onClick={() => setDialogOpen(true)}>{title}</Button>
+      <Button onClick={() => setDialogOpen(true)}>
+        <Play className="h-4 w-4" />
+        {title}
+      </Button>
       <MeditationPlayerDialog
         meditationId={meditationId}
         open={dialogOpen}
@@ -412,4 +510,48 @@ Notice how this awareness is always available to you. It's not something that me
 When you're ready, you may slowly open your eyes while maintaining this sense of effortless awareness. Notice that opening the eyes doesn't change the fundamental nature of awareness - it simply includes more within its embrace. [pause for 15 seconds]
 
 Carry this effortless mindfulness with you as you return to your day, knowing you can reconnect with this natural awareness at any time. [pause for 10 seconds]
+`;
+
+const creativeRemixesResponse = `Okay, this is a fascinating area to explore! Using LLMs to creatively rewrite meditation scripts opens up many possibilities beyond just changing the length. Based on the "Effortless Mindfulness" script you provided, here are some creative ideas for using LLMs to alter existing meditation scripts:
+
+1.  **Shift the Core Theme or Focus:**
+    * **Gratitude Focus:** Modify the script to guide the user towards noticing things they are grateful for, perhaps linking it to the body sensations or the feeling of spacious awareness mentioned in your script.
+    * **Self-Compassion:** Adapt the guidance to foster feelings of kindness and acceptance towards oneself, especially during moments of noticing the mind wandering.
+    * **Loving-Kindness (Metta):** Rewrite sections to include phrases of well-wishing for oneself and others.
+    * **Working with Specific Emotions:** Create versions tailored to mindfully exploring specific emotions like anxiety, sadness, or anger, using the body-awareness techniques as an anchor.
+
+2.  **Adapt for Different Audiences:**
+    * **For Children:** Simplify the language significantly, use more playful metaphors (e.g., awareness as a gentle cloud instead of a bubble), and shorten the duration.
+    * **For Beginners:** Add more detailed explanations about *why* certain instructions are given (e.g., why focus on the breath), and offer more reassurance.
+    * **For Specific Groups:** Tailor the imagery or focus to resonate with particular groups (e.g., artists focusing on creative energy, athletes on body awareness and focus).
+
+3.  **Integrate Different Techniques:**
+    * **Guided Imagery:** Weave in more vivid visualizations – perhaps expanding on the "spacious awareness" by guiding the user to imagine a specific landscape (forest, beach, cosmos).
+    * **Affirmations:** Incorporate positive affirmations that align with the meditation's goal (e.g., "I am aware," "I can rest in this space").
+    * **Sound Focus:** Adapt the script to guide awareness towards ambient sounds, integrating the external environment more explicitly.
+
+4.  **Experiment with Sensory Language & Setting:**
+    * **Enhanced Sensory Details:** Ask the LLM to enrich the script with more evocative descriptions of potential subtle feelings, temperatures, or textures within the body.
+    * **Setting Simulation:** Create versions designed to evoke specific environments (e.g., "Meditation by the Ocean," "Forest Awareness") by adding relevant sensory cues.
+
+5.  **Vary the Tone and Style:**
+    * **Poetic Reframing:** Rewrite the script in a more lyrical or poetic style.
+    * **Inquisitive Tone:** Frame the instructions as gentle questions or invitations to explore (e.g., "What happens if awareness rests in the throat?").
+    * **Minimalist Version:** Condense the script to its absolute core instructions for a shorter, more direct practice.
+
+6.  **Conceptual Blending:**
+    * **Philosophical Integration:** Weave in brief, relevant quotes or concepts from philosophical or wisdom traditions that resonate with effortless mindfulness or non-dual awareness.
+    * **Storytelling Elements:** Frame the meditation within a simple narrative structure.
+
+7.  **Interactive or Dynamic Ideas (More Complex):**
+    * **Modular Scripts:** Create distinct sections (e.g., Body Scan, Breath Focus, Open Awareness) that an LLM could potentially reorder or combine in different ways.
+    * **Personalization Prompts:** Design scripts that prompt the user (at the beginning) for a specific focus (e.g., "What quality do you want to cultivate today?") and have the LLM subtly weave that theme in.
+
+Think of the original script as a foundation. You can ask an LLM to take specific elements (like the concept of awareness dropping from the head, or the feeling of limitless space) and reimagine them in these different contexts.
+
+This sounds like a really creative project. Which of these directions seems most interesting for your experiments?
+
+
+
+
 `;
