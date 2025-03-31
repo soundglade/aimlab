@@ -121,7 +121,7 @@ function ChatbotResponse({ content }: { content: string }) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[98vh] overflow-y-auto sm:max-w-[90vw] lg:max-w-4xl">
+        <DialogContent>
           <div className="prose prose-headings:font-normal prose-headings:tracking-tight dark:prose-invert text-muted-foreground max-w-none md:p-4">
             <Markdown>{content}</Markdown>
           </div>

@@ -56,17 +56,49 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+          // Base styles: Fullscreen, flex column
+          "fixed inset-0 z-50 flex h-full w-full flex-col border-0 bg-background p-0",
+          // Responsive styles: Centered modal on md+
+          "md:inset-auto md:left-[50%] md:top-[50%] md:h-auto md:max-h-[calc(100vh-4rem)] md:w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-lg md:border md:shadow-lg",
+          "md:overflow-hidden", // Clip content like sticky header to rounded corners
+          // Radix state animations
+          "data-[state=closed]:animate-out data-[state=open]:animate-in",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "duration-200", // Animation duration
           gradientBackgroundClasses,
           className
         )}
         {...props}
       >
-        {children}
-        <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-xs focus:outline-hidden [&_svg:not([class*='size-'])]:size-4 absolute right-4 top-4 opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0">
-          <XIcon />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
+        {/* Sticky Header */}
+        <div
+          className={cn(
+            // Layout & Appearance
+            "sticky top-0 z-10 flex items-center justify-end border-b bg-background",
+            // Padding
+            "px-4 py-3 md:px-6 md:py-4"
+          )}
+        >
+          <DialogPrimitive.Close
+            className={cn(
+              // Base styles & Icon size
+              "rounded-xs opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none",
+              "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+              // Focus & State
+              "focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-background focus:ring-ring",
+              "data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+            )}
+          >
+            <XIcon />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className={cn("flex-1 overflow-y-auto", "p-4 md:p-6")}>
+          {children}
+        </div>
       </DialogPrimitive.Content>
     </DialogPortal>
   );

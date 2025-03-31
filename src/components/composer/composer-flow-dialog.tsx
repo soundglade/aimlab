@@ -178,7 +178,7 @@ const ComposerFlowDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[98vh] overflow-y-auto sm:max-w-3xl">
+      <DialogContent>
         <div className="p-1">
           {/* Progress indicator */}
           <div className="bg-muted text-muted-foreground mb-8 inline-flex items-center space-x-2 rounded-full px-4 py-2">
