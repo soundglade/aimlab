@@ -133,7 +133,7 @@ const InputScreen = () => {
         />
       </div>
 
-      <p className="text-muted-foreground -mt-2 mb-8 flex items-center gap-1 text-sm">
+      <p className="text-accent-foreground -mt-2 mb-8 flex items-center gap-1 text-sm">
         <Info className="mr-1 h-3 w-3" />
         All meditations are public. Please avoid including personal or sensitive
         information.
