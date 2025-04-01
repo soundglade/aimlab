@@ -1,4 +1,3 @@
-import { parseBuffer } from "music-metadata";
 import * as kokoro from "./services/kokoro";
 import * as elevenlabs from "./services/elevenlabs";
 
@@ -38,6 +37,7 @@ export async function getAudioDurationMs(
   audioBuffer: ArrayBuffer
 ): Promise<number> {
   try {
+    const { parseBuffer } = await import("music-metadata");
     const metadata = await parseBuffer(Buffer.from(audioBuffer));
     if (!metadata.format.duration) {
       throw new Error("Could not determine audio duration");

@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
 import { Meditation } from "@/components/types";
-import { synthesizeMeditation } from "@/lib/synthesize-meditation";
-import { saveMeditation } from "@/lib/save-meditation";
+import { Worker } from "worker_threads";
+import path from "path";
+import { WorkerMessage, WorkerInput } from "@/workers/types";
 
 /**
  * API endpoint for synthesizing a meditation into audio
@@ -71,37 +72,69 @@ export default async function handler(
   const meditation = req.body.structuredMeditation as Meditation;
   const voiceId = req.body.voiceId || "nicole";
 
-  await synthesizeMeditation(meditation, {
-    voiceId,
-    onProgress: (progress) => {
-      sendEvent("progress", { progress });
-    },
-    onComplete: async (success, audioBuffer, updatedMeditation) => {
-      let url: string | null = null;
-      let meditationId: string | null = null;
-      let ownerKey: string | null = null;
+  // Determine the path to the worker file
+  const workerPath = path.resolve(
+    process.cwd(),
+    process.env.NODE_ENV === "production"
+      ? "dist/src/workers/synthesize-meditation-worker.js"
+      : "src/workers/synthesize-meditation-worker.ts"
+  );
 
-      if (success && audioBuffer && updatedMeditation) {
-        const result = await saveMeditation(audioBuffer, updatedMeditation);
-        if (result) {
-          url = result.url;
-          meditationId = result.meditationId;
-          ownerKey = result.ownerKey;
+  try {
+    // Create worker input
+    const workerInput: WorkerInput = {
+      meditation,
+      voiceId,
+    };
+
+    // Create the worker
+    const worker = new Worker(workerPath, {
+      workerData: workerInput,
+      // For development - allow TypeScript files to be used directly with tsx
+      execArgv:
+        process.env.NODE_ENV !== "production" ? ["-r", "tsx"] : undefined,
+    });
+
+    // Set up event listeners
+    worker.on("message", (message: WorkerMessage) => {
+      if (message.type === "progress") {
+        sendEvent("progress", { progress: message.progress });
+      } else if (message.type === "complete") {
+        if (message.success) {
+          sendEvent("complete", {
+            success: true,
+            progress: 100,
+            meditation: message.meditation,
+            url: message.url,
+            meditationId: message.meditationId,
+            ownerKey: message.ownerKey,
+          });
+        } else {
+          sendEvent("complete", {
+            success: false,
+            error: message.error,
+          });
         }
+        stream.push(null);
       }
+    });
 
-      sendEvent("complete", {
-        success,
-        progress: 100,
-        meditation: updatedMeditation,
-        url,
-        meditationId,
-        ownerKey,
-      });
-      stream.push(null);
-    },
-    onError: handleError,
-  });
+    worker.on("error", (error) => {
+      handleError(`Worker error: ${error.message}`);
+    });
+
+    worker.on("exit", (code) => {
+      if (code !== 0) {
+        handleError(`Worker stopped with exit code ${code}`);
+      }
+    });
+  } catch (error) {
+    handleError(
+      `Failed to initialize worker: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
 }
 
 export const config = {

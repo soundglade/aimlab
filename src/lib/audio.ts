@@ -1,6 +1,5 @@
 import { Meditation } from "@/components/types";
 import { OfflineAudioContext } from "web-audio-engine";
-import * as lamejs from "@breezystack/lamejs";
 
 /**
  * Creates a concatenated audio file from individual audio buffers based on a meditation timeline
@@ -11,6 +10,8 @@ export async function createConcatenatedAudio(
   onProgress = (progress: number) => {}
 ): Promise<Buffer> {
   const { timings, totalDurationMs } = timeline;
+
+  const { Mp3Encoder } = await import("@breezystack/lamejs");
 
   // Create audio context
   const audioContext = new OfflineAudioContext(
@@ -62,7 +63,7 @@ export async function createConcatenatedAudio(
 
   // Convert to MP3 buffer directly
   const mp3Data: Buffer[] = [];
-  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+  const mp3encoder = new Mp3Encoder(channels, sampleRate, 128);
 
   // For stereo, we need to work with both channels
   const left = new Int16Array(renderedBuffer.length);

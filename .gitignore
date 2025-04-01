@@ -1,6 +1,7 @@
 # custom
 .tmp
 /cache
+.vscode
 
 # dependencies
 /node_modules

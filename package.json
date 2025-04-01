@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "next build && tsc --project tsconfig.server.json",
+    "build": "next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "start": "NODE_ENV=production node dist/server.js",
     "lint": "next lint",
     "console": "tsx console/watch.ts",
@@ -91,6 +91,7 @@
     "fake-indexeddb": "^6.0.0",
     "jsdom": "^26.0.0",
     "tailwind-scrollbar": "^4.0.1",
+    "tsc-alias": "^1.8.13",
     "tsx": "^4.19.3",
     "typescript": "^5",
     "vitest": "^3.0.7"
