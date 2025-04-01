@@ -1,7 +1,42 @@
 import * as kokoro from "./services/kokoro";
 import * as elevenlabs from "./services/elevenlabs";
+import * as test from "./services/test";
 
-type SpeechService = "kokoro" | "elevenlabs";
+type SpeechService = "kokoro" | "elevenlabs" | "test";
+
+// Maximum concurrent requests per service
+const MAX_CONCURRENT = {
+  kokoro: 3,
+  elevenlabs: 5,
+  test: 2,
+};
+
+// Timeout in milliseconds per service
+const REQUEST_TIMEOUT_MS = {
+  kokoro: 3 * 60 * 1000, // 3 minutes
+  elevenlabs: 3 * 60 * 1000, // 3 minutes
+  test: 3 * 60 * 1000, // 3 minutes
+};
+
+// Queue and processing state
+const queues: Record<
+  SpeechService,
+  Array<{
+    text: string;
+    resolve: (value: ArrayBuffer) => void;
+    reject: (reason: any) => void;
+  }>
+> = {
+  kokoro: [],
+  elevenlabs: [],
+  test: [],
+};
+
+const activeRequests: Record<SpeechService, number> = {
+  kokoro: 0,
+  elevenlabs: 0,
+  test: 0,
+};
 
 /**
  * Generate speech using one of the available TTS services
@@ -13,18 +48,70 @@ export async function generateSpeech(
   text: string,
   service: SpeechService = "kokoro"
 ): Promise<ArrayBuffer> {
-  try {
-    switch (service) {
-      case "kokoro":
-        return await kokoro.generateSpeech(text);
-      case "elevenlabs":
-        return await elevenlabs.generateSpeech(text);
-      default:
-        throw new Error(`Unsupported speech service: ${service}`);
-    }
-  } catch (error) {
-    console.error("Speech generation error:", error);
-    throw error;
+  return new Promise((resolve, reject) => {
+    // Add request to the queue
+    queues[service].push({ text, resolve, reject });
+
+    // Process queue if possible
+    processQueue(service);
+  });
+}
+
+/**
+ * Process the next item in the queue if below concurrency limit
+ * @param service Speech service to process
+ */
+function processQueue(service: SpeechService): void {
+  // Keep processing while there's capacity and items in the queue
+  while (
+    activeRequests[service] < MAX_CONCURRENT[service] &&
+    queues[service].length > 0
+  ) {
+    const request = queues[service].shift();
+    if (!request) return;
+
+    activeRequests[service]++;
+
+    const { text, resolve, reject } = request;
+    const serviceImpl =
+      service === "kokoro"
+        ? kokoro
+        : service === "elevenlabs"
+        ? elevenlabs
+        : test;
+
+    let clearRequestTimeout: () => void;
+
+    const timeoutPromise = new Promise<never>((_, timeoutReject) => {
+      const timeoutId = setTimeout(() => {
+        timeoutReject(
+          new Error(
+            `${service} speech generation timed out after ${
+              REQUEST_TIMEOUT_MS[service] / 1000
+            } seconds`
+          )
+        );
+      }, REQUEST_TIMEOUT_MS[service]);
+
+      clearRequestTimeout = () => clearTimeout(timeoutId);
+    });
+
+    Promise.race([serviceImpl.generateSpeech(text), timeoutPromise])
+      .then((result) => {
+        resolve(result as ArrayBuffer);
+      })
+      .catch((error) => {
+        reject(error);
+      })
+      .finally(() => {
+        if (clearRequestTimeout) {
+          clearRequestTimeout();
+        }
+        activeRequests[service]--;
+
+        // Once a request completes, try to process more of the queue
+        processQueue(service);
+      });
   }
 }
 

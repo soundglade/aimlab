@@ -31,7 +31,7 @@ const ReviewScreen = ({ onStartSynthesis }: ReviewScreenProps) => {
         </p>
       </div>
 
-      <div className="text-muted-foreground max-h-[400px] overflow-y-auto rounded-md border p-4">
+      <div className="text-muted-foreground bg-background max-h-[400px] overflow-y-auto rounded-md border p-4">
         <h1 className="text-foreground text-xl">
           {structuredMeditation?.title || "Micro Meditation"}
         </h1>

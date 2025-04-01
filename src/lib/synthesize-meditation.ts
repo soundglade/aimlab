@@ -24,7 +24,13 @@ export async function synthesizeMeditation(
   } = {}
 ) {
   try {
-    const speechService = voiceId === "nicole" ? "kokoro" : "elevenlabs";
+    const speechService =
+      voiceId === "test"
+        ? "test"
+        : voiceId === "nicole"
+        ? "kokoro"
+        : "elevenlabs";
+
     const speechSteps = meditation.steps.filter(
       (step) => step.type === "speech"
     );
@@ -51,23 +57,40 @@ export async function synthesizeMeditation(
 
     onProgress(0);
 
-    // Phase 1: Generate speech for each step
-    for (let i = 0; i < totalSteps; i++) {
-      const step = speechSteps[i];
-      const stepIndex = meditation.steps.indexOf(step);
-      onProgress(calculateProgress(i, totalSteps, "speech"));
+    // Phase 1: Generate speech for all steps in parallel
+    try {
+      let completedSteps = 0;
+      const speechGenerationPromises = speechSteps.map(async (step) => {
+        const stepIndex = meditation.steps.indexOf(step);
 
-      try {
         const audioBuffer = await speechGenerator(step.text, speechService);
-        audioBuffers.set(stepIndex, audioBuffer);
-
-        // Update step with duration
         const durationMs = await durationCalculator(audioBuffer);
+
+        // Increment completed steps and update progress
+        completedSteps += 1;
+        onProgress(calculateProgress(completedSteps, totalSteps, "speech"));
+
+        return {
+          stepIndex,
+          audioBuffer,
+          durationMs,
+        };
+      });
+
+      const results = await Promise.all(speechGenerationPromises);
+
+      // Process results and update meditation steps
+      for (const { stepIndex, audioBuffer, durationMs } of results) {
+        audioBuffers.set(stepIndex, audioBuffer);
         meditation.steps[stepIndex].durationMs = durationMs;
-      } catch (err) {
-        onError(`Failed to generate audio for section ${i + 1}`);
-        return false;
       }
+    } catch (err) {
+      onError(
+        `Failed to generate audio: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+      return false;
     }
 
     // Phase 2: Create timeline and concatenate audio
