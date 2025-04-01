@@ -126,7 +126,7 @@ const InputScreen = () => {
         <label className="mb-2 block">Meditation Script</label>
         <Textarea
           placeholder="Paste your meditation script here..."
-          className="max-h-[300px] min-h-[200px] overflow-y-auto"
+          className="bg-background max-h-[300px] min-h-[200px] overflow-y-auto"
           value={meditationScript}
           onChange={(e) => setMeditationScript(e.target.value)}
           disabled={isLoading}
