@@ -42,20 +42,18 @@ export default function FeedbackIndex() {
   return (
     <Layout variant="page">
       <header className="mb-12">
-        <h1 className="mb-3 text-3xl font-medium tracking-tight text-center md:text-4xl">
+        <h1 className="mb-3 text-center text-3xl tracking-tight md:text-4xl">
           Feedback
         </h1>
-        <p className="max-w-2xl text-muted-foreground">
-          Thank you for taking the time to share your feedback with us. Whether
-          you'd like to report bugs, suggest new features, or share what you
-          appreciate about the project - we welcome it all. If you provide
-          contact information, we'll do our best to follow up with you directly.
-          As a collaborative project, your input is invaluable in helping us
-          improve and grow. 🙏
+        <p className="text-muted-foreground max-w-2xl">
+          Thank you for taking the time to share your feedback with us. Feel
+          free to report bugs, suggest new features, or share appreciation. If
+          you provide contact information, we'll do our best to follow up with
+          you directly. 🙏
         </p>
       </header>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="message">Your feedback</Label>
@@ -88,22 +86,15 @@ export default function FeedbackIndex() {
               disabled={
                 isSubmitting || submitStatus === "success" || !message.trim()
               }
-              className="w-full mx-auto md:w-40"
+              className="mx-auto w-full md:w-40"
             >
-              {isSubmitting ? (
-                "Submitting..."
-              ) : (
-                <>
-                  Send
-                  <Send className="w-4 h-4" />
-                </>
-              )}
+              {isSubmitting ? "Submitting..." : <>Send</>}
             </Button>
           </div>
 
           {submitStatus === "success" && (
             <Alert variant="default" className="bg-primary/10 border-primary">
-              <CheckCircle className="w-4 h-4 text-primary" />
+              <CheckCircle className="text-primary h-4 w-4" />
               <AlertTitle>Thank you!</AlertTitle>
               <AlertDescription>
                 Your feedback has been successfully submitted. We appreciate
@@ -114,7 +105,7 @@ export default function FeedbackIndex() {
 
           {submitStatus === "error" && (
             <Alert variant="destructive">
-              <AlertCircle className="w-4 h-4" />
+              <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
                 Something went wrong while submitting your feedback. Please try
