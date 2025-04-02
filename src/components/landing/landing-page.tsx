@@ -47,7 +47,7 @@ export default function LandingPage({
           </Button>
           <Button asChild size="lg" variant="secondary">
             <Link href="/articles/creative-examples">
-              Checkout Examples
+              Check out Examples
               <BookOpen className="ml-2 h-4 w-4" />
             </Link>
           </Button>
