@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, Users, BookOpen } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 
 import { BlogPost } from "@/pages/index";
@@ -23,7 +23,7 @@ export default function LandingPage({
     <Layout>
       {/* Hero */}
       <section
-        className={`mb-20 mt-6 flex w-full flex-col items-center px-4 text-center md:mt-12`}
+        className={`mb-16 mt-6 flex w-full flex-col items-center px-4 text-center md:mt-12`}
       >
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
@@ -33,22 +33,31 @@ export default function LandingPage({
         </h2>
         <p className="text-muted-foreground mb-10 max-w-2xl">
           Welcome to AIM Lab, a creative hub to explore AI and meditation.
-          <br className="hidden md:block" />
+          <br className="hidden sm:block" />
+          {` `}
           We've designed this space for collaborative experimentation and
           discovery.
         </p>
-        <Button asChild size="lg" className="group">
-          <Link href="/composer">
-            Create a Meditation
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button asChild size="lg">
+            <Link href="/composer">
+              Create a Meditation
+              <Sparkles className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="secondary">
+            <Link href="/articles/creative-examples">
+              Checkout Examples
+              <BookOpen className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       <div id="community" className="invisible relative -top-4"></div>
 
       {/* Recent Community Meditations */}
-      <section className={`mb-20 w-full max-w-4xl px-4`}>
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Users className="h-5 w-5" />
