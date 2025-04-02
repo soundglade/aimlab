@@ -204,7 +204,7 @@ export function MeditationPlayer({
         meditationTitle={meditation.title}
       />
 
-      <Card className={cn("p-3  sm:p-6", className)}>
+      <Card className={cn("p-4 sm:p-6", className)}>
         {/* Loading state */}
         {playerState.isLoading && (
           <div className="flex flex-col items-center justify-center p-8">
@@ -216,8 +216,8 @@ export function MeditationPlayer({
         {/* Meditation script display */}
         {!playerState.isLoading && (
           <>
-            <div className="scrollbar-thin bg-background/50 text-muted-foreground max-h-[50vh] overflow-y-auto rounded-md">
-              <div className="space-y-1">
+            <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md">
+              <div className="space-y-2">
                 {meditation.steps.map((step, idx) => {
                   return (
                     <div
@@ -228,7 +228,7 @@ export function MeditationPlayer({
                           : null
                       }
                       className={cn(
-                        "px-3 py-2 rounded transition-colors",
+                        "p-3 rounded transition-colors",
                         step.type === "speech" &&
                           "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
                         playerState.currentStepIndex === idx &&
@@ -246,7 +246,7 @@ export function MeditationPlayer({
                       )}
                       {step.type === "speech" && <p>{step.text}</p>}
                       {step.type === "pause" && (
-                        <p className="text-muted-foreground -my-1 text-sm italic opacity-60">
+                        <p className="italic opacity-80">
                           {step.duration}s pause
                         </p>
                       )}
