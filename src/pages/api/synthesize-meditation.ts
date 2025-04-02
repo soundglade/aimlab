@@ -70,7 +70,7 @@ export default async function handler(
   stream.pipe(res);
 
   const meditation = req.body.structuredMeditation as Meditation;
-  const voiceId = req.body.voiceId || "nicole";
+  const voiceId = req.body.voiceId || "drew";
 
   // Determine the path to the worker file
   const workerPath = path.resolve(

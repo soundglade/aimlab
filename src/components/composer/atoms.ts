@@ -10,7 +10,7 @@ export const editableMarkdownAtom = atomWithReset<string>("");
 export const progressAtom = atomWithReset<number>(0);
 export const isCompletedAtom = atomWithReset<boolean>(false);
 export const meditationUrlAtom = atomWithReset<string | null>(null);
-export const voiceIdAtom = atomWithStorage<string>("voiceId", "nicole");
+export const voiceIdAtom = atomWithStorage<string>("voiceId", "drew");
 
 /**
  * Resets all atoms to their default values

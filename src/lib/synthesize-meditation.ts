@@ -13,7 +13,7 @@ export async function synthesizeMeditation(
     speechGenerator = generateSpeech,
     durationCalculator = getAudioDurationMs,
     audioConcatenator = createConcatenatedAudio,
-    voiceId = "nicole",
+    voiceId = "drew",
     onProgress = (progress: number) => {},
     onComplete = (
       success: boolean,

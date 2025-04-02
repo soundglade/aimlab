@@ -13,16 +13,16 @@ import {
 // Voice configuration
 export const VOICES = [
   {
-    id: "nicole",
-    name: "Nicole",
-    description: "Kokoro TTS",
-    previewFile: "/assets/nicole-kokoro-voice-sample.mp3",
-  },
-  {
     id: "drew",
     name: "Drew",
     description: "ElevenLabs",
     previewFile: "/assets/drew-elevenlabs-voice-sample.mp3",
+  },
+  {
+    id: "nicole",
+    name: "Nicole",
+    description: "Kokoro TTS",
+    previewFile: "/assets/nicole-kokoro-voice-sample.mp3",
   },
 ];
 
