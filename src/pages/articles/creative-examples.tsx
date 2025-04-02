@@ -2,28 +2,47 @@ import { PostLayout } from "@/components/blog/PostLayout";
 import { Button } from "@/components/ui/button";
 import Markdown from "react-markdown";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-import { Play, ReceiptText } from "lucide-react";
+import { Play, ReceiptText, ExternalLink, ArrowRight } from "lucide-react";
 import { MeditationPlayerDialog } from "@/components/player/meditation-player-dialog";
 
 export default function BlogPost() {
   return (
     <PostLayout
-      title="Creative examples"
+      title="Creative Ways to Generate Guided Meditations Using AI"
       date="March 30, 2025"
       content={
         <>
           <p>
-            Hi there, In this article I'm going to showcase some creative ways
-            to generate meditations using AI. I hope this will inspire you to do
-            your own experiments.
+            Hi there! In this article I'm going to share some playful and
+            creative experiments I've been doing to generate guided meditations
+            using AI chatbots. My goal is to inspire you to try your own
+            experiments and discover what's possible.
           </p>
 
-          <h2>Daily meditation in a particular style</h2>
+          <p>
+            For these experiments I've used a combination of different chatbots,
+            but mostly Claude and ChatGPT.
+          </p>
 
-          <p>Let's start with a very simple example.</p>
+          <p>Let's dive right in.</p>
+
+          <Separator />
+
+          <h2>Daily meditations in a particular style</h2>
+
+          <p>
+            Let's start with a simple experiment. Here, I wanted to see if a
+            chatbot could generate a brief daily meditation, but in a specific
+            style. I didn't provide detailed instructions, I simply allowed the
+            chatbot to use its own knowledge. This experiment is interesting
+            because it shows me just how much these chatbots already know about
+            different meditation styles. Also, it seems that some chatbots have
+            a better grasp of certain meditative traditions than others.
+          </p>
 
           <Prompt>
             Can you create for me the script of a brief guided daily meditation
@@ -34,39 +53,19 @@ export default function BlogPost() {
 
           <ChatbotResponse content={dailyMeditationResponse} />
 
-          <PlayButton
+          <PlayButtonLine
             id="dra65y7"
             title="Awareness and Non-Duality Meditation"
           />
 
-          <p>
-            What do you think of the result? I'm personally quite impressed.
-            It's well structured and well timed, and most importantly, it is
-            faithful to the meditation style requested. It's interesting to see
-            how much knowledge of meditative traditions is already present in
-            chatbots.
-          </p>
+          <Separator />
 
           <h2>Remixing a favourite meditation</h2>
 
           <p>
-            In this and following experiments we'll explore altering
-            ("remixing") existing meditations. The basic idea is simple:{" "}
-            <b>
-              find a way to obtain a script of the original meditation, then use
-              chatbots to alter it.
-            </b>
-          </p>
-
-          <p>
-            What are the ethical implications of this? This is an interesting
-            question that experiments like this starts to pose. We'll see how
-            it's fairly easy to clone and adapt existing meditations.
-          </p>
-
-          <p>
-            For this experiment I'm going to use Loch Kelly's latest guided
-            meditation from his YouTube channel.
+            For my next experiment I explored remixing and altering existing
+            meditations. I took a meditation by Loch Kelly from his YouTube
+            channel and asked the chatbot to create something new based on it.
           </p>
 
           <iframe
@@ -78,8 +77,10 @@ export default function BlogPost() {
             allowFullScreen
           ></iframe>
           <p>
-            To create this prompt I've downloaded the transcript from YouTube
-            and attached it to the message.
+            The process was straightforward: I downloaded the transcript from
+            YouTube, gave it to the chatbot, and asked it to expand the
+            meditation. Interestingly, the resulting meditation ended up almost
+            three times longer, not just twice.
           </p>
           <Prompt>
             I attach the transcript of a guided meditation I like. Can you
@@ -92,19 +93,16 @@ export default function BlogPost() {
 
           <ChatbotResponse content={lockKellyResponse} />
 
-          <PlayButton
+          <PlayButtonLine
             id="lenf5p7"
             title="Effortless Mindfulness and Limitless Awareness"
           />
 
           <p>
-            The final meditation is definetely longer (although more tripled
-            than doubled) and it follows the style of guidance faithfully.
-          </p>
-
-          <p>
-            Here is an example of how the chatbot expanded the guidance. This is
-            the original first part.
+            The way the chatbot expanded the language is particularly
+            fascinating. Here you can see examples of the original meditation
+            alongside the expanded version. I've marked the newly added sections
+            in bold for clarity.
           </p>
 
           <Box>
@@ -114,12 +112,6 @@ export default function BlogPost() {
             bring it back to the simple one-pointed focus in your body as your
             breath rises and relaxes.
           </Box>
-
-          <p>
-            And this is how the chatbot edited the script. Notice how it both
-            added more pauses and new guidance (I formatted in bold the new
-            text).
-          </p>
 
           <ChatBotBox>
             <Markdown>
@@ -141,50 +133,57 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
             </Markdown>
           </ChatBotBox>
 
+          <Separator />
+
           <h2>Creative Remixes</h2>
 
           <p>
-            So far we just expanded the lenght of a meditation. But there are so
-            many interesting ways in which we can derive new meditation scripts.
-            I've asked a chatbot (Gemini 2.5) for some ideas.
+            But expanding length is just one way to remix meditations. Curious
+            about other possibilities, I asked Gemini 2.5 (a chatbot) for
+            creative ideas on how to transform a meditation.
           </p>
 
           <ChatbotResponse content={creativeRemixesResponse} truncateAt={246} />
 
           <p>
-            I've generated two of the suggested meditations. The first one is a
-            rewrite of the script to focus on <b>gratitude</b>. The language
-            chosen is quite interesting. It creatively diverges from Loch's
-            usual style. Towards the end, for example, it uses the term{" "}
-            <b>
-              <i>grateful awareness</i>
-            </b>
-            , in a similar way to the more commonly used{" "}
-            <b>
-              <i>loving awareness</i>
-            </b>
-            .
+            The chatbot gave me some interesting suggestions. From those
+            suggestions I picked a couple of particularly creative ones.
           </p>
-          <PlayButton id="yce40ap" title="Gratitude Flow Meditation" />
 
           <p>
-            Finally, I was curious to try a version of the meditation that is
-            more suitable for children. The result is quite cute, mentioning{" "}
-            <i>"the magic bubble of awareness"</i> and the <i>"big sky mind"</i>
-            .
+            The first remix aimed to shift the core focus of Loch's meditation
+            toward gratitude. The chatbot remained faithful to the original
+            practice of effortless mindfulness but introduced a fresh and
+            interesting way of practicing gratitude with awareness. It even
+            coined the term "grateful awareness," which reminds me of the more
+            common "loving awareness".
           </p>
-          <PlayButton
+
+          <PlayButtonLine id="yce40ap" title="Gratitude Flow Meditation" />
+
+          <p>
+            For the second remix, I asked the chatbot to rewrite the meditation
+            to make it suitable for children, using playful and simple language.
+            The resulting meditation is adorable, with charming concepts like
+            the "magic bubble of awareness" and the "big sky mind."
+          </p>
+
+          <PlayButtonLine
             id="bv50mf2"
             title="Floating Bubble: A Gentle Mind-Clearing Meditation for Children"
           />
 
-          <h2>Meditation inpired by talks</h2>
+          <Separator />
+
+          <h2>Meditations inspired by talks</h2>
 
           <p>
-            In this experiment we are taking things a bit further. Here I've
-            given the AI another transcript, but this time instead of using a
-            mediation as source of inspiration I've chosen a talk by Henry
-            Shukman.
+            These experiments highlight something important: the richer the
+            context provided to the chatbot, the more interesting and meaningful
+            the results. So, in the next experiment, I decided to go deeper.
+            This time, I took a Zen talk (a Teisho) by Henry Shukman from
+            YouTube and again used the transcript to start a conversation with
+            the chatbot.
           </p>
 
           <iframe
@@ -196,25 +195,11 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
             allowFullScreen
           ></iframe>
 
-          <p>I'm sharing here the link to the whole chat session.</p>
-
-          <Link
-            href="https://chatgpt.com/share/67eaebab-7f94-8005-b175-1df00c5979eb"
-            target="_blank"
-          >
-            https://chatgpt.com/share/67eaebab-7f94-8005-b175-1df00c5979eb
-          </Link>
-
           <p>
-            As you can see, this time I didn't use a single prompt, but instead
-            had a discussion with ChatGPT first.
-          </p>
-
-          <p>
-            I asked it for a summary, then asked for suggestions for a guided
-            meditations that would capture the essence of the talk. Finally, I
-            accepted one of the suggestions it offered me and asked for the
-            meditation script.
+            To make the process more structured I first asked for a summary of
+            the talk, then requested several meditation ideas that would capture
+            its essence. From the chatbot's suggestions, I chose one I liked,
+            and we refined it into a full meditation script.
           </p>
 
           <Prompt>
@@ -224,19 +209,147 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
             may be? What could be the main topic and structure? Please do not
             generate yet the script. Let's discuss it first.
           </Prompt>
+
+          <ExternalLinkLine
+            href="https://chatgpt.com/share/67eaebab-7f94-8005-b175-1df00c5979eb"
+            title="Open ChatGPT chat session"
+          />
+
           <p>
-            The final meditation is quite fascinating... In a way, it feels like
-            by giving it Henry's talk as a source also infused it with a
-            creative touch.
+            The result is quite beautiful. It echoes the poetic essence of
+            Henry's teachings.
           </p>
 
-          <PlayButton
+          <p>
+            This experiment opens up the fascinating possibility of creating
+            guided meditations that complement existing talks.
+          </p>
+
+          <PlayButtonLine
             id="amx24n7"
             title="The Mind of Beauty: A Zen-Inspired Meditation"
           />
+
+          <Separator />
+
+          <h2>Series of meditations following books</h2>
+
+          <p>
+            Encouraged by this I took things a step further: I gave the chatbot
+            (Claude 3.7) an entire meditation manual. I chose "With Each and
+            Every Breath", a meditation guide by Thanissaro Bhikkhu, available
+            freely online.
+          </p>
+
+          <iframe
+            className="border-muted-foreground/50 mx-auto aspect-video w-full border-4"
+            src="https://www.dhammatalks.org/Archive/Writings/Ebooks/WithEachAndEveryBreath_210603.pdf"
+            allowFullScreen
+          ></iframe>
+
+          <p>
+            I created a new chat session, attached the PDF, and asked the
+            chatbot to help me create a progressive series of meditations
+            suitable for beginners. Before generating the scripts I discussed
+            with the chatbot how best to structure the topics. Once agreed on a
+            structure I asked the chatbot to generate one meditation at a time.
+          </p>
+
+          <p>
+            The outcome is remarkable: the topics, language, and overall
+            accuracy seem to match the original material. I am genuinely
+            impressed.
+          </p>
+
+          <ExternalLinkLine
+            href="https://claude.ai/share/5ac3a31c-c0ac-4350-aa05-d5c565d1df14"
+            title="Open Claude chat session"
+          />
+
+          <PlayButtonLine
+            id="f7pro0r"
+            title="Establishing Awareness of Breath"
+          />
+          <PlayButtonLine id="8n78l29" title="Expanding Breath Awareness" />
+          <PlayButtonLine
+            id="7htm63c"
+            title="Whole-Body Breathing Meditation"
+          />
+
+          <h2>Meditations from photos or artwork</h2>
+
+          <p>
+            For the final experiment I decided to try something even more
+            creative and unusual. One evening, looking at a sunset from my
+            balcony, I took a photo and asked a chatbot to create a guided
+            meditation based on this very view. To make things more interesting
+            I specifically asked it to follows the Headless Way style.
+          </p>
+
+          <Image
+            src="/mountain-view.jpg"
+            alt="Mountain view"
+            width={1247}
+            height={673}
+            className="border-accent mx-auto aspect-video w-full max-w-xl border-4"
+          />
+
+          <PlayButtonLine
+            id="s02hg74"
+            title="Mountain View Headless Way Meditation"
+          />
+
+          <p>
+            I love this meditation. It uses elements from the landscape (both
+            visual and auditory) to guide attention while at the same time
+            incorporating the essence of the Headless Way.
+          </p>
+
+          <p>
+            This experiment opens up entirely new possibilities. Imagine
+            generating meditations on the fly based on your surroundings, or
+            perhaps using artworks or sacred images as starting points.
+          </p>
+
+          <Separator />
+          <hr />
+
+          <p>
+            I hope these examples inspires you to experiment creatively and
+            playfully with these tools yourself.
+          </p>
+
+          <p>
+            I'm excited to see what the community will come up with, and I'd
+            love to hear about your experiences!
+          </p>
+
+          <div className="not-prose mb-8 mt-14 flex justify-center">
+            <Button asChild size="lg" className="group">
+              <Link href="/composer">
+                Create a Meditation
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
         </>
       }
     />
+  );
+}
+
+function Separator() {
+  return <div className="my-4 h-px w-full" />;
+}
+
+function ExternalLinkLine({ href, title }: { href: string; title: string }) {
+  return (
+    <div className="flex justify-center">
+      <Link href={href} target="_blank">
+        <ExternalLink className="mr-2 inline-block h-4 w-4" />
+        {title}
+      </Link>
+    </div>
   );
 }
 
@@ -319,7 +432,7 @@ function PlayButton({ id, title }: { id: string; title: string }) {
   const meditationId = id;
 
   return (
-    <div className="mt-6 flex justify-center">
+    <>
       <Button onClick={() => setDialogOpen(true)}>
         <Play className="h-4 w-4" />
         {title}
@@ -329,6 +442,14 @@ function PlayButton({ id, title }: { id: string; title: string }) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+    </>
+  );
+}
+
+function PlayButtonLine({ id, title }: { id: string; title: string }) {
+  return (
+    <div className="mt-6 flex justify-center">
+      <PlayButton id={id} title={title} />
     </div>
   );
 }

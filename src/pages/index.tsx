@@ -14,8 +14,8 @@ export type BlogPost = {
 const blogPosts: BlogPost[] = [
   {
     slug: "creative-examples",
-    title: "Creative examples",
-    date: "March 28, 2025",
+    title: "Creative Ways to Generate Guided Meditations Using AI",
+    date: "March 30, 2025",
     excerpt: "An inspiring list of creative ways to generate meditations",
   },
   {
