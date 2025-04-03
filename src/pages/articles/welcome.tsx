@@ -1,15 +1,6 @@
 import { PostLayout } from "@/components/blog/PostLayout";
+import { Highlight } from "@/components/articles";
 import Link from "next/link";
-
-function Highlight({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="prose prose-lg my-4">
-      <p className="border-border bg-accent/60 text-accent-foreground rounded-lg border px-8 py-5">
-        {children}
-      </p>
-    </div>
-  );
-}
 
 export default function BlogPost() {
   return (

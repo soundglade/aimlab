@@ -1,17 +1,11 @@
 import { PostLayout } from "@/components/blog/PostLayout";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-
-import Markdown from "react-markdown";
+import {
+  Prompt,
+  ChatbotResponse,
+  PlayButtonLine,
+  Highlight,
+} from "@/components/articles";
 import Link from "next/link";
-
-function MarkdownChatSample({ content }: { content: string }) {
-  return (
-    <ScrollArea className="bg-muted border-1 h-[500px] rounded-md px-4 py-4 md:h-[600px] md:px-12 md:py-12">
-      <Markdown>{content}</Markdown>
-    </ScrollArea>
-  );
-}
 
 export default function BlogPost() {
   return (
@@ -25,51 +19,60 @@ export default function BlogPost() {
             personalized guided meditations by combining AI chatbots with some
             custom tools offered by AIM Lab. This article is practical and
             hands-on, but if you'd like some background first, you might enjoy
-            reading my other posts: *"What is AIM Lab and Why Was It Created?"*
-            and *"Creative Examples of Guided Meditations."* Now, let’s dive
-            straight in!
+            reading my other posts:{" "}
+            <Link href="/articles/wlecome">
+              Welcome to AIM Lab: Who, What and Why
+            </Link>
+            . Now, let’s dive straight in!
           </p>
 
           <h2>The Basic Method</h2>
 
           <p>
-            It’s useful to start by briefly explaining the basic method. It’s
-            actually really simple. First, you'll use an AI chatbot, such as
-            ChatGPT, to creatively generate a unique meditation script. Then,
-            you just copy that script into AIM Lab’s meditation composer, et
-            voilà! You'll instantly have your very own, customized guided
-            meditation ready to play, download, or share however you like.
+            The basic method is quite simple: first, you'll use an AI chatbot,
+            such as ChatGPT, to creatively generate a unique meditation script.
+            Then, you just copy that script into our Meditation Composer,{" "}
+            <i>et voilà!</i> You'll instantly have your very own, customized
+            guided meditation ready to play, download, or share however you
+            like.
           </p>
 
           <p>
             In practice, though, there’s often a third, optional step: gathering
-            creative inspiration. While chatbots have impressive knowledge about
+            inspiration. While chatbots have impressive knowledge about
             meditation, they sometimes lack specific details, especially when it
             comes to less common meditation styles. So, it can help a lot to
-            provide the chatbot with additional material for inspiration—like
-            books, talks, or existing meditation scripts.
+            provide the chatbot with additional material for inspiration, such
+            as books, talks, or existing meditation scripts.
           </p>
 
-          <p>
-            To quickly recap, the basic method involves gathering inspiration
-            (optional), generating and refining your script with a chatbot, and
-            then synthesizing it with the meditation composer.
-          </p>
+          <p>To quickly recap, the basic method involves:</p>
+
+          <ol>
+            <li>gathering sources of inspiration (optional)</li>
+            <li>generating and refining your script with a chatbot</li>
+            <li>synthesizing it with the Meditation Composer</li>
+          </ol>
 
           <h2>Generating a Script with ChatGPT</h2>
 
           <p>
-            Let's go through a very simple example. First, open ChatGPT and
-            start with a straightforward prompt like: "Generate a short script
-            for a guided meditation." It really can be that easy! (I’ll include
-            an example of a typical response at the end of this post.)
+            Let's go through a simple example. First, open ChatGPT and start
+            with a straightforward prompt like:
           </p>
+          <Prompt>Generate a short script for a guided meditation.</Prompt>
+          <p>
+            It really can be that easy! Here is an example of a typical
+            response:
+          </p>
+
+          <ChatbotResponse content={answerSample} />
 
           <p>
             However, a quick heads-up: sometimes ChatGPT suggests it can also
             generate sounds or music for your meditation. Unfortunately, that’s
-            a hallucination—ChatGPT can’t do this (yet!), and that's exactly why
-            we built a separate tool: the meditation composer.
+            an hallucination. ChatGPT can’t do this (yet!), and that's why we
+            built a separate tool: the Meditation Composer.
           </p>
 
           <h2>Adding Pauses to Your Meditation Script</h2>
@@ -78,79 +81,97 @@ export default function BlogPost() {
             You can keep refining your script with the chatbot as much as you
             like, but one important detail to check is whether your meditation
             script has pause markers. If there are none, you can simply ask
-            ChatGPT something like, "Please add pause markers in the format:
-            `[pause for XX seconds]`."{" "}
+            ChatGPT something like:
           </p>
 
+          <Prompt>
+            Please add pause markers in the format: `[pause for XX seconds]`.
+          </Prompt>
+
           <p>
-            The meditation composer is pretty clever, so don't stress too much
-            about exact formatting—it usually figures it out just fine. However,
-            right now it supports precise pauses only. If your script says
-            something vague like "Pause for one or two minutes," the composer
-            will pick a specific length for you. I’m considering making pauses
-            more flexible in the future, but for now, it picks a fixed duration.
+            The Meditation Composer is pretty clever, so don't stress too much
+            about exact formatting: it usually figures it out just fine.
+            However, right now it supports precise pauses only. If your script
+            says something vague like <i>"Pause for one or two minutes"</i> the
+            composer will pick a specific length for you. I’m considering making
+            pauses more flexible, but for now, it picks a fixed duration.
           </p>
 
           <h2>Using the Meditation Composer</h2>
 
           <p>
-            With your script ready, copy and paste it into the meditation
-            composer. You'll see an area where you can paste the text and choose
-            a voice. Currently, there are only two voices available, but I'm
-            planning to expand this soon—perhaps even letting you pick voices
-            from services like Eleven Labs.
+            With your script ready, <b>copy and paste it</b> into the Meditation
+            Composer. You'll see an area where you can paste the text and{" "}
+            <b>choose a voice</b>. Currently, there are only two voices
+            available, but I'm planning to expand this soon, perhaps even
+            letting you pick voices from services like ElevenLabs. You can
+            preview the voices to see which one you like best.
           </p>
 
           <p>
-            The meditation composer uses AI to process your script, adding
+            The Meditation Composer uses AI to process your script, adding
             structure to ensure pauses, text, and headings are correctly
             interpreted by the synthesizer. However, sometimes it makes
-            mistakes. That's why the second step is important: reviewing the
-            interpreted version. Check that the text, pauses, and headings look
-            right. If something needs changing, right now, the only way to edit
-            it is by going back to your original script, editing it there, and
-            resubmitting it. I know this isn't ideal, and I'm considering more
-            flexible editing options in the future.
+            mistakes. That's why the second step is important: <b>reviewing</b>{" "}
+            the interpreted version. Check that the text, pauses, and headings
+            look right. If something needs changing, right now, the only way to
+            edit it is by going back to your original script, editing it there,
+            and resubmitting it. I know this isn't ideal, and I'm considering
+            more flexible editing options in the future.
           </p>
 
           <p>
-            If everything looks good, you can move forward to synthesize your
-            meditation. This might take from one to a few minutes, depending on
-            the meditation length and server load. Be patient, wait for it to
-            finish, and once done, you’ll have a fully synthesized meditation.
+            If everything looks good, you can move forward to{" "}
+            <b>synthesize your meditation</b>. This might take from one to a few
+            minutes, depending on the meditation length and server load. Be
+            patient, wait for it to finish, and once done, you’ll have a fully
+            synthesized meditation.
           </p>
 
           <h2>The Meditation Player</h2>
 
           <p>
             When the synthesis finishes, you’ll be offered the chance to play
-            your meditation right away. The meditation player is quite
-            interesting because, unlike most players in meditation apps, it
-            shows your meditation script clearly—including headings and pauses.
-            You can even tap or click on different parts of the script to jump
-            ahead, skip parts you don't like, or revisit sections easily.
+            your meditation right away. Here is how it looks like for our
+            example:
+          </p>
+          <PlayButtonLine id="jftmpv6" title="Coming Home to the Breath" />
+          <p>
+            The meditation player is quite interesting because, unlike most
+            players in meditation apps, it shows your meditation script clearly,
+            including headings and pauses. You can even tap or click on
+            different parts of the script to jump ahead, skip parts you don't
+            like, or revisit sections easily.
           </p>
 
           <p>
             Of course, the player includes the usual features like play, pause,
             forward, backward, and a progress bar to jump around freely. You can
-            also download your meditation as an MP3 file directly from here.
+            also <b>download</b> your meditation as an MP3 file directly from
+            here.
           </p>
 
           <p>
-            Sharing your meditation is also straightforward—just click the share
-            button to copy the URL, which you can then send to anyone. But
-            here's an important caution: **all meditations created with AIM Lab
-            are public.** Please don't include any private or sensitive
-            information in your meditations. If something doesn't look right or
-            you simply don't want a meditation online anymore, you can easily
-            delete it right from the meditation player.
+            Sharing your meditation is also straightforward: just click the
+            share button to copy the URL, which you can then send to anyone.
+          </p>
+
+          <Highlight>
+            Important: all meditations created with AIM Lab are public. Please
+            don't include any private or sensitive information in your
+            meditations.
+          </Highlight>
+
+          <p>
+            If something doesn't look right or you simply don't want a
+            meditation online anymore, you can easily delete it right from the
+            meditation player.
           </p>
 
           <p>
-            You can also view all the meditations you've created in one
-            place—the meditation composer's landing page—where you can easily
-            open or delete them.
+            You can also view all the meditations you've created in one place,
+            on the Meditation Composer main page, where you can easily open or
+            delete them.
           </p>
 
           <h2>Known Issues and Glitches</h2>
@@ -170,7 +191,7 @@ export default function BlogPost() {
 
           <p>
             Second, sometimes pauses might be too short, too long, or simply
-            awkward—like being instructed to inhale and then wait 15 seconds,
+            awkward. Like being instructed to inhale and then wait 15 seconds,
             which isn’t practical. Sometimes instructions for breathing
             exercises move forward without allowing enough time to actually do
             the exercise. Watch out for these small glitches.
@@ -197,7 +218,11 @@ export default function BlogPost() {
 
           <p>
             For more detailed examples and ideas on using inspiration sources,
-            you might want to check out my dedicated article on that topic.
+            checkout the article I wrote about{" "}
+            <Link href="/articles/creative-examples">
+              creative ways to generate meditations
+            </Link>
+            .
           </p>
 
           <h2>Final Recap</h2>
@@ -211,12 +236,15 @@ export default function BlogPost() {
 
           <p>
             That’s all for now! I hope you find this process enjoyable and
-            insightful. AIM Lab is a community-driven project, so please share
-            your feedback—it's always welcome.
+            insightful.
+          </p>
+          <p>
+            AIM Lab is a community-driven project, so please{" "}
+            <Link href="/feedback">share your feedback</Link>. It's always
+            welcome.
           </p>
 
           <p>Enjoy your creative exploration!</p>
-          <MarkdownChatSample content={answerSample} />
         </>
       }
     />

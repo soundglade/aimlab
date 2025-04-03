@@ -7,6 +7,16 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Play, ReceiptText, ExternalLink, ArrowRight } from "lucide-react";
 import { MeditationPlayerDialog } from "@/components/player/meditation-player-dialog";
 
+export function Highlight({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="prose prose-lg my-4">
+      <p className="border-border bg-accent/60 text-accent-foreground rounded-lg border px-8 py-5">
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export function Separator() {
   return <div className="my-4 h-px w-full" />;
 }
