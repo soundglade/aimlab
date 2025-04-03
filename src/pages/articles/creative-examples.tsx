@@ -35,8 +35,6 @@ export default function BlogPost() {
 
           <p>Let's dive right in.</p>
 
-          <Separator />
-
           <h2>Daily meditations in a particular style</h2>
 
           <p>
@@ -45,8 +43,7 @@ export default function BlogPost() {
             style. I didn't provide detailed instructions, I simply allowed the
             chatbot to use its own knowledge. This experiment is interesting
             because it shows me just how much these chatbots already know about
-            different meditation styles. Also, it seems that some chatbots have
-            a better grasp of certain meditative traditions than others.
+            different meditation styles.
           </p>
 
           <Prompt>
@@ -56,7 +53,7 @@ export default function BlogPost() {
             the format [pause for xx seconds].
           </Prompt>
 
-          <ChatbotResponse content={dailyMeditationResponse} />
+          <ChatbotResponse content={dailyMeditationResponse} truncateAt={200} />
 
           <PlayButtonLine
             id="dra65y7"
@@ -96,7 +93,7 @@ export default function BlogPost() {
             markers in the format [pause for xx seconds] throughout.
           </Prompt>
 
-          <ChatbotResponse content={lockKellyResponse} />
+          <ChatbotResponse content={lockKellyResponse} truncateAt={170} />
 
           <PlayButtonLine
             id="lenf5p7"
@@ -158,10 +155,10 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
           <p>
             The first remix aimed to shift the core focus of Loch's meditation
             toward gratitude. The chatbot remained faithful to the original
-            practice of effortless mindfulness but introduced a fresh and
-            interesting way of practicing gratitude with awareness. It even
-            coined the term "grateful awareness," which reminds me of the more
-            common "loving awareness".
+            practice of effortless mindfulness but introduced an interesting way
+            of practicing gratitude with awareness. It even coined the term
+            "grateful awareness" which reminds me of the more common "loving
+            awareness".
           </p>
 
           <PlayButtonLine id="yce40ap" title="Gratitude Flow Meditation" />
@@ -169,8 +166,8 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
           <p>
             For the second remix, I asked the chatbot to rewrite the meditation
             to make it suitable for children, using playful and simple language.
-            The resulting meditation is adorable, with charming concepts like
-            the "magic bubble of awareness" and the "big sky mind."
+            The resulting meditation is quite cute, with charming concepts like
+            the "magic bubble of awareness" and the "big sky mind".
           </p>
 
           <PlayButtonLine
@@ -183,12 +180,12 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
           <h2>Meditations inspired by talks</h2>
 
           <p>
-            These experiments highlight something important: the richer the
-            context provided to the chatbot, the more interesting and meaningful
-            the results. So, in the next experiment, I decided to go deeper.
-            This time, I took a Zen talk (a Teisho) by Henry Shukman from
-            YouTube and again used the transcript to start a conversation with
-            the chatbot.
+            These experiments so far highlight something important: the richer
+            the context provided to the chatbot, the more interesting and
+            meaningful the results. So, in the next experiment, I decided to go
+            deeper. This time, I took a Zen talk (a Teisho) by Henry Shukman
+            from YouTube and again used the transcript to start a conversation
+            with the chatbot.
           </p>
 
           <iframe
@@ -221,13 +218,11 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
           />
 
           <p>
-            The result is quite beautiful. It echoes the poetic essence of
-            Henry's teachings.
-          </p>
-
-          <p>
-            This experiment opens up the fascinating possibility of creating
-            guided meditations that complement existing talks.
+            The result is... well, interesting! You can see it echoes the poetic
+            essence of Henry's teachings... althought at times it also feels a
+            bit like a word salad, as if it just tried to string together
+            different words from the talk, without too much logic... 😅 I like
+            it! Very Zen! 😉
           </p>
 
           <PlayButtonLine

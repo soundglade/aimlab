@@ -112,7 +112,7 @@ const ResourcesInfoBar = () => {
             href="/articles/creative-examples"
             className="text-primary hover:text-primary hover:underline"
           >
-            Creative Ways to Create Meditations
+            Creative Ways to Generate Meditations
           </Link>
         </div>
 
