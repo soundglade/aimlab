@@ -20,17 +20,17 @@ const blogPosts: BlogPost[] = [
   },
   {
     slug: "how-to",
-    title: "How-to create guided meditations",
+    title: "How To Create Guided Meditations",
     date: "March 27, 2025",
     excerpt:
-      "A step-by-step guide on creating custom guided meditations by using AI chatbots to generate personalized scripts, adding pause markers, and synthesizing them with the Meditation Composer.",
+      "A step-by-step guide on creating custom guided meditations by using AI chatbots, adding pause markers, and synthesizing them with the Meditation Composer.",
   },
   {
     slug: "welcome",
-    title: "Welcome to AIMlab: what and why",
+    title: "Welcome to AIM Lab: Who, What and Why",
     date: "March 26, 2025",
     excerpt:
-      "A personal intro to AIMlab. What is it, why I've created and some more important considerations.",
+      "A personal intro to AIMlab: what is it, why I've created it, and where to start.",
   },
 ];
 
