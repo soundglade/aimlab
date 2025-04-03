@@ -29,8 +29,8 @@ export default function CommunityIndex({
                   href={meditation.link}
                   className="hover:bg-accent bg-background flex justify-between gap-6 rounded-lg border px-3 py-2 transition-colors"
                 >
-                  <h2 className="text-md">{meditation.title}</h2>
-                  <span className="text-muted-foreground text-sm">
+                  <h2>{meditation.title}</h2>
+                  <span className="text-muted-foreground whitespace-nowrap text-sm">
                     {meditation.timeAgo}
                   </span>
                 </Link>
