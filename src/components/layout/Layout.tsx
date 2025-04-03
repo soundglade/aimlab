@@ -20,7 +20,7 @@ export function Layout({
 }: LayoutProps) {
   return (
     <div
-      className={`flex flex-col items-center min-h-screen ${gradientBackgroundClasses}`}
+      className={`flex flex-col items-center overflow-x-hidden min-h-screen ${gradientBackgroundClasses}`}
     >
       {variant === "page" ? (
         <>

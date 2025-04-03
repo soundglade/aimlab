@@ -118,9 +118,12 @@ export function PlayButton({ id, title }: { id: string; title: string }) {
 
   return (
     <>
-      <Button onClick={() => setDialogOpen(true)}>
-        <Play className="h-4 w-4" />
-        {title}
+      <Button
+        onClick={() => setDialogOpen(true)}
+        className="h-auto whitespace-normal py-2 text-center"
+      >
+        <Play className="hidden h-4 w-4 flex-shrink-0 sm:inline-block" />
+        <span>{title}</span>
       </Button>
       <MeditationPlayerDialog
         meditationId={meditationId}
