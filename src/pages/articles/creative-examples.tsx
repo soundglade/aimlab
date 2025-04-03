@@ -35,7 +35,68 @@ export default function BlogPost() {
 
           <p>Let's dive right in.</p>
 
-          <h2>Daily meditations in a particular style</h2>
+          <div className="w-full">
+            <div className="border-border bg-accent/50 not-prose mx-auto my-6 mt-14 max-w-sm rounded-lg border p-4 sm:max-w-none">
+              <h2 className="text-muted-foreground mb-2 text-sm tracking-tight">
+                Contents
+              </h2>
+              <ul className="space-y-0 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:space-y-0">
+                <li>
+                  <Link
+                    href="#daily-meditations"
+                    className="text-primary hover:underline"
+                  >
+                    Daily meditations in a particular style
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#remixing-meditation"
+                    className="text-primary hover:underline"
+                  >
+                    Remixing a favourite meditation
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#creative-remixes"
+                    className="text-primary hover:underline"
+                  >
+                    More creative remixes
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#inspired-talks"
+                    className="text-primary hover:underline"
+                  >
+                    Meditations inspired by talks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#series-meditations"
+                    className="text-primary hover:underline"
+                  >
+                    Series of meditations following books
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#photos-artwork"
+                    className="text-primary hover:underline"
+                  >
+                    Meditations from photos or artwork
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <Separator />
+          <h2 id="daily-meditations">
+            Daily meditations in a particular style
+          </h2>
 
           <p>
             Let's start with a simple experiment. Here, I wanted to see if a
@@ -62,7 +123,7 @@ export default function BlogPost() {
 
           <Separator />
 
-          <h2>Remixing a favourite meditation</h2>
+          <h2 id="remixing-meditation">Remixing a favourite meditation</h2>
 
           <p>
             For my next experiment I explored remixing and altering existing
@@ -137,7 +198,7 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
 
           <Separator />
 
-          <h2>Creative Remixes</h2>
+          <h2 id="creative-remixes">More creative remixes</h2>
 
           <p>
             But expanding length is just one way to remix meditations. Curious
@@ -177,7 +238,7 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
 
           <Separator />
 
-          <h2>Meditations inspired by talks</h2>
+          <h2 id="inspired-talks">Meditations inspired by talks</h2>
 
           <p>
             These experiments so far highlight something important: the richer
@@ -232,13 +293,12 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
 
           <Separator />
 
-          <h2>Series of meditations following books</h2>
+          <h2 id="series-meditations">Series of meditations following books</h2>
 
           <p>
-            Encouraged by this I took things a step further: I gave the chatbot
-            (Claude 3.7) an entire meditation manual. I chose "With Each and
-            Every Breath", a meditation guide by Thanissaro Bhikkhu, available
-            freely online.
+            I took things a step further: I gave the chatbot (Claude 3.7) an
+            entire meditation manual. I chose "With Each and Every Breath", a
+            meditation guide by Thanissaro Bhikkhu, available freely online.
           </p>
 
           <iframe
@@ -276,7 +336,7 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
             title="Whole-Body Breathing Meditation"
           />
 
-          <h2>Meditations from photos or artwork</h2>
+          <h2 id="photos-artwork">Meditations from photos or artwork</h2>
 
           <p>
             For the final experiment I decided to try something even more
