@@ -1,6 +1,14 @@
 # AI Meditation Lab (AIM Lab)
 
+[✨ Visit the Live Website](https://aimlab.soundglade.com/)
+
 An open-source project exploring the intersection of AI and meditation practices.
+
+## Tech Stack
+
+- Next.js
+- Tailwind CSS v4
+- shadcn/ui Components
 
 ## Current Tools
 
@@ -10,29 +18,6 @@ Generate guided meditations from scripts created by AI language models like Chat
 
 ## Project Structure
 
-### Web Areas
-
-- **Public Website** - The main public-facing website accessible to all users
-
-  - Contains public tools like Meditation Composer
-  - Available at the root URL
-  - Features a modern, user-friendly interface
-
-- **Admin Area** (`/admin`) - Password-protected administrative interface
-
-  - Accessible via `/admin`
-  - Features a structured layout with a sidebar navigation
-  - Uses a hierarchical routing system with pages and subpages
-  - Follows the pattern: `/admin/[section]/[subsection]`
-
-- **Playground** (`/playground`) - Password-protected experimental area
-  - Accessible via `/playground`
-  - Features a modular layout with sidebar navigation
-  - Organized into experiment sections with nested pages
-  - Follows the pattern: `/playground/[experiment]/[feature]`
-
-### Core Directories
-
 - `/src/pages` - Next.js pages and API routes
 - `/src/components` - Reusable UI components
 - `/src/styles` - Global styles and CSS modules
@@ -41,17 +26,7 @@ Generate guided meditations from scripts created by AI language models like Chat
 - `/console` - Development REPL environment and utilities
 - `/docs` - Documentation for the project
 - `/scripts` - On-off utility scripts for various project tasks
-- `/tests` - Unit and integration tests
-
-### Cursor Rules
-
-The `/.cursor/rules` directory contains special markdown documents (`.mdc` files) that provide guidance for both AI assistants and human developers:
-
-- [Design Principles](/.cursor/rules/design-principles.mdc) - Core design philosophy and aesthetic guidelines
-- [UI Components](/.cursor/rules/ui-components.mdc) - Component usage and UI pattern guidelines
-- [Project Architecture](/.cursor/rules/project-architecture.mdc) - Technical implementation and code organization
-
-These documents serve as living documentation for the project's design system and development practices.
+- `/tests` - Unit and manual tests
 
 ### Scripts
 
@@ -106,46 +81,6 @@ npm run test:watch  # Run tests in watch mode (rerun on file changes)
 
 - `/tests/unit/` - Unit tests for individual components and functions
 - `/tests/setup.ts` - Global test setup and configuration
-
-### Testing Philosophy
-
-Our testing approach follows these principles:
-
-1. **Focus on meaningful tests** - We prioritize tests that verify actual functionality rather than implementation details.
-2. **Avoid redundant tests** - We don't write tests that verify the same thing multiple ways.
-3. **Test real behavior** - We prefer testing against real implementations rather than using mocks when possible.
-4. **Keep tests simple** - Tests should be easy to understand and maintain.
-5. **Test edge cases** - We focus on testing boundary conditions and error cases that are likely to occur.
-
-### Testing Browser APIs in Node.js
-
-For components that use browser APIs (like IndexedDB), we use polyfills to enable testing in Node.js:
-
-- `fake-indexeddb` - Provides a full implementation of the IndexedDB API for testing
-- Our test setup automatically configures these polyfills
-
-### Writing Tests
-
-Tests are written using Vitest and React Testing Library. Example:
-
-```typescript
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import MyComponent from "@/components/MyComponent";
-
-describe("MyComponent", () => {
-  it("renders correctly", () => {
-    render(<MyComponent />);
-    expect(screen.getByText("Hello World")).toBeInTheDocument();
-  });
-});
-```
-
-## Tech Stack
-
-- Next.js
-- Tailwind CSS v4
-- shadcn/ui Components
 
 ## License
 
