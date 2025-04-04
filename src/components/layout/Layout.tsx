@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import Head from "next/head";
 
 export const gradientBackgroundClasses =
   "bg-gradient-to-b from-white via-sky-50 to-white dark:from-gray-900 dark:via-slate-850 dark:to-gray-900";
@@ -22,6 +23,44 @@ export function Layout({
     <div
       className={`flex flex-col items-center overflow-x-hidden min-h-screen ${gradientBackgroundClasses}`}
     >
+      <Head>
+        <title>AIM Lab - The AI Meditation Playground</title>
+        <meta
+          name="description"
+          content="An experimental space exploring the intersection of AI and meditation."
+        />
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://aimlab.soundglade.com" />
+        <meta
+          property="og:title"
+          content="AIM Lab - The AI Meditation Playground"
+        />
+        <meta
+          property="og:description"
+          content="An experimental space exploring the intersection of AI and meditation."
+        />
+        <meta
+          property="og:image"
+          content="https://aimlab.soundglade.com/og-image.jpg"
+        />
+        {/* Twitter/X */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://aimlab.soundglade.com" />
+        <meta
+          property="twitter:title"
+          content="AIM Lab - The AI Meditation Playground"
+        />
+        <meta
+          property="twitter:description"
+          content="An experimental space exploring the intersection of AI and meditation."
+        />
+        <meta
+          property="twitter:image"
+          content="https://aimlab.soundglade.com/og-image.jpg"
+        />
+      </Head>
+
       {variant === "page" ? (
         <>
           {showHeader && <Header />}
