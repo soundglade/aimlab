@@ -42,7 +42,7 @@ export function Layout({
         />
         <meta
           property="og:image"
-          content="https://aimlab.soundglade.com/og-image.jpg"
+          content="https://aimlab.soundglade.com/og-image-2.jpg"
         />
         {/* Twitter/X */}
         <meta property="twitter:card" content="summary_large_image" />
@@ -57,7 +57,7 @@ export function Layout({
         />
         <meta
           property="twitter:image"
-          content="https://aimlab.soundglade.com/og-image.jpg"
+          content="https://aimlab.soundglade.com/og-image-2.jpg"
         />
       </Head>
 
