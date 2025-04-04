@@ -20,15 +20,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InputDialog } from "@/components/ui/input-dialog";
 
 export function MeditationActionButtons({
   meditationId,
   audioUrl,
   meditationTitle,
 }) {
-  const { ownsMeditation, deleteMeditation } = useMyMeditations();
-  const canDelete = ownsMeditation(meditationId);
+  const { ownsMeditation, deleteMeditation, editMeditationTitle } =
+    useMyMeditations();
+  const canEdit = ownsMeditation(meditationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditTitleDialog, setShowEditTitleDialog] = useState(false);
   const router = useRouter();
 
   const handleDownload = () => {
@@ -66,6 +69,21 @@ export function MeditationActionButtons({
     router.push("/");
   };
 
+  const handleTitleUpdate = async (newTitle) => {
+    if (newTitle.trim() && newTitle !== meditationTitle) {
+      const success = await editMeditationTitle(meditationId, newTitle);
+      if (success) {
+        // Hard refresh the page to show updated title
+        window.location.reload();
+      } else {
+        toast.error("Failed to update title");
+      }
+    } else if (!newTitle.trim()) {
+      toast.error("Title cannot be empty");
+    }
+    setShowEditTitleDialog(false);
+  };
+
   return (
     <div className="m-4 flex justify-center gap-3">
       <Button variant="outline" size="sm" onClick={handleDownload}>
@@ -78,39 +96,49 @@ export function MeditationActionButtons({
         Share
       </Button>
 
-      {canDelete && (
-        <ConfirmDestructiveDialog
-          open={showDeleteDialog}
-          onOpenChange={setShowDeleteDialog}
-          title="Delete meditation"
-          description={`Are you sure you want to delete "${meditationTitle}"?`}
-          confirmText="Delete"
-          onConfirm={handleConfirmDelete}
-        >
-          <DropdownMenu modal={true}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Settings2 className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <TextCursorInput className="mr-2 h-4 w-4" />
-                Edit title
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LetterText className="mr-2 h-4 w-4" />
-                Add description
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </ConfirmDestructiveDialog>
+      {canEdit && (
+        <>
+          <InputDialog
+            open={showEditTitleDialog}
+            onOpenChange={setShowEditTitleDialog}
+            title="Edit meditation title"
+            description="Enter a new title for your meditation"
+            confirmText="Save"
+            initialValue={meditationTitle}
+            placeholder="Enter new title"
+            onConfirm={handleTitleUpdate}
+          ></InputDialog>
+          <ConfirmDestructiveDialog
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+            title="Delete meditation"
+            description={`Are you sure you want to delete "${meditationTitle}"?`}
+            confirmText="Delete"
+            onConfirm={handleConfirmDelete}
+          >
+            <DropdownMenu modal={true}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings2 className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowEditTitleDialog(true)}>
+                  <TextCursorInput className="mr-2 h-4 w-4" />
+                  Edit title
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ConfirmDestructiveDialog>
+        </>
       )}
     </div>
   );
 }
+
+function EditDropdownMenu() {}
