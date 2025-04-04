@@ -26,10 +26,11 @@ export function MeditationActionButtons({
   meditationId,
   audioUrl,
   meditationTitle,
+  embedded,
 }) {
   const { ownsMeditation, deleteMeditation, editMeditationTitle } =
     useMyMeditations();
-  const canEdit = ownsMeditation(meditationId);
+  const canEdit = !embedded && ownsMeditation(meditationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditTitleDialog, setShowEditTitleDialog] = useState(false);
   const router = useRouter();

@@ -23,6 +23,7 @@ interface MeditationPlayerProps {
   audioUrl: string;
   className?: string;
   onAudioLoaded?: () => void;
+  embedded?: boolean;
 }
 
 export function MeditationPlayer({
@@ -31,6 +32,7 @@ export function MeditationPlayer({
   audioUrl,
   className,
   onAudioLoaded,
+  embedded,
 }: MeditationPlayerProps) {
   // Player state
   const [playerState, setPlayerState] = useState({
@@ -197,11 +199,11 @@ export function MeditationPlayer({
         {meditation.title}
       </h1>
 
-      {/* Use the dynamically loaded action buttons component */}
       <MeditationActionButtons
         meditationId={meditationId}
         audioUrl={audioUrl}
         meditationTitle={meditation.title}
+        embedded={embedded}
       />
 
       <Card className={cn("p-4 sm:p-6", className)}>

@@ -85,6 +85,7 @@ export function MeditationPlayerDialog({
                 meditation={meditationData.metadata}
                 meditationId={meditationData.meditationId}
                 audioUrl={meditationData.audioUrl}
+                embedded={true}
               />
             </div>
           )}
