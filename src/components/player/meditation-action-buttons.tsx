@@ -1,12 +1,25 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download, Share, Trash } from "lucide-react";
+import {
+  Download,
+  Share,
+  Trash,
+  Settings2,
+  TextCursorInput,
+  LetterText,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function MeditationActionButtons({
   meditationId,
@@ -74,14 +87,28 @@ export function MeditationActionButtons({
           confirmText="Delete"
           onConfirm={handleConfirmDelete}
         >
-          <Button
-            variant="outline"
-            size="sm"
-            className="hover:text-destructive-foreground hover:bg-destructive/90 transition-none"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
+          <DropdownMenu modal={true}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Settings2 className="mr-2 h-4 w-4" />
+                Edit
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+                <Trash className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <TextCursorInput className="mr-2 h-4 w-4" />
+                Edit title
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LetterText className="mr-2 h-4 w-4" />
+                Add description
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ConfirmDestructiveDialog>
       )}
     </div>

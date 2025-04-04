@@ -62,7 +62,7 @@
   --foreground: #fff;
   --card: var(--color-gray-900);
   --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.14 0 285.82);
+  --popover: var(--color-gray-900);
   --popover-foreground: oklch(0.98 0 0);
   --primary: hsl(230 88% 68%);
   --primary-foreground: white;
