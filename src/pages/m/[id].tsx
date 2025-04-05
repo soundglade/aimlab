@@ -32,6 +32,7 @@ export default function PublicMeditation({
         <Head>
           <title key="title">Meditation Not Found | AIM Lab</title>
           <meta
+            key="description"
             name="description"
             content="AIM Lab - The AI Meditation Playground"
           />
@@ -47,19 +48,27 @@ export default function PublicMeditation({
   }
 
   const pageTitle = `${metadata.title} | AIM Lab`;
-
+  const pageDescription = "AIM Lab - The AI Meditation Playground";
   return (
     <Layout>
       <Head>
         <title key="title">{pageTitle}</title>
-        <meta property="og:title" content={pageTitle} />
+        <meta key="description" name="description" content={pageDescription} />
+        <meta key="og:title" property="og:title" content={pageTitle} />
         <meta
+          key="og:description"
           property="og:description"
-          content="AIM Lab - The AI Meditation Playground"
+          content={pageDescription}
         />
         <meta
-          name="description"
-          content="AIM Lab - The AI Meditation Playground"
+          key="twitter:title"
+          property="twitter:title"
+          content={pageTitle}
+        />
+        <meta
+          key="twitter:description"
+          property="twitter:description"
+          content={pageDescription}
         />
       </Head>
       <div className="container mx-auto max-w-3xl px-4 py-8">

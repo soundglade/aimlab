@@ -24,38 +24,57 @@ export function Layout({
       className={`flex flex-col items-center overflow-x-hidden min-h-screen ${gradientBackgroundClasses}`}
     >
       <Head>
-        <title>AIM Lab - The AI Meditation Playground</title>
+        <title key="title">AIM Lab - The AI Meditation Playground</title>
         <meta
+          key="description"
           name="description"
           content="An experimental space exploring the intersection of AI and meditation."
         />
         {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://aimlab.soundglade.com" />
+        <meta key="og:type" property="og:type" content="website" />
         <meta
+          key="og:url"
+          property="og:url"
+          content="https://aimlab.soundglade.com"
+        />
+        <meta
+          key="og:title"
           property="og:title"
           content="AIM Lab - The AI Meditation Playground"
         />
         <meta
+          key="og:description"
           property="og:description"
           content="An experimental space exploring the intersection of AI and meditation."
         />
         <meta
+          key="og:image"
           property="og:image"
           content="https://aimlab.soundglade.com/og-image-2.jpg"
         />
         {/* Twitter/X */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://aimlab.soundglade.com" />
         <meta
+          key="twitter:card"
+          property="twitter:card"
+          content="summary_large_image"
+        />
+        <meta
+          key="twitter:url"
+          property="twitter:url"
+          content="https://aimlab.soundglade.com"
+        />
+        <meta
+          key="twitter:title"
           property="twitter:title"
           content="AIM Lab - The AI Meditation Playground"
         />
         <meta
+          key="twitter:description"
           property="twitter:description"
           content="An experimental space exploring the intersection of AI and meditation."
         />
         <meta
+          key="twitter:image"
           property="twitter:image"
           content="https://aimlab.soundglade.com/og-image-2.jpg"
         />
