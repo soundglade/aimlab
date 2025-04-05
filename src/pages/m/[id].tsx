@@ -49,12 +49,14 @@ export default function PublicMeditation({
 
   const pageTitle = `${metadata.title} | AIM Lab`;
   const pageDescription = "AIM Lab - The AI Meditation Playground";
+  const pageUrl = `https://aimlab.soundglade.com/m/${meditationId}`;
   return (
     <Layout>
       <Head>
         <title key="title">{pageTitle}</title>
         <meta key="description" name="description" content={pageDescription} />
         <meta key="og:title" property="og:title" content={pageTitle} />
+        <meta key="og:url" property="og:url" content={pageUrl} />
         <meta
           key="og:description"
           property="og:description"
@@ -65,6 +67,7 @@ export default function PublicMeditation({
           property="twitter:title"
           content={pageTitle}
         />
+        <meta key="twitter:url" property="twitter:url" content={pageUrl} />
         <meta
           key="twitter:description"
           property="twitter:description"
