@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { Card } from "@/components/ui/card";
 import { MeditationPlayer } from "@/components/player/meditation-player";
 import { Meditation } from "@/components/types";
@@ -28,6 +29,13 @@ export default function PublicMeditation({
   if (error || !metadata || !audioUrl) {
     return (
       <Layout>
+        <Head>
+          <title>Meditation Not Found | AIM Lab</title>
+          <meta
+            name="description"
+            content="AIM Lab - The AI Meditation Playground"
+          />
+        </Head>
         <Card className="p-6">
           <h1 className="mb-6 text-center text-2xl">Meditation Not Found</h1>
           <p className="text-muted-foreground text-center">
@@ -40,6 +48,18 @@ export default function PublicMeditation({
 
   return (
     <Layout>
+      <Head>
+        <title>{metadata.title} | AIM Lab</title>
+        <meta property="og:title" content={`${metadata.title} | AIM Lab`} />
+        <meta
+          property="og:description"
+          content="AIM Lab - The AI Meditation Playground"
+        />
+        <meta
+          name="description"
+          content="AIM Lab - The AI Meditation Playground"
+        />
+      </Head>
       <div className="container mx-auto max-w-3xl px-4 py-8">
         <MeditationPlayer
           meditation={metadata}
