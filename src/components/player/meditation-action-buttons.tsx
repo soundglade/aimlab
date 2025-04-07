@@ -7,7 +7,6 @@ import {
   Trash,
   Settings2,
   TextCursorInput,
-  LetterText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
@@ -92,25 +91,15 @@ export function MeditationActionButtons({
 
   return (
     <div className="flex justify-center gap-3">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="link" size="sm" onClick={handleDownload}>
-            <Download className="mr-1 h-4 w-4" />
-            Download
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Download meditation audio</TooltipContent>
-      </Tooltip>
+      <Button variant="link" size="sm" onClick={handleDownload}>
+        <Download className="mr-1 h-4 w-4" />
+        Download
+      </Button>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="link" size="sm" onClick={handleShare}>
-            <Share className="mr-1 h-4 w-4" />
-            Share
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Copy share link to clipboard</TooltipContent>
-      </Tooltip>
+      <Button variant="link" size="sm" onClick={handleShare}>
+        <Share className="mr-1 h-4 w-4" />
+        Share
+      </Button>
 
       {canEdit && (
         <>
