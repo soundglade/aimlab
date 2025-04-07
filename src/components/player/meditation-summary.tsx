@@ -30,11 +30,9 @@ export function MeditationSummary({
         audioUrl={audioUrl}
         embedded={embedded}
       />
-      <Card className="mx-auto max-w-xl p-6 md:-mt-5">
-        <div className="prose prose-sm dark:prose-invert text-left">
-          {meditation.description && (
-            <ReactMarkdown>{meditation.description}</ReactMarkdown>
-          )}
+      <Card className="max-w-xl2 mx-auto p-6 md:-mt-5">
+        <div className="prose prose-headings:font-normal prose-p:leading-[1.6] prose-headings:tracking-tight dark:prose-invert text-left">
+          <ReactMarkdown>{meditation.description}</ReactMarkdown>
         </div>
       </Card>
 
