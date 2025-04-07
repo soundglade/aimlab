@@ -7,6 +7,7 @@ import {
   Trash,
   Settings2,
   TextCursorInput,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
@@ -20,23 +21,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InputDialog } from "@/components/ui/input-dialog";
+import { MarkdownDialog } from "@/components/ui/markdown-dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Meditation } from "@/components/types";
 
 export function MeditationActionButtons({
   meditationId,
   audioUrl,
   meditationTitle,
   embedded,
+  meditation,
+}: {
+  meditationId: string;
+  audioUrl: string;
+  meditationTitle: string;
+  embedded?: boolean;
+  meditation?: Meditation;
 }) {
-  const { ownsMeditation, deleteMeditation, editMeditationTitle } =
-    useMyMeditations();
+  const {
+    ownsMeditation,
+    deleteMeditation,
+    editMeditationTitle,
+    editMeditationDescription,
+  } = useMyMeditations();
   const canEdit = !embedded && ownsMeditation(meditationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditTitleDialog, setShowEditTitleDialog] = useState(false);
+  const [showDescriptionDialog, setShowDescriptionDialog] = useState(false);
   const router = useRouter();
 
   const handleDownload = () => {
@@ -74,7 +89,7 @@ export function MeditationActionButtons({
     router.push("/");
   };
 
-  const handleTitleUpdate = async (newTitle) => {
+  const handleTitleUpdate = async (newTitle: string) => {
     if (newTitle.trim() && newTitle !== meditationTitle) {
       const success = await editMeditationTitle(meditationId, newTitle);
       if (success) {
@@ -113,6 +128,14 @@ export function MeditationActionButtons({
             placeholder="Enter new title"
             onConfirm={handleTitleUpdate}
           ></InputDialog>
+          {meditation && (
+            <MarkdownDialog
+              open={showDescriptionDialog}
+              onOpenChange={setShowDescriptionDialog}
+              meditation={meditation}
+              meditationId={meditationId}
+            />
+          )}
           <ConfirmDestructiveDialog
             open={showDeleteDialog}
             onOpenChange={setShowDeleteDialog}
@@ -140,6 +163,14 @@ export function MeditationActionButtons({
                     >
                       <TextCursorInput className="mr-2 h-4 w-4" />
                       Edit title
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setShowDescriptionDialog(true)}
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      {meditation?.description
+                        ? "Edit description"
+                        : "Add description"}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

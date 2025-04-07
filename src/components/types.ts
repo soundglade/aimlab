@@ -14,4 +14,5 @@ export interface Meditation {
     totalDurationMs: number;
   };
   fullAudioFileId?: string;
+  description?: string;
 }

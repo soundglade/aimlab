@@ -103,6 +103,42 @@ export function useMyMeditations() {
     return false;
   };
 
+  const editMeditationDescription = async (
+    id: string,
+    description: string | null
+  ) => {
+    // Find the meditation to get the ownerKey
+    const meditation = getMeditations().find((med) => med.id === id);
+
+    if (meditation) {
+      try {
+        // Call the API to edit the meditation description
+        const response = await fetch("/api/edit-meditation-description", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meditationId: id,
+            ownerKey: meditation.ownerKey,
+            description,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to update meditation description on server");
+          return false;
+        }
+      } catch (error) {
+        console.error("Error updating meditation description:", error);
+        return false;
+      }
+
+      return true;
+    }
+    return false;
+  };
+
   const clearMeditations = async () => {
     const currentMeditationsIds = getMeditations().map((med) => med.id);
 
@@ -131,6 +167,7 @@ export function useMyMeditations() {
     addMeditation,
     deleteMeditation,
     editMeditationTitle,
+    editMeditationDescription,
     clearMeditations,
     saveMeditation,
     ownsMeditation,

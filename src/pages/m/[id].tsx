@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { Card } from "@/components/ui/card";
 import { MeditationPlayer } from "@/components/player/meditation-player";
+import { MeditationSummary } from "@/components/player/meditation-summary";
 import { Meditation } from "@/components/types";
 import { Layout } from "@/components/layout/Layout";
 import { fetchMeditationData } from "@/lib/fetch-meditation";
@@ -75,11 +76,18 @@ export default function PublicMeditation({
         />
       </Head>
       <div className="container mx-auto max-w-3xl px-4 pb-8 pt-2 md:pt-8">
-        <MeditationPlayer
-          meditation={metadata}
-          meditationId={meditationId}
-          audioUrl={audioUrl}
-        />
+        {metadata.description ? (
+          <MeditationSummary
+            meditationId={meditationId}
+            meditation={metadata}
+          />
+        ) : (
+          <MeditationPlayer
+            meditation={metadata}
+            meditationId={meditationId}
+            audioUrl={audioUrl}
+          />
+        )}
       </div>
     </Layout>
   );
