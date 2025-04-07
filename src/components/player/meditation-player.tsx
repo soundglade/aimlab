@@ -3,7 +3,15 @@ import { Card } from "@/components/ui/card";
 import { Meditation } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Play, Pause, SkipBack, SkipForward, Loader } from "lucide-react";
+import {
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
+  Loader,
+  Bell,
+  RotateCcw,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as meditationTimeline from "@/components/utils/meditation-timeline";
 import dynamic from "next/dynamic";
@@ -156,6 +164,12 @@ export function MeditationPlayer({
     }
   };
 
+  const reset = () => {
+    if (audioRef.current && playerState.audioReady) {
+      audioRef.current.currentTime = 0;
+    }
+  };
+
   const seekToStep = (stepIndex: number) => {
     if (
       !playerState.audioReady ||
@@ -285,11 +299,21 @@ export function MeditationPlayer({
                 <Button
                   variant="outline"
                   size="icon"
+                  onClick={reset}
+                  disabled={!playerState.audioReady}
+                  aria-label="Reset"
+                >
+                  <RotateCcw size={20} />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() => seekRelative(-15)}
                   disabled={!playerState.audioReady}
                   aria-label="Backward 15 seconds"
                 >
-                  <SkipBack size={20} />
+                  <ChevronLeft size={20} />
                 </Button>
 
                 <Button
@@ -316,7 +340,17 @@ export function MeditationPlayer({
                   disabled={!playerState.audioReady}
                   aria-label="Forward 15 seconds"
                 >
-                  <SkipForward size={20} />
+                  <ChevronRight size={20} />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => seekRelative(-15)}
+                  disabled={!playerState.audioReady}
+                  aria-label="Backward 15 seconds"
+                >
+                  <Bell size={20} />
                 </Button>
               </div>
             </div>
