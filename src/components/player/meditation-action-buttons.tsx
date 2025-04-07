@@ -86,14 +86,14 @@ export function MeditationActionButtons({
   };
 
   return (
-    <div className="m-4 flex justify-center gap-3">
-      <Button variant="outline" size="sm" onClick={handleDownload}>
-        <Download className="mr-2 h-4 w-4" />
+    <div className="flex justify-center gap-3">
+      <Button variant="link" size="sm" onClick={handleDownload}>
+        <Download className="mr-1 h-4 w-4" />
         Download
       </Button>
 
-      <Button variant="outline" size="sm" onClick={handleShare}>
-        <Share className="mr-2 h-4 w-4" />
+      <Button variant="link" size="sm" onClick={handleShare}>
+        <Share className="mr-1 h-4 w-4" />
         Share
       </Button>
 
@@ -119,8 +119,8 @@ export function MeditationActionButtons({
           >
             <DropdownMenu modal={true}>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Settings2 className="mr-2 h-4 w-4" />
+                <Button variant="link" size="sm">
+                  <Settings2 className="h-4 w-4" />
                   Edit
                 </Button>
               </DropdownMenuTrigger>

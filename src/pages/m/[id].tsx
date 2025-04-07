@@ -74,7 +74,7 @@ export default function PublicMeditation({
           content={pageDescription}
         />
       </Head>
-      <div className="container mx-auto max-w-3xl px-4 py-8">
+      <div className="container mx-auto max-w-3xl px-4 pb-8 pt-2 md:pt-8">
         <MeditationPlayer
           meditation={metadata}
           meditationId={meditationId}

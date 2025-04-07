@@ -195,16 +195,18 @@ export function MeditationPlayer({
 
   return (
     <>
-      <h1 className="mb-5 text-center text-2xl tracking-tight">
+      <h1 className="text-center text-2xl tracking-tight">
         {meditation.title}
       </h1>
 
-      <MeditationActionButtons
-        meditationId={meditationId}
-        audioUrl={audioUrl}
-        meditationTitle={meditation.title}
-        embedded={embedded}
-      />
+      <div className="mb-3 mt-1 flex justify-center md:mb-8">
+        <MeditationActionButtons
+          meditationId={meditationId}
+          audioUrl={audioUrl}
+          meditationTitle={meditation.title}
+          embedded={embedded}
+        />
+      </div>
 
       <Card className={cn("p-4 sm:p-6", className)}>
         {/* Loading state */}
