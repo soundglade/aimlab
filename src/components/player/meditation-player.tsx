@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Meditation } from "@/components/types";
 import { Button } from "@/components/ui/button";
@@ -50,13 +50,16 @@ export function MeditationPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [audioReady, setAudioReady] = useState(false);
   const [totalDurationMs, setTotalDurationMs] = useState(0);
+  const [bellAudioReady, setBellAudioReady] = useState(false);
 
   // References for playback control
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load and setup audio
   useEffect(() => {
     const audio = new Audio(audioUrl);
+    const bellAudio = new Audio("/assets/ending-bell.mp3");
 
     const handleCanPlay = () => {
       setIsLoading(false);
@@ -64,17 +67,28 @@ export function MeditationPlayer({
       setTotalDurationMs(audio.duration * 1000);
     };
 
+    const handleBellCanPlay = () => {
+      setBellAudioReady(true);
+    };
+
     audio.addEventListener("canplay", handleCanPlay);
+    bellAudio.addEventListener("canplay", handleBellCanPlay);
 
     audioRef.current = audio;
+    bellAudioRef.current = bellAudio;
+
     audio.load();
+    bellAudio.load();
 
     return () => {
       audio.pause();
-      // Remove all event listeners by recreating the audio element
+      bellAudio.pause();
+      // Remove all event listeners by recreating the audio elements
       const newAudio = new Audio();
       audio.src = "";
+      bellAudio.src = "";
       audioRef.current = null;
+      bellAudioRef.current = null;
     };
   }, [audioUrl]);
 
@@ -103,21 +117,29 @@ export function MeditationPlayer({
         )}
 
         {/* Meditation script display */}
-        {!isLoading && audioRef.current && audioReady && (
-          <LoadedPlayer
-            meditation={meditation}
-            audio={audioRef.current}
-            totalDurationMs={totalDurationMs}
-          />
-        )}
+        {!isLoading &&
+          audioRef.current &&
+          audioReady &&
+          bellAudioReady &&
+          bellAudioRef.current && (
+            <LoadedPlayer
+              meditation={meditation}
+              audio={audioRef.current}
+              bellAudio={bellAudioRef.current}
+              totalDurationMs={totalDurationMs}
+            />
+          )}
       </Card>
     </>
   );
 }
 
-function LoadedPlayer({ meditation, audio, totalDurationMs }) {
+function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
   // Add ref for the current active step
   const activeStepRef = useRef<HTMLDivElement>(null);
+  const [isBellMuted, setIsBellMuted] = useState(false);
+  // Gap in milliseconds before playing the bell at the end
+  const endingBellGapMs = 2000;
 
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -133,18 +155,25 @@ function LoadedPlayer({ meditation, audio, totalDurationMs }) {
     currentTimeMs: 0,
   });
 
-  const handleAudioEnded = () => {
+  const handleAudioEnded = useCallback(() => {
     pausePlayback();
+
+    // Play ending bell after a short gap, if not muted
+    if (!isBellMuted) {
+      setTimeout(() => {
+        bellAudio
+          .play()
+          .catch((error) => console.error("Failed to play bell:", error));
+      }, endingBellGapMs);
+    }
+
     setPlayerState((prev) => ({
       ...prev,
       isPlaying: false,
-      currentStepIndex: 0,
-      progress: 0,
-      currentTimeMs: 0,
     }));
-  };
+  }, [isBellMuted, bellAudio, endingBellGapMs]);
 
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = useCallback(() => {
     const currentTimeSec = audio.currentTime;
     const currentTimeMs = currentTimeSec * 1000;
     const totalDurationSec = audio.duration;
@@ -164,10 +193,18 @@ function LoadedPlayer({ meditation, audio, totalDurationMs }) {
       currentStepIndex:
         currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
     }));
-  };
+  }, [meditation.timeline.timings]);
 
-  audio.addEventListener("timeupdate", handleTimeUpdate);
-  audio.addEventListener("ended", handleAudioEnded);
+  // Use effect to properly add and remove event listeners
+  useEffect(() => {
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleAudioEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleAudioEnded);
+    };
+  }, [audio, handleTimeUpdate, handleAudioEnded]);
 
   const reset = () => {
     audio.currentTime = 0;
@@ -209,6 +246,10 @@ function LoadedPlayer({ meditation, audio, totalDurationMs }) {
     if (!playerState.isPlaying) {
       startPlayback();
     }
+  };
+
+  const toggleBellMute = () => {
+    setIsBellMuted((prev) => !prev);
   };
 
   // Add effect to handle scrolling when current step changes
@@ -347,13 +388,17 @@ function LoadedPlayer({ meditation, audio, totalDurationMs }) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => seekRelative(-15)}
-                aria-label="Mute ending bell"
+                onClick={toggleBellMute}
+                aria-label={
+                  isBellMuted ? "Enable ending bell" : "Mute ending bell"
+                }
               >
-                <BellOff size={20} />
+                {isBellMuted ? <BellOff size={20} /> : <Bell size={20} />}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Mute ending bell</TooltipContent>
+            <TooltipContent>
+              {isBellMuted ? "Enable ending bell" : "Mute ending bell"}
+            </TooltipContent>
           </Tooltip>
         </div>
       </div>
