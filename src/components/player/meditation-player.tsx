@@ -11,10 +11,16 @@ import {
   Loader,
   Bell,
   RotateCcw,
+  BellOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as meditationTimeline from "@/components/utils/meditation-timeline";
 import dynamic from "next/dynamic";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Import the action buttons component dynamically
 const MeditationActionButtons = dynamic(
@@ -296,62 +302,89 @@ export function MeditationPlayer({
 
               {/* Control buttons */}
               <div className="flex items-center justify-center space-x-4">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={reset}
-                  disabled={!playerState.audioReady}
-                  aria-label="Reset"
-                >
-                  <RotateCcw size={20} />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={reset}
+                      disabled={!playerState.audioReady}
+                      aria-label="Restart"
+                    >
+                      <RotateCcw size={20} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Restart</TooltipContent>
+                </Tooltip>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => seekRelative(-15)}
-                  disabled={!playerState.audioReady}
-                  aria-label="Backward 15 seconds"
-                >
-                  <ChevronLeft size={20} />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => seekRelative(-15)}
+                      disabled={!playerState.audioReady}
+                      aria-label="Backward 15 seconds"
+                    >
+                      <ChevronLeft size={20} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Skip backward 15 seconds</TooltipContent>
+                </Tooltip>
 
-                <Button
-                  variant="default"
-                  size="lg"
-                  className="h-12 w-12 rounded-full"
-                  onClick={
-                    playerState.isPlaying ? pausePlayback : startPlayback
-                  }
-                  disabled={!playerState.audioReady}
-                  aria-label={playerState.isPlaying ? "Pause" : "Play"}
-                >
-                  {playerState.isPlaying ? (
-                    <Pause size={20} />
-                  ) : (
-                    <Play size={20} className="ml-1" />
-                  )}
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="default"
+                      size="lg"
+                      className="h-12 w-12 rounded-full"
+                      onClick={
+                        playerState.isPlaying ? pausePlayback : startPlayback
+                      }
+                      disabled={!playerState.audioReady}
+                      aria-label={playerState.isPlaying ? "Pause" : "Play"}
+                    >
+                      {playerState.isPlaying ? (
+                        <Pause size={20} />
+                      ) : (
+                        <Play size={20} className="ml-1" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {playerState.isPlaying ? "Pause" : "Play"}
+                  </TooltipContent>
+                </Tooltip>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => seekRelative(15)}
-                  disabled={!playerState.audioReady}
-                  aria-label="Forward 15 seconds"
-                >
-                  <ChevronRight size={20} />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => seekRelative(15)}
+                      disabled={!playerState.audioReady}
+                      aria-label="Forward 15 seconds"
+                    >
+                      <ChevronRight size={20} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Skip forward 15 seconds</TooltipContent>
+                </Tooltip>
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => seekRelative(-15)}
-                  disabled={!playerState.audioReady}
-                  aria-label="Backward 15 seconds"
-                >
-                  <Bell size={20} />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => seekRelative(-15)}
+                      disabled={!playerState.audioReady}
+                      aria-label="Mute ending bell"
+                    >
+                      <BellOff size={20} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Mute ending bell</TooltipContent>
+                </Tooltip>
               </div>
             </div>
           </>

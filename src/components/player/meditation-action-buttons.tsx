@@ -21,6 +21,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InputDialog } from "@/components/ui/input-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function MeditationActionButtons({
   meditationId,
@@ -87,15 +92,25 @@ export function MeditationActionButtons({
 
   return (
     <div className="flex justify-center gap-3">
-      <Button variant="link" size="sm" onClick={handleDownload}>
-        <Download className="mr-1 h-4 w-4" />
-        Download
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="link" size="sm" onClick={handleDownload}>
+            <Download className="mr-1 h-4 w-4" />
+            Download
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Download meditation audio</TooltipContent>
+      </Tooltip>
 
-      <Button variant="link" size="sm" onClick={handleShare}>
-        <Share className="mr-1 h-4 w-4" />
-        Share
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="link" size="sm" onClick={handleShare}>
+            <Share className="mr-1 h-4 w-4" />
+            Share
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Copy share link to clipboard</TooltipContent>
+      </Tooltip>
 
       {canEdit && (
         <>
@@ -117,24 +132,31 @@ export function MeditationActionButtons({
             confirmText="Delete"
             onConfirm={handleConfirmDelete}
           >
-            <DropdownMenu modal={true}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="link" size="sm">
-                  <Settings2 className="h-4 w-4" />
-                  Edit
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
-                  <Trash className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowEditTitleDialog(true)}>
-                  <TextCursorInput className="mr-2 h-4 w-4" />
-                  Edit title
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenu modal={true}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="link" size="sm">
+                      <Settings2 className="h-4 w-4" />
+                      Edit
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setShowEditTitleDialog(true)}
+                    >
+                      <TextCursorInput className="mr-2 h-4 w-4" />
+                      Edit title
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TooltipTrigger>
+              <TooltipContent>Edit meditation options</TooltipContent>
+            </Tooltip>
           </ConfirmDestructiveDialog>
         </>
       )}
