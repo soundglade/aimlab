@@ -36,7 +36,6 @@ interface MeditationPlayerProps {
   meditationId: string;
   audioUrl: string;
   className?: string;
-  onAudioLoaded?: () => void;
   embedded?: boolean;
 }
 
@@ -45,173 +44,39 @@ export function MeditationPlayer({
   meditationId,
   audioUrl,
   className,
-  onAudioLoaded,
   embedded,
 }: MeditationPlayerProps) {
   // Player state
-  const [playerState, setPlayerState] = useState({
-    isPlaying: false,
-    currentStepIndex: 0,
-    progress: 0,
-    currentTimeMs: 0,
-    totalDurationMs: meditation.timeline?.totalDurationMs || 0,
-    isLoading: true,
-    audioReady: false,
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [audioReady, setAudioReady] = useState(false);
+  const [totalDurationMs, setTotalDurationMs] = useState(0);
 
   // References for playback control
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Add ref for the current active step
-  const activeStepRef = useRef<HTMLDivElement>(null);
 
   // Load and setup audio
   useEffect(() => {
     const audio = new Audio(audioUrl);
 
     const handleCanPlay = () => {
-      setPlayerState((prev) => ({
-        ...prev,
-        isLoading: false,
-        audioReady: true,
-        totalDurationMs: audio.duration * 1000,
-      }));
-      onAudioLoaded?.();
-    };
-
-    const handleAudioEnded = () => {
-      pausePlayback();
-      setPlayerState((prev) => ({
-        ...prev,
-        isPlaying: false,
-        currentStepIndex: 0,
-        progress: 0,
-        currentTimeMs: 0,
-      }));
-    };
-
-    const handleTimeUpdate = () => {
-      if (audioRef.current && playerState.audioReady && meditation.timeline) {
-        const currentTimeSec = audioRef.current.currentTime;
-        const currentTimeMs = currentTimeSec * 1000;
-        const totalDurationSec = audioRef.current.duration;
-        const totalDurationMs = totalDurationSec * 1000;
-        const progress = (currentTimeSec / totalDurationSec) * 100;
-
-        const currentStepIndex = meditationTimeline.getStepIndexAtTime(
-          meditation.timeline.timings,
-          currentTimeMs
-        );
-
-        setPlayerState((prev) => ({
-          ...prev,
-          currentTimeMs,
-          totalDurationMs,
-          progress: Math.min(progress, 100),
-          currentStepIndex:
-            currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
-        }));
-      }
+      setIsLoading(false);
+      setAudioReady(true);
+      setTotalDurationMs(audio.duration * 1000);
     };
 
     audio.addEventListener("canplay", handleCanPlay);
-    audio.addEventListener("ended", handleAudioEnded);
-    audio.addEventListener("timeupdate", handleTimeUpdate);
 
     audioRef.current = audio;
     audio.load();
 
     return () => {
       audio.pause();
-      audio.removeEventListener("canplay", handleCanPlay);
-      audio.removeEventListener("ended", handleAudioEnded);
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      // Remove all event listeners by recreating the audio element
+      const newAudio = new Audio();
+      audio.src = "";
       audioRef.current = null;
     };
-  }, [
-    audioUrl,
-    onAudioLoaded,
-    meditation.timeline,
-    playerState.audioReady,
-    meditation.steps,
-  ]);
-
-  // Add effect to handle scrolling when current step changes
-  useEffect(() => {
-    if (activeStepRef.current) {
-      activeStepRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [playerState.currentStepIndex]);
-
-  const startPlayback = () => {
-    if (!playerState.audioReady) return;
-    setPlayerState((prev) => ({ ...prev, isPlaying: true }));
-    audioRef.current?.play().catch(() => {
-      pausePlayback();
-    });
-  };
-
-  const pausePlayback = () => {
-    setPlayerState((prev) => ({ ...prev, isPlaying: false }));
-    audioRef.current?.pause();
-  };
-
-  const seekRelative = (secondsToAdd: number) => {
-    if (audioRef.current && playerState.audioReady) {
-      const currentTime = audioRef.current.currentTime;
-      const newTime = Math.max(
-        0,
-        Math.min(currentTime + secondsToAdd, audioRef.current.duration)
-      );
-      audioRef.current.currentTime = newTime;
-    }
-  };
-
-  const reset = () => {
-    if (audioRef.current && playerState.audioReady) {
-      audioRef.current.currentTime = 0;
-    }
-  };
-
-  const seekToStep = (stepIndex: number) => {
-    if (
-      !playerState.audioReady ||
-      !audioRef.current ||
-      !meditation.timeline ||
-      stepIndex < 0 ||
-      stepIndex >= meditation.steps.length
-    ) {
-      return;
-    }
-
-    const startTimeMs = meditationTimeline.getTimeForStep(
-      meditation.timeline.timings,
-      stepIndex
-    );
-    audioRef.current.currentTime = startTimeMs / 1000;
-    setPlayerState((prev) => ({ ...prev, currentStepIndex: stepIndex }));
-
-    if (!playerState.isPlaying) {
-      startPlayback();
-    }
-  };
-
-  const formatTime = (milliseconds: number) => {
-    const seconds = Math.floor(milliseconds / 1000);
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!audioRef.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickPercentage = (e.clientX - rect.left) / rect.width;
-    audioRef.current.currentTime = clickPercentage * audioRef.current.duration;
-  };
+  }, [audioUrl]);
 
   return (
     <>
@@ -230,7 +95,7 @@ export function MeditationPlayer({
 
       <Card className={cn("p-4 sm:p-6", className)}>
         {/* Loading state */}
-        {playerState.isLoading && (
+        {isLoading && (
           <div className="flex flex-col items-center justify-center p-8">
             <Loader className="mb-4 animate-spin" size={32} />
             <p className="text-muted-foreground">Loading meditation audio...</p>
@@ -238,158 +103,267 @@ export function MeditationPlayer({
         )}
 
         {/* Meditation script display */}
-        {!playerState.isLoading && (
-          <>
-            <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md">
-              <div className="space-y-2">
-                {meditation.steps.map((step, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      ref={
-                        playerState.currentStepIndex === idx
-                          ? activeStepRef
-                          : null
-                      }
-                      className={cn(
-                        "p-3 rounded transition-colors",
-                        step.type === "speech" &&
-                          "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
-                        playerState.currentStepIndex === idx &&
-                          "border-l-4 bg-primary/10 border-primary",
-                        playerState.currentStepIndex >= idx && "text-foreground"
-                      )}
-                      onClick={
-                        step.type === "speech"
-                          ? () => seekToStep(idx)
-                          : undefined
-                      }
-                    >
-                      {step.type === "heading" && (
-                        <div className={cn("text-lg")}>{step.text}</div>
-                      )}
-                      {step.type === "speech" && <p>{step.text}</p>}
-                      {step.type === "pause" && (
-                        <p className="italic opacity-80">
-                          {step.duration}s pause
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Playback controls */}
-            <div className="space-y-0">
-              {/* Progress bar */}
-              <div className="space-y-1">
-                <div
-                  className="relative cursor-pointer"
-                  onClick={handleProgressBarClick}
-                  title="Click to seek"
-                >
-                  <Progress value={playerState.progress} className="h-2" />
-                  <div className="bg-primary absolute inset-0 opacity-0 transition-opacity hover:opacity-10"></div>
-                </div>
-                <div className="text-muted-foreground flex justify-between text-xs">
-                  <span>
-                    {formatTime(playerState.currentTimeMs)} /{" "}
-                    {formatTime(playerState.totalDurationMs)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Control buttons */}
-              <div className="flex items-center justify-center space-x-4">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={reset}
-                      disabled={!playerState.audioReady}
-                      aria-label="Restart"
-                    >
-                      <RotateCcw size={20} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Restart</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => seekRelative(-15)}
-                      disabled={!playerState.audioReady}
-                      aria-label="Backward 15 seconds"
-                    >
-                      <ChevronLeft size={20} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Skip backward 15 seconds</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="default"
-                      size="lg"
-                      className="h-12 w-12 rounded-full"
-                      onClick={
-                        playerState.isPlaying ? pausePlayback : startPlayback
-                      }
-                      disabled={!playerState.audioReady}
-                      aria-label={playerState.isPlaying ? "Pause" : "Play"}
-                    >
-                      {playerState.isPlaying ? (
-                        <Pause size={20} />
-                      ) : (
-                        <Play size={20} className="ml-1" />
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {playerState.isPlaying ? "Pause" : "Play"}
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => seekRelative(15)}
-                      disabled={!playerState.audioReady}
-                      aria-label="Forward 15 seconds"
-                    >
-                      <ChevronRight size={20} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Skip forward 15 seconds</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => seekRelative(-15)}
-                      disabled={!playerState.audioReady}
-                      aria-label="Mute ending bell"
-                    >
-                      <BellOff size={20} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Mute ending bell</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          </>
+        {!isLoading && audioRef.current && audioReady && (
+          <LoadedPlayer
+            meditation={meditation}
+            audio={audioRef.current}
+            totalDurationMs={totalDurationMs}
+          />
         )}
       </Card>
     </>
   );
 }
+
+function LoadedPlayer({ meditation, audio, totalDurationMs }) {
+  // Add ref for the current active step
+  const activeStepRef = useRef<HTMLDivElement>(null);
+
+  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickPercentage = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = clickPercentage * audio.duration;
+  };
+
+  // Player state
+  const [playerState, setPlayerState] = useState({
+    isPlaying: false,
+    currentStepIndex: 0,
+    progress: 0,
+    currentTimeMs: 0,
+  });
+
+  const handleAudioEnded = () => {
+    pausePlayback();
+    setPlayerState((prev) => ({
+      ...prev,
+      isPlaying: false,
+      currentStepIndex: 0,
+      progress: 0,
+      currentTimeMs: 0,
+    }));
+  };
+
+  const handleTimeUpdate = () => {
+    const currentTimeSec = audio.currentTime;
+    const currentTimeMs = currentTimeSec * 1000;
+    const totalDurationSec = audio.duration;
+    const totalDurationMs = totalDurationSec * 1000;
+    const progress = (currentTimeSec / totalDurationSec) * 100;
+
+    const currentStepIndex = meditationTimeline.getStepIndexAtTime(
+      meditation.timeline.timings,
+      currentTimeMs
+    );
+
+    setPlayerState((prev) => ({
+      ...prev,
+      currentTimeMs,
+      totalDurationMs,
+      progress: Math.min(progress, 100),
+      currentStepIndex:
+        currentStepIndex >= 0 ? currentStepIndex : prev.currentStepIndex,
+    }));
+  };
+
+  audio.addEventListener("timeupdate", handleTimeUpdate);
+  audio.addEventListener("ended", handleAudioEnded);
+
+  const reset = () => {
+    audio.currentTime = 0;
+  };
+
+  const seekRelative = (secondsToAdd: number) => {
+    const currentTime = audio.currentTime;
+    const newTime = Math.max(
+      0,
+      Math.min(currentTime + secondsToAdd, audio.duration)
+    );
+    audio.currentTime = newTime;
+  };
+
+  const pausePlayback = () => {
+    setPlayerState((prev) => ({ ...prev, isPlaying: false }));
+    audio.pause();
+  };
+
+  const startPlayback = () => {
+    setPlayerState((prev) => ({ ...prev, isPlaying: true }));
+    audio.play().catch(() => {
+      pausePlayback();
+    });
+  };
+
+  const seekToStep = (stepIndex: number) => {
+    if (stepIndex < 0 || stepIndex >= meditation.steps.length) {
+      return;
+    }
+
+    const startTimeMs = meditationTimeline.getTimeForStep(
+      meditation.timeline.timings,
+      stepIndex
+    );
+    audio.currentTime = startTimeMs / 1000;
+    setPlayerState((prev) => ({ ...prev, currentStepIndex: stepIndex }));
+
+    if (!playerState.isPlaying) {
+      startPlayback();
+    }
+  };
+
+  // Add effect to handle scrolling when current step changes
+  useEffect(() => {
+    if (activeStepRef.current) {
+      activeStepRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [playerState.currentStepIndex]);
+
+  return (
+    <>
+      <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md">
+        <div className="space-y-2">
+          {meditation.steps.map((step, idx) => {
+            return (
+              <div
+                key={idx}
+                ref={
+                  playerState.currentStepIndex === idx ? activeStepRef : null
+                }
+                className={cn(
+                  "p-3 rounded transition-colors",
+                  step.type === "speech" &&
+                    "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
+                  playerState.currentStepIndex === idx &&
+                    "border-l-4 bg-primary/10 border-primary",
+                  playerState.currentStepIndex >= idx && "text-foreground"
+                )}
+                onClick={
+                  step.type === "speech" ? () => seekToStep(idx) : undefined
+                }
+              >
+                {step.type === "heading" && (
+                  <div className={cn("text-lg")}>{step.text}</div>
+                )}
+                {step.type === "speech" && <p>{step.text}</p>}
+                {step.type === "pause" && (
+                  <p className="italic opacity-80">{step.duration}s pause</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Playback controls */}
+      <div className="space-y-0">
+        {/* Progress bar */}
+        <div className="space-y-1">
+          <div
+            className="relative cursor-pointer"
+            onClick={handleProgressBarClick}
+            title="Click to seek"
+          >
+            <Progress value={playerState.progress} className="h-2" />
+            <div className="bg-primary absolute inset-0 opacity-0 transition-opacity hover:opacity-10"></div>
+          </div>
+          <div className="text-muted-foreground flex justify-between text-xs">
+            <span>
+              {formatTime(playerState.currentTimeMs)} /{" "}
+              {formatTime(totalDurationMs)}
+            </span>
+          </div>
+        </div>
+
+        {/* Control buttons */}
+        <div className="flex items-center justify-center space-x-4">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={reset}
+                aria-label="Restart"
+              >
+                <RotateCcw size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Restart</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => seekRelative(-15)}
+                aria-label="Backward 15 seconds"
+              >
+                <ChevronLeft size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Skip backward 15 seconds</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="default"
+                size="lg"
+                className="h-12 w-12 rounded-full"
+                onClick={playerState.isPlaying ? pausePlayback : startPlayback}
+                aria-label={playerState.isPlaying ? "Pause" : "Play"}
+              >
+                {playerState.isPlaying ? (
+                  <Pause size={20} />
+                ) : (
+                  <Play size={20} className="ml-1" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {playerState.isPlaying ? "Pause" : "Play"}
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => seekRelative(15)}
+                aria-label="Forward 15 seconds"
+              >
+                <ChevronRight size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Skip forward 15 seconds</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => seekRelative(-15)}
+                aria-label="Mute ending bell"
+              >
+                <BellOff size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Mute ending bell</TooltipContent>
+          </Tooltip>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const formatTime = (milliseconds: number) => {
+  const seconds = Math.floor(milliseconds / 1000);
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
