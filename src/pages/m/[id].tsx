@@ -80,6 +80,7 @@ export default function PublicMeditation({
           <MeditationSummary
             meditationId={meditationId}
             meditation={metadata}
+            audioUrl={audioUrl}
           />
         ) : (
           <MeditationPlayer

@@ -1,17 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Meditation } from "@/components/types";
 import { cn } from "@/lib/utils";
-import dynamic from "next/dynamic";
 import { MeditationPlayerCore } from "./meditation-player-core";
-
-// Import the action buttons component dynamically
-const MeditationActionButtons = dynamic(
-  () =>
-    import("./meditation-action-buttons").then(
-      (mod) => mod.MeditationActionButtons
-    ),
-  { ssr: false }
-);
+import { MeditationHeader } from "./meditation-header";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -19,6 +10,7 @@ interface MeditationPlayerProps {
   audioUrl: string;
   className?: string;
   embedded?: boolean;
+  minimal?: boolean;
 }
 
 export function MeditationPlayer({
@@ -27,22 +19,22 @@ export function MeditationPlayer({
   audioUrl,
   className,
   embedded,
+  minimal,
 }: MeditationPlayerProps) {
   return (
     <>
-      <h1 className="text-center text-2xl tracking-tight">
-        {meditation.title}
-      </h1>
-
-      <div className="mb-3 mt-1 flex justify-center md:mb-8">
-        <MeditationActionButtons
+      {minimal ? (
+        <h1 className="mb-4 text-center text-2xl tracking-tight">
+          {meditation.title}
+        </h1>
+      ) : (
+        <MeditationHeader
+          meditation={meditation}
           meditationId={meditationId}
           audioUrl={audioUrl}
-          meditationTitle={meditation.title}
           embedded={embedded}
-          meditation={meditation}
         />
-      </div>
+      )}
 
       <Card className={cn("p-4 sm:p-6", className)}>
         <MeditationPlayerCore meditation={meditation} audioUrl={audioUrl} />

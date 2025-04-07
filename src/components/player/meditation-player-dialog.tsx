@@ -6,9 +6,9 @@ interface MeditationPlayerDialogProps {
   meditationId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  minimal?: boolean;
 }
 
-// Minimal type for the meditation data we need
 interface MeditationData {
   meditationId: string;
   metadata: any;
@@ -20,6 +20,7 @@ export function MeditationPlayerDialog({
   meditationId,
   open,
   onOpenChange,
+  minimal = false,
 }: MeditationPlayerDialogProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +87,7 @@ export function MeditationPlayerDialog({
                 meditationId={meditationData.meditationId}
                 audioUrl={meditationData.audioUrl}
                 embedded={true}
+                minimal={minimal}
               />
             </div>
           )}

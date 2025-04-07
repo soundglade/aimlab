@@ -228,7 +228,7 @@ function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
 
   return (
     <>
-      <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md">
+      <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md pb-2">
         <div className="space-y-2">
           {meditation.steps.map((step, idx) => {
             return (
