@@ -59,7 +59,7 @@ export function MeditationPlayer({
   // Load and setup audio
   useEffect(() => {
     const audio = new Audio(audioUrl);
-    const bellAudio = new Audio("/assets/ending-bell.mp3");
+    const bellAudio = new Audio("/assets/ending-bell-wp50.mp3");
 
     const handleCanPlay = () => {
       setIsLoading(false);
@@ -111,7 +111,6 @@ export function MeditationPlayer({
         {/* Loading state */}
         {isLoading && (
           <div className="flex flex-col items-center justify-center p-8">
-            <Loader className="mb-4 animate-spin" size={32} />
             <p className="text-muted-foreground">Loading meditation audio...</p>
           </div>
         )}
@@ -138,8 +137,6 @@ function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
   // Add ref for the current active step
   const activeStepRef = useRef<HTMLDivElement>(null);
   const [isBellMuted, setIsBellMuted] = useState(false);
-  // Gap in milliseconds before playing the bell at the end
-  const endingBellGapMs = 2000;
 
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -160,18 +157,16 @@ function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
 
     // Play ending bell after a short gap, if not muted
     if (!isBellMuted) {
-      setTimeout(() => {
-        bellAudio
-          .play()
-          .catch((error) => console.error("Failed to play bell:", error));
-      }, endingBellGapMs);
+      bellAudio
+        .play()
+        .catch((error) => console.error("Failed to play bell:", error));
     }
 
     setPlayerState((prev) => ({
       ...prev,
       isPlaying: false,
     }));
-  }, [isBellMuted, bellAudio, endingBellGapMs]);
+  }, [isBellMuted, bellAudio]);
 
   const handleTimeUpdate = useCallback(() => {
     const currentTimeSec = audio.currentTime;
