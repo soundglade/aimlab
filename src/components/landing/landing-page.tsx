@@ -83,8 +83,11 @@ export default function LandingPage({
               className="hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors"
               onClick={() => handleMeditationClick(meditation.link)}
             >
-              <div className="flex w-full items-center gap-2 overflow-hidden text-left">
+              <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
                 <span className="truncate">{meditation.title}</span>
+                <span className="text-muted-foreground whitespace-nowrap text-xs">
+                  {meditation.timeAgo}
+                </span>
               </div>
             </Button>
           ))}
