@@ -32,12 +32,58 @@ interface RedditApiResponse {
   };
 }
 
+interface RedditTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  scope: string;
+}
+
 const CACHE_FILE = path.join(
   process.cwd(),
   "cache",
   "latest-reddit-posts.json"
 );
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+// Reddit API credentials
+const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
+const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
+const USERNAME = process.env.REDDIT_USERNAME;
+const PASSWORD = process.env.REDDIT_PASSWORD;
+const USER_AGENT =
+  process.env.REDDIT_USER_AGENT || "nodejs:aimlab:v1.0 (by /u/valatw)";
+
+// Get OAuth token for Reddit API
+async function getRedditToken(): Promise<string> {
+  try {
+    const authorization = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString(
+      "base64"
+    );
+
+    const response = await fetch("https://www.reddit.com/api/v1/access_token", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${authorization}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": USER_AGENT,
+      },
+      body: `grant_type=password&username=${USERNAME}&password=${PASSWORD}`,
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to get Reddit token: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data = (await response.json()) as RedditTokenResponse;
+    return data.access_token;
+  } catch (error) {
+    console.error("Error getting Reddit OAuth token:", error);
+    throw error;
+  }
+}
 
 export async function getLatestRedditPosts(
   maxCount: number = 5
@@ -56,11 +102,15 @@ export async function getLatestRedditPosts(
     }
 
     // Cache is stale or doesn't exist, fetch new data
+    // Get OAuth token first
+    const token = await getRedditToken();
+
     const response = await fetch(
-      "https://www.reddit.com/r/AIMeditationLab/best.json",
+      "https://oauth.reddit.com/r/AIMeditationLab/best",
       {
         headers: {
-          "User-Agent": "nodejs:aimlab:v1.0 (by /u/valatw)",
+          Authorization: `Bearer ${token}`,
+          "User-Agent": USER_AGENT,
         },
       }
     );
