@@ -6,6 +6,7 @@ import {
   MessageSquare,
   Sun,
   Moon,
+  ScrollText,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -20,11 +21,11 @@ export function Header() {
 
       <nav className="mt-[1px] flex items-center gap-4 md:gap-5">
         <Link
-          href="/community"
+          href="/meditations"
           className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors"
         >
-          <Users className="h-4 w-4" />
-          <span className="hidden md:block">Community</span>
+          <ScrollText className="h-4 w-4" />
+          <span className="hidden md:block">Meditations</span>
         </Link>
         <Link
           href="/composer"

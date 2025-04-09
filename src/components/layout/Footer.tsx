@@ -27,7 +27,7 @@ export function Footer() {
             <li>
               <Link
                 href="https://www.reddit.com/r/AIMeditationLab/"
-                className="text-muted-foreground hover:text-foreground text-xs"
+                className="text-muted-foreground hover:text-foreground pr-0.5 text-xs md:pr-1"
               >
                 <RedditIcon className="mr-2 inline-block h-4 w-4" />
                 <span className="hidden md:inline">r/AIMeditationLab</span>

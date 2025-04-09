@@ -75,7 +75,7 @@ export default function LandingPage({
           </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
-              href="/community"
+              href="/meditations"
               className="text-muted-foreground mt-1 flex items-center md:mr-0"
             >
               <span className="hidden md:inline">View all</span>
@@ -126,7 +126,7 @@ export default function LandingPage({
         </div>
 
         <div className="border-1 rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
-          <div className="space-y-10">
+          <div className="space-y-6">
             {latestRedditPosts.map((post, index) => (
               <Link
                 href={post.permalink}
@@ -144,7 +144,7 @@ export default function LandingPage({
                     {post.title}
                   </h2>
                   {post.selftext && (
-                    <p className="text-muted-foreground line-clamp-2">
+                    <p className="text-muted-foreground line-clamp-2 text-sm">
                       {post.selftext}
                     </p>
                   )}

@@ -14,9 +14,9 @@ export default function CommunityIndex({
   return (
     <Layout>
       <header className="mb-10 mt-8 text-center md:mt-14">
-        <h1 className="mb-3 text-3xl tracking-tight">Community Meditations</h1>
+        <h1 className="mb-3 text-3xl tracking-tight">Meditations</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
-          Explore all meditations created and shared
+          Explore all meditations created and shared by the community
         </p>
       </header>
 
