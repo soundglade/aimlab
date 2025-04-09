@@ -1,6 +1,6 @@
 import { Meditation } from "@/components/types";
 import dynamic from "next/dynamic";
-
+import { cn } from "@/lib/utils";
 // Import the action buttons component dynamically
 const MeditationActionButtons = dynamic(
   () =>
@@ -29,7 +29,12 @@ export function MeditationHeader({
         {meditation.title}
       </h1>
 
-      <div className="mb-3 mt-1 flex justify-center md:mb-8">
+      <div
+        className={cn(
+          " mt-1 flex justify-center",
+          embedded ? "mb-3" : "mb-3 md:mb-8"
+        )}
+      >
         <MeditationActionButtons
           meditationId={meditationId}
           audioUrl={audioUrl}

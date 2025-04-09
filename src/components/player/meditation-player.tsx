@@ -37,7 +37,11 @@ export function MeditationPlayer({
       )}
 
       <Card className={cn("p-4 sm:p-6", className)}>
-        <MeditationPlayerCore meditation={meditation} audioUrl={audioUrl} />
+        <MeditationPlayerCore
+          meditation={meditation}
+          audioUrl={audioUrl}
+          embedded={embedded}
+        />
       </Card>
     </>
   );

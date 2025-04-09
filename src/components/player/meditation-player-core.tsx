@@ -23,12 +23,14 @@ interface MeditationPlayerCoreProps {
   meditation: Meditation;
   audioUrl: string;
   className?: string;
+  embedded?: boolean;
 }
 
 export function MeditationPlayerCore({
   meditation,
   audioUrl,
   className,
+  embedded,
 }: MeditationPlayerCoreProps) {
   // Player state
   const [isLoading, setIsLoading] = useState(true);
@@ -96,13 +98,20 @@ export function MeditationPlayerCore({
             audio={audioRef.current}
             bellAudio={bellAudioRef.current}
             totalDurationMs={totalDurationMs}
+            embedded={embedded}
           />
         )}
     </div>
   );
 }
 
-function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
+function LoadedPlayer({
+  meditation,
+  audio,
+  bellAudio,
+  totalDurationMs,
+  embedded,
+}) {
   // Add ref for the current active step
   const activeStepRef = useRef<HTMLDivElement>(null);
   const [isBellMuted, setIsBellMuted] = useState(false);
@@ -228,8 +237,13 @@ function LoadedPlayer({ meditation, audio, bellAudio, totalDurationMs }) {
 
   return (
     <>
-      <div className="scrollbar-thin bg-background/50 text-muted-foreground/80 max-h-[50vh] overflow-y-auto rounded-md pb-2">
-        <div className="space-y-2">
+      <div
+        className={cn(
+          "scrollbar-thin bg-background/50 text-muted-foreground/80 overflow-y-auto rounded-md pb-2",
+          embedded ? "max-h-[60vh] md:max-h-[50vh]" : "max-h-[60vh]"
+        )}
+      >
+        <div className="space-y-0">
           {meditation.steps.map((step, idx) => {
             return (
               <div
