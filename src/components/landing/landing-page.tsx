@@ -1,17 +1,27 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Users, BookOpen } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  Users,
+  BookOpen,
+  ScrollText,
+  Globe,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 
 import { BlogPost } from "@/pages/index";
 import { Meditation } from "@/lib/latest-meditations";
+import { RedditPost } from "@/lib/reddit-posts";
 import { useRouter } from "next/router";
 export default function LandingPage({
   blogPosts,
   latestMeditations,
+  latestRedditPosts,
 }: {
   blogPosts: BlogPost[];
   latestMeditations: Meditation[];
+  latestRedditPosts: RedditPost[];
 }) {
   const router = useRouter();
 
@@ -54,14 +64,14 @@ export default function LandingPage({
         </div>
       </section>
 
-      <div id="community" className="invisible relative -top-4"></div>
+      <div id="meditations" className="invisible relative -top-4"></div>
 
       {/* Recent Community Meditations */}
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <Users className="h-5 w-5" />
-            Community Meditations
+            <ScrollText className="h-5 w-5" />
+            Meditations
           </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
@@ -91,6 +101,57 @@ export default function LandingPage({
               </div>
             </Button>
           ))}
+        </div>
+      </section>
+
+      <div id="community" className="invisible relative -top-4"></div>
+
+      {/* Community */}
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
+            <Users className="h-5 w-5" />
+            Community
+          </h2>
+          <Button variant="ghost" asChild size="sm">
+            <Link
+              href="https://www.reddit.com/r/AIMeditationLab/"
+              target="_blank"
+              className="text-muted-foreground mt-1 flex items-center md:mr-0"
+            >
+              <span className="hidden md:inline">Visit r/AIMeditationLab</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="border-1 rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+          <div className="space-y-10">
+            {latestRedditPosts.map((post, index) => (
+              <Link
+                href={post.permalink}
+                key={post.id}
+                className="group block"
+                target="_blank"
+              >
+                <article className="space-y-1">
+                  <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                    <span>u/{post.author}</span>
+                    <span>•</span>
+                    <span>{post.timeAgo}</span>
+                  </div>
+                  <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
+                    {post.title}
+                  </h2>
+                  {post.selftext && (
+                    <p className="text-muted-foreground line-clamp-2">
+                      {post.selftext}
+                    </p>
+                  )}
+                </article>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

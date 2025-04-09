@@ -1,6 +1,7 @@
 import LandingPage from "@/components/landing/landing-page";
 import { GetServerSideProps } from "next";
 import { getLatestMeditations, Meditation } from "@/lib/latest-meditations";
+import { getLatestRedditPosts, RedditPost } from "@/lib/reddit-posts";
 
 // Define our own BlogPost type since we removed the blog.ts library
 export type BlogPost = {
@@ -36,19 +37,27 @@ const blogPosts: BlogPost[] = [
 
 export default function Home({
   latestMeditations,
+  latestRedditPosts,
 }: {
   latestMeditations: Meditation[];
+  latestRedditPosts: RedditPost[];
 }) {
   return (
-    <LandingPage blogPosts={blogPosts} latestMeditations={latestMeditations} />
+    <LandingPage
+      blogPosts={blogPosts}
+      latestMeditations={latestMeditations}
+      latestRedditPosts={latestRedditPosts}
+    />
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const latestMeditations = await getLatestMeditations();
+  const latestRedditPosts = await getLatestRedditPosts();
   return {
     props: {
       latestMeditations,
+      latestRedditPosts,
     },
   };
 };
