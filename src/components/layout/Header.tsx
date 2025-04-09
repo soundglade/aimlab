@@ -1,14 +1,7 @@
 import Link from "next/link";
-import {
-  Sparkles,
-  Wrench,
-  Users,
-  MessageSquare,
-  Sun,
-  Moon,
-  ScrollText,
-} from "lucide-react";
+import { Sparkles, MessageSquare, Sun, Moon, ScrollText } from "lucide-react";
 import { useTheme } from "next-themes";
+import { RedditIcon } from "@/components/icons";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -32,6 +25,12 @@ export function Header() {
           className="text-muted-foreground hover:text-foreground md:hover:bg-accent -mx-2 -mr-3 flex items-center rounded-md px-2 py-1 text-sm transition-colors md:-mr-1"
         >
           <Sparkles className="h-4 w-4" />
+        </Link>
+        <Link
+          href="https://www.reddit.com/r/AIMeditationLab/"
+          className="text-muted-foreground hover:text-foreground md:hover:bg-accent -mx-2 -mr-3 flex items-center rounded-md px-2 py-1 text-sm transition-colors md:-mr-1"
+        >
+          <RedditIcon className="h-4 w-4" />
         </Link>
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
