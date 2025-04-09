@@ -44,7 +44,7 @@ const CACHE_FILE = path.join(
   "cache",
   "latest-reddit-posts.json"
 );
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 // Reddit API credentials
 const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
