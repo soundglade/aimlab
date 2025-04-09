@@ -57,7 +57,12 @@ export async function getLatestRedditPosts(
 
     // Cache is stale or doesn't exist, fetch new data
     const response = await fetch(
-      "https://www.reddit.com/r/AIMeditationLab/best.json"
+      "https://www.reddit.com/r/AIMeditationLab/best.json",
+      {
+        headers: {
+          "User-Agent": "nodejs:aimlab:v1.0 (by /u/valatw)",
+        },
+      }
     );
 
     if (!response.ok) {
