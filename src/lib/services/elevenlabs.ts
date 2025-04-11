@@ -5,7 +5,7 @@ const DEFAULT_VOICE_ID = "wgHvco1wiREKN0BdyVx5";
 const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
 
 // Voice config mapping logical keys to ElevenLabs settings
-const ELEVENLABS_VOICE_CONFIG: Record<
+export const ELEVENLABS_VOICE_CONFIG: Record<
   string,
   {
     voice_id: string;
@@ -24,15 +24,15 @@ const ELEVENLABS_VOICE_CONFIG: Record<
   },
   britney: {
     voice_id: "pjcYQlDFKMbcOUp6F5GD",
-    model_id: "eleven_turbo_v2_5",
+    model_id: "eleven_multilingual_v2",
     speed: 0.9,
     stability: 0.5,
     similarity_boost: 0.75,
   },
   jameson: {
     voice_id: "Mu5jxyqZOLIGltFpfalg",
-    model_id: "eleven_turbo_v2_5",
-    speed: 0.9,
+    model_id: "eleven_multilingual_v2",
+    speed: 0.85,
     stability: 0.5,
     similarity_boost: 0.75,
   },

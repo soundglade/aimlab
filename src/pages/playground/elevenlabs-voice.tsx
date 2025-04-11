@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { ELEVENLABS_VOICE_CONFIG } from "@/lib/services/elevenlabs";
 
 export default function ElevenLabsVoicePage() {
   const [text, setText] = useState("");
@@ -17,7 +18,27 @@ export default function ElevenLabsVoicePage() {
   const [speed, setSpeed] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedPreset, setSelectedPreset] = useState<string>("");
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  function handlePresetChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const presetKey = e.target.value;
+    setSelectedPreset(presetKey);
+    if (presetKey && ELEVENLABS_VOICE_CONFIG[presetKey]) {
+      const config = ELEVENLABS_VOICE_CONFIG[presetKey];
+      setVoiceId(config.voice_id || "");
+      setModelId(config.model_id || "");
+      setSpeed(typeof config.speed === "number" ? String(config.speed) : "");
+      setStability(
+        typeof config.stability === "number" ? String(config.stability) : ""
+      );
+      setSimilarityBoost(
+        typeof config.similarity_boost === "number"
+          ? String(config.similarity_boost)
+          : ""
+      );
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,6 +85,22 @@ export default function ElevenLabsVoicePage() {
     <PlaygroundLayout>
       <h1 className="mb-4 text-2xl">ElevenLabs Voice Playground</h1>
       <form className="max-w-lg space-y-4" onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <Label htmlFor="preset">Load Preset</Label>
+          <select
+            id="preset"
+            className="w-full rounded border px-2 py-1"
+            value={selectedPreset}
+            onChange={handlePresetChange}
+          >
+            <option value="">Select a preset...</option>
+            {Object.entries(ELEVENLABS_VOICE_CONFIG).map(([key, config]) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="text">Text</Label>
           <Textarea

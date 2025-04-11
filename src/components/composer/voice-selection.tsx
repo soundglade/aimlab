@@ -15,19 +15,19 @@ export const VOICES = [
   {
     id: "drew",
     name: "Drew",
-    description: "ElevenLabs",
+    description: "ElevenLabs v1",
     previewFile: "/assets/drew-elevenlabs-voice-sample.mp3",
   },
   {
     id: "britney",
     name: "Britney",
-    description: "ElevenLabs",
+    description: "ElevenLabs v2",
     previewFile: "/assets/britney-elevenlabs-voice-sample.mp3",
   },
   {
     id: "jameson",
     name: "Jameson",
-    description: "ElevenLabs",
+    description: "ElevenLabs v2",
     previewFile: "/assets/jameson-elevenlabs-voice-sample.mp3",
   },
   {

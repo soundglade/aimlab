@@ -84,6 +84,7 @@ Steps to follow:
      * An array of steps with these possible types:
        "heading", "speech", "pause"
    - For each piece of user-facing guidance, use "speech".
+   - Try to keep each speech text shorter than 200 characters. If a sentence is longer, split it into separate speech steps, but never split a sentence between steps.
    - For silent intervals, use "pause", with an approximate "duration" in seconds.
    - For headings or titles, use "type": "heading" with the text content.
    - IMPORTANT: Do not split sentences between steps. Keep complete sentences together within the same step.
@@ -123,6 +124,7 @@ const formatMeditationScript = async (
     const completion = await openai.beta.chat.completions.parse({
       model: "gpt-4o",
       messages,
+      temperature: 0.2,
       response_format: zodResponseFormat(
         MeditationFormatter,
         "meditation_transformation"
