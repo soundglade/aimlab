@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,20 @@ import { BlogPost } from "@/pages/index";
 import { Meditation } from "@/lib/latest-meditations";
 import { RedditPost } from "@/lib/reddit-posts";
 import { useRouter } from "next/router";
+
+const changelog = [
+  {
+    text: "Show Reddit posts on landing page",
+    date: "2025-04-08T12:00:00Z",
+  },
+  {
+    text: "Add ending bell to meditation player",
+    date: "2025-04-07T12:00:00Z",
+  },
+];
+
+import { timeAgo } from "@/lib/time";
+
 export default function LandingPage({
   blogPosts,
   latestMeditations,
@@ -24,10 +39,13 @@ export default function LandingPage({
   latestRedditPosts: RedditPost[];
 }) {
   const router = useRouter();
+  const [showChangelog, setShowChangelog] = React.useState(false);
 
   const handleMeditationClick = (url: string) => {
     router.push(url);
   };
+
+  const latest = changelog[0];
 
   return (
     <Layout>
@@ -41,7 +59,7 @@ export default function LandingPage({
         <h2 className="text-secondary-foreground mb-4 text-2xl tracking-tight">
           The AI Meditation Playground
         </h2>
-        <p className="text-muted-foreground mb-10 max-w-2xl">
+        <p className="text-muted-foreground mb-5 max-w-2xl">
           Welcome to AIM Lab, a creative hub to explore AI and meditation.
           <br className="hidden sm:block" />
           {` `}
@@ -61,6 +79,45 @@ export default function LandingPage({
               <BookOpen className="ml-2 h-4 w-4" />
             </Link>
           </Button>
+        </div>
+
+        <div className="mt-6 hidden min-w-[410px] flex-col items-center gap-2 md:flex">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="hover:bg-accent group h-auto w-full justify-start px-3 py-1 transition-colors"
+            onClick={() => setShowChangelog((v) => !v)}
+          >
+            <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
+              <span className="text-muted-foreground truncate font-normal">
+                {latest.text}
+              </span>
+              <span className="text-muted-foreground whitespace-nowrap text-xs">
+                {timeAgo(latest.date)}
+              </span>
+            </div>
+          </Button>
+          {showChangelog && (
+            <div
+              id="changelog-card"
+              className="bg-muted mt-2 w-full max-w-md space-y-2 rounded-xl border p-4 shadow"
+            >
+              <ul className="space-y-2">
+                {changelog.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0 last:pb-0"
+                  >
+                    <span className="truncate text-sm">{item.text}</span>
+                    <span className="text-muted-foreground whitespace-nowrap text-xs">
+                      {timeAgo(item.date)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 
