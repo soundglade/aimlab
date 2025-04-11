@@ -45,11 +45,17 @@ function DialogOverlay({
   );
 }
 
+interface DialogContentProps
+  extends React.ComponentProps<typeof DialogPrimitive.Content> {
+  headerContent?: React.ReactNode;
+}
+
 function DialogContent({
   className,
   children,
+  headerContent,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: DialogContentProps) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -75,11 +81,12 @@ function DialogContent({
         <div
           className={cn(
             // Layout & Appearance
-            "sticky top-0 z-10 flex items-center justify-end border-b bg-background",
+            "sticky top-0 z-10 flex items-center justify-between border-b bg-background",
             // Padding
             "px-4 py-3 md:px-6 md:py-4"
           )}
         >
+          <div className="flex flex-1 items-center">{headerContent}</div>
           <DialogPrimitive.Close
             className={cn(
               // Base styles & Icon size

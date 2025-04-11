@@ -178,10 +178,9 @@ const ComposerFlowDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <div className="p-1">
-          {/* Progress indicator */}
-          <div className="bg-muted text-muted-foreground mb-8 inline-flex items-center space-x-2 rounded-full px-4 py-2">
+      <DialogContent
+        headerContent={
+          <div className="text-muted-foreground inline-flex items-center space-x-2 rounded-full pl-2">
             <span className="text-sm font-medium">Meditation Composer</span>
             <div className="flex space-x-1">
               {[1, 2, 3].map((i) => (
@@ -194,7 +193,9 @@ const ComposerFlowDialog = ({
               ))}
             </div>
           </div>
-
+        }
+      >
+        <div className="p-1">
           {/* Screen components */}
           {step === 1 && <InputScreen />}
           {step === 2 && (
