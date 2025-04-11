@@ -19,11 +19,15 @@ import { useRouter } from "next/router";
 
 const changelog = [
   {
-    text: "Added Reddit posts on landing page",
+    text: "Two new voices available",
+    date: "2025-04-11T09:00:00Z",
+  },
+  {
+    text: "Reddit posts displayed on landing page",
     date: "2025-04-08T12:00:00Z",
   },
   {
-    text: "Added ending bell to meditation player",
+    text: "Ending bell added to meditation player",
     date: "2025-04-07T12:00:00Z",
   },
 ];
@@ -91,8 +95,8 @@ export default function LandingPage({
             onClick={() => setShowChangelog((v) => !v)}
           >
             <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-              <span className="text-muted-foreground flex items-center gap-1.5 truncate font-normal">
-                <Megaphone className="h-3.5 w-3.5" />
+              <span className="text-muted-foreground flex items-center gap-1.5 truncate text-sm font-normal">
+                <Megaphone className="mr-1 h-3.5 w-3.5" />
                 {latest.text}
               </span>
               <span className="text-muted-foreground whitespace-nowrap text-xs">
@@ -103,10 +107,10 @@ export default function LandingPage({
           {showChangelog && (
             <div
               id="changelog-card"
-              className="bg-muted mt-2 w-full max-w-md space-y-2 rounded-xl border p-4 shadow"
+              className="bg-muted mt-2 w-full max-w-md space-y-2 rounded-xl border p-3"
             >
               <ul className="space-y-2">
-                {changelog.map((item, idx) => (
+                {changelog.slice(1).map((item, idx) => (
                   <li
                     key={idx}
                     className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0 last:pb-0"
