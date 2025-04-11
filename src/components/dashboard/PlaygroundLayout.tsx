@@ -13,7 +13,7 @@ export default function PlaygroundLayout({ children }: PlaygroundLayoutProps) {
         <li>
           <Link
             href="/playground"
-            className="block px-4 py-2 rounded hover:bg-muted"
+            className="hover:bg-muted block rounded px-4 py-2"
           >
             Dashboard
           </Link>
@@ -21,9 +21,17 @@ export default function PlaygroundLayout({ children }: PlaygroundLayoutProps) {
         <li>
           <Link
             href="/playground/chatgpt-meditation-samples"
-            className="block px-4 py-2 rounded hover:bg-muted"
+            className="hover:bg-muted block rounded px-4 py-2"
           >
             ChatGPT Samples
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/playground/elevenlabs-voice"
+            className="hover:bg-muted block rounded px-4 py-2"
+          >
+            ElevenLabs Voice
           </Link>
         </li>
       </ul>

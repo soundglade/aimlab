@@ -7,22 +7,34 @@ const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
 // Voice config mapping logical keys to ElevenLabs settings
 const ELEVENLABS_VOICE_CONFIG: Record<
   string,
-  { voice_id: string; model_id: string; speed?: number }
+  {
+    voice_id: string;
+    model_id: string;
+    speed?: number;
+    stability?: number;
+    similarity_boost?: number;
+  }
 > = {
   drew: {
     voice_id: "wgHvco1wiREKN0BdyVx5",
     model_id: "eleven_multilingual_v1",
     speed: 0.85,
+    stability: 0.5,
+    similarity_boost: 0.75,
   },
   britney: {
     voice_id: "pjcYQlDFKMbcOUp6F5GD",
-    model_id: "eleven_multilingual_v2",
-    speed: 0.85,
+    model_id: "eleven_turbo_v2_5",
+    speed: 0.9,
+    stability: 0.5,
+    similarity_boost: 0.75,
   },
   jameson: {
     voice_id: "Mu5jxyqZOLIGltFpfalg",
-    model_id: "eleven_multilingual_v2",
-    speed: 0.85,
+    model_id: "eleven_turbo_v2_5",
+    speed: 0.9,
+    stability: 0.5,
+    similarity_boost: 0.75,
   },
 };
 
@@ -63,6 +75,8 @@ export async function generateSpeech(
         voice_id: DEFAULT_VOICE_ID,
         model_id: DEFAULT_MODEL_ID,
         speed: 0.85,
+        stability: 0.5,
+        similarity_boost: 0.75,
       };
 
     // Request PCM data from ElevenLabs
@@ -73,6 +87,8 @@ export async function generateSpeech(
       output_format: "pcm_24000",
       voice_settings: {
         speed: config.speed ?? 0.85,
+        stability: config.stability ?? 0.5,
+        similarity_boost: config.similarity_boost ?? 0.75,
       },
     });
 
@@ -83,6 +99,70 @@ export async function generateSpeech(
     const wavBuffer = addWavHeader(pcmBuffer, 24000, 1, 16);
 
     // Return the WAV as an ArrayBuffer
+    return wavBuffer.buffer.slice(
+      wavBuffer.byteOffset,
+      wavBuffer.byteOffset + wavBuffer.byteLength
+    ) as ArrayBuffer;
+  } catch (error) {
+    console.error("ElevenLabs speech generation error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Generate speech using ElevenLabs TTS with custom settings and convert PCM to WAV
+ * @param options Object with text, voice_id, model_id, and all voice settings
+ * @returns ArrayBuffer containing the WAV audio data
+ */
+export async function generateSpeechWithSettings(options: {
+  text: string;
+  voice_id: string;
+  model_id: string;
+  stability?: number;
+  similarity_boost?: number;
+  style?: number;
+  use_speaker_boost?: boolean;
+  speed?: number;
+}): Promise<ArrayBuffer> {
+  try {
+    const elevenlabs = new ElevenLabsClient({
+      apiKey: process.env.ELEVENLABS_API_KEY,
+    });
+
+    const {
+      text,
+      voice_id,
+      model_id,
+      stability,
+      similarity_boost,
+      style,
+      use_speaker_boost,
+      speed,
+    } = options;
+
+    const transformedText = transformSpeechText(text);
+
+    // Only include defined settings
+    const voice_settings: Record<string, any> = {};
+    if (typeof stability === "number") voice_settings.stability = stability;
+    if (typeof similarity_boost === "number")
+      voice_settings.similarity_boost = similarity_boost;
+    if (typeof style === "number") voice_settings.style = style;
+    if (typeof use_speaker_boost === "boolean")
+      voice_settings.use_speaker_boost = use_speaker_boost;
+    if (typeof speed === "number") voice_settings.speed = speed;
+
+    const audio = await elevenlabs.generate({
+      voice: voice_id,
+      text: transformedText,
+      model_id,
+      output_format: "pcm_24000",
+      voice_settings,
+    });
+
+    const pcmBuffer = await streamToBuffer(audio);
+    const wavBuffer = addWavHeader(pcmBuffer, 24000, 1, 16);
+
     return wavBuffer.buffer.slice(
       wavBuffer.byteOffset,
       wavBuffer.byteOffset + wavBuffer.byteLength
