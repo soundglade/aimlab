@@ -1,8 +1,17 @@
-# AI Meditation Lab (AIM Lab)
+<h1 align="center">AIM Lab</h1>
+<h3 align="center">The AI Meditation Playground</h3>
+<p align="center">An open-source project exploring the intersection of AI and meditation practices.</p>
 
-[✨ Visit the Live Website](https://aimlab.soundglade.com/)
+<p align="center">
+  <b>Visit the Live Website:</b> <a href="https://aimlab.soundglade.com/">https://aimlab.soundglade.com/</a>
+</p>
 
-An open-source project exploring the intersection of AI and meditation practices.
+## Demo
+
+<p align="center">
+  <video src="./public/assets/demo.mp4" controls="controls" muted="muted" style="max-width:800px;">
+  </video>
+</p>
 
 ## Tech Stack
 
