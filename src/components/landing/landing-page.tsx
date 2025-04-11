@@ -8,6 +8,7 @@ import {
   BookOpen,
   ScrollText,
   Globe,
+  Megaphone,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 
@@ -18,11 +19,11 @@ import { useRouter } from "next/router";
 
 const changelog = [
   {
-    text: "Show Reddit posts on landing page",
+    text: "Added Reddit posts on landing page",
     date: "2025-04-08T12:00:00Z",
   },
   {
-    text: "Add ending bell to meditation player",
+    text: "Added ending bell to meditation player",
     date: "2025-04-07T12:00:00Z",
   },
 ];
@@ -90,7 +91,8 @@ export default function LandingPage({
             onClick={() => setShowChangelog((v) => !v)}
           >
             <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-              <span className="text-muted-foreground truncate font-normal">
+              <span className="text-muted-foreground flex items-center gap-1.5 truncate font-normal">
+                <Megaphone className="h-3.5 w-3.5" />
                 {latest.text}
               </span>
               <span className="text-muted-foreground whitespace-nowrap text-xs">
