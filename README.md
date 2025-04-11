@@ -9,7 +9,7 @@
 ## Demo
 
 <p align="center">
-  <video src="https://github.com/soundglade/aimlab/raw/main/public/assets/demo.mp4" controls="controls" muted="muted" style="max-width:800px;">
+  <video src="https://raw.githubusercontent.com/soundglade/aimlab/main/public/assets/demo.mp4" controls="controls" muted="muted" style="max-width:800px;">
   </video>
 </p>
 
