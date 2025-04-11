@@ -8,7 +8,7 @@
 
 ## Demo
 
-https://raw.githubusercontent.com/soundglade/aimlab/main/public/assets/demo.mp4
+[Demo](https://github.com/user-attachments/assets/0f7b8497-3762-4f69-ad36-fcff9a4570af)
 
 ## Tech Stack
 
