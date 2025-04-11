@@ -14,15 +14,15 @@ const ELEVENLABS_VOICE_CONFIG: Record<
     model_id: "eleven_multilingual_v1",
     speed: 0.85,
   },
-  newVoice1: {
-    voice_id: "PLACEHOLDER_VOICE_ID_1",
-    model_id: "eleven_turbo_v2",
-    speed: 1.0,
+  britney: {
+    voice_id: "pjcYQlDFKMbcOUp6F5GD",
+    model_id: "eleven_multilingual_v2",
+    speed: 0.85,
   },
-  newVoice2: {
-    voice_id: "PLACEHOLDER_VOICE_ID_2",
-    model_id: "eleven_turbo_v2",
-    speed: 1.0,
+  jameson: {
+    voice_id: "Mu5jxyqZOLIGltFpfalg",
+    model_id: "eleven_multilingual_v2",
+    speed: 0.85,
   },
 };
 
@@ -32,7 +32,7 @@ const ELEVENLABS_VOICE_CONFIG: Record<
  * @returns Text with pause markers added between sentences
  */
 export function transformSpeechText(text: string): string {
-  const pauseMarker = '<break time="1.5s" />';
+  const pauseMarker = '<break time="1.2s" />';
 
   // Regular expression to match the end of sentences followed by space
   // Uses capturing groups to preserve the original spacing after sentence ending
