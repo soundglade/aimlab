@@ -121,7 +121,7 @@ const ResourcesInfoBar = () => {
         <div className="flex items-center">
           <Users className="mr-2 h-4 w-4" />
           <Link
-            href="/community"
+            href="/meditations"
             className="text-primary hover:text-primary hover:underline"
           >
             Check out community meditations
