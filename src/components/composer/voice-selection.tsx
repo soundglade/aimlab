@@ -19,6 +19,18 @@ export const VOICES = [
     previewFile: "/assets/drew-elevenlabs-voice-sample.mp3",
   },
   {
+    id: "newVoice1",
+    name: "New Voice 1",
+    description: "ElevenLabs (placeholder)",
+    previewFile: "/assets/new-voice1-sample.mp3",
+  },
+  {
+    id: "newVoice2",
+    name: "New Voice 2",
+    description: "ElevenLabs (placeholder)",
+    previewFile: "/assets/new-voice2-sample.mp3",
+  },
+  {
     id: "nicole",
     name: "Nicole",
     description: "Kokoro TTS",
@@ -75,7 +87,7 @@ const VoiceSelection = ({ isDisabled = false }: VoiceSelectionProps) => {
   return (
     <div>
       <label className="mb-2 block">Voice Selection</label>
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
         {VOICES.map((voice) => {
           const isSelected = voice.id === voiceId;
 

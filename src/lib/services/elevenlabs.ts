@@ -4,6 +4,28 @@ import { Readable } from "stream";
 const DEFAULT_VOICE_ID = "wgHvco1wiREKN0BdyVx5";
 const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
 
+// Voice config mapping logical keys to ElevenLabs settings
+const ELEVENLABS_VOICE_CONFIG: Record<
+  string,
+  { voice_id: string; model_id: string; speed?: number }
+> = {
+  drew: {
+    voice_id: "wgHvco1wiREKN0BdyVx5",
+    model_id: "eleven_multilingual_v1",
+    speed: 0.85,
+  },
+  newVoice1: {
+    voice_id: "PLACEHOLDER_VOICE_ID_1",
+    model_id: "eleven_turbo_v2",
+    speed: 1.0,
+  },
+  newVoice2: {
+    voice_id: "PLACEHOLDER_VOICE_ID_2",
+    model_id: "eleven_turbo_v2",
+    speed: 1.0,
+  },
+};
+
 /**
  * Transforms speech text by adding pauses between sentences
  * @param text Text to transform
@@ -20,9 +42,13 @@ export function transformSpeechText(text: string): string {
 /**
  * Generate speech using ElevenLabs TTS and convert PCM to WAV
  * @param text Text to convert to speech
+ * @param voiceKey Logical voice key (e.g., "drew", "newVoice1", "newVoice2")
  * @returns ArrayBuffer containing the WAV audio data
  */
-export async function generateSpeech(text: string): Promise<ArrayBuffer> {
+export async function generateSpeech(
+  text: string,
+  voiceKey: string = "drew"
+): Promise<ArrayBuffer> {
   try {
     const elevenlabs = new ElevenLabsClient({
       apiKey: process.env.ELEVENLABS_API_KEY,
@@ -31,14 +57,22 @@ export async function generateSpeech(text: string): Promise<ArrayBuffer> {
     // Transform the text to add pauses between sentences
     const transformedText = transformSpeechText(text);
 
+    // Look up settings for the requested voice
+    const config = ELEVENLABS_VOICE_CONFIG[voiceKey] ||
+      ELEVENLABS_VOICE_CONFIG["drew"] || {
+        voice_id: DEFAULT_VOICE_ID,
+        model_id: DEFAULT_MODEL_ID,
+        speed: 0.85,
+      };
+
     // Request PCM data from ElevenLabs
     const audio = await elevenlabs.generate({
-      voice: DEFAULT_VOICE_ID,
+      voice: config.voice_id,
       text: transformedText,
-      model_id: DEFAULT_MODEL_ID,
+      model_id: config.model_id,
       output_format: "pcm_24000",
       voice_settings: {
-        speed: 0.85,
+        speed: config.speed ?? 0.85,
       },
     });
 

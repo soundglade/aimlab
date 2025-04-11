@@ -24,12 +24,16 @@ export async function synthesizeMeditation(
   } = {}
 ) {
   try {
-    const speechService =
-      voiceId === "test"
-        ? "test"
-        : voiceId === "nicole"
-        ? "kokoro"
-        : "elevenlabs";
+    // Determine which speech service to use and how to call it
+    const isTest = voiceId === "test";
+    const isKokoro = voiceId === "nicole";
+    const isElevenLabs = !isTest && !isKokoro;
+
+    const speechService: "kokoro" | "elevenlabs" | "test" = isTest
+      ? "test"
+      : isKokoro
+      ? "kokoro"
+      : "elevenlabs";
 
     const speechSteps = meditation.steps.filter(
       (step) => step.type === "speech"
@@ -63,7 +67,12 @@ export async function synthesizeMeditation(
       const speechGenerationPromises = speechSteps.map(async (step) => {
         const stepIndex = meditation.steps.indexOf(step);
 
-        const audioBuffer = await speechGenerator(step.text, speechService);
+        let audioBuffer: ArrayBuffer;
+        if (speechService === "elevenlabs") {
+          audioBuffer = await speechGenerator(step.text, "elevenlabs", voiceId);
+        } else {
+          audioBuffer = await speechGenerator(step.text, speechService);
+        }
         const durationMs = await durationCalculator(audioBuffer);
 
         // Increment completed steps and update progress

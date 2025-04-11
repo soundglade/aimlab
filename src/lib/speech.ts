@@ -4,6 +4,14 @@ import * as test from "./services/test";
 
 type SpeechService = "kokoro" | "elevenlabs" | "test";
 
+type SpeechRequest = {
+  text: string;
+  // Only used for elevenlabs, ignored for others
+  voiceKey?: string;
+  resolve: (value: ArrayBuffer) => void;
+  reject: (reason: any) => void;
+};
+
 // Maximum concurrent requests per service
 const MAX_CONCURRENT = {
   kokoro: 3,
@@ -19,14 +27,7 @@ const REQUEST_TIMEOUT_MS = {
 };
 
 // Queue and processing state
-const queues: Record<
-  SpeechService,
-  Array<{
-    text: string;
-    resolve: (value: ArrayBuffer) => void;
-    reject: (reason: any) => void;
-  }>
-> = {
+const queues: Record<SpeechService, Array<SpeechRequest>> = {
   kokoro: [],
   elevenlabs: [],
   test: [],
@@ -42,15 +43,17 @@ const activeRequests: Record<SpeechService, number> = {
  * Generate speech using one of the available TTS services
  * @param text Text to convert to speech
  * @param service TTS service to use (default: "kokoro")
+ * @param voiceKey Logical voice key (only for elevenlabs)
  * @returns ArrayBuffer containing the audio data
  */
 export async function generateSpeech(
   text: string,
-  service: SpeechService = "kokoro"
+  service: SpeechService = "kokoro",
+  voiceKey?: string
 ): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     // Add request to the queue
-    queues[service].push({ text, resolve, reject });
+    queues[service].push({ text, voiceKey, resolve, reject });
 
     // Process queue if possible
     processQueue(service);
@@ -72,7 +75,7 @@ function processQueue(service: SpeechService): void {
 
     activeRequests[service]++;
 
-    const { text, resolve, reject } = request;
+    const { text, voiceKey, resolve, reject } = request;
     const serviceImpl =
       service === "kokoro"
         ? kokoro
@@ -96,7 +99,13 @@ function processQueue(service: SpeechService): void {
       clearRequestTimeout = () => clearTimeout(timeoutId);
     });
 
-    Promise.race([serviceImpl.generateSpeech(text), timeoutPromise])
+    // For elevenlabs, pass voiceKey; for others, ignore
+    const speechPromise =
+      service === "elevenlabs"
+        ? serviceImpl.generateSpeech(text, voiceKey)
+        : serviceImpl.generateSpeech(text);
+
+    Promise.race([speechPromise, timeoutPromise])
       .then((result) => {
         resolve(result as ArrayBuffer);
       })
