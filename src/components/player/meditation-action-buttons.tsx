@@ -8,9 +8,11 @@ import {
   Settings2,
   TextCursorInput,
   FileText,
+  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
+import { MeditationCoverDialog } from "./meditation-cover-dialog";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -47,11 +49,13 @@ export function MeditationActionButtons({
     deleteMeditation,
     editMeditationTitle,
     editMeditationDescription,
+    editMeditationCoverImage,
   } = useMyMeditations();
   const canEdit = !embedded && ownsMeditation(meditationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditTitleDialog, setShowEditTitleDialog] = useState(false);
   const [showDescriptionDialog, setShowDescriptionDialog] = useState(false);
+  const [showCoverDialog, setShowCoverDialog] = useState(false);
   const router = useRouter();
 
   const handleDownload = () => {
@@ -104,6 +108,7 @@ export function MeditationActionButtons({
     setShowEditTitleDialog(false);
   };
 
+  // Cover image dialog logic is now in MeditationCoverDialog
   return (
     <div className="flex justify-center gap-3">
       <Button variant="link" size="sm" onClick={handleDownload}>
@@ -172,6 +177,12 @@ export function MeditationActionButtons({
                         ? "Edit description"
                         : "Add description"}
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setShowCoverDialog(true)}>
+                      <ImageIcon className="mr-2 h-4 w-4" />
+                      {meditation?.coverImageUrl
+                        ? "Edit cover image"
+                        : "Add cover image"}
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TooltipTrigger>
@@ -180,8 +191,13 @@ export function MeditationActionButtons({
           </ConfirmDestructiveDialog>
         </>
       )}
+      <MeditationCoverDialog
+        open={showCoverDialog}
+        onOpenChange={setShowCoverDialog}
+        meditation={meditation}
+        meditationId={meditationId}
+        editMeditationCoverImage={editMeditationCoverImage}
+      />
     </div>
   );
 }
-
-function EditDropdownMenu() {}

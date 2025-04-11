@@ -15,4 +15,5 @@ export interface Meditation {
   };
   fullAudioFileId?: string;
   description?: string;
+  coverImageUrl?: string;
 }

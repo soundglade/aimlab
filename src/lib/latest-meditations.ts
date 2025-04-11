@@ -21,7 +21,7 @@ const MEDITATIONS_DIR = path.join(
 );
 
 export async function getLatestMeditations(
-  maxCount: number = 4
+  maxCount: number = 6
 ): Promise<Meditation[]> {
   try {
     // Check if cache exists and is fresh

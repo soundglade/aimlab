@@ -51,6 +51,11 @@ export default function PublicMeditation({
   const pageTitle = `${metadata.title} | AIM Lab`;
   const pageDescription = "AIM Lab - The AI Meditation Playground";
   const pageUrl = `https://aimlab.soundglade.com/m/${meditationId}`;
+  const ogImage =
+    metadata.coverImageUrl || "https://aimlab.soundglade.com/og-image-2.jpg";
+
+  const displaySummary = metadata.description || metadata.coverImageUrl;
+
   return (
     <Layout>
       <Head>
@@ -63,6 +68,7 @@ export default function PublicMeditation({
           property="og:description"
           content={pageDescription}
         />
+        <meta key="og:image" property="og:image" content={ogImage} />
         <meta
           key="twitter:title"
           property="twitter:title"
@@ -74,9 +80,10 @@ export default function PublicMeditation({
           property="twitter:description"
           content={pageDescription}
         />
+        <meta key="twitter:image" property="twitter:image" content={ogImage} />
       </Head>
       <div className="container mx-auto max-w-3xl px-4 pb-8 pt-2 md:pt-8">
-        {metadata.description ? (
+        {displaySummary ? (
           <MeditationSummary
             meditationId={meditationId}
             meditation={metadata}

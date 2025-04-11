@@ -31,9 +31,18 @@ export function MeditationSummary({
         embedded={embedded}
       />
       <Card className="max-w-xl2 mx-auto p-6 md:-mt-5">
-        <div className="prose prose-headings:font-normal prose-p:leading-[1.6] prose-headings:tracking-tight dark:prose-invert text-left [&_img]:mx-auto [&_img]:mt-2 [&_img]:block [&_img]:max-h-[500px]">
-          <ReactMarkdown>{meditation.description}</ReactMarkdown>
-        </div>
+        {meditation.coverImageUrl && (
+          <img
+            src={meditation.coverImageUrl}
+            alt="Cover"
+            className="mx-auto mt-2 block max-h-[500px] rounded-lg"
+          />
+        )}
+        {meditation.description && (
+          <div className="prose prose-headings:font-normal prose-p:leading-[1.6] prose-headings:tracking-tight dark:prose-invert text-left [&_img]:mx-auto [&_img]:mt-2 [&_img]:block [&_img]:max-h-[500px]">
+            <ReactMarkdown>{meditation.description}</ReactMarkdown>
+          </div>
+        )}
       </Card>
 
       <div className="mt-8 flex justify-center">

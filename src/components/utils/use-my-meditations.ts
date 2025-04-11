@@ -139,6 +139,48 @@ export function useMyMeditations() {
     return false;
   };
 
+  const editMeditationCoverImage = async (
+    id: string,
+    coverImageUrl: string
+  ) => {
+    // Find the meditation to get the ownerKey
+    const meditation = getMeditations().find((med) => med.id === id);
+
+    if (meditation) {
+      try {
+        // Call the API to edit the meditation cover image
+        const response = await fetch("/api/edit-meditation-cover-image", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            meditationId: id,
+            ownerKey: meditation.ownerKey,
+            coverImageUrl,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to update meditation cover image on server");
+          return false;
+        }
+      } catch (error) {
+        console.error("Error updating meditation cover image:", error);
+        return false;
+      }
+
+      // Optionally update local storage if you want to cache the cover image locally
+      // const updatedMeditations = getMeditations().map((med) =>
+      //   med.id === id ? { ...med, coverImageUrl } : med
+      // );
+      // setMeditations(updatedMeditations);
+
+      return true;
+    }
+    return false;
+  };
+
   const clearMeditations = async () => {
     const currentMeditationsIds = getMeditations().map((med) => med.id);
 
@@ -171,5 +213,6 @@ export function useMyMeditations() {
     clearMeditations,
     saveMeditation,
     ownsMeditation,
+    editMeditationCoverImage,
   };
 }
