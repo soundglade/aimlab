@@ -48,18 +48,25 @@ function DialogOverlay({
 interface DialogContentProps
   extends React.ComponentProps<typeof DialogPrimitive.Content> {
   headerContent?: React.ReactNode;
+  locked?: boolean;
 }
 
 function DialogContent({
   className,
   children,
   headerContent,
+  locked = false,
   ...props
 }: DialogContentProps) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
       <DialogPrimitive.Content
+        onInteractOutside={(e) => {
+          if (locked) {
+            e.preventDefault();
+          }
+        }}
         data-slot="dialog-content"
         className={cn(
           // Base styles: Fullscreen, flex column

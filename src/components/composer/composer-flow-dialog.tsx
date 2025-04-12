@@ -179,6 +179,7 @@ const ComposerFlowDialog = ({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
+        locked={true}
         headerContent={
           <div className="text-muted-foreground inline-flex items-center space-x-2 rounded-full pl-2">
             <span className="text-sm font-medium">Meditation Composer</span>
