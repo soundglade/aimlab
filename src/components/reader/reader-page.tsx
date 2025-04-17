@@ -49,7 +49,6 @@ export default function ReaderPage() {
               const dataStr = dataLines.join("");
               try {
                 const data = JSON.parse(dataStr);
-                console.log("data", data);
                 setResponse(data);
               } catch (err) {
                 console.error("Error parsing JSON response:", err, dataStr);

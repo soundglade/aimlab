@@ -17,3 +17,14 @@ export interface Meditation {
   description?: string;
   coverImageUrl?: string;
 }
+
+export type ReadingStep = FormattedScript["steps"][number] & {
+  idx?: number;
+  audio?: string;
+  completed?: boolean;
+};
+
+export interface Reading {
+  title: string;
+  steps: ReadingStep[];
+}

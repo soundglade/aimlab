@@ -1,10 +1,11 @@
-import type { FormattedScript } from "@/lib/meditation-formatter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
+import { Reading, ReadingStep } from "@/components/types";
+import { useEffect, useRef } from "react";
 
 interface ReadingDrawerContentProps {
-  script: FormattedScript;
+  script: Reading;
 }
 
 // Skeleton for steps
@@ -23,6 +24,12 @@ function StepsSkeleton() {
 
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
+
+  const stepsForPlayer = script?.steps
+    ?.map((s, idx) => ({ ...s, idx }))
+    ?.filter((s) => s.completed);
+
+  usePlayer(stepsForPlayer);
 
   return (
     <>
@@ -71,3 +78,55 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     </>
   );
 }
+
+const usePlayer = (steps: ReadingStep[]) => {
+  console.log("usePlayer", steps);
+
+  // Audio playback state
+  const currentStepIdxRef = useRef<number>(0);
+  const playingStepIdxRef = useRef<number>(-1);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const latestStepsRef = useRef(steps);
+
+  // Keep latest script ref up to date
+  useEffect(() => {
+    latestStepsRef.current = steps;
+  }, [steps]);
+
+  function isCurrentStepNotPlayable() {
+    const currentStep = latestStepsRef.current?.[currentStepIdxRef.current];
+    return currentStep?.type == "heading";
+  }
+
+  // Play audio for the current step if available
+  useEffect(() => {
+    const handleEnded = () => {
+      moveToNextStep();
+    };
+
+    const moveToNextStep = () => {
+      const nextIdx = currentStepIdxRef.current + 1;
+      currentStepIdxRef.current = nextIdx;
+      playStepAudio(nextIdx);
+    };
+
+    const playStepAudio = (stepIdx: number) => {
+      const step = latestStepsRef.current?.[stepIdx];
+      const alreadyPlaying = playingStepIdxRef.current === stepIdx;
+      const alreadyPlayed = playingStepIdxRef.current > stepIdx;
+
+      if (step && step.audio && !alreadyPlaying && !alreadyPlayed) {
+        playingStepIdxRef.current = stepIdx;
+        audioRef.current = new window.Audio(step.audio);
+        audioRef.current.addEventListener("ended", handleEnded);
+        audioRef.current.play();
+      }
+    };
+
+    if (isCurrentStepNotPlayable()) {
+      moveToNextStep();
+    } else {
+      playStepAudio(currentStepIdxRef.current);
+    }
+  }, [steps]);
+};
