@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { z } from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 // Schemas
 const HeadingStep = z.object({
@@ -65,6 +66,10 @@ const MeditationFormatter = z
 
 type FormattedScript = z.infer<typeof FormattedScript>;
 type MeditationFormatterResult = z.infer<typeof MeditationFormatter>;
+
+// Convert Zod schema to JSON Schema for prompt
+const meditationFormatterJsonSchema = zodToJsonSchema(MeditationFormatter);
+const schemaString = JSON.stringify(meditationFormatterJsonSchema, null, 2);
 
 // The system prompt as a constant
 const SYSTEM_PROMPT = `
@@ -142,10 +147,11 @@ const formatMeditationScript = async (
   try {
     if (options?.stream) {
       // Streaming mode: forwards deltas to onToken; no accumulation or validation.
+      const streamingPrompt = `${SYSTEM_PROMPT}\n\nHere is the JSON schema you must follow:\n${schemaString}`;
       const stream = await openai.beta.chat.completions.stream({
         ...OPENAI_CHAT_CONFIG,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: streamingPrompt },
           { role: "user", content: rawScript },
         ],
         response_format: { type: "json_object" },
