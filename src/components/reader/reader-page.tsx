@@ -27,21 +27,34 @@ export default function ReaderPage() {
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-
+      let buffer = "";
       if (reader) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const chunk = decoder.decode(value);
-          const lines = chunk.split("\n");
+          buffer += decoder.decode(value, { stream: true });
 
-          lines.forEach((line) => {
-            if (line.startsWith("data: ")) {
-              const data = JSON.parse(line.slice(6));
-              setResponse(data);
+          let eventEnd;
+          while ((eventEnd = buffer.indexOf("\n\n")) !== -1) {
+            const event = buffer.slice(0, eventEnd);
+            buffer = buffer.slice(eventEnd + 2);
+
+            // Find the data line(s)
+            const dataLines = event
+              .split("\n")
+              .filter((line) => line.startsWith("data: "))
+              .map((line) => line.slice(6));
+            if (dataLines.length > 0) {
+              const dataStr = dataLines.join("");
+              try {
+                const data = JSON.parse(dataStr);
+                setResponse(data);
+              } catch (err) {
+                console.error("Error parsing JSON response:", err, dataStr);
+              }
             }
-          });
+          }
         }
       }
     } catch (error) {

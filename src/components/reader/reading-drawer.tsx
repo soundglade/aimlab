@@ -14,14 +14,11 @@ export function ReadingDrawer({
   onOpenChange,
   response,
 }: ReadingDrawerProps) {
-  const shouldShowContent = response && !response.isRejected && response.script;
-
+  const script = response?.script || { title: "", steps: [] };
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="flex h-[calc(100vh-80px)] flex-col p-0">
-        {shouldShowContent ? (
-          <ReadingDrawerContent script={response.script!} />
-        ) : null}
+        <ReadingDrawerContent script={script} />
       </DrawerContent>
     </Drawer>
   );
