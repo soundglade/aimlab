@@ -4,24 +4,19 @@ import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { ReadingDrawer } from "./reading-drawer";
 
 export default function ReaderPage() {
   const [script, setScript] = useState(DEFAULT_SCRIPT);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [messages, setMessages] = useState<string[]>([]);
+  const [response, setResponse] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setIsDrawerOpen(true);
-    setMessages([]);
+    setResponse(null);
 
     try {
       const response = await fetch("/api/start-reading", {
@@ -44,7 +39,7 @@ export default function ReaderPage() {
           lines.forEach((line) => {
             if (line.startsWith("data: ")) {
               const data = JSON.parse(line.slice(6));
-              setMessages((prev) => [...prev, JSON.stringify(data)]);
+              setResponse(JSON.stringify(data));
             }
           });
         }
@@ -102,20 +97,11 @@ export default function ReaderPage() {
             </Button>
           </form>
 
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerContent className="flex h-[calc(100vh-80px)] flex-col p-4">
-              <DrawerHeader>
-                <DrawerTitle>Reading Progress</DrawerTitle>
-              </DrawerHeader>
-              <div className="flex-1 overflow-auto">
-                {messages.map((message, index) => (
-                  <div key={index} className="bg-muted mb-2 rounded p-2">
-                    {message}
-                  </div>
-                ))}
-              </div>
-            </DrawerContent>
-          </Drawer>
+          <ReadingDrawer
+            open={isDrawerOpen}
+            onOpenChange={setIsDrawerOpen}
+            response={response}
+          />
         </div>
       </div>
     </Layout>
