@@ -1,34 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Socket } from "net";
-import { formatMeditationScript } from "@/lib/meditation-formatter";
-import { jsonrepair } from "jsonrepair";
-
-interface ExtendedSocket extends Socket {
-  server?: {
-    res?: NextApiResponse & {
-      flush?: () => void;
-    };
-  };
-}
+import { synthesizeReading } from "@/lib/reading-synthesizer";
 
 interface ExtendedResponse extends NextApiResponse {
   flush?: () => void;
-}
-
-function tryRepairAndParseJSON(text: string) {
-  try {
-    // Remove anything before the first '{' (since the output is a JSON object)
-    const jsonStart = text.indexOf("{");
-    if (jsonStart === -1) return null;
-    const cleanedOutput = text.slice(jsonStart);
-    // Clean up ending backticks if present
-    const finalOutput = cleanedOutput.replace(/\]\s*[`]+$/, "]");
-
-    const repairedJson = jsonrepair(finalOutput);
-    return JSON.parse(repairedJson);
-  } catch {
-    return null;
-  }
 }
 
 export default async function handler(
@@ -50,26 +24,12 @@ export default async function handler(
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const socket = res.socket as ExtendedSocket;
-  const rawRes = socket?.server?.res || res;
-  const flush = () => {
-    if (typeof rawRes.flush === "function") {
-      rawRes.flush();
-    }
-  };
-
-  let accumulated = "";
-
   try {
-    await formatMeditationScript(script, {
-      stream: true,
-      onToken: (token) => {
-        accumulated += token;
-        const parsed = tryRepairAndParseJSON(accumulated);
-        if (parsed) {
-          res.write(`data: ${JSON.stringify(parsed)}\n\n`);
-          flush();
-        }
+    await synthesizeReading({
+      script,
+      onData: (data) => {
+        res.write(`data: ${JSON.stringify(data)}\n\n`);
+        if (typeof res.flush === "function") res.flush();
       },
     });
     res.end();
@@ -79,7 +39,7 @@ export default async function handler(
         error: error instanceof Error ? error.message : "Unknown error",
       })}\n\n`
     );
-    flush();
+    if (typeof res.flush === "function") res.flush();
     res.end();
   }
 }
