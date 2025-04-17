@@ -147,7 +147,15 @@ const formatMeditationScript = async (
   try {
     if (options?.stream) {
       // Streaming mode: forwards deltas to onToken; no accumulation or validation.
-      const streamingPrompt = `${SYSTEM_PROMPT}\n\nHere is the JSON schema you must follow:\n${schemaString}`;
+      const streamingPrompt = [
+        SYSTEM_PROMPT,
+        "",
+        "Here is the JSON schema you must follow:",
+        schemaString,
+        "",
+        'IMPORTANT: For each step in the steps array, add a final field "completed": true (e.g., { type: "speech", text: "...", completed: true }).',
+        "This field must be the last field in each step object.",
+      ].join("\n");
       const stream = await openai.beta.chat.completions.stream({
         ...OPENAI_CHAT_CONFIG,
         messages: [
