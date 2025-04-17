@@ -1,8 +1,13 @@
-import * as kokoro from "./services/replicate";
+import * as replicateKokoro from "./services/replicate-kokoro";
+import * as selfHostedKokoro from "./services/self-hosted-kokoro";
 import * as elevenlabs from "./services/elevenlabs";
 import * as test from "./services/test";
 
-type SpeechService = "kokoro" | "elevenlabs" | "test";
+export type SpeechService =
+  | "replicateKokoro"
+  | "selfHostedKokoro"
+  | "elevenlabs"
+  | "test";
 
 type SpeechRequest = {
   text: string;
@@ -14,27 +19,31 @@ type SpeechRequest = {
 
 // Maximum concurrent requests per service
 const MAX_CONCURRENT = {
-  kokoro: 3,
-  elevenlabs: 5,
+  replicateKokoro: 3,
+  selfHostedKokoro: 1,
+  elevenlabs: 2,
   test: 2,
 };
 
 // Timeout in milliseconds per service
 const REQUEST_TIMEOUT_MS = {
-  kokoro: 3 * 60 * 1000, // 3 minutes
+  replicateKokoro: 3 * 60 * 1000, // 3 minutes
+  selfHostedKokoro: 6 * 60 * 1000, // 6 minutes
   elevenlabs: 3 * 60 * 1000, // 3 minutes
   test: 3 * 60 * 1000, // 3 minutes
 };
 
 // Queue and processing state
 const queues: Record<SpeechService, Array<SpeechRequest>> = {
-  kokoro: [],
+  replicateKokoro: [],
+  selfHostedKokoro: [],
   elevenlabs: [],
   test: [],
 };
 
 const activeRequests: Record<SpeechService, number> = {
-  kokoro: 0,
+  replicateKokoro: 0,
+  selfHostedKokoro: 0,
   elevenlabs: 0,
   test: 0,
 };
@@ -42,13 +51,13 @@ const activeRequests: Record<SpeechService, number> = {
 /**
  * Generate speech using one of the available TTS services
  * @param text Text to convert to speech
- * @param service TTS service to use (default: "kokoro")
+ * @param service TTS service to use (default: "replicateKokoro")
  * @param voiceKey Logical voice key (only for elevenlabs)
  * @returns ArrayBuffer containing the audio data
  */
 export async function generateSpeech(
   text: string,
-  service: SpeechService = "kokoro",
+  service: SpeechService = "replicateKokoro",
   voiceKey?: string
 ): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
@@ -77,8 +86,10 @@ function processQueue(service: SpeechService): void {
 
     const { text, voiceKey, resolve, reject } = request;
     const serviceImpl =
-      service === "kokoro"
-        ? kokoro
+      service === "replicateKokoro"
+        ? replicateKokoro
+        : service === "selfHostedKokoro"
+        ? selfHostedKokoro
         : service === "elevenlabs"
         ? elevenlabs
         : test;

@@ -4,7 +4,7 @@ import { generateSilenceWav } from "@/lib/audio";
 import fs from "fs";
 import path from "path";
 import { customAlphabet } from "nanoid";
-import { generateSpeech as generateKokoroSpeech } from "@/lib/services/kokoro";
+import { generateSpeech } from "@/lib/speech";
 
 interface SynthesizeReadingOptions {
   script: string;
@@ -76,7 +76,8 @@ export async function synthesizeReading({
       const text = step.text;
       if (!text) return;
       // Synthesize speech using kokoro
-      const audioBuffer = await generateKokoroSpeech(text);
+      const audioBuffer = await generateSpeech(text, "selfHostedKokoro");
+
       // Ensure output directory exists
       const speechDir = path.join(
         process.cwd(),

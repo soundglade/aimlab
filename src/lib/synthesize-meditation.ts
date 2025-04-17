@@ -1,4 +1,8 @@
-import { generateSpeech, getAudioDurationMs } from "@/lib/speech";
+import {
+  generateSpeech,
+  SpeechService,
+  getAudioDurationMs,
+} from "@/lib/speech";
 import { Meditation } from "@/components/types";
 import { addTimelineToMeditation } from "@/components/utils/meditation-timeline";
 import { createConcatenatedAudio } from "@/lib/audio";
@@ -29,10 +33,10 @@ export async function synthesizeMeditation(
     const isKokoro = voiceId === "nicole";
     const isElevenLabs = !isTest && !isKokoro;
 
-    const speechService: "kokoro" | "elevenlabs" | "test" = isTest
+    const speechService: SpeechService = isTest
       ? "test"
       : isKokoro
-      ? "kokoro"
+      ? "replicateKokoro"
       : "elevenlabs";
 
     const speechSteps = meditation.steps.filter(
