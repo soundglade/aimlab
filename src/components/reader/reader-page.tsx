@@ -2,9 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Lightbulb, Users, CircleHelp } from "lucide-react";
 import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
 export default function ReaderPage() {
+  const [script, setScript] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // TODO: implement the read action
+    setTimeout(() => setIsSubmitting(false), 500); // Placeholder for async action
+  };
+
   return (
     <Layout>
       <div className="pb-0 pt-8">
@@ -17,7 +28,7 @@ export default function ReaderPage() {
             Instantly read your own guided meditations.
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-10 max-w-xl rounded-lg p-4 text-sm">
+          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-4 max-w-xl rounded-lg p-4 text-sm">
             <ul className="list-inside space-y-2">
               <li>
                 <i>Tip:</i> Use <i>ChatGPT</i> or another AI chatbot to generate
@@ -26,6 +37,30 @@ export default function ReaderPage() {
               </li>
             </ul>
           </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="mx-auto max-w-xl border-accent border-1 space-y-4 bg-card rounded-lg p-6"
+          >
+            <div>
+              <Textarea
+                id="meditation-script"
+                placeholder="Paste your meditation script here..."
+                className="bg-background max-h-[300px] min-h-[200px] overflow-y-auto"
+                value={script}
+                onChange={(e) => setScript(e.target.value)}
+                disabled={isSubmitting}
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || !script.trim()}
+            >
+              {isSubmitting ? "Reading..." : "Read"}
+            </Button>
+          </form>
         </div>
       </div>
     </Layout>
