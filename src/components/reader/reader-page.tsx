@@ -10,7 +10,7 @@ export default function ReaderPage() {
   const [script, setScript] = useState(DEFAULT_SCRIPT);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [response, setResponse] = useState<string | null>(null);
+  const [response, setResponse] = useState<any | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ export default function ReaderPage() {
           lines.forEach((line) => {
             if (line.startsWith("data: ")) {
               const data = JSON.parse(line.slice(6));
-              setResponse(JSON.stringify(data));
+              setResponse(data);
             }
           });
         }
