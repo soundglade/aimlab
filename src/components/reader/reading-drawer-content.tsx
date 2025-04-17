@@ -2,8 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { useEffect, useRef, useState } from "react";
-import { PlaybackBlockedModal } from "./playback-blocked-modal";
+import { useEffect, useRef } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -26,28 +25,14 @@ function StepsSkeleton() {
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
 
-  const [showPlayModal, setShowPlayModal] = useState(false);
-  const [retryPlayFn, setRetryPlayFn] = useState<null | (() => void)>(null);
-
-  const handlePlayNotAllowed = (retryFn: () => void) => {
-    setRetryPlayFn(() => retryFn);
-    setShowPlayModal(true);
-  };
-
   const stepsForPlayer = script?.steps
     ?.map((s, idx) => ({ ...s, idx }))
     ?.filter((s) => s.completed);
 
-  const { audioRef } = usePlayer(stepsForPlayer, handlePlayNotAllowed);
+  const { audioRef } = usePlayer(stepsForPlayer);
 
   return (
     <>
-      {/* PlaybackBlockedModal for Play Not Allowed */}
-      <PlaybackBlockedModal
-        open={showPlayModal}
-        onOpenChange={setShowPlayModal}
-        retryPlayFn={retryPlayFn}
-      />
       {/* Header (fixed) */}
       <div className="bg-card z-10 shrink-0 px-4 py-3">
         <div className="text-center text-2xl tracking-tight">
@@ -101,10 +86,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   );
 }
 
-const usePlayer = (
-  steps: ReadingStep[],
-  onPlayNotAllowed?: (retry: () => void) => void
-) => {
+const usePlayer = (steps: ReadingStep[]) => {
   console.log("usePlayer", steps);
 
   // Audio playback state
@@ -143,19 +125,7 @@ const usePlayer = (
         playingStepIdxRef.current = stepIdx;
         audioRef.current.src = step.audio;
         audioRef.current.addEventListener("ended", handleEnded);
-
-        const tryPlay = () => {
-          audioRef.current?.play().catch((err) => {
-            if (
-              err &&
-              err.name === "NotAllowedError" &&
-              typeof onPlayNotAllowed === "function"
-            ) {
-              onPlayNotAllowed(tryPlay);
-            }
-          });
-        };
-        tryPlay();
+        audioRef.current?.play();
       }
     };
 
@@ -164,7 +134,7 @@ const usePlayer = (
     } else {
       playStepAudio(currentStepIdxRef.current);
     }
-  }, [steps, onPlayNotAllowed]);
+  }, [steps]);
 
   return { audioRef };
 };
