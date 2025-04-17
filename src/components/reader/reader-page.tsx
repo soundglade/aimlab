@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/drawer";
 
 export default function ReaderPage() {
-  const [script, setScript] = useState("");
+  const [script, setScript] = useState(DEFAULT_SCRIPT);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
@@ -44,8 +44,7 @@ export default function ReaderPage() {
           lines.forEach((line) => {
             if (line.startsWith("data: ")) {
               const data = JSON.parse(line.slice(6));
-
-              setMessages((prev) => [...prev, data.message]);
+              setMessages((prev) => [...prev, JSON.stringify(data)]);
             }
           });
         }
@@ -122,3 +121,8 @@ export default function ReaderPage() {
     </Layout>
   );
 }
+
+const DEFAULT_SCRIPT = `# Micro Meditation
+
+Step 1: Take a deep breath in. Exhale smiling
+Step 2: Have a great day`;
