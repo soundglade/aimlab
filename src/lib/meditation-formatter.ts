@@ -61,6 +61,8 @@ const MeditationFormatter = z
   });
 
 // Types for TypeScript
+// Grouped after schema definitions for clarity
+
 type FormattedScript = z.infer<typeof FormattedScript>;
 type MeditationFormatterResult = z.infer<typeof MeditationFormatter>;
 
@@ -84,7 +86,7 @@ Steps to follow:
      * An array of steps with these possible types:
        "heading", "speech", "pause"
    - For each piece of user-facing guidance, use "speech".
-   - Try to keep each speech text shorter than 200 characters. If a sentence is longer, split it into separate speech steps, but never split a sentence between steps.
+   - Try to keep each speech text shorter than 180 characters. If a sentence is longer, split it into separate speech steps, but never split a sentence between steps.
    - For silent intervals, use "pause", with an approximate "duration" in seconds.
    - For headings or titles, use "type": "heading" with the text content.
    - IMPORTANT: Do not split sentences between steps. Keep complete sentences together within the same step.
@@ -109,22 +111,61 @@ Steps to follow:
 Return NOTHING else, no extra commentary. Output MUST be valid JSON conforming to the schema.
 `;
 
-// Format the meditation script
+// OpenAI chat config for both streaming and non-streaming calls
+const OPENAI_CHAT_CONFIG = {
+  model: "gpt-4o",
+  temperature: 0.2,
+};
+
+/**
+ * Formats a meditation script using OpenAI, returning a structured result or streaming tokens.
+ *
+ * @param rawScript The raw meditation script to format.
+ * @param options Optional: stream (boolean) for streaming mode, onToken callback for streamed tokens.
+ * @returns MeditationFormatterResult (non-streaming) or undefined (streaming mode).
+ */
 const formatMeditationScript = async (
-  rawScript: string
-): Promise<MeditationFormatterResult> => {
+  rawScript: string,
+  options?: {
+    stream?: boolean;
+    onToken?: (token: string) => void;
+  }
+): Promise<MeditationFormatterResult | undefined> => {
   const openai = new OpenAI();
 
-  try {
-    const messages = [
-      { role: "system" as const, content: SYSTEM_PROMPT },
-      { role: "user" as const, content: rawScript },
-    ];
+  // Helper for error result
+  const errorResult = (reason: string): MeditationFormatterResult => ({
+    isRejected: true,
+    rejectionReason: reason,
+  });
 
+  try {
+    if (options?.stream) {
+      // Streaming mode: forwards deltas to onToken; no accumulation or validation.
+      const stream = await openai.beta.chat.completions.stream({
+        ...OPENAI_CHAT_CONFIG,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: rawScript },
+        ],
+        response_format: { type: "json_object" },
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content || "";
+        if (delta && options.onToken) options.onToken(delta);
+      }
+      return undefined;
+    }
+
+    // Non-streaming mode (default)
     const completion = await openai.beta.chat.completions.parse({
-      model: "gpt-4o",
-      messages,
-      temperature: 0.2,
+      ...OPENAI_CHAT_CONFIG,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: rawScript },
+      ],
       response_format: zodResponseFormat(
         MeditationFormatter,
         "meditation_transformation"
@@ -133,20 +174,15 @@ const formatMeditationScript = async (
 
     const parsed = completion.choices[0].message.parsed;
     if (!parsed) {
-      return {
-        isRejected: true,
-        rejectionReason: "Failed to parse meditation script",
-      };
+      return errorResult("Failed to parse meditation script");
     }
-
     return parsed;
   } catch (error) {
-    return {
-      isRejected: true,
-      rejectionReason: `Error processing script: ${
+    return errorResult(
+      `Error processing script: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`,
-    };
+      }`
+    );
   }
 };
 
