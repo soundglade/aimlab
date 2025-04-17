@@ -1,4 +1,4 @@
-import * as kokoro from "./services/kokoro";
+import * as kokoro from "./services/replicate";
 import * as elevenlabs from "./services/elevenlabs";
 import * as test from "./services/test";
 

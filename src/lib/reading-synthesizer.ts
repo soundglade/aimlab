@@ -3,6 +3,8 @@ import { jsonrepair } from "jsonrepair";
 import { generateSilenceWav } from "@/lib/audio";
 import fs from "fs";
 import path from "path";
+import { customAlphabet } from "nanoid";
+import { generateSpeech as generateKokoroSpeech } from "@/lib/services/kokoro";
 
 interface SynthesizeReadingOptions {
   script: string;
@@ -29,6 +31,13 @@ export async function synthesizeReading({
   script,
   onData,
 }: SynthesizeReadingOptions) {
+  // Generate a unique reading id for this session
+  const generateReadingId = customAlphabet(
+    "0123456789abcdefghijklmnopqrstuvwxyz",
+    7
+  );
+  const readingId = generateReadingId();
+
   let accumulated = "";
   const processedSteps = new Set<number>();
   const stepAudioFiles: string[] = [];
@@ -45,7 +54,7 @@ export async function synthesizeReading({
       "public",
       "storage",
       "readings",
-      "pauses"
+      "_pauses"
     );
     const wavFilename = `${duration}-seconds.wav`;
     const wavPath = path.join(pausesDir, wavFilename);
@@ -57,8 +66,38 @@ export async function synthesizeReading({
     if (!fs.existsSync(wavPath)) {
       generateSilenceWav(wavPath, duration);
     }
-    stepAudioFiles[index] = `/storage/readings/pauses/${wavFilename}`;
+    stepAudioFiles[index] = `/storage/readings/_pauses/${wavFilename}`;
     sendAugmentedData();
+  }
+
+  // Helper to process a speech step
+  async function processSpeechStep(index: number, step: any) {
+    try {
+      const text = step.text;
+      if (!text) return;
+      // Synthesize speech using kokoro
+      const audioBuffer = await generateKokoroSpeech(text);
+      // Ensure output directory exists
+      const speechDir = path.join(
+        process.cwd(),
+        "public",
+        "storage",
+        "readings",
+        readingId
+      );
+      if (!fs.existsSync(speechDir)) {
+        fs.mkdirSync(speechDir, { recursive: true });
+      }
+      // Generate a unique filename for this step
+      const filename = randomMp3Name();
+      const filePath = path.join(speechDir, filename);
+      fs.writeFileSync(filePath, Buffer.from(audioBuffer));
+      // Store the public path
+      stepAudioFiles[index] = `/storage/readings/${readingId}/${filename}`;
+      sendAugmentedData();
+    } catch (err) {
+      console.error("Error in processSpeechStep:", err);
+    }
   }
 
   // Helper to process a step, returns a Promise
@@ -71,17 +110,14 @@ export async function synthesizeReading({
       processPauseStep(index, step);
       return Promise.resolve();
     }
-    const delay = 1000 + Math.random() * 2000; // 1-3 seconds
-    const promise = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        const audioFile = randomMp3Name();
-        stepAudioFiles[index] = audioFile;
-        sendAugmentedData();
-        resolve();
-      }, delay);
-    });
-    stepProcessingPromises.push(promise);
-    return promise;
+    // Handle speech step
+    if (step && step.type === "speech" && typeof step.text === "string") {
+      const promise = processSpeechStep(index, step);
+      stepProcessingPromises.push(promise);
+      return promise;
+    }
+    // Unknown step type: skip
+    return Promise.resolve();
   }
 
   // Helper to augment steps with audio if available and call onData

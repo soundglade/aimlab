@@ -1,40 +1,35 @@
-import Replicate from "replicate";
-
-// Initialize Replicate client
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-});
-
-// Kokoro TTS model ID
-const KOKORO_MODEL_ID =
-  "jaaari/kokoro-82m:f559560eb822dc509045f3921a1921234918b91739db4bf3daab2169b71c7a13";
+// Kokoro self-hosted TTS service
 
 /**
- * Generate speech using Kokoro TTS
+ * Generate speech using self-hosted Kokoro TTS
  * @param text Text to convert to speech
  * @returns ArrayBuffer containing the audio data
  */
 export async function generateSpeech(text: string): Promise<ArrayBuffer> {
   try {
-    // Call Kokoro TTS API via Replicate
-    const input = { text, voice: "af_nicole" };
+    const response = await fetch(
+      "https://kokoro.soundglade.com/v1/audio/speech",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "kokoro",
+          input: text,
+          voice: "af_nicole",
+          response_format: "mp3",
+        }),
+      }
+    );
 
-    // Get the audio URL from Replicate
-    const outputUrl = (await replicate.run(KOKORO_MODEL_ID, {
-      input,
-    })) as unknown as string;
-
-    // Fetch the audio data
-    const audioResponse = await fetch(outputUrl);
-    if (!audioResponse.ok) {
+    if (!response.ok) {
       throw new Error(
-        `Failed to fetch audio: ${audioResponse.status} ${audioResponse.statusText}`
+        `Failed to fetch audio: ${response.status} ${response.statusText}`
       );
     }
 
-    return await audioResponse.arrayBuffer();
+    return await response.arrayBuffer();
   } catch (error) {
-    console.error("Kokoro speech generation error:", error);
+    console.error("Kokoro (self-hosted) speech generation error:", error);
     throw error;
   }
 }
