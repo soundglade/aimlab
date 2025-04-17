@@ -2,7 +2,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PlaybackBlockedModal } from "./playback-blocked-modal";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -25,14 +26,28 @@ function StepsSkeleton() {
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
 
+  const [showPlayModal, setShowPlayModal] = useState(false);
+  const [retryPlayFn, setRetryPlayFn] = useState<null | (() => void)>(null);
+
+  const handlePlayNotAllowed = (retryFn: () => void) => {
+    setRetryPlayFn(() => retryFn);
+    setShowPlayModal(true);
+  };
+
   const stepsForPlayer = script?.steps
     ?.map((s, idx) => ({ ...s, idx }))
     ?.filter((s) => s.completed);
 
-  usePlayer(stepsForPlayer);
+  const { audioRef } = usePlayer(stepsForPlayer, handlePlayNotAllowed);
 
   return (
     <>
+      {/* PlaybackBlockedModal for Play Not Allowed */}
+      <PlaybackBlockedModal
+        open={showPlayModal}
+        onOpenChange={setShowPlayModal}
+        retryPlayFn={retryPlayFn}
+      />
       {/* Header (fixed) */}
       <div className="bg-card z-10 shrink-0 px-4 py-3">
         <div className="text-center text-2xl tracking-tight">
@@ -75,11 +90,21 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
           Dummy Button
         </button>
       </div>
+      {/* Hidden audio element for playback */}
+      <audio
+        ref={audioRef}
+        style={{ display: "none" }}
+        controls={false}
+        preload="auto"
+      />
     </>
   );
 }
 
-const usePlayer = (steps: ReadingStep[]) => {
+const usePlayer = (
+  steps: ReadingStep[],
+  onPlayNotAllowed?: (retry: () => void) => void
+) => {
   console.log("usePlayer", steps);
 
   // Audio playback state
@@ -112,14 +137,25 @@ const usePlayer = (steps: ReadingStep[]) => {
 
     const playStepAudio = (stepIdx: number) => {
       const step = latestStepsRef.current?.[stepIdx];
-      const alreadyPlaying = playingStepIdxRef.current === stepIdx;
-      const alreadyPlayed = playingStepIdxRef.current > stepIdx;
+      const alreadyPlayed = playingStepIdxRef.current >= stepIdx;
 
-      if (step && step.audio && !alreadyPlaying && !alreadyPlayed) {
+      if (audioRef.current && step?.audio && !alreadyPlayed) {
         playingStepIdxRef.current = stepIdx;
-        audioRef.current = new window.Audio(step.audio);
+        audioRef.current.src = step.audio;
         audioRef.current.addEventListener("ended", handleEnded);
-        audioRef.current.play();
+
+        const tryPlay = () => {
+          audioRef.current?.play().catch((err) => {
+            if (
+              err &&
+              err.name === "NotAllowedError" &&
+              typeof onPlayNotAllowed === "function"
+            ) {
+              onPlayNotAllowed(tryPlay);
+            }
+          });
+        };
+        tryPlay();
       }
     };
 
@@ -128,5 +164,7 @@ const usePlayer = (steps: ReadingStep[]) => {
     } else {
       playStepAudio(currentStepIdxRef.current);
     }
-  }, [steps]);
+  }, [steps, onPlayNotAllowed]);
+
+  return { audioRef };
 };

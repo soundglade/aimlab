@@ -28,6 +28,7 @@ export default async function handler(
     await synthesizeReading({
       script,
       onData: (data) => {
+        if (!data) return;
         res.write(`data: ${JSON.stringify(data)}\n\n`);
         if (typeof res.flush === "function") res.flush();
       },

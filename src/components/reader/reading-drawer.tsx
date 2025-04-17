@@ -15,6 +15,7 @@ export function ReadingDrawer({
   response,
 }: ReadingDrawerProps) {
   const script = response?.script || { title: "", steps: [] };
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="flex h-[calc(100vh-80px)] flex-col p-0">
