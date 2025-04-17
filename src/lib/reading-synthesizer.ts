@@ -1,5 +1,8 @@
 import { formatMeditationScript } from "@/lib/meditation-formatter";
 import { jsonrepair } from "jsonrepair";
+import { generateSilenceWav } from "@/lib/audio";
+import fs from "fs";
+import path from "path";
 
 interface SynthesizeReadingOptions {
   script: string;
@@ -34,10 +37,40 @@ export async function synthesizeReading({
   let response: any = null;
   let steps: any[] = [];
 
+  // Helper to process a pause step
+  function processPauseStep(index: number, step: any) {
+    const duration = Math.round(step.duration); // round to nearest second
+    const pausesDir = path.join(
+      process.cwd(),
+      "public",
+      "storage",
+      "readings",
+      "pauses"
+    );
+    const wavFilename = `${duration}-seconds.wav`;
+    const wavPath = path.join(pausesDir, wavFilename);
+    // Ensure pauses directory exists
+    if (!fs.existsSync(pausesDir)) {
+      fs.mkdirSync(pausesDir, { recursive: true });
+    }
+    // Generate file if it doesn't exist
+    if (!fs.existsSync(wavPath)) {
+      generateSilenceWav(wavPath, duration);
+    }
+    stepAudioFiles[index] = `/storage/readings/pauses/${wavFilename}`;
+    sendAugmentedData();
+  }
+
   // Helper to process a step, returns a Promise
   function processStep(index: number): Promise<void> {
     if (processedSteps.has(index)) return Promise.resolve();
     processedSteps.add(index);
+    const step = steps[index];
+    // Handle pause step
+    if (step && step.type === "pause" && typeof step.duration === "number") {
+      processPauseStep(index, step);
+      return Promise.resolve();
+    }
     const delay = 1000 + Math.random() * 2000; // 1-3 seconds
     const promise = new Promise<void>((resolve) => {
       setTimeout(() => {

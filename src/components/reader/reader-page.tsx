@@ -124,5 +124,6 @@ export default function ReaderPage() {
 
 const DEFAULT_SCRIPT = `# Micro Meditation
 
-Step 1: Take a deep breath in. Exhale smiling
+Step 1: Take a deep breath in.
+[5 seconds pause]
 Step 2: Have a great day`;

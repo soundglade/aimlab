@@ -1,8 +1,13 @@
 import { Meditation } from "@/components/types";
 import { OfflineAudioContext } from "web-audio-engine";
+import fs from "fs";
 
 /**
- * Creates a concatenated audio file from individual audio buffers based on a meditation timeline
+ * Concatenates audio buffers into a single MP3 file based on a meditation timeline.
+ * @param audioBuffers - Map of audio buffer data indexed by step.
+ * @param timeline - Timeline describing the sequence and duration of audio and pauses.
+ * @param onProgress - Optional callback for progress updates (0-100).
+ * @returns Promise resolving to a Buffer containing the MP3 audio.
  */
 export async function createConcatenatedAudio(
   audioBuffers: Map<number, ArrayBuffer>,
@@ -13,7 +18,7 @@ export async function createConcatenatedAudio(
 
   const { Mp3Encoder } = await import("@breezystack/lamejs");
 
-  // Create audio context
+  // Create an offline audio context for rendering
   const audioContext = new OfflineAudioContext(
     2,
     Math.ceil((totalDurationMs * 44100) / 1000),
@@ -22,92 +27,111 @@ export async function createConcatenatedAudio(
 
   let currentTime = 0;
 
-  // Process each timing
+  // Schedule each timeline event
   for (let i = 0; i < timings.length; i++) {
     const timing = timings[i];
     onProgress((i / timings.length) * 100);
 
     if (timing.type === "speech") {
-      // Get the audio buffer for this step
+      // Decode and schedule speech audio
       const rawBuffer = audioBuffers.get(timing.index);
       if (rawBuffer) {
-        // Decode the audio data
         const audioBuffer = await audioContext.decodeAudioData(rawBuffer);
-
-        // Create source node
         const source = audioContext.createBufferSource();
         source.buffer = audioBuffer;
-
-        // Connect to destination
         const gain = audioContext.createGain();
         gain.gain.value = 1.0;
         source.connect(gain);
         gain.connect(audioContext.destination);
-
-        // Schedule playback
         source.start(currentTime);
         currentTime += audioBuffer.duration;
       }
     } else if (timing.type === "pause" || timing.type === "gap") {
-      // For pauses and gaps, just advance the time
+      // Advance time for pauses/gaps
       currentTime += timing.durationMs / 1000;
     }
   }
 
-  // Render the audio
+  // Render the scheduled audio
   const renderedBuffer = await audioContext.startRendering();
 
-  // Get audio samples from rendered buffer
   const channels = renderedBuffer.numberOfChannels;
   const sampleRate = renderedBuffer.sampleRate;
 
-  // Convert to MP3 buffer directly
+  // Prepare MP3 encoder
   const mp3Data: Buffer[] = [];
   const mp3encoder = new Mp3Encoder(channels, sampleRate, 128);
 
-  // For stereo, we need to work with both channels
+  // Convert rendered audio to Int16 samples
   const left = new Int16Array(renderedBuffer.length);
   const right = channels > 1 ? new Int16Array(renderedBuffer.length) : null;
-
-  // Get samples from each channel
   const leftChannel = renderedBuffer.getChannelData(0);
   const rightChannel = channels > 1 ? renderedBuffer.getChannelData(1) : null;
 
-  // Convert Float32Array [-1.0, 1.0] to Int16Array [-32768, 32767]
   for (let i = 0; i < renderedBuffer.length; i++) {
-    // Audio from Float32 [-1.0, 1.0] to Int16 [-32768, 32767]
     left[i] = Math.max(-1, Math.min(1, leftChannel[i])) * 0x7fff;
     if (right && rightChannel) {
       right[i] = Math.max(-1, Math.min(1, rightChannel[i])) * 0x7fff;
     }
   }
 
-  // Process in chunks to avoid memory issues
-  const sampleBlockSize = 1152; // Must be a multiple of 576 for optimal encoding
+  // Encode audio in blocks to MP3
+  const sampleBlockSize = 1152;
   for (let i = 0; i < left.length; i += sampleBlockSize) {
     const leftChunk = left.subarray(i, i + sampleBlockSize);
     const rightChunk = right ? right.subarray(i, i + sampleBlockSize) : null;
-
     let mp3Chunk;
     if (channels > 1 && rightChunk) {
       mp3Chunk = mp3encoder.encodeBuffer(leftChunk, rightChunk);
     } else {
       mp3Chunk = mp3encoder.encodeBuffer(leftChunk);
     }
-
     if (mp3Chunk.length > 0) {
-      // Convert Int8Array to Buffer
       mp3Data.push(Buffer.from(new Uint8Array(mp3Chunk)));
     }
   }
 
-  // Get the final chunk and add it
+  // Add any remaining MP3 data
   const finalChunk = mp3encoder.flush();
   if (finalChunk.length > 0) {
-    // Convert Int8Array to Buffer
     mp3Data.push(Buffer.from(new Uint8Array(finalChunk)));
   }
 
-  // Concatenate all chunks into a single buffer
+  // Return the concatenated MP3 buffer
   return Buffer.concat(mp3Data);
+}
+
+/**
+ * Generates a silent WAV file of the given duration (in seconds).
+ * @param filename - The output filename for the WAV file.
+ * @param durationSeconds - Duration of silence in seconds.
+ * @param sampleRate - Sample rate in Hz (default: 44100).
+ */
+export function generateSilenceWav(
+  filename: string,
+  durationSeconds: number,
+  sampleRate = 44100
+) {
+  const numSamples = durationSeconds * sampleRate;
+  const headerSize = 44;
+  const dataSize = numSamples * 2; // 16-bit PCM
+  const buffer = Buffer.alloc(headerSize + dataSize);
+
+  // RIFF header
+  buffer.write("RIFF", 0);
+  buffer.writeUInt32LE(36 + dataSize, 4);
+  buffer.write("WAVE", 8);
+  buffer.write("fmt ", 12);
+  buffer.writeUInt32LE(16, 16); // Subchunk1Size
+  buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
+  buffer.writeUInt16LE(1, 22); // NumChannels
+  buffer.writeUInt32LE(sampleRate, 24); // SampleRate
+  buffer.writeUInt32LE(sampleRate * 2, 28); // ByteRate
+  buffer.writeUInt16LE(2, 32); // BlockAlign
+  buffer.writeUInt16LE(16, 34); // BitsPerSample
+  buffer.write("data", 36);
+  buffer.writeUInt32LE(dataSize, 40);
+  // Data is already zeroed (silence)
+
+  fs.writeFileSync(filename, buffer);
 }
