@@ -17,8 +17,8 @@ export default function ReaderPage() {
             Instantly read your own guided meditations.
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-10 max-w-3xl rounded-lg p-4 text-sm md:p-6">
-            <ul className="list-inside space-y-2 md:list-disc">
+          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-10 max-w-xl rounded-lg p-4 text-sm">
+            <ul className="list-inside space-y-2">
               <li>
                 <i>Tip:</i> Use <i>ChatGPT</i> or another AI chatbot to generate
                 and refine a meditation script. Then copy and paste the script
