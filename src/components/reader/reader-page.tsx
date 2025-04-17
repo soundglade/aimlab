@@ -4,15 +4,22 @@ import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // TODO: implement the read action
+    setIsDrawerOpen(true);
     setTimeout(() => setIsSubmitting(false), 500); // Placeholder for async action
   };
 
@@ -40,7 +47,7 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="mx-auto max-w-xl border-accent border-1 space-y-4 bg-card rounded-lg p-6"
+            className="border-accent border-1 bg-card mx-auto max-w-xl space-y-4 rounded-lg p-6"
           >
             <div>
               <Textarea
@@ -61,6 +68,16 @@ export default function ReaderPage() {
               {isSubmitting ? "Reading..." : "Read"}
             </Button>
           </form>
+
+          {/* Drawer shown on submit */}
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerContent className="flex h-full">
+              <DrawerHeader>
+                <DrawerTitle>Meditation Reader</DrawerTitle>
+              </DrawerHeader>
+              {/* Empty drawer for now, add content here later */}
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
     </Layout>
