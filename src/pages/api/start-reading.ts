@@ -37,9 +37,12 @@ export default async function handler(
     console.log("Client request aborted /api/start-reading");
     abortController.abort();
   });
+
+  res.socket?.setTimeout(0);
+
   // Log when the underlying socket closes
   res.socket?.on("close", () => {
-    console.log("Socket closed for /api/start-reading, aborting synthesis");
+    console.log("Socket closed for /api/start-reading");
     abortController.abort();
   });
 

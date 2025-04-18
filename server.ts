@@ -23,7 +23,14 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(port, () => {
+  const http = require("http");
+  const httpServer = http.createServer(server);
+
+  // Disable keep-alive and headers timeout (set to 0 for no timeout)
+  httpServer.keepAliveTimeout = 0;
+  httpServer.headersTimeout = 0;
+
+  httpServer.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
