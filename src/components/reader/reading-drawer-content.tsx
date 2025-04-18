@@ -120,6 +120,7 @@ const usePlayer = (steps: ReadingStep[]) => {
   const currentStepIdxRef = useRef<number>(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const latestStepsRef = useRef<ReadingStep[]>(steps);
+  const pendingStepIdxRef = useRef<number | null>(null);
 
   // Keep latest script ref up to date
   useEffect(() => {
@@ -130,18 +131,36 @@ const usePlayer = (steps: ReadingStep[]) => {
   const playStepAudio = useCallback(
     (idx: number, force = false) => {
       const step = latestStepsRef.current[idx];
-      if (!audioRef.current || !step?.audio) return;
+
+      // Nothing there yet – remember it and bail out
+      if (!step?.audio) {
+        pendingStepIdxRef.current = idx;
+        return;
+      }
+
+      if (!audioRef.current) return;
       if (!force && playingStepIdx >= idx) return;
       audioRef.current.src = step.audio;
       audioRef.current.play();
       setPlayingStepIdx(idx);
       currentStepIdxRef.current = idx;
+      pendingStepIdxRef.current = null; // success -> clear
     },
     [playingStepIdx]
   );
 
   const handleEnded = useCallback(() => {
-    const next = currentStepIdxRef.current + 1;
+    let next = currentStepIdxRef.current + 1;
+    const { current: list } = latestStepsRef;
+
+    while (next < list.length && !list[next]?.audio) {
+      // stop at the first step that’s missing audio;
+      // we’ll resume when it arrives
+      pendingStepIdxRef.current = next;
+      currentStepIdxRef.current = next; // keep the pointer in sync
+      return;
+    }
+
     currentStepIdxRef.current = next;
     playStepAudio(next);
   }, [playStepAudio]);
@@ -175,6 +194,17 @@ const usePlayer = (steps: ReadingStep[]) => {
     const idx = currentStepIdxRef.current;
     playStepAudio(idx);
   }, [steps, playingStepIdx]);
+
+  // If we were waiting for a step and it’s now ready, resume.
+  useEffect(() => {
+    const pending = pendingStepIdxRef.current;
+    if (pending !== null) {
+      const step = latestStepsRef.current[pending];
+      if (step?.audio) {
+        playStepAudio(pending, true);
+      }
+    }
+  }, [steps, playStepAudio]);
 
   const originalPlayingStepIdx = steps[playingStepIdx]?.idx;
 
