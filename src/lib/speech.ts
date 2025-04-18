@@ -15,6 +15,7 @@ type SpeechRequest = {
   voiceKey?: string;
   resolve: (value: ArrayBuffer) => void;
   reject: (reason: any) => void;
+  signal?: AbortSignal;
 };
 
 // Maximum concurrent requests per service
@@ -52,17 +53,23 @@ const activeRequests: Record<SpeechService, number> = {
  * Generate speech using one of the available TTS services
  * @param text Text to convert to speech
  * @param service TTS service to use (default: "replicateKokoro")
- * @param voiceKey Logical voice key (only for elevenlabs)
+ * @param signal Optional AbortSignal to cancel queued requests
  * @returns ArrayBuffer containing the audio data
  */
 export async function generateSpeech(
   text: string,
   service: SpeechService = "replicateKokoro",
-  voiceKey?: string
+  voiceKey?: string,
+  signal?: AbortSignal
 ): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
-    // Add request to the queue
-    queues[service].push({ text, voiceKey, resolve, reject });
+    // Immediately bail if already aborted
+    if (signal?.aborted) {
+      return reject(new DOMException("Aborted", "AbortError"));
+    }
+    // Add request to the queue, including signal
+    const request: SpeechRequest = { text, voiceKey, resolve, reject, signal };
+    queues[service].push(request);
 
     // Process queue if possible
     processQueue(service);
@@ -81,7 +88,11 @@ function processQueue(service: SpeechService): void {
   ) {
     const request = queues[service].shift();
     if (!request) return;
-
+    // Skip any jobs whose signal has been aborted
+    if (request.signal?.aborted) {
+      request.reject(new DOMException("Aborted", "AbortError"));
+      continue;
+    }
     activeRequests[service]++;
 
     const { text, voiceKey, resolve, reject } = request;

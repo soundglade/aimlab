@@ -144,36 +144,36 @@ const formatMeditationScript = async (
     rejectionReason: reason,
   });
 
-  try {
-    if (options?.stream) {
-      // Streaming mode: forwards deltas to onToken; no accumulation or validation.
-      const streamingPrompt = [
-        SYSTEM_PROMPT,
-        "",
-        "Here is the JSON schema you must follow:",
-        schemaString,
-        "",
-        'IMPORTANT: For each step in the steps array, add a final field "completed": true (e.g., { type: "speech", text: "...", completed: true }).',
-        "This field must be the last field in each step object.",
-      ].join("\n");
-      const stream = await openai.beta.chat.completions.stream({
-        ...OPENAI_CHAT_CONFIG,
-        messages: [
-          { role: "system", content: streamingPrompt },
-          { role: "user", content: rawScript },
-        ],
-        response_format: { type: "json_object" },
-        stream: true,
-      });
+  if (options?.stream) {
+    // Streaming mode: forwards deltas to onToken; no accumulation or validation.
+    const streamingPrompt = [
+      SYSTEM_PROMPT,
+      "",
+      "Here is the JSON schema you must follow:",
+      schemaString,
+      "",
+      'IMPORTANT: For each step in the steps array, add a final field "completed": true (e.g., { type: "speech", text: "...", completed: true }).',
+      "This field must be the last field in each step object.",
+    ].join("\n");
+    const stream = await openai.beta.chat.completions.stream({
+      ...OPENAI_CHAT_CONFIG,
+      messages: [
+        { role: "system", content: streamingPrompt },
+        { role: "user", content: rawScript },
+      ],
+      response_format: { type: "json_object" },
+      stream: true,
+    });
 
-      for await (const chunk of stream) {
-        const delta = chunk.choices[0]?.delta?.content || "";
-        if (delta && options.onToken) options.onToken(delta);
-      }
-      return undefined;
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content || "";
+      if (delta && options.onToken) options.onToken(delta);
     }
+    return undefined;
+  }
 
-    // Non-streaming mode (default)
+  // Non-streaming mode (default)
+  try {
     const completion = await openai.beta.chat.completions.parse({
       ...OPENAI_CHAT_CONFIG,
       messages: [

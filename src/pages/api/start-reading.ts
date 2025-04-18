@@ -24,7 +24,27 @@ export default async function handler(
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
+  // Support aborting synthesis if client disconnects
+  const abortController = new AbortController();
+  req.on("close", () => {
+    console.log(
+      "Client disconnected from SSE /api/start-reading, aborting synthesis"
+    );
+    abortController.abort();
+  });
+  // Also log on explicit abort event
+  req.on("aborted", () => {
+    console.log("Client request aborted /api/start-reading");
+    abortController.abort();
+  });
+  // Log when the underlying socket closes
+  res.socket?.on("close", () => {
+    console.log("Socket closed for /api/start-reading, aborting synthesis");
+    abortController.abort();
+  });
+
   try {
+    // Directly call synthesizeReading; let it throw on abort for debugging
     await synthesizeReading({
       script,
       onData: (data) => {
@@ -32,9 +52,13 @@ export default async function handler(
         res.write(`data: ${JSON.stringify(data)}\n\n`);
         if (typeof res.flush === "function") res.flush();
       },
+      signal: abortController.signal,
     });
     res.end();
-  } catch (error) {
+  } catch (error: any) {
+    if (abortController.signal.aborted) {
+      console.log("Synthesis aborted due to client disconnect");
+    }
     res.write(
       `data: ${JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",

@@ -9,6 +9,7 @@ import { generateSpeech } from "@/lib/speech";
 interface SynthesizeReadingOptions {
   script: string;
   onData: (data: any) => void;
+  signal?: AbortSignal;
 }
 
 function tryRepairAndParseJSON(text: string) {
@@ -30,6 +31,7 @@ function tryRepairAndParseJSON(text: string) {
 export async function synthesizeReading({
   script,
   onData,
+  signal,
 }: SynthesizeReadingOptions) {
   // Generate a unique reading id for this session
   const generateReadingId = customAlphabet(
@@ -48,6 +50,7 @@ export async function synthesizeReading({
 
   // Helper to process a pause step
   function processPauseStep(index: number, step: any) {
+    if (signal?.aborted) throw new Error("Aborted");
     const duration = Math.round(step.duration); // round to nearest second
     const pausesDir = path.join(
       process.cwd(),
@@ -72,11 +75,17 @@ export async function synthesizeReading({
 
   // Helper to process a speech step
   async function processSpeechStep(index: number, step: any) {
+    if (signal?.aborted) throw new Error("Aborted");
     try {
       const text = step.text;
       if (!text) return;
       // Synthesize speech using kokoro
-      const audioBuffer = await generateSpeech(text, "selfHostedKokoro");
+      const audioBuffer = await generateSpeech(
+        text,
+        "selfHostedKokoro",
+        undefined,
+        signal
+      );
 
       // Ensure output directory exists
       const speechDir = path.join(
@@ -96,13 +105,20 @@ export async function synthesizeReading({
       // Store the public path
       stepAudioFiles[index] = `/storage/readings/${readingId}/${filename}`;
       sendAugmentedData();
-    } catch (err) {
-      console.error("Error in processSpeechStep:", err);
+    } catch (err: any) {
+      // Suppress abort-related errors (we log cancellation upstream)
+      const isAbortError =
+        (err instanceof Error && err.name === "AbortError") ||
+        err?.message === "Aborted";
+      if (!isAbortError) {
+        console.error("Error in processSpeechStep:", err);
+      }
     }
   }
 
   // Helper to process a step, returns a Promise
   function processStep(index: number): Promise<void> {
+    if (signal?.aborted) return Promise.reject(new Error("Aborted"));
     if (processedSteps.has(index)) return Promise.resolve();
     processedSteps.add(index);
     const step = steps[index];
@@ -123,6 +139,7 @@ export async function synthesizeReading({
 
   // Helper to augment steps with audio if available and call onData
   function sendAugmentedData() {
+    if (signal?.aborted) return;
     if (response?.script?.steps) {
       response.script.steps = steps.map((step: any, idx: number) => {
         if (stepAudioFiles[idx]) {
@@ -138,6 +155,7 @@ export async function synthesizeReading({
   await formatMeditationScript(script, {
     stream: true,
     onToken: (token: string) => {
+      if (signal?.aborted) throw new Error("Aborted");
       accumulated += token;
       response = tryRepairAndParseJSON(accumulated);
       steps = response?.script?.steps || [];
@@ -153,6 +171,7 @@ export async function synthesizeReading({
   });
 
   // Wait for all processing to finish before completing
+  if (signal?.aborted) throw new Error("Aborted");
   await Promise.all(stepProcessingPromises);
 }
 
