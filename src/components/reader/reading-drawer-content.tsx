@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -35,15 +35,16 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
 
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
+  const steps = script?.steps || [];
 
-  const stepsForPlayer = script?.steps
+  const stepsForPlayer = steps
     ?.map((s, idx) => ({ ...s, idx }))
     ?.filter((s) => s.completed);
 
-  const { audioRef } = usePlayer(stepsForPlayer);
+  const { audioRef, playingStepIdx } = usePlayer(stepsForPlayer);
 
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
-  const edgeIdx = getReadyEdgeIdx(script?.steps || []);
+  const edgeIdx = getReadyEdgeIdx(steps);
 
   return (
     <>
@@ -60,10 +61,11 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
           gradientBackgroundClasses
         )}
       >
-        {script.steps && script.steps.length > 0 ? (
-          script.steps.map((step, idx) => {
+        {steps.length > 0 ? (
+          steps.map((step, idx) => {
             // Steps after the edge should be faded
             const isFaded = idx > edgeIdx - 1;
+            const isActive = idx === playingStepIdx;
             return (
               <div
                 key={idx}
@@ -71,7 +73,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   "p-3 rounded transition-colors",
                   step.type === "speech" &&
                     "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
-                  isFaded && "opacity-40 pointer-events-none animate-pulse"
+                  isFaded && "opacity-40 pointer-events-none animate-pulse",
+                  isActive && "border-primary bg-primary/10"
                 )}
               >
                 {step.type === "heading" && (
@@ -107,6 +110,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
 const usePlayer = (steps: ReadingStep[]) => {
   // Audio playback state
+  const [playingStepIdx, setPlayingStepIdx] = useState(-1);
   const currentStepIdxRef = useRef<number>(0);
   const playingStepIdxRef = useRef<number>(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -140,6 +144,7 @@ const usePlayer = (steps: ReadingStep[]) => {
 
       if (audioRef.current && step?.audio && !alreadyPlayed) {
         playingStepIdxRef.current = stepIdx;
+        setPlayingStepIdx(stepIdx);
         audioRef.current.src = step.audio;
         audioRef.current.addEventListener("ended", handleEnded);
         audioRef.current?.play();
@@ -153,5 +158,5 @@ const usePlayer = (steps: ReadingStep[]) => {
     }
   }, [steps]);
 
-  return { audioRef };
+  return { audioRef, playingStepIdx };
 };
