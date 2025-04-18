@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { customAlphabet } from "nanoid";
 import { generateSpeech } from "@/lib/speech";
+import slugify from "slugify";
 
 interface SynthesizeReadingOptions {
   script: string;
@@ -99,7 +100,7 @@ export async function synthesizeReading({
         fs.mkdirSync(speechDir, { recursive: true });
       }
       // Generate a unique filename for this step
-      const filename = randomMp3Name();
+      const filename = randomMp3Name(text);
       const filePath = path.join(speechDir, filename);
       fs.writeFileSync(filePath, Buffer.from(audioBuffer));
       // Store the public path
@@ -175,11 +176,13 @@ export async function synthesizeReading({
   await Promise.all(stepProcessingPromises);
 }
 
-// Helper to generate a random mp3 filename
-function randomMp3Name() {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let name = "";
-  for (let i = 0; i < 12; i++)
-    name += chars[Math.floor(Math.random() * chars.length)];
-  return `${name}.mp3`;
+// Helper to generate a random mp3 filename based on step text
+function randomMp3Name(stepText: string) {
+  // Take the first 8 words
+  const words = stepText.split(/\s+/).slice(0, 8).join(" ");
+  // Use slugify for robust slug generation
+  const slug = slugify(words, { lower: true });
+  // Add random number for uniqueness
+  const rand = Math.floor(Math.random() * 1e9);
+  return `${slug}-${rand}.mp3`;
 }
