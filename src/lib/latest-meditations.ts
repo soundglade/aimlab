@@ -20,6 +20,10 @@ const MEDITATIONS_DIR = path.join(
   "meditations"
 );
 
+const HIDDEN_MEDITATIONS: string[] = [
+  "7c9c1rr", // hidden because user added personal info
+];
+
 export async function getLatestMeditations(
   maxCount: number = 6
 ): Promise<Meditation[]> {
@@ -40,6 +44,7 @@ export async function getLatestMeditations(
     const meditationFolders = fs
       .readdirSync(MEDITATIONS_DIR, { withFileTypes: true })
       .filter((dirent) => dirent.isDirectory())
+      .filter((dirent) => !HIDDEN_MEDITATIONS.includes(dirent.name))
       .map((dirent) => {
         const folderPath = path.join(MEDITATIONS_DIR, dirent.name);
         const metadataPath = path.join(folderPath, "metadata.json");
