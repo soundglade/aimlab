@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Lightbulb, Users, CircleHelp } from "lucide-react";
-import Link from "next/link";
 import { Layout } from "@/components/layout/Layout";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ReadingDrawer } from "./reading-drawer";
 
 export default function ReaderPage() {
@@ -117,12 +115,80 @@ export default function ReaderPage() {
           />
         </div>
       </div>
+      <AudioContextRefresher />
     </Layout>
   );
 }
 
-const DEFAULT_SCRIPT = `# Micro Meditation
+function AudioContextRefresher() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [hasUserBeenActive, setHasUserBeenActive] = useState(false);
 
-Step 1: Take a deep breath in.
-[5 seconds pause]
-Step 2: Have a great day`;
+  useEffect(() => {
+    function markActive() {
+      setHasUserBeenActive((prev) => prev || true);
+    }
+
+    if (!hasUserBeenActive) {
+      document.addEventListener("click", markActive);
+      document.addEventListener("keydown", markActive);
+      document.addEventListener("touchstart", markActive);
+    }
+
+    return () => {
+      document.removeEventListener("click", markActive);
+      document.removeEventListener("keydown", markActive);
+      document.removeEventListener("touchstart", markActive);
+    };
+  }, [hasUserBeenActive]);
+
+  // Try to play audio when hasUserBeenActive becomes true
+  useEffect(() => {
+    if (hasUserBeenActive && audioRef.current) {
+      audioRef.current.load();
+      audioRef.current.play().catch((e) => {
+        console.log("Audio play error:", e);
+      });
+    }
+  }, [hasUserBeenActive]);
+
+  const handleEnded = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.load();
+      audioRef.current.play().catch((e) => {
+        console.log("Audio play error:", e);
+      });
+    }
+  };
+
+  return (
+    <audio
+      ref={audioRef}
+      src="/assets/silence-10-seconds.mp3"
+      style={{ opacity: 0, position: "absolute", top: -1000 }}
+      onEnded={handleEnded}
+      controls={true}
+      preload="auto"
+    />
+  );
+}
+
+const DEFAULT_SCRIPT = `### **Guided Closing Meditation (5-7 minutes)**
+
+**1. Settle & Breathe (1 minute)**
+*"Find a comfortable position, either lying down or seated. Let your hands rest gently, palms up or down—whatever feels natural. Close your eyes or soften your gaze. Take a deep breath in through your nose… and exhale slowly through your mouth. Again, inhale… and exhale. With each breath, allow your body to settle deeper into stillness."*
+
+**2. Body Relaxation (1-2 minutes)**
+*"Now bring your awareness to your body. Notice any areas holding tension—your face, shoulders, hands, or legs. With your next exhale, imagine that tension dissolving, like waves gently receding from the shore. Feel yourself becoming lighter, more at ease."*
+
+**3. Awareness & Presence (2 minutes)**
+*"Now, shift your focus to your breath—your anchor to this present moment. There’s nowhere to be, nothing to do except be here with your breath. If your mind wanders, gently bring it back to the sensation of the inhale and exhale. Each breath is a gentle reminder: You are here. You are present."*
+
+**4. Gentle Closing (1 minute)**
+*"Before we close, take a moment to set an intention for the rest of your day. It might be a single word—peace, presence, gratitude—or just the feeling of calm within you right now. Take one last deep breath in… and exhale slowly. When you're ready, begin to gently bring movement into your fingers and toes, slowly opening your eyes, returning with a sense of calm and clarity."*`;
+
+// const DEFAULT_SCRIPT = `# Micro Meditation
+
+// Step 1: Take a deep breath in. Exhale smiling
+// Step 2: Have a great day`;
