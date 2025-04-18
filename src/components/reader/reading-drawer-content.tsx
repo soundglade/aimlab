@@ -22,6 +22,17 @@ function StepsSkeleton() {
   );
 }
 
+// Pure function to find the edge index
+function getReadyEdgeIdx(steps: ReadingStep[]): number {
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    if (step.type === "speech" && (!step.completed || !step.audio)) {
+      return i;
+    }
+  }
+  return steps.length;
+}
+
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
 
@@ -30,6 +41,9 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     ?.filter((s) => s.completed);
 
   const { audioRef } = usePlayer(stepsForPlayer);
+
+  // Find the edge: the first step (type 'speech') that is not completed or missing audio
+  const edgeIdx = getReadyEdgeIdx(script?.steps || []);
 
   return (
     <>
@@ -47,24 +61,29 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       >
         {script.steps && script.steps.length > 0 ? (
-          script.steps.map((step, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                "p-3 rounded transition-colors",
-                step.type === "speech" &&
-                  "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group"
-              )}
-            >
-              {step.type === "heading" && (
-                <div className={cn("text-lg")}>{step.text}</div>
-              )}
-              {step.type === "speech" && <p>{step.text}</p>}
-              {step.type === "pause" && (
-                <p className="italic opacity-80">{step.duration}s pause</p>
-              )}
-            </div>
-          ))
+          script.steps.map((step, idx) => {
+            // Steps after the edge should be faded
+            const isFaded = idx > edgeIdx - 1;
+            return (
+              <div
+                key={idx}
+                className={cn(
+                  "p-3 rounded transition-colors",
+                  step.type === "speech" &&
+                    "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
+                  isFaded && "opacity-40 pointer-events-none animate-pulse"
+                )}
+              >
+                {step.type === "heading" && (
+                  <div className={cn("text-lg")}>{step.text}</div>
+                )}
+                {step.type === "speech" && <p>{step.text}</p>}
+                {step.type === "pause" && (
+                  <p className="italic opacity-80">{step.duration}s pause</p>
+                )}
+              </div>
+            );
+          })
         ) : (
           <StepsSkeleton />
         )}
@@ -87,8 +106,6 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 }
 
 const usePlayer = (steps: ReadingStep[]) => {
-  console.log("usePlayer", steps);
-
   // Audio playback state
   const currentStepIdxRef = useRef<number>(0);
   const playingStepIdxRef = useRef<number>(-1);
