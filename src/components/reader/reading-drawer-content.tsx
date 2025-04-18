@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useReducer } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -114,99 +114,171 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   );
 }
 
-const usePlayer = (steps: ReadingStep[]) => {
-  // Audio playback state with ability to jump
-  const [playingStepIdx, setPlayingStepIdx] = useState<number>(-1);
-  const currentStepIdxRef = useRef<number>(0);
+// ──────────────────────────────────────────────────────────────
+// Types
+// ──────────────────────────────────────────────────────────────
+
+type Status = "idle" | "playing" | "paused" | "waiting";
+
+interface State {
+  /** Index in the *filtered* `steps` array. `-1` before first play. */
+  playingIdx: number;
+  /** Index we want to play but whose audio is not yet present. */
+  pendingIdx: number | null;
+  status: Status;
+}
+
+/**
+ * All events that can change the player state.  Reducer is tiny on purpose –
+ * side‑effects (DOM, timers) live outside and call `attemptPlay()`.
+ */
+type Action =
+  | { type: "PLAY"; idx: number }
+  | { type: "WAIT"; idx: number } // wait for audio of idx
+  | { type: "PAUSE" }
+  | { type: "RESUME" }
+  | { type: "RESET" };
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "PLAY":
+      return { status: "playing", playingIdx: action.idx, pendingIdx: null };
+    case "WAIT":
+      return { ...state, status: "waiting", pendingIdx: action.idx };
+    case "PAUSE":
+      return { ...state, status: "paused" };
+    case "RESUME":
+      return { ...state, status: "playing" };
+    case "RESET":
+      return { status: "idle", playingIdx: -1, pendingIdx: null };
+    default:
+      return state;
+  }
+};
+
+// ──────────────────────────────────────────────────────────────
+// Public hook
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Minimal player hook with *vanilla* `useReducer` FSM.
+ * Keeps the external API of the previous `usePlayer` (plus pause/play helpers).
+ */
+export const usePlayer = (steps: ReadingStep[]) => {
+  const [state, dispatch] = useReducer(reducer, {
+    status: "idle",
+    playingIdx: -1,
+    pendingIdx: null,
+  } as State);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const latestStepsRef = useRef<ReadingStep[]>(steps);
-  const pendingStepIdxRef = useRef<number | null>(null);
 
-  // Keep latest script ref up to date
+  // Keep latest steps array in a stable ref
   useEffect(() => {
     latestStepsRef.current = steps;
   }, [steps]);
 
-  // Handle audio ended to play next (stable reference)
-  const playStepAudio = useCallback(
-    (idx: number, force = false) => {
-      const step = latestStepsRef.current[idx];
+  // ────────────────────────────────────────────────────────────
+  // Imperative side‑effect helpers
+  // ────────────────────────────────────────────────────────────
 
-      // Nothing there yet – remember it and bail out
-      if (!step?.audio) {
-        pendingStepIdxRef.current = idx;
-        return;
-      }
+  /** Try to start playing `idx`. Falls back to WAIT if audio src missing. */
+  const attemptPlay = (idx: number, force = false) => {
+    const el = audioRef.current;
+    if (!el) return;
 
-      if (!audioRef.current) return;
-      if (!force && playingStepIdx >= idx) return;
-      audioRef.current.src = step.audio;
-      audioRef.current.play();
-      setPlayingStepIdx(idx);
-      currentStepIdxRef.current = idx;
-      pendingStepIdxRef.current = null; // success -> clear
-    },
-    [playingStepIdx]
-  );
+    const step = latestStepsRef.current[idx];
+    if (!step) return;
 
-  const handleEnded = useCallback(() => {
-    let next = currentStepIdxRef.current + 1;
-    const { current: list } = latestStepsRef;
-
-    while (next < list.length && !list[next]?.audio) {
-      // stop at the first step that’s missing audio;
-      // we’ll resume when it arrives
-      pendingStepIdxRef.current = next;
-      currentStepIdxRef.current = next; // keep the pointer in sync
+    // Missing audio → go to waiting state and bail out
+    if (!step.audio) {
+      dispatch({ type: "WAIT", idx });
       return;
     }
 
-    currentStepIdxRef.current = next;
-    playStepAudio(next);
-  }, [playStepAudio]);
+    // Guard against rewinding unless forced (e.g. jump)
+    if (!force && state.playingIdx >= idx) return;
 
-  // Attach the ended handler only once
-  useEffect(() => {
-    const aud = audioRef.current;
-    if (!aud) return;
-    aud.addEventListener("ended", handleEnded);
-    return () => aud.removeEventListener("ended", handleEnded);
-  }, [handleEnded]);
-
-  // Public API to jump to a step by original index
-  const jumpToStep = (originalIdx: number) => {
-    // find the position in the filtered steps array
-    const playerIdx = latestStepsRef.current.findIndex(
-      (step) => (step as any).idx === originalIdx
-    );
-    if (playerIdx === -1) return;
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    currentStepIdxRef.current = playerIdx;
-    playStepAudio(playerIdx, true);
+    el.src = step.audio;
+    el.play();
+    dispatch({ type: "PLAY", idx });
   };
 
-  // Auto-start playback once (skip if we've already started)
+  // When a track ends, advance to next ready (or WAIT if missing)
   useEffect(() => {
-    if (playingStepIdx !== -1) return;
-    const idx = currentStepIdxRef.current;
-    playStepAudio(idx);
-  }, [steps, playingStepIdx]);
+    const el = audioRef.current;
+    if (!el) return;
 
-  // If we were waiting for a step and it’s now ready, resume.
+    const handleEnded = () => {
+      const next = state.playingIdx + 1;
+      if (next >= latestStepsRef.current.length) {
+        dispatch({ type: "RESET" });
+        return;
+      }
+      attemptPlay(next);
+    };
+
+    el.addEventListener("ended", handleEnded);
+    return () => el.removeEventListener("ended", handleEnded);
+    // Re‑subscribe whenever the current idx changes so `next` is fresh
+  }, [state.playingIdx]);
+
+  // Try to resume when we were waiting and audio arrives in updated `steps`
   useEffect(() => {
-    const pending = pendingStepIdxRef.current;
-    if (pending !== null) {
-      const step = latestStepsRef.current[pending];
+    if (state.status === "waiting" && state.pendingIdx !== null) {
+      const step = latestStepsRef.current[state.pendingIdx];
       if (step?.audio) {
-        playStepAudio(pending, true);
+        attemptPlay(state.pendingIdx, true);
       }
     }
-  }, [steps, playStepAudio]);
+  }, [steps, state.status, state.pendingIdx]);
 
-  const originalPlayingStepIdx = steps[playingStepIdx]?.idx;
+  // Auto‑start first available step once
+  useEffect(() => {
+    if (state.playingIdx === -1 && steps.length > 0) {
+      attemptPlay(0);
+    }
+    // Intentionally ignore `state` deps – we only want this once per steps load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [steps]);
 
-  return { audioRef, playingStepIdx: originalPlayingStepIdx, jumpToStep };
+  // ────────────────────────────────────────────────────────────
+  // Public controls
+  // ────────────────────────────────────────────────────────────
+
+  const pause = () => {
+    const el = audioRef.current;
+    if (el && state.status === "playing") {
+      el.pause();
+      dispatch({ type: "PAUSE" });
+    }
+  };
+
+  const play = () => {
+    const el = audioRef.current;
+    if (el && state.status === "paused") {
+      el.play();
+      dispatch({ type: "RESUME" });
+    }
+  };
+
+  const jumpToStep = (originalIdx: number) => {
+    const playerIdx = latestStepsRef.current.findIndex(
+      (s: any) => s.idx === originalIdx
+    );
+    if (playerIdx === -1) return;
+    audioRef.current?.pause();
+    attemptPlay(playerIdx, true);
+  };
+
+  const externalStepIdx = steps[state.playingIdx]?.idx;
+
+  return {
+    audioRef,
+    playingStepIdx: externalStepIdx,
+    jumpToStep,
+    pause,
+    play,
+  } as const;
 };
