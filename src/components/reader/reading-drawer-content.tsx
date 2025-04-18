@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -39,9 +39,10 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const stepsForPlayer = steps
     ?.map((s, idx) => ({ ...s, idx }))
+    ?.filter((s) => s.type !== "heading")
     ?.filter((s) => s.completed);
 
-  const { audioRef, playingStepIdx } = usePlayer(stepsForPlayer);
+  const { audioRef, playingStepIdx, jumpToStep } = usePlayer(stepsForPlayer);
 
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
@@ -68,6 +69,11 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
             const isActive = idx === playingStepIdx;
             return (
               <div
+                onClick={
+                  step.type === "speech" && step.audio
+                    ? () => jumpToStep(idx)
+                    : undefined
+                }
                 key={idx}
                 className={cn(
                   "p-3 rounded transition-colors",
@@ -109,54 +115,68 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 }
 
 const usePlayer = (steps: ReadingStep[]) => {
-  // Audio playback state
-  const [playingStepIdx, setPlayingStepIdx] = useState(-1);
+  // Audio playback state with ability to jump
+  const [playingStepIdx, setPlayingStepIdx] = useState<number>(-1);
   const currentStepIdxRef = useRef<number>(0);
-  const playingStepIdxRef = useRef<number>(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const latestStepsRef = useRef(steps);
+  const latestStepsRef = useRef<ReadingStep[]>(steps);
 
   // Keep latest script ref up to date
   useEffect(() => {
     latestStepsRef.current = steps;
   }, [steps]);
 
-  function isCurrentStepNotPlayable() {
-    const currentStep = latestStepsRef.current?.[currentStepIdxRef.current];
-    return currentStep?.type == "heading";
-  }
+  // Handle audio ended to play next (stable reference)
+  const playStepAudio = useCallback(
+    (idx: number, force = false) => {
+      const step = latestStepsRef.current[idx];
+      if (!audioRef.current || !step?.audio) return;
+      if (!force && playingStepIdx >= idx) return;
+      audioRef.current.src = step.audio;
+      audioRef.current.play();
+      setPlayingStepIdx(idx);
+      currentStepIdxRef.current = idx;
+    },
+    [playingStepIdx]
+  );
 
-  // Play audio for the current step if available
+  const handleEnded = useCallback(() => {
+    const next = currentStepIdxRef.current + 1;
+    currentStepIdxRef.current = next;
+    playStepAudio(next);
+  }, [playStepAudio]);
+
+  // Attach the ended handler only once
   useEffect(() => {
-    const handleEnded = () => {
-      moveToNextStep();
-    };
+    const aud = audioRef.current;
+    if (!aud) return;
+    aud.addEventListener("ended", handleEnded);
+    return () => aud.removeEventListener("ended", handleEnded);
+  }, [handleEnded]);
 
-    const moveToNextStep = () => {
-      const nextIdx = currentStepIdxRef.current + 1;
-      currentStepIdxRef.current = nextIdx;
-      playStepAudio(nextIdx);
-    };
+  // Public API to jump to a step by original index
+  const jumpToStep = (originalIdx: number) => {
+    // find the position in the filtered steps array
+    const playerIdx = latestStepsRef.current.findIndex(
+      (step) => (step as any).idx === originalIdx
+    );
+    if (playerIdx === -1) return;
 
-    const playStepAudio = (stepIdx: number) => {
-      const step = latestStepsRef.current?.[stepIdx];
-      const alreadyPlayed = playingStepIdxRef.current >= stepIdx;
-
-      if (audioRef.current && step?.audio && !alreadyPlayed) {
-        playingStepIdxRef.current = stepIdx;
-        setPlayingStepIdx(stepIdx);
-        audioRef.current.src = step.audio;
-        audioRef.current.addEventListener("ended", handleEnded);
-        audioRef.current?.play();
-      }
-    };
-
-    if (isCurrentStepNotPlayable()) {
-      moveToNextStep();
-    } else {
-      playStepAudio(currentStepIdxRef.current);
+    if (audioRef.current) {
+      audioRef.current.pause();
     }
-  }, [steps]);
+    currentStepIdxRef.current = playerIdx;
+    playStepAudio(playerIdx, true);
+  };
 
-  return { audioRef, playingStepIdx };
+  // Auto-start playback once (skip if we've already started)
+  useEffect(() => {
+    if (playingStepIdx !== -1) return;
+    const idx = currentStepIdxRef.current;
+    playStepAudio(idx);
+  }, [steps, playingStepIdx]);
+
+  const originalPlayingStepIdx = steps[playingStepIdx]?.idx;
+
+  return { audioRef, playingStepIdx: originalPlayingStepIdx, jumpToStep };
 };
