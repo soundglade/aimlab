@@ -12,10 +12,10 @@ interface ReadingDrawerContentProps {
 function StepsSkeleton() {
   return (
     <div>
-      {[...Array(3)].map((_, idx) => (
+      {[...Array(10)].map((_, idx) => (
         <div key={idx} className="mb-2 rounded p-3">
-          <Skeleton className="mb-1 h-6 w-1/2" />
-          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="mb-1 h-3 w-1/2 md:h-4" />
+          <Skeleton className="h-3 w-3/4 md:h-4" />
         </div>
       ))}
     </div>
@@ -55,14 +55,14 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     <>
       {/* Header (fixed) */}
       <div className="bg-card border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
-        <div className="text-center text-2xl tracking-tight">
-          {title ? title : <Skeleton className="mx-auto h-8 w-2/3" />}
+        <div className="text-center text-2xl tracking-tight md:text-3xl">
+          {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
       </div>
       {/* Main scrollable content */}
       <div
         className={cn(
-          "flex-1 overflow-auto px-4 py-2",
+          "flex-1 overflow-auto px-4 py-2 scrollbar-thin md:px-14 md:py-4",
           gradientBackgroundClasses
         )}
       >
@@ -80,10 +80,10 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 }
                 key={idx}
                 className={cn(
-                  "py-1 my-1 px-2 rounded transition-all",
+                  "text-lg py-1 md:py-1.5 my-1 px-2 md:px-3 rounded transition-all",
                   isPlayable && "cursor-pointer hover:bg-primary/10 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
-                  !wasPlayed && !isFaded && "text-muted-foreground opacity-60",
+                  !wasPlayed && !isFaded && "text-accent-foreground opacity-60",
                   !wasPlayed && !isFaded && isPlayable && "hover:opacity-100",
                   isActive && "outline-1 animate-bg-pulse"
                 )}
@@ -91,7 +91,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 {step.type === "heading" && (
                   <div
                     className={cn(
-                      "text-xl mt-4 text-muted-foreground tracking-tight"
+                      "text-xl mt-4 md:mt-6 md:text-2xl text-muted-foreground tracking-tight"
                     )}
                   >
                     {step.text}
