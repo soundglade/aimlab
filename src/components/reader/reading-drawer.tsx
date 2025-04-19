@@ -18,7 +18,7 @@ export function ReadingDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="flex h-[calc(100vh-80px)] flex-col p-0">
+      <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-4xl flex-col p-0">
         <ReadingDrawerContent script={script} />
       </DrawerContent>
     </Drawer>

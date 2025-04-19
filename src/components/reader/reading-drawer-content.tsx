@@ -26,6 +26,10 @@ function StepsSkeleton() {
 function getReadyEdgeIdx(steps: ReadingStep[]): number {
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
+    const nextStep = steps[i + 1];
+    if (step.type === "heading" && (!nextStep?.completed || !nextStep?.audio)) {
+      return i;
+    }
     if (step.type === "speech" && (!step.completed || !step.audio)) {
       return i;
     }
@@ -50,7 +54,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   return (
     <>
       {/* Header (fixed) */}
-      <div className="bg-card z-10 shrink-0 px-4 py-3">
+      <div className="bg-card border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
         <div className="text-center text-2xl tracking-tight">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3" />}
         </div>
@@ -66,7 +70,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
           steps.map((step, idx) => {
             // Steps after the edge should be faded
             const isFaded = idx > edgeIdx - 1;
-            const isActive = idx === playingStepIdx;
+            const wasPlayed = idx <= (playingStepIdx ?? -1);
+            const isActive = idx === (playingStepIdx ?? -1);
             return (
               <div
                 onClick={
@@ -76,19 +81,29 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 }
                 key={idx}
                 className={cn(
-                  "p-3 rounded transition-colors",
+                  "py-2 px-2 rounded transition-colors",
                   step.type === "speech" &&
-                    "border-l-4 border-transparent cursor-pointer hover:bg-primary/10 group",
-                  isFaded && "opacity-40 pointer-events-none animate-pulse",
-                  isActive && "border-primary bg-primary/10"
+                    "border-l-4 border-transparent cursor-pointer hover:bg-primary/5 group",
+                  isFaded && "pointer-events-none animate-soft-pulse",
+                  !wasPlayed && !isFaded && "opacity-70",
+                  isActive &&
+                    "border-primary animate-border-pulse bg-primary/20 hover:bg-primary/20"
                 )}
               >
                 {step.type === "heading" && (
-                  <div className={cn("text-lg")}>{step.text}</div>
+                  <div
+                    className={cn(
+                      "text-xl text-muted-foreground tracking-tight"
+                    )}
+                  >
+                    {step.text}
+                  </div>
                 )}
                 {step.type === "speech" && <p>{step.text}</p>}
                 {step.type === "pause" && (
-                  <p className="italic opacity-80">{step.duration}s pause</p>
+                  <p className="text-muted-foreground italic">
+                    {step.duration}s pause
+                  </p>
                 )}
               </div>
             );
@@ -98,7 +113,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="bg-card z-10 shrink-0 px-4 py-3">
+      <div className="bg-card z-10 shrink-0 px-4 py-3 border-muted-foreground/10 border-t-3">
         <button className="bg-primary text-primary-foreground w-full rounded py-2 font-medium">
           Dummy Button
         </button>

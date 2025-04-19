@@ -166,3 +166,28 @@ html {
 html body[data-scroll-locked] {
   margin-right: 0 !important;
 }
+
+@theme {
+  --animate-soft-pulse: soft-pulse 3s ease-in-out infinite;
+  --animate-border-pulse: border-pulse 3s ease-in-out infinite;
+
+  @keyframes soft-pulse {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.1;
+    }
+  }
+
+  @keyframes border-pulse {
+    0%,
+    100% {
+      border-color: hsl(230 83% 71% / 1);
+    }
+    50% {
+      border-color: hsl(230 83% 71% / 0.5);
+    }
+  }
+}
