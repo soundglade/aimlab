@@ -80,19 +80,18 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 }
                 key={idx}
                 className={cn(
-                  "py-2 px-2 rounded transition-colors",
-                  isPlayable &&
-                    "border-l-4 border-transparent cursor-pointer hover:bg-primary/5 group",
+                  "py-1 my-1 px-2 rounded transition-all",
+                  isPlayable && "cursor-pointer hover:bg-primary/10 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
-                  !wasPlayed && !isFaded && "opacity-60",
-                  isActive &&
-                    "border-primary animate-border-pulse bg-primary/20 hover:bg-primary/20"
+                  !wasPlayed && !isFaded && "text-muted-foreground opacity-60",
+                  !wasPlayed && !isFaded && isPlayable && "hover:opacity-100",
+                  isActive && "outline-1 animate-bg-pulse"
                 )}
               >
                 {step.type === "heading" && (
                   <div
                     className={cn(
-                      "text-xl text-muted-foreground tracking-tight"
+                      "text-xl mt-4 text-muted-foreground tracking-tight"
                     )}
                   >
                     {step.text}

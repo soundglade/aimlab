@@ -169,7 +169,7 @@ html body[data-scroll-locked] {
 
 @theme {
   --animate-soft-pulse: soft-pulse 3s ease-in-out infinite;
-  --animate-border-pulse: border-pulse 3s ease-in-out infinite;
+  --animate-bg-pulse: bg-pulse 4s ease-in-out infinite;
 
   @keyframes soft-pulse {
     0%,
@@ -181,13 +181,15 @@ html body[data-scroll-locked] {
     }
   }
 
-  @keyframes border-pulse {
+  @keyframes bg-pulse {
     0%,
     100% {
-      border-color: hsl(230 83% 71% / 1);
+      outline-color: hsl(230 88% 68% / 0.4);
+      background-color: hsl(230 88% 68% / 0.4);
     }
     50% {
-      border-color: hsl(230 83% 71% / 0.5);
+      outline-color: hsl(230 88% 68% / 0.2);
+      background-color: hsl(230 88% 68% / 0.2);
     }
   }
 }
