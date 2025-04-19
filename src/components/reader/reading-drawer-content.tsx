@@ -72,20 +72,19 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
             const isFaded = idx > edgeIdx - 1;
             const wasPlayed = idx <= (playingStepIdx ?? -1);
             const isActive = idx === (playingStepIdx ?? -1);
+            const isPlayable = step.type === "speech" || step.type === "pause";
             return (
               <div
                 onClick={
-                  step.type === "speech" && step.audio
-                    ? () => jumpToStep(idx)
-                    : undefined
+                  isPlayable && step.audio ? () => jumpToStep(idx) : undefined
                 }
                 key={idx}
                 className={cn(
                   "py-2 px-2 rounded transition-colors",
-                  step.type === "speech" &&
+                  isPlayable &&
                     "border-l-4 border-transparent cursor-pointer hover:bg-primary/5 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
-                  !wasPlayed && !isFaded && "opacity-70",
+                  !wasPlayed && !isFaded && "opacity-60",
                   isActive &&
                     "border-primary animate-border-pulse bg-primary/20 hover:bg-primary/20"
                 )}
@@ -113,7 +112,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="bg-card z-10 shrink-0 px-4 py-3 border-muted-foreground/10 border-t-3">
+      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
         <button className="bg-primary text-primary-foreground w-full rounded py-2 font-medium">
           Dummy Button
         </button>
@@ -181,9 +180,9 @@ const reducer = (state: State, action: Action): State => {
  */
 export const usePlayer = (steps: ReadingStep[]) => {
   const [state, dispatch] = useReducer(reducer, {
-    status: "idle",
+    status: "waiting",
     playingIdx: -1,
-    pendingIdx: null,
+    pendingIdx: 0,
   } as State);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -248,15 +247,6 @@ export const usePlayer = (steps: ReadingStep[]) => {
       }
     }
   }, [steps, state.status, state.pendingIdx]);
-
-  // Auto‑start first available step once
-  useEffect(() => {
-    if (state.playingIdx === -1 && steps.length > 0) {
-      attemptPlay(0);
-    }
-    // Intentionally ignore `state` deps – we only want this once per steps load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [steps]);
 
   // ────────────────────────────────────────────────────────────
   // Public controls
