@@ -3,6 +3,26 @@ import { Layout } from "@/components/layout/Layout";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, useRef } from "react";
 import { ReadingDrawer } from "./reading-drawer";
+import Link from "next/link";
+
+const EXAMPLES = [
+  {
+    label: "Grounding",
+    script: `Cultivation of Equanimity placeholder script...`,
+  },
+  {
+    label: "Self-Care for Caregivers",
+    script: `Body Scan Meditation placeholder script...`,
+  },
+  {
+    label: "Coding Clarity",
+    script: `Breathing Awareness placeholder script...`,
+  },
+  {
+    label: "Curious Cat",
+    script: `Grounding Meditation placeholder script...`,
+  },
+];
 
 export default function ReaderPage() {
   const [script, setScript] = useState(DEFAULT_SCRIPT);
@@ -111,25 +131,51 @@ export default function ReaderPage() {
             Instantly read your own guided meditations.
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-4 max-w-xl rounded-lg p-4 text-sm">
+          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-4 max-w-3xl rounded-lg p-4 text-sm">
             <ul className="list-inside space-y-2">
               <li>
-                <i>Tip:</i> Use <i>ChatGPT</i> or another AI chatbot to generate
-                and refine a meditation script. Then copy and paste the script
-                here.
+                Use <i>ChatGPT</i>,{" "}
+                <Link
+                  href="https://awakin.ai"
+                  target="_blank"
+                  className="text-primary"
+                >
+                  Awakin.ai
+                </Link>{" "}
+                or another chatbot to generate a meditation script, then paste
+                it down here
               </li>
             </ul>
           </div>
 
+          <div className="mx-auto mb-4 max-w-3xl px-4">
+            <div className="h-8 max-w-full flex-nowrap items-center space-x-2 space-y-3 overflow-y-hidden">
+              <span className="shrink-0 pr-2 text-sm font-medium">
+                Examples
+              </span>
+              {EXAMPLES.map((example) => (
+                <Button
+                  key={example.label}
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => setScript(example.script)}
+                >
+                  {example.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           <form
             onSubmit={handleSubmit}
-            className="border-accent border-1 bg-card mx-auto max-w-xl space-y-4 rounded-lg p-6"
+            className="border-accent border-1 bg-card mx-auto max-w-3xl space-y-4 rounded-lg p-6"
           >
             <div>
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="bg-background max-h-[300px] min-h-[200px] overflow-y-auto"
+                className="scrollbar-thin bg-background max-h-[300px] min-h-[200px] overflow-y-auto md:max-h-[400px]"
                 value={script}
                 onChange={(e) => setScript(e.target.value)}
                 disabled={isSubmitting}
