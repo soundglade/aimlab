@@ -3,6 +3,20 @@ import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
 import { usePlayer } from "./player-logic";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import {
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
+  Bell,
+  RotateCcw,
+} from "lucide-react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -111,10 +125,70 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
-        <button className="bg-primary text-primary-foreground w-full rounded py-2 font-medium">
-          Dummy Button
-        </button>
+      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 hidden shrink-0 px-4 py-3">
+        {/* Playback controls UI */}
+        <div className="space-y-0">
+          {/* Control buttons UI  */}
+          <div className="mb-4 flex items-center justify-center space-x-4">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" aria-label="Restart">
+                  <RotateCcw size={20} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Restart</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Backward 15 seconds"
+                >
+                  <ChevronLeft size={20} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Skip backward 15 seconds</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="default"
+                  size="lg"
+                  className="h-12 w-12 rounded-full"
+                  aria-label="Play"
+                >
+                  <Play size={20} className="ml-1" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Play</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Forward 15 seconds"
+                >
+                  <ChevronRight size={20} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Skip forward 15 seconds</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Mute ending bell"
+                >
+                  <Bell size={20} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Mute ending bell</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
       </div>
       {/* Hidden audio element for playback */}
       <audio
