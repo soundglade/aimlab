@@ -184,12 +184,12 @@ html body[data-scroll-locked] {
   @keyframes bg-pulse {
     0%,
     100% {
-      outline-color: hsl(230 88% 68% / 0.4);
-      background-color: hsl(230 88% 68% / 0.4);
+      outline-color: hsl(230 88% 68% / 0.15);
+      background-color: hsl(230 88% 68% / 0.15);
     }
     50% {
-      outline-color: hsl(230 88% 68% / 0.2);
-      background-color: hsl(230 88% 68% / 0.2);
+      outline-color: hsl(230 88% 68% / 0.3);
+      background-color: hsl(230 88% 68% / 0.3);
     }
   }
 }
@@ -198,12 +198,12 @@ html body[data-scroll-locked] {
   @keyframes bg-pulse {
     0%,
     100% {
-      outline-color: hsl(230 83% 71% / 0.4);
-      background-color: hsl(230 83% 71% / 0.4);
-    }
-    50% {
       outline-color: hsl(230 83% 71% / 0.2);
       background-color: hsl(230 83% 71% / 0.2);
+    }
+    50% {
+      outline-color: hsl(230 83% 71% / 0.4);
+      background-color: hsl(230 83% 71% / 0.4);
     }
   }
 }
