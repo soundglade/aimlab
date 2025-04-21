@@ -61,9 +61,24 @@ export const usePlayer = (steps: PlayerStep[]) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const latestStepsRef = useRef<PlayerStep[]>(steps);
 
+  // Track already-fetched audio URLs across renders
+  const prefetchedAudio = useRef<Set<string>>(new Set());
+
   // Keep latest steps array in a stable ref
   useEffect(() => {
     latestStepsRef.current = steps;
+  }, [steps]);
+
+  // Pre-fetch audio assets to warm HTTP cache
+  useEffect(() => {
+    steps.forEach((step) => {
+      if (step.audio && !prefetchedAudio.current.has(step.audio)) {
+        prefetchedAudio.current.add(step.audio);
+        fetch(step.audio, { cache: "default" }).catch(() => {
+          // swallow errors – will fallback to normal load later
+        });
+      }
+    });
   }, [steps]);
 
   // ────────────────────────────────────────────────────────────

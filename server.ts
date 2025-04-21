@@ -2,6 +2,8 @@ import express from "express";
 import next from "next";
 import path from "path";
 
+const FORCE_CACHE = true;
+
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -14,7 +16,7 @@ app.prepare().then(() => {
   server.use(
     express.static(path.join(process.cwd(), "public"), {
       // Don't cache files in development
-      maxAge: dev ? "0" : "1y",
+      maxAge: FORCE_CACHE ? "1y" : dev ? "0" : "1y",
     })
   );
 
