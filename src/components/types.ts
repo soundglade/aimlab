@@ -28,3 +28,9 @@ export interface Reading {
   title: string;
   steps: ReadingStep[];
 }
+
+// PlayerStep: used by the player, always references the original ReadingStep by originalIdx
+export type PlayerStep =
+  | { type: "speech"; text: string; audio?: string; originalIdx: number }
+  | { type: "pause"; duration: number; audio?: string; originalIdx: number }
+  | { type: "gap"; duration: number; audio: string; originalIdx: number };

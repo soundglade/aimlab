@@ -1,5 +1,5 @@
 import { useEffect, useRef, useReducer } from "react";
-import { ReadingStep } from "@/components/types";
+import type { PlayerStep } from "@/components/types";
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -49,9 +49,9 @@ const reducer = (state: State, action: Action): State => {
 
 /**
  * Minimal player hook with *vanilla* `useReducer` FSM.
- * Keeps the external API of the previous `usePlayer` (plus pause/play helpers).
+ * Accepts PlayerStep[] instead of ReadingStep[].
  */
-export const usePlayer = (steps: ReadingStep[]) => {
+export const usePlayer = (steps: PlayerStep[]) => {
   const [state, dispatch] = useReducer(reducer, {
     status: "waiting",
     playingIdx: -1,
@@ -59,7 +59,7 @@ export const usePlayer = (steps: ReadingStep[]) => {
   } as State);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const latestStepsRef = useRef<ReadingStep[]>(steps);
+  const latestStepsRef = useRef<PlayerStep[]>(steps);
 
   // Keep latest steps array in a stable ref
   useEffect(() => {
@@ -143,14 +143,14 @@ export const usePlayer = (steps: ReadingStep[]) => {
 
   const jumpToStep = (originalIdx: number) => {
     const playerIdx = latestStepsRef.current.findIndex(
-      (s: any) => s.idx === originalIdx
+      (s: any) => s.originalIdx === originalIdx
     );
     if (playerIdx === -1) return;
     audioRef.current?.pause();
     attemptPlay(playerIdx, true);
   };
 
-  const externalStepIdx = steps[state.playingIdx]?.idx;
+  const externalStepIdx = steps[state.playingIdx]?.originalIdx;
 
   return {
     audioRef,
@@ -160,3 +160,56 @@ export const usePlayer = (steps: ReadingStep[]) => {
     play,
   } as const;
 };
+
+// Helper to create a gap step for PlayerStep
+function makeGap(duration: number, originalIdx: number): PlayerStep {
+  return {
+    type: "gap",
+    duration,
+    audio: `silence-${duration}s.mp3`,
+    originalIdx,
+  };
+}
+
+// Accepts ReadingStep[] and outputs PlayerStep[]
+export function optimizeStepsForPlayer(
+  steps: import("@/components/types").ReadingStep[]
+): PlayerStep[] {
+  // Filter for completed steps only, keep original index
+  const completed =
+    steps
+      ?.map((s, idx) => ({ ...s, originalIdx: idx }))
+      .filter((s) => s.completed) ?? [];
+  if (completed.length === 0) return [];
+
+  const result: PlayerStep[] = [];
+  for (let i = 0; i < completed.length; i++) {
+    const curr = completed[i];
+    // Only include playable steps (speech, pause)
+    if (curr.type === "speech") {
+      result.push({
+        type: "speech",
+        text: curr.text,
+        audio: curr.audio,
+        originalIdx: curr.originalIdx,
+      });
+    } else if (curr.type === "pause") {
+      result.push({
+        type: "pause",
+        duration: curr.duration,
+        audio: curr.audio,
+        originalIdx: curr.originalIdx,
+      });
+    }
+    const next = completed[i + 1];
+    if (!next) continue;
+    if (curr.type === "pause" || next.type === "pause") continue;
+    // Only insert gaps between speeches or before a heading in the original ReadingStep
+    if (next.type === "heading") {
+      result.push(makeGap(3, curr.originalIdx));
+    } else if (curr.type === "speech" && next.type === "speech") {
+      result.push(makeGap(2, curr.originalIdx));
+    }
+  }
+  return result;
+}

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { usePlayer } from "./player-logic";
+import { usePlayer, optimizeStepsForPlayer } from "./player-logic";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -55,10 +55,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
   const steps = script?.steps || [];
 
-  const stepsForPlayer = steps
-    ?.map((s, idx) => ({ ...s, idx }))
-    ?.filter((s) => s.type !== "heading")
-    ?.filter((s) => s.completed);
+  const stepsForPlayer = optimizeStepsForPlayer(steps);
 
   const { audioRef, playingStepIdx, jumpToStep } = usePlayer(stepsForPlayer);
 
