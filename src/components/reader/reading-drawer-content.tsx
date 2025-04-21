@@ -92,7 +92,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 }
                 key={idx}
                 className={cn(
-                  "text-lg py-1 md:py-1.5 my-1 px-2 md:px-3 rounded transition-all",
+                  "text-lg py-1 my-1 px-2 md:px-3 rounded transition-all",
                   isPlayable && "cursor-pointer hover:bg-primary/10 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
                   !wasPlayed && !isFaded && "text-accent-foreground opacity-60",
