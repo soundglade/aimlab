@@ -19,6 +19,10 @@ import { useRouter } from "next/router";
 
 const changelog = [
   {
+    text: "First draft of instant reader",
+    date: "2025-04-21T12:00:00Z",
+  },
+  {
     text: "Upload meditation cover image",
     date: "2025-04-11T12:00:00Z",
   },

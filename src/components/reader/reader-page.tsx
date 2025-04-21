@@ -132,8 +132,8 @@ export default function ReaderPage() {
             </ul>
           </div>
 
-          <div className="mx-auto mb-4 max-w-3xl px-3">
-            <div className="h-8 max-w-full flex-nowrap items-center space-x-2 space-y-3 overflow-y-hidden">
+          <div className="mx-auto mb-2 max-w-3xl px-1 md:mb-4 md:px-3">
+            <div className="h-8 max-w-full flex-nowrap items-center space-x-1 space-y-3 overflow-y-hidden md:space-x-2">
               <span className="text-muted-foreground shrink-0 pr-1 text-sm">
                 Examples
               </span>
@@ -142,7 +142,7 @@ export default function ReaderPage() {
                   key={example.label}
                   variant="outline"
                   size="sm"
-                  className="text-muted-foreground shrink-0"
+                  className="text-muted-foreground shrink-0 text-xs md:text-sm"
                   onClick={() => {
                     setScript(example.script);
                     setTimeout(() => {
