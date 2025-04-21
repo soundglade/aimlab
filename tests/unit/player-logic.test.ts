@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { optimizeStepsForPlayer } from "@/components/reader/player-logic";
 import type { ReadingStep, PlayerStep } from "@/components/types";
+import {
+  reducer,
+  type State,
+  type Action,
+} from "@/components/reader/player-logic";
 
 describe("optimizeStepsForPlayer", () => {
   it("filters out headings", () => {
@@ -59,12 +64,12 @@ describe("optimizeStepsForPlayer gaps", () => {
     expect(result[1]).toMatchObject({
       type: "gap",
       duration: 2,
-      audio: "silence-2s.mp3",
+      audio: "assets/silence-2-seconds.mp3",
     });
     expect(result[3]).toMatchObject({
       type: "gap",
       duration: 2,
-      audio: "silence-2s.mp3",
+      audio: "assets/silence-2-seconds.mp3",
     });
     expect(result[1].originalIdx).toBe(0);
     expect(result[3].originalIdx).toBe(1);
@@ -82,7 +87,7 @@ describe("optimizeStepsForPlayer gaps", () => {
     expect(result[1]).toMatchObject({
       type: "gap",
       duration: 3,
-      audio: "silence-3s.mp3",
+      audio: "assets/silence-3-seconds.mp3",
     });
     expect(result[1].originalIdx).toBe(0);
   });
@@ -118,5 +123,45 @@ describe("optimizeStepsForPlayer gaps", () => {
     // Only completed speeches and gaps between them
     expect(result.filter((s) => s.type === "speech")).toHaveLength(2);
     expect(result.filter((s) => s.type === "gap")).toHaveLength(1);
+  });
+});
+
+describe("player reducer", () => {
+  const base: State = { status: "idle", playingIdx: -1, pendingIdx: null };
+
+  it("handles PLAY action", () => {
+    const next = reducer(base, { type: "PLAY", idx: 2 });
+    expect(next).toEqual({
+      status: "playing",
+      playingIdx: 2,
+      pendingIdx: null,
+    });
+  });
+
+  it("handles WAIT action", () => {
+    const next = reducer(base, { type: "WAIT", idx: 5 });
+    expect(next).toEqual({ ...base, status: "waiting", pendingIdx: 5 });
+  });
+
+  it("handles PAUSE action", () => {
+    const playing: State = { ...base, status: "playing", playingIdx: 1 };
+    const next = reducer(playing, { type: "PAUSE" });
+    expect(next).toEqual({ ...playing, status: "paused" });
+  });
+
+  it("handles RESUME action", () => {
+    const paused: State = { ...base, status: "paused", playingIdx: 1 };
+    const next = reducer(paused, { type: "RESUME" });
+    expect(next).toEqual({ ...paused, status: "playing" });
+  });
+
+  it("handles RESET action", () => {
+    const playing: State = {
+      status: "playing",
+      playingIdx: 3,
+      pendingIdx: null,
+    };
+    const next = reducer(playing, { type: "RESET" });
+    expect(next).toEqual({ status: "idle", playingIdx: -1, pendingIdx: null });
   });
 });

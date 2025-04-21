@@ -19,7 +19,7 @@ interface State {
  * All events that can change the player state.  Reducer is tiny on purpose –
  * side‑effects (DOM, timers) live outside and call `attemptPlay()`.
  */
-type Action =
+export type Action =
   | { type: "PLAY"; idx: number }
   | { type: "WAIT"; idx: number } // wait for audio of idx
   | { type: "PAUSE" }
@@ -213,3 +213,6 @@ export function optimizeStepsForPlayer(
   }
   return result;
 }
+
+export type { State };
+export { reducer };
