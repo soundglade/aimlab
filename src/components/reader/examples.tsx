@@ -4,7 +4,7 @@ export const EXAMPLES = [
     script: `# 5-Minute Grounding Meditation
 
 ## Introduction
-Welcome to this short grounding meditation. In the next few minutes, we'll work together to bring you back to the present moment, connecting you with your body and the earth beneath you. [pause for 5 seconds]
+Welcome to this short grounding meditation. In the next few minutes, we'll work together to bring you back to the present moment. [pause for 5 seconds]
 
 ## Setting Intention
 Begin by finding a comfortable position, either seated or lying down. Allow your body to be supported, and give yourself permission to be fully present for these next few minutes. [pause for 10 seconds]
