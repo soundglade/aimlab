@@ -28,8 +28,8 @@ function StepsSkeleton() {
     <div>
       {[...Array(10)].map((_, idx) => (
         <div key={idx} className="mb-2 rounded p-3">
-          <Skeleton className="mb-1 h-3 w-1/2 md:h-4" />
-          <Skeleton className="h-3 w-3/4 md:h-4" />
+          <Skeleton className="mb-1 h-3 w-3/4 md:h-4" />
+          <Skeleton className="h-3 w-full md:h-4" />
         </div>
       ))}
     </div>

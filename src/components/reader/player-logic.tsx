@@ -166,7 +166,7 @@ function makeGap(duration: number, originalIdx: number): PlayerStep {
   return {
     type: "gap",
     duration,
-    audio: `silence-${duration}s.mp3`,
+    audio: `assets/silence-${duration}-seconds.mp3`,
     originalIdx,
   };
 }
