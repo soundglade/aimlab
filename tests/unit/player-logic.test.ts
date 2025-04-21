@@ -126,6 +126,40 @@ describe("optimizeStepsForPlayer gaps", () => {
   });
 });
 
+describe("optimizeStepsForPlayer meditation bell", () => {
+  it("adds a meditation bell at the end if completed is true", () => {
+    const steps: ReadingStep[] = [
+      { type: "speech", text: "A", completed: true },
+      { type: "speech", text: "B", completed: true },
+    ];
+    const result = optimizeStepsForPlayer(steps, true);
+    expect(result[result.length - 1]).toMatchObject({
+      type: "sound",
+      duration: 2,
+      audio: "assets/ending-bell-wp50.mp3",
+      originalIdx: 1,
+    });
+  });
+
+  it("does not add a meditation bell if completed is false", () => {
+    const steps: ReadingStep[] = [
+      { type: "speech", text: "A", completed: true },
+      { type: "speech", text: "B", completed: true },
+    ];
+    const result = optimizeStepsForPlayer(steps, false);
+    expect(result.some((s) => s.type === "sound")).toBe(false);
+  });
+
+  it("does not add a meditation bell if there are no completed steps", () => {
+    const steps: ReadingStep[] = [
+      { type: "speech", text: "A", completed: false },
+      { type: "speech", text: "B", completed: false },
+    ];
+    const result = optimizeStepsForPlayer(steps, true);
+    expect(result.some((s) => s.type === "sound")).toBe(false);
+  });
+});
+
 describe("player reducer", () => {
   const base: State = { status: "idle", playingIdx: -1, pendingIdx: null };
 

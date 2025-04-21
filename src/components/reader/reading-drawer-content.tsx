@@ -54,8 +54,9 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
 export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
   const steps = script?.steps || [];
+  const completed = script?.completed;
 
-  const stepsForPlayer = optimizeStepsForPlayer(steps);
+  const stepsForPlayer = optimizeStepsForPlayer(steps, completed);
 
   const { audioRef, playingStepIdx, jumpToStep } = usePlayer(stepsForPlayer);
 

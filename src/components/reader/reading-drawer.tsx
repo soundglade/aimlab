@@ -6,7 +6,7 @@ import { ReadingDrawerContent } from "./reading-drawer-content";
 interface ReadingDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  response: MeditationFormatterResult | null;
+  response: any | null;
 }
 
 export function ReadingDrawer({
@@ -14,7 +14,7 @@ export function ReadingDrawer({
   onOpenChange,
   response,
 }: ReadingDrawerProps) {
-  const script = response?.script || { title: "", steps: [] };
+  const script = response?.script || { title: "", steps: [], completed: false };
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>

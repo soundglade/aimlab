@@ -154,6 +154,8 @@ const formatMeditationScript = async (
         "",
         'IMPORTANT: For each step in the steps array, add a final field "completed": true (e.g., { type: "speech", text: "...", completed: true }).',
         "This field must be the last field in each step object.",
+        'ALSO: At the end of the "script" object, add a field "completed": true, as the very last field in the script object.',
+        'This "completed" field must be the last field in the script object, after all other fields (such as "title" and "steps").',
       ].join("\n");
       const stream = await openai.beta.chat.completions.stream({
         ...OPENAI_CHAT_CONFIG,

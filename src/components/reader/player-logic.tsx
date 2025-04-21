@@ -186,20 +186,31 @@ function makeGap(duration: number, originalIdx: number): PlayerStep {
   };
 }
 
+// Helper to create a meditation bell step for PlayerStep
+function makeBell(originalIdx: number): PlayerStep {
+  return {
+    type: "sound",
+    duration: 2,
+    audio: "assets/ending-bell-wp50.mp3",
+    originalIdx,
+  };
+}
+
 // Accepts ReadingStep[] and outputs PlayerStep[]
 export function optimizeStepsForPlayer(
-  steps: import("@/components/types").ReadingStep[]
+  readingSteps: import("@/components/types").ReadingStep[],
+  completed?: boolean
 ): PlayerStep[] {
   // Filter for completed steps only, keep original index
-  const completed =
-    steps
+  const steps =
+    readingSteps
       ?.map((s, idx) => ({ ...s, originalIdx: idx }))
       .filter((s) => s.completed) ?? [];
-  if (completed.length === 0) return [];
+  if (steps.length === 0) return [];
 
   const result: PlayerStep[] = [];
-  for (let i = 0; i < completed.length; i++) {
-    const curr = completed[i];
+  for (let i = 0; i < steps.length; i++) {
+    const curr = steps[i];
     // Only include playable steps (speech, pause)
     if (curr.type === "speech") {
       result.push({
@@ -216,7 +227,7 @@ export function optimizeStepsForPlayer(
         originalIdx: curr.originalIdx,
       });
     }
-    const next = completed[i + 1];
+    const next = steps[i + 1];
     if (!next) continue;
     if (curr.type === "pause" || next.type === "pause") continue;
     // Only insert gaps between speeches or before a heading in the original ReadingStep
@@ -226,6 +237,13 @@ export function optimizeStepsForPlayer(
       result.push(makeGap(2, curr.originalIdx));
     }
   }
+
+  // Add meditation bell at the end if completed is true
+  if (completed && steps.length > 0) {
+    const lastIdx = steps[steps.length - 1].originalIdx;
+    result.push(makeBell(lastIdx));
+  }
+
   return result;
 }
 
