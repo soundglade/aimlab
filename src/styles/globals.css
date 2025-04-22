@@ -169,7 +169,7 @@ html body[data-scroll-locked] {
 
 @theme {
   --animate-soft-pulse: soft-pulse 3s ease-in-out infinite;
-  --animate-bg-pulse: bg-pulse 4s ease-in-out infinite;
+  --animate-bg-pulse: bg-pulse 3s ease-in-out infinite;
 
   @keyframes soft-pulse {
     0%,

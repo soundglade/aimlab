@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { gradientBackgroundClasses } from "@/components/layout/Layout";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
 import { usePlayer, optimizeStepsForPlayer } from "./player-logic";
@@ -88,7 +87,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   return (
     <>
       {/* Header (fixed) */}
-      <div className="bg-card border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
+      <div className="border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
         <div className="text-center text-2xl tracking-tight md:text-3xl">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
@@ -96,8 +95,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
       {/* Main scrollable content */}
       <div
         className={cn(
-          "flex-1 overflow-auto px-4 py-2 scrollbar-thin md:px-14 md:py-4",
-          gradientBackgroundClasses
+          "flex-1 bg-background overflow-auto px-4 py-2 scrollbar-thin md:px-14 md:py-4"
         )}
       >
         {steps.length > 0 ? (
@@ -114,10 +112,10 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 }
                 key={idx}
                 className={cn(
-                  "text-lg py-1 my-1 px-2 md:px-3 rounded transition-all",
+                  "md:text-lg py-1 my-1 px-2 md:px-3 rounded transition-all",
                   isPlayable && "cursor-pointer hover:bg-primary/10 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
-                  !wasPlayed && !isFaded && "text-accent-foreground opacity-70",
+                  !wasPlayed && !isFaded && "text-accent-foreground opacity-80",
                   !wasPlayed && !isFaded && isPlayable && "hover:opacity-100",
                   isActive && "outline-1 animate-bg-pulse"
                 )}
@@ -125,7 +123,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 {step.type === "heading" && (
                   <div
                     className={cn(
-                      "text-xl mt-4 md:mt-6 md:text-2xl text-muted-foreground tracking-tight"
+                      "text-xl mt-4 md:mt-6 md:text-2xl tracking-tight"
                     )}
                   >
                     {step.text}
@@ -133,7 +131,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 )}
                 {step.type === "speech" && <p>{step.text}</p>}
                 {step.type === "pause" && (
-                  <p className="text-muted-foreground italic">
+                  <p className="text-muted-foreground/70 italic">
                     {step.duration}s pause
                   </p>
                 )}
@@ -145,11 +143,11 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
+      <div className="border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
         {/* Playback controls UI */}
         <div className="space-y-0">
           {/* Control buttons UI  */}
-          <div className="mb-4 flex items-center justify-center space-x-4">
+          <div className="mb-4 mt-2 flex items-center justify-center space-x-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
