@@ -88,14 +88,14 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     <>
       {/* Header (fixed) */}
       <div className="border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
-        <div className="text-center text-2xl tracking-tight md:text-3xl">
+        <div className="text-center text-2xl tracking-tight md:mb-2 md:text-3xl">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
       </div>
       {/* Main scrollable content */}
       <div
         className={cn(
-          "flex-1 bg-background overflow-auto px-4 py-2 scrollbar-thin md:px-14 md:py-4"
+          "flex-1 bg-background overflow-auto px-4 py-2 scrollbar-thin md:px-12 md:py-8"
         )}
       >
         {steps.length > 0 ? (
@@ -156,6 +156,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   aria-label="Restart"
                   onClick={() => jumpToStep(0)}
                   disabled={!stepsForPlayer[0]?.audio}
+                  className="md:h-11 md:w-11"
                 >
                   <RotateCcw size={20} />
                 </Button>
@@ -173,6 +174,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     jumpToStep(previousPlayableStepIdx)
                   }
                   disabled={previousPlayableStepIdx == null}
+                  className="md:h-11 md:w-11"
                 >
                   <ChevronLeft size={20} />
                 </Button>
@@ -184,7 +186,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="default"
                   size="lg"
-                  className="h-12 w-12 rounded-full"
+                  className="h-12 w-12 rounded-full md:h-14 md:w-14"
                   aria-label={status === "playing" ? "Pause" : "Play"}
                   onClick={status === "playing" ? pause : play}
                   disabled={status === "waiting" || stepsForPlayer.length === 0}
@@ -211,6 +213,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     jumpToStep(nextPlayableStepIdx)
                   }
                   disabled={nextPlayableStepIdx == null}
+                  className="md:h-11 md:w-11"
                 >
                   <ChevronRight size={20} />
                 </Button>
@@ -226,6 +229,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     bellEnabled ? "Mute ending bell" : "Enable ending bell"
                   }
                   onClick={() => setBellEnabled((b) => !b)}
+                  className="md:h-11 md:w-11"
                 >
                   {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
                 </Button>
