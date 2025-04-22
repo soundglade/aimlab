@@ -62,7 +62,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
-  const { audioRef, playingStepIdx, jumpToStep } = usePlayer(stepsForPlayer);
+  const { audioRef, playingStepIdx, jumpToStep, play, pause, status } =
+    usePlayer(stepsForPlayer);
 
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
@@ -158,12 +159,20 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   variant="default"
                   size="lg"
                   className="h-12 w-12 rounded-full"
-                  aria-label="Play"
+                  aria-label={status === "playing" ? "Pause" : "Play"}
+                  onClick={status === "playing" ? pause : play}
+                  disabled={status === "waiting" || stepsForPlayer.length === 0}
                 >
-                  <Play size={20} className="ml-1" />
+                  {status === "playing" ? (
+                    <Pause size={20} />
+                  ) : (
+                    <Play size={20} className="ml-0.5" />
+                  )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Play</TooltipContent>
+              <TooltipContent>
+                {status === "playing" ? "Pause" : "Play"}
+              </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>

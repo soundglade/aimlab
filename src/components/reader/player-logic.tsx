@@ -173,6 +173,7 @@ export const usePlayer = (steps: PlayerStep[]) => {
     jumpToStep,
     pause,
     play,
+    status: state.status,
   } as const;
 };
 
