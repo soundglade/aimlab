@@ -19,6 +19,10 @@ import { useRouter } from "next/router";
 
 const changelog = [
   {
+    text: "Add playback buttons for instant reader",
+    date: "2025-04-22T17:00:00Z",
+  },
+  {
     text: "First draft of instant reader",
     date: "2025-04-21T12:00:00Z",
   },
