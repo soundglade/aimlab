@@ -91,6 +91,7 @@ Steps to follow:
      * An array of steps with these possible types:
        "heading", "speech", "pause"
    - For each piece of user-facing guidance, use "speech".
+   - SPECIAL: For the first speech step, make it as short as possible—ideally only the first sentence (but always keep complete sentences together; never split a sentence between steps).
    - For speech steps, do not use markdown formatting in the text; remove any markdown marks if present.
    - Try to keep each speech text shorter than 150 characters. If a sentence is longer, split it into separate speech steps, but never split a sentence between steps.
    - For silent intervals, use "pause", with an approximate "duration" in seconds.
