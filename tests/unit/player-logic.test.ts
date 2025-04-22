@@ -158,6 +158,15 @@ describe("optimizeStepsForPlayer meditation bell", () => {
     const result = optimizeStepsForPlayer(steps, true);
     expect(result.some((s) => s.type === "sound")).toBe(false);
   });
+
+  it("does not add a meditation bell if bellEnabled is false", () => {
+    const steps: ReadingStep[] = [
+      { type: "speech", text: "A", completed: true },
+      { type: "speech", text: "B", completed: true },
+    ];
+    const result = optimizeStepsForPlayer(steps, true, false);
+    expect(result.some((s) => s.type === "sound")).toBe(false);
+  });
 });
 
 describe("player reducer", () => {

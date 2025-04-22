@@ -15,8 +15,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
+  BellOff,
   RotateCcw,
 } from "lucide-react";
+import { useState } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -56,7 +58,9 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const steps = script?.steps || [];
   const completed = script?.completed;
 
-  const stepsForPlayer = optimizeStepsForPlayer(steps, completed);
+  const [bellEnabled, setBellEnabled] = useState(true);
+
+  const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
   const { audioRef, playingStepIdx, jumpToStep } = usePlayer(stepsForPlayer);
 
@@ -123,7 +127,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 hidden shrink-0 px-4 py-3">
+      <div className="bg-card border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
         {/* Playback controls UI */}
         <div className="space-y-0">
           {/* Control buttons UI  */}
@@ -178,12 +182,17 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label="Mute ending bell"
+                  aria-label={
+                    bellEnabled ? "Mute ending bell" : "Enable ending bell"
+                  }
+                  onClick={() => setBellEnabled((b) => !b)}
                 >
-                  <Bell size={20} />
+                  {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Mute ending bell</TooltipContent>
+              <TooltipContent>
+                {bellEnabled ? "Mute ending bell" : "Enable ending bell"}
+              </TooltipContent>
             </Tooltip>
           </div>
         </div>

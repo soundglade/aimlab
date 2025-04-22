@@ -199,7 +199,8 @@ function makeBell(originalIdx: number): PlayerStep {
 // Accepts ReadingStep[] and outputs PlayerStep[]
 export function optimizeStepsForPlayer(
   readingSteps: import("@/components/types").ReadingStep[],
-  completed?: boolean
+  completed?: boolean,
+  bellEnabled: boolean = true
 ): PlayerStep[] {
   // Filter for completed steps only, keep original index
   const steps =
@@ -238,8 +239,8 @@ export function optimizeStepsForPlayer(
     }
   }
 
-  // Add meditation bell at the end if completed is true
-  if (completed && steps.length > 0) {
+  // Add meditation bell at the end if completed is true and bellEnabled is true
+  if (completed && bellEnabled && steps.length > 0) {
     const lastIdx = steps[steps.length - 1].originalIdx;
     result.push(makeBell(lastIdx));
   }
