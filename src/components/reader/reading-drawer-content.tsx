@@ -68,6 +68,23 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
 
+  // Calculate next and previous playable step indices (not type 'heading')
+  const previousPlayableStepIdx = (() => {
+    if (playingStepIdx == null || playingStepIdx <= 0) return null;
+    for (let i = playingStepIdx - 1; i >= 0; i--) {
+      if (steps[i]?.type !== "heading") return i;
+    }
+    return null;
+  })();
+
+  const nextPlayableStepIdx = (() => {
+    if (playingStepIdx == null) return null;
+    for (let i = playingStepIdx + 1; i < edgeIdx; i++) {
+      if (steps[i]?.type !== "heading") return i;
+    }
+    return null;
+  })();
+
   return (
     <>
       {/* Header (fixed) */}
@@ -100,7 +117,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   "text-lg py-1 my-1 px-2 md:px-3 rounded transition-all",
                   isPlayable && "cursor-pointer hover:bg-primary/10 group",
                   isFaded && "pointer-events-none animate-soft-pulse",
-                  !wasPlayed && !isFaded && "text-accent-foreground opacity-60",
+                  !wasPlayed && !isFaded && "text-accent-foreground opacity-70",
                   !wasPlayed && !isFaded && isPlayable && "hover:opacity-100",
                   isActive && "outline-1 animate-bg-pulse"
                 )}
@@ -135,7 +152,13 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
           <div className="mb-4 flex items-center justify-center space-x-4">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Restart">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Restart"
+                  onClick={() => jumpToStep(0)}
+                  disabled={!stepsForPlayer[0]?.audio}
+                >
                   <RotateCcw size={20} />
                 </Button>
               </TooltipTrigger>
@@ -146,12 +169,17 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label="Backward 15 seconds"
+                  aria-label="Backward"
+                  onClick={() =>
+                    previousPlayableStepIdx != null &&
+                    jumpToStep(previousPlayableStepIdx)
+                  }
+                  disabled={previousPlayableStepIdx == null}
                 >
                   <ChevronLeft size={20} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Skip backward 15 seconds</TooltipContent>
+              <TooltipContent>Skip backward</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -179,12 +207,17 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label="Forward 15 seconds"
+                  aria-label="Forward"
+                  onClick={() =>
+                    nextPlayableStepIdx != null &&
+                    jumpToStep(nextPlayableStepIdx)
+                  }
+                  disabled={nextPlayableStepIdx == null}
                 >
                   <ChevronRight size={20} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Skip forward 15 seconds</TooltipContent>
+              <TooltipContent>Skip forward</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>

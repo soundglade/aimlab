@@ -174,10 +174,10 @@ html body[data-scroll-locked] {
   @keyframes soft-pulse {
     0%,
     100% {
-      opacity: 0.2;
+      opacity: 0.3;
     }
     50% {
-      opacity: 0.1;
+      opacity: 0.2;
     }
   }
 
