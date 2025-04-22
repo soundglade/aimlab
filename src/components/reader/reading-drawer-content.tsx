@@ -16,6 +16,7 @@ import {
   Bell,
   BellOff,
   RotateCcw,
+  LoaderCircle,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -87,7 +88,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   return (
     <>
       {/* Header (fixed) */}
-      <div className="border-muted-foreground/10 border-b-3 z-10 shrink-0 px-4 pb-2 pt-3">
+      <div className="border-muted-foreground/10 z-10 shrink-0 border-b-2 px-4 pb-2 pt-3">
         <div className="text-center text-2xl tracking-tight md:mb-2 md:text-3xl">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
@@ -143,7 +144,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="border-muted-foreground/10 border-t-3 z-10 shrink-0 px-4 py-3">
+      <div className="border-muted-foreground/10 z-10 shrink-0 border-t-2 px-4 py-3">
         {/* Playback controls UI */}
         <div className="space-y-0">
           {/* Control buttons UI  */}
@@ -156,7 +157,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   aria-label="Restart"
                   onClick={() => jumpToStep(0)}
                   disabled={!stepsForPlayer[0]?.audio}
-                  className="md:h-11 md:w-11"
+                  className="md:size-6 md:h-11 md:w-11"
                 >
                   <RotateCcw size={20} />
                 </Button>
@@ -174,7 +175,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     jumpToStep(previousPlayableStepIdx)
                   }
                   disabled={previousPlayableStepIdx == null}
-                  className="md:h-11 md:w-11"
+                  className="md:size-6 md:h-11 md:w-11"
                 >
                   <ChevronLeft size={20} />
                 </Button>
@@ -192,9 +193,11 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   disabled={status === "waiting" || stepsForPlayer.length === 0}
                 >
                   {status === "playing" ? (
-                    <Pause size={20} />
+                    <Pause size={20} className="md:size-6" />
+                  ) : status === "waiting" ? (
+                    <LoaderCircle className="md:size-7 size-6 animate-spin" />
                   ) : (
-                    <Play size={20} className="ml-0.5" />
+                    <Play size={20} className="md:size-6 ml-0.5" />
                   )}
                 </Button>
               </TooltipTrigger>
@@ -213,7 +216,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     jumpToStep(nextPlayableStepIdx)
                   }
                   disabled={nextPlayableStepIdx == null}
-                  className="md:h-11 md:w-11"
+                  className="md:size-6 md:h-11 md:w-11"
                 >
                   <ChevronRight size={20} />
                 </Button>
@@ -229,7 +232,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                     bellEnabled ? "Mute ending bell" : "Enable ending bell"
                   }
                   onClick={() => setBellEnabled((b) => !b)}
-                  className="md:h-11 md:w-11"
+                  className="md:size-6 md:h-11 md:w-11"
                 >
                   {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
                 </Button>
