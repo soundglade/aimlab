@@ -1,6 +1,13 @@
 import { Meditation } from "@/components/types";
 import { OfflineAudioContext } from "web-audio-engine";
 import fs from "fs";
+import ffmpeg from "fluent-ffmpeg";
+
+const FFMPEG_PATH = process.env.FFMPEG_PATH || "/usr/bin/ffmpeg";
+const FFPROBE_PATH = process.env.FFPROBE_PATH || "/usr/bin/ffprobe";
+
+ffmpeg.setFfmpegPath(FFMPEG_PATH);
+ffmpeg.setFfprobePath(FFPROBE_PATH);
 
 /**
  * Concatenates audio buffers into a single MP3 file based on a meditation timeline.
@@ -102,36 +109,27 @@ export async function createConcatenatedAudio(
 }
 
 /**
- * Generates a silent WAV file of the given duration (in seconds).
- * @param filename - The output filename for the WAV file.
- * @param durationSeconds - Duration of silence in seconds.
- * @param sampleRate - Sample rate in Hz (default: 44100).
+ * Generates a silent MP3 file of the given duration (in seconds).
+ * @param seconds - Duration of silence in seconds.
+ * @param outPath - The output filename for the MP3 file.
+ * @returns Promise that resolves when the file is created.
  */
-export function generateSilenceWav(
-  filename: string,
-  durationSeconds: number,
-  sampleRate = 44100
-) {
-  const numSamples = durationSeconds * sampleRate;
-  const headerSize = 44;
-  const dataSize = numSamples * 2; // 16-bit PCM
-  const buffer = Buffer.alloc(headerSize + dataSize);
-
-  // RIFF header
-  buffer.write("RIFF", 0);
-  buffer.writeUInt32LE(36 + dataSize, 4);
-  buffer.write("WAVE", 8);
-  buffer.write("fmt ", 12);
-  buffer.writeUInt32LE(16, 16); // Subchunk1Size
-  buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
-  buffer.writeUInt16LE(1, 22); // NumChannels
-  buffer.writeUInt32LE(sampleRate, 24); // SampleRate
-  buffer.writeUInt32LE(sampleRate * 2, 28); // ByteRate
-  buffer.writeUInt16LE(2, 32); // BlockAlign
-  buffer.writeUInt16LE(16, 34); // BitsPerSample
-  buffer.write("data", 36);
-  buffer.writeUInt32LE(dataSize, 40);
-  // Data is already zeroed (silence)
-
-  fs.writeFileSync(filename, buffer);
+export function generateSilentMp3(
+  seconds: number,
+  outPath: string
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input("/dev/zero")
+      .inputFormat("s16le")
+      .audioFrequency(8000)
+      .audioChannels(1)
+      .duration(seconds)
+      .audioCodec("libmp3lame")
+      .audioBitrate("8k")
+      .output(outPath)
+      .on("error", reject)
+      .on("end", resolve)
+      .run();
+  });
 }

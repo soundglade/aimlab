@@ -1,6 +1,6 @@
 import { formatMeditationScript } from "@/lib/meditation-formatter";
 import { jsonrepair } from "jsonrepair";
-import { generateSilenceWav } from "@/lib/audio";
+import { generateSilentMp3 } from "@/lib/audio";
 import fs from "fs";
 import path from "path";
 import { customAlphabet } from "nanoid";
@@ -50,7 +50,7 @@ export async function synthesizeReading({
   let steps: any[] = [];
 
   // Helper to process a pause step
-  function processPauseStep(index: number, step: any) {
+  async function processPauseStep(index: number, step: any) {
     if (signal?.aborted) throw new Error("Aborted");
     const duration = Math.round(step.duration); // round to nearest second
     const pausesDir = path.join(
@@ -60,17 +60,17 @@ export async function synthesizeReading({
       "readings",
       "_pauses"
     );
-    const wavFilename = `${duration}-seconds.wav`;
-    const wavPath = path.join(pausesDir, wavFilename);
+    const mp3Filename = `${duration}-seconds.mp3`;
+    const mp3Path = path.join(pausesDir, mp3Filename);
     // Ensure pauses directory exists
     if (!fs.existsSync(pausesDir)) {
       fs.mkdirSync(pausesDir, { recursive: true });
     }
     // Generate file if it doesn't exist
-    if (!fs.existsSync(wavPath)) {
-      generateSilenceWav(wavPath, duration);
+    if (!fs.existsSync(mp3Path)) {
+      await generateSilentMp3(duration, mp3Path);
     }
-    stepAudioFiles[index] = `/storage/readings/_pauses/${wavFilename}`;
+    stepAudioFiles[index] = `/storage/readings/_pauses/${mp3Filename}`;
     sendAugmentedData();
   }
 
@@ -125,14 +125,11 @@ export async function synthesizeReading({
     const step = steps[index];
     // Handle pause step
     if (step && step.type === "pause" && typeof step.duration === "number") {
-      processPauseStep(index, step);
-      return Promise.resolve();
+      return processPauseStep(index, step);
     }
     // Handle speech step
     if (step && step.type === "speech" && typeof step.text === "string") {
-      const promise = processSpeechStep(index, step);
-      stepProcessingPromises.push(promise);
-      return promise;
+      return processSpeechStep(index, step);
     }
     // Unknown step type: skip
     return Promise.resolve();
@@ -163,7 +160,8 @@ export async function synthesizeReading({
 
       steps.forEach((step: any, idx: number) => {
         if (step.completed === true && !processedSteps.has(idx)) {
-          processStep(idx);
+          const promise = processStep(idx);
+          stepProcessingPromises.push(promise);
         }
       });
 
