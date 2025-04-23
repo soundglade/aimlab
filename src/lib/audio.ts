@@ -1,7 +1,9 @@
 import { Meditation } from "@/components/types";
-import { OfflineAudioContext } from "web-audio-engine";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg";
+import os from "os";
+import path from "path";
+const fsPromises = fs.promises;
 
 const FFMPEG_PATH = process.env.FFMPEG_PATH || "/usr/bin/ffmpeg";
 const FFPROBE_PATH = process.env.FFPROBE_PATH || "/usr/bin/ffprobe";
@@ -14,6 +16,7 @@ ffmpeg.setFfprobePath(FFPROBE_PATH);
  * @param audioBuffers - Map of audio buffer data indexed by step.
  * @param timeline - Timeline describing the sequence and duration of audio and pauses.
  * @param onProgress - Optional callback for progress updates (0-100).
+ * @param highQualitySilence - Optional flag to generate high-quality silence segments (44.1kHz, 128kbps) instead of default low-quality.
  * @returns Promise resolving to a Buffer containing the MP3 audio.
  */
 export async function createConcatenatedAudio(
@@ -21,91 +24,83 @@ export async function createConcatenatedAudio(
   timeline: NonNullable<Meditation["timeline"]>,
   onProgress = (progress: number) => {}
 ): Promise<Buffer> {
-  const { timings, totalDurationMs } = timeline;
+  const { timings } = timeline;
 
-  const { Mp3Encoder } = await import("@breezystack/lamejs");
-
-  // Create an offline audio context for rendering
-  const audioContext = new OfflineAudioContext(
-    2,
-    Math.ceil((totalDurationMs * 44100) / 1000),
-    44100
+  // Create a temporary directory for segment files
+  const tmpDir = await fsPromises.mkdtemp(
+    path.join(os.tmpdir(), "concatenate-audio-")
   );
+  const segmentFiles: string[] = [];
 
-  let currentTime = 0;
-
-  // Schedule each timeline event
+  // Generate segment files for speech and silence
   for (let i = 0; i < timings.length; i++) {
     const timing = timings[i];
     onProgress((i / timings.length) * 100);
-
+    const segmentPath = path.join(tmpDir, `segment-${i}.mp3`);
     if (timing.type === "speech") {
-      // Decode and schedule speech audio
       const rawBuffer = audioBuffers.get(timing.index);
       if (rawBuffer) {
-        const audioBuffer = await audioContext.decodeAudioData(rawBuffer);
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        const gain = audioContext.createGain();
-        gain.gain.value = 1.0;
-        source.connect(gain);
-        gain.connect(audioContext.destination);
-        source.start(currentTime);
-        currentTime += audioBuffer.duration;
+        // Write WAV buffer and transcode to MP3
+        const wavPath = path.join(tmpDir, `segment-${i}.wav`);
+        await fsPromises.writeFile(wavPath, Buffer.from(rawBuffer));
+        await new Promise<void>((resolve, reject) => {
+          ffmpeg(wavPath)
+            .audioCodec("libmp3lame")
+            .audioBitrate("128k")
+            .audioChannels(1)
+            .on("error", reject)
+            .on("end", resolve)
+            .save(segmentPath);
+        });
+        segmentFiles.push(segmentPath);
       }
     } else if (timing.type === "pause" || timing.type === "gap") {
-      // Advance time for pauses/gaps
-      currentTime += timing.durationMs / 1000;
+      await generateSilentMp3(timing.durationMs / 1000, segmentPath);
+      segmentFiles.push(segmentPath);
     }
   }
 
-  // Render the scheduled audio
-  const renderedBuffer = await audioContext.startRendering();
+  // Write ffmpeg concat list file
+  const listFile = path.join(tmpDir, "concat-list.txt");
+  const listContent = segmentFiles
+    .map((f) => "file '" + f.replace(/'/g, "\\'") + "'")
+    .join("\n");
+  await fsPromises.writeFile(listFile, listContent);
 
-  const channels = renderedBuffer.numberOfChannels;
-  const sampleRate = renderedBuffer.sampleRate;
+  // Output concatenated file
+  const outputPath = path.join(tmpDir, "output.mp3");
 
-  // Prepare MP3 encoder
-  const mp3Data: Buffer[] = [];
-  const mp3encoder = new Mp3Encoder(channels, sampleRate, 128);
-
-  // Convert rendered audio to Int16 samples
-  const left = new Int16Array(renderedBuffer.length);
-  const right = channels > 1 ? new Int16Array(renderedBuffer.length) : null;
-  const leftChannel = renderedBuffer.getChannelData(0);
-  const rightChannel = channels > 1 ? renderedBuffer.getChannelData(1) : null;
-
-  for (let i = 0; i < renderedBuffer.length; i++) {
-    left[i] = Math.max(-1, Math.min(1, leftChannel[i])) * 0x7fff;
-    if (right && rightChannel) {
-      right[i] = Math.max(-1, Math.min(1, rightChannel[i])) * 0x7fff;
-    }
-  }
-
-  // Encode audio in blocks to MP3
-  const sampleBlockSize = 1152;
-  for (let i = 0; i < left.length; i += sampleBlockSize) {
-    const leftChunk = left.subarray(i, i + sampleBlockSize);
-    const rightChunk = right ? right.subarray(i, i + sampleBlockSize) : null;
-    let mp3Chunk;
-    if (channels > 1 && rightChunk) {
-      mp3Chunk = mp3encoder.encodeBuffer(leftChunk, rightChunk);
-    } else {
-      mp3Chunk = mp3encoder.encodeBuffer(leftChunk);
-    }
-    if (mp3Chunk.length > 0) {
-      mp3Data.push(Buffer.from(new Uint8Array(mp3Chunk)));
-    }
-  }
-
-  // Add any remaining MP3 data
-  const finalChunk = mp3encoder.flush();
-  if (finalChunk.length > 0) {
-    mp3Data.push(Buffer.from(new Uint8Array(finalChunk)));
-  }
-
-  // Return the concatenated MP3 buffer
-  return Buffer.concat(mp3Data);
+  // Run ffmpeg concat
+  return new Promise<Buffer>((resolve, reject) => {
+    ffmpeg()
+      .input(listFile)
+      .inputOptions(["-f", "concat", "-safe", "0"])
+      .outputOptions([
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        "-ar",
+        "44100",
+        "-ac",
+        "1",
+      ])
+      .on("error", async (err) => {
+        await fsPromises.rm(tmpDir, { recursive: true, force: true });
+        reject(err);
+      })
+      .on("end", async () => {
+        try {
+          const data = await fsPromises.readFile(outputPath);
+          await fsPromises.rm(tmpDir, { recursive: true, force: true });
+          onProgress(100);
+          resolve(data);
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .save(outputPath);
+  });
 }
 
 /**
@@ -118,15 +113,18 @@ export function generateSilentMp3(
   seconds: number,
   outPath: string
 ): Promise<void> {
+  const frequency = 8000;
+  const bitrate = "8k";
+  const channels = 1;
   return new Promise((resolve, reject) => {
     ffmpeg()
       .input("/dev/zero")
       .inputFormat("s16le")
-      .audioFrequency(8000)
-      .audioChannels(1)
+      .audioFrequency(frequency)
+      .audioChannels(channels)
       .duration(seconds)
       .audioCodec("libmp3lame")
-      .audioBitrate("8k")
+      .audioBitrate(bitrate)
       .output(outPath)
       .on("error", reject)
       .on("end", resolve)
