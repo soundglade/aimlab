@@ -17,7 +17,7 @@ import {
 export default function BlogPost() {
   return (
     <PostLayout
-      title="Creative Ways to Generate Guided Meditations Using AI"
+      title="Creative ways to generate meditations using AI"
       date="March 30, 2025"
       content={
         <>

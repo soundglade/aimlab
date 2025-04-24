@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function BlogPost() {
   return (
     <PostLayout
-      title="How to Create Guided Meditations Using AIM Lab"
+      title="How to create meditations using AIM Lab"
       date="March 27, 2025"
       content={
         <>

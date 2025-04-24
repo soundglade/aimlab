@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function BlogPost() {
   return (
     <PostLayout
-      title="Welcome to AIM Lab: Who, What and Why"
+      title="Welcome to AIM Lab: who, what and why"
       date="March 26, 2025"
       content={
         <>

@@ -15,20 +15,20 @@ export type BlogPost = {
 const blogPosts: BlogPost[] = [
   {
     slug: "creative-examples",
-    title: "Creative Ways to Generate Guided Meditations Using AI",
+    title: "Creative ways to generate meditations using AI",
     date: "March 30, 2025",
     excerpt: "An inspiring list of creative ways to generate meditations",
   },
   {
     slug: "how-to",
-    title: "How To Create Guided Meditations",
+    title: "How to create meditations using AIM Lab",
     date: "March 27, 2025",
     excerpt:
       "A step-by-step guide on creating custom guided meditations by using AI chatbots, adding pause markers, and synthesizing them with the Meditation Composer.",
   },
   {
     slug: "welcome",
-    title: "Welcome to AIM Lab: Who, What and Why",
+    title: "Welcome to AIM Lab: who, what and why",
     date: "March 26, 2025",
     excerpt:
       "A personal intro to AIMlab: what is it, why I've created it, and where to start.",
