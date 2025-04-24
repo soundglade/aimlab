@@ -7,7 +7,6 @@ import {
   Users,
   BookOpen,
   ScrollText,
-  Globe,
   Megaphone,
   ExternalLink,
 } from "lucide-react";
@@ -19,33 +18,6 @@ import { Meditation } from "@/lib/latest-meditations";
 import { RedditPost } from "@/lib/reddit-posts";
 import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
-
-const changelog = [
-  {
-    text: "Add playback buttons for instant reader",
-    date: "2025-04-22T17:00:00Z",
-  },
-  {
-    text: "First draft of instant reader",
-    date: "2025-04-21T12:00:00Z",
-  },
-  {
-    text: "Upload meditation cover image",
-    date: "2025-04-11T12:00:00Z",
-  },
-  {
-    text: "Two new voices available",
-    date: "2025-04-11T09:00:00Z",
-  },
-  {
-    text: "Reddit posts displayed on landing page",
-    date: "2025-04-08T12:00:00Z",
-  },
-  {
-    text: "Ending bell added to meditation player",
-    date: "2025-04-07T12:00:00Z",
-  },
-];
 
 import { timeAgo } from "@/lib/time";
 
@@ -184,12 +156,13 @@ export default function LandingPage({
         </div>
       </section>
 
-      <section className={`mb-10 hidden w-full max-w-4xl px-4`}>
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Megaphone className="h-5 w-5" />
-            Weekly Newsletter
+            Last week's newsletter
           </h2>
+
           <Button variant="ghost" asChild size="sm">
             <Link
               href="https://aimlab.substack.com/"
@@ -202,26 +175,38 @@ export default function LandingPage({
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-          {latestMeditations.map((meditation, index) => (
-            <Button
-              key={index}
-              type="button"
-              variant="outline"
-              className={cn(
-                "hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors",
-                index > 3 && "hidden sm:block"
-              )}
-              onClick={() => handleMeditationClick(meditation.link)}
+        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+          <div className="space-y-10">
+            <Link
+              href={`/articles/${blogPosts[0].slug}`}
+              key={blogPosts[0].slug}
+              className="group block"
             >
-              <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-                <span className="truncate">{meditation.title}</span>
-                <span className="text-muted-foreground whitespace-nowrap text-xs">
-                  {meditation.timeAgo}
-                </span>
-              </div>
-            </Button>
-          ))}
+              <article className="space-y-1">
+                {blogPosts[0].date && (
+                  <p className="text-muted-foreground text-xs">
+                    {new Date(blogPosts[0].date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                )}
+                <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
+                  {blogPosts[0].title}
+                </h2>
+                {blogPosts[0].excerpt && (
+                  <p className="text-muted-foreground">
+                    {blogPosts[0].excerpt}
+                  </p>
+                )}
+              </article>
+            </Link>
+          </div>
+        </div>
+
+        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-4 dark:bg-gray-900 md:px-10 md:py-4">
+          <SubscribeForm />
         </div>
       </section>
 
@@ -313,3 +298,30 @@ export default function LandingPage({
     </Layout>
   );
 }
+
+const changelog = [
+  {
+    text: "Add playback buttons for instant reader",
+    date: "2025-04-22T17:00:00Z",
+  },
+  {
+    text: "First draft of instant reader",
+    date: "2025-04-21T12:00:00Z",
+  },
+  {
+    text: "Upload meditation cover image",
+    date: "2025-04-11T12:00:00Z",
+  },
+  {
+    text: "Two new voices available",
+    date: "2025-04-11T09:00:00Z",
+  },
+  {
+    text: "Reddit posts displayed on landing page",
+    date: "2025-04-08T12:00:00Z",
+  },
+  {
+    text: "Ending bell added to meditation player",
+    date: "2025-04-07T12:00:00Z",
+  },
+];
