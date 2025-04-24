@@ -8,7 +8,7 @@ export default function BlogPost() {
         <>
           Instant meditation reader, multilingual practices,
           <br className="hidden md:block" />
-          and a 7-day challenge: week two unfolds!
+          and a 7-day challenge: week two updates.
         </>
       }
       date="April 21, 2025"

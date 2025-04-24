@@ -14,6 +14,21 @@ export type BlogPost = {
 // Hardcoded blog posts data
 const blogPosts: BlogPost[] = [
   {
+    slug: "second-week",
+    title:
+      "Meditation reader, multilingual practices, and a 7-day challenge: week two updates.",
+    date: "April 21, 2025",
+    excerpt:
+      "A preview of the Instant Meditation Reader is ready. Discussing multi-lingual meditations, using the reader for private meditations, and a 7-day AI meditation challenge.",
+  },
+  {
+    slug: "first-week",
+    title: "100 meditators, becoming-animal, and Shinzen Young: what a week!",
+    date: "April 14, 2025",
+    excerpt:
+      "r/AIMeditationLab reached 100 users! Members created new meditations like 'Becoming-Animal' and 'The Detective of You.' New features include meditation descriptions and cover images.",
+  },
+  {
     slug: "creative-examples",
     title: "Creative ways to generate meditations using AI",
     date: "March 30, 2025",
