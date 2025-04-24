@@ -27,9 +27,12 @@ export default function SubscribeForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto my-3 md:my-0">
+    <form onSubmit={handleSubmit} className="mx-auto my-0">
       <div className="flex flex-col gap-2 space-y-2 sm:flex-row sm:items-center sm:gap-8 sm:space-y-0">
-        <label htmlFor="email" className="whitespace-nowrap text-lg">
+        <label
+          htmlFor="email"
+          className="text-muted-foreground whitespace-nowrap text-center text-base sm:text-left"
+        >
           Join the weekly newsletter
         </label>
 
@@ -41,7 +44,7 @@ export default function SubscribeForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "sending" || status === "success"}
-          className="flex-1"
+          className="bg-background flex-1"
         />
         <Button
           type="submit"

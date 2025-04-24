@@ -175,38 +175,40 @@ export default function LandingPage({
           </Button>
         </div>
 
-        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
-          <div className="space-y-10">
-            <Link
-              href={`/articles/${blogPosts[0].slug}`}
-              key={blogPosts[0].slug}
-              className="group block"
-            >
-              <article className="space-y-1">
-                {blogPosts[0].date && (
-                  <p className="text-muted-foreground text-xs">
-                    {new Date(blogPosts[0].date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
-                <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
-                  {blogPosts[0].title}
-                </h2>
-                {blogPosts[0].excerpt && (
-                  <p className="text-muted-foreground">
-                    {blogPosts[0].excerpt}
-                  </p>
-                )}
-              </article>
-            </Link>
+        <div className="border-1 overflow-hidden rounded-xl">
+          <div className="bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+            <div className="space-y-10">
+              <Link
+                href={`/articles/${blogPosts[0].slug}`}
+                key={blogPosts[0].slug}
+                className="group block"
+              >
+                <article className="space-y-1">
+                  {blogPosts[0].date && (
+                    <p className="text-muted-foreground text-xs">
+                      {new Date(blogPosts[0].date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  )}
+                  <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
+                    {blogPosts[0].title}
+                  </h2>
+                  {blogPosts[0].excerpt && (
+                    <p className="text-muted-foreground">
+                      {blogPosts[0].excerpt}
+                    </p>
+                  )}
+                </article>
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-4 dark:bg-gray-900 md:px-10 md:py-4">
-          <SubscribeForm />
+          <div className="bg-accent/50 px-6 py-4 md:px-10 md:py-4">
+            <SubscribeForm />
+          </div>
         </div>
       </section>
 
