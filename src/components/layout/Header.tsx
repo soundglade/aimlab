@@ -7,7 +7,7 @@ export function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="flex w-full max-w-4xl items-center justify-between px-4 py-6">
+    <header className="flex w-full max-w-4xl items-center justify-between px-4 py-3 md:py-4">
       <Link href="/" className="flex items-center gap-2">
         <span className="font-medium">AIM Lab</span>
       </Link>
