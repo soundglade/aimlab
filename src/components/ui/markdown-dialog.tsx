@@ -64,7 +64,7 @@ export function MarkdownDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-2xl">
+      <AlertDialogContent className="max-w-2xl!">
         <AlertDialogHeader>
           <AlertDialogTitle>
             {hasDescription ? "Edit description" : "Add description"}
@@ -78,7 +78,7 @@ export function MarkdownDialog({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Enter markdown content..."
-            className="min-h-[200px] w-full"
+            className="min-h-[300px] w-full break-all"
           />
         </div>
         <AlertDialogFooter className="flex items-center justify-between">
