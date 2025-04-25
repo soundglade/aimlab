@@ -19,8 +19,6 @@ import { RedditPost } from "@/lib/reddit-posts";
 import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
 
-import { timeAgo } from "@/lib/time";
-
 export default function LandingPage({
   blogPosts,
   latestMeditations,
@@ -31,7 +29,6 @@ export default function LandingPage({
   latestRedditPosts: RedditPost[];
 }) {
   const router = useRouter();
-  const [showChangelog, setShowChangelog] = React.useState(false);
 
   // Hardcoded slug for the latest newsletter
   const latestNewsletterSlug = "second-week";
@@ -46,10 +43,8 @@ export default function LandingPage({
     router.push(url);
   };
 
-  const latest = changelog[0];
-
   return (
-    <Layout>
+    <Layout showChangelog={true}>
       {/* Hero */}
       <section
         className={`mb-16 mt-2 flex w-full flex-col items-center px-4 text-center md:mt-4`}
@@ -62,7 +57,7 @@ export default function LandingPage({
         </h2>
         <p className="text-muted-foreground mb-10 max-w-2xl">
           Welcome to AIM Lab, a creative hub <br className="block sm:hidden" />
-          to explore AI and meditation.
+          to explore AI and meditation
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
@@ -77,46 +72,6 @@ export default function LandingPage({
               <BookOpen className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-        </div>
-
-        <div className="mt-6 hidden min-w-[410px] flex-col items-center gap-2 md:flex">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="hover:bg-accent group h-auto w-full justify-start px-3 py-1 transition-colors"
-            onClick={() => setShowChangelog((v) => !v)}
-          >
-            <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-              <span className="text-muted-foreground flex items-center gap-1.5 truncate text-sm font-normal">
-                <Megaphone className="mr-1 h-3.5 w-3.5" />
-                {latest.text}
-              </span>
-              <span className="text-muted-foreground whitespace-nowrap text-xs">
-                {timeAgo(latest.date)}
-              </span>
-            </div>
-          </Button>
-          {showChangelog && (
-            <div
-              id="changelog-card"
-              className="bg-background mt-2 w-full max-w-md space-y-2 rounded-xl border p-3"
-            >
-              <ul className="space-y-2">
-                {changelog.slice(1).map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0 last:pb-0"
-                  >
-                    <span className="truncate text-sm">{item.text}</span>
-                    <span className="text-muted-foreground whitespace-nowrap text-xs">
-                      {timeAgo(item.date)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </section>
 
@@ -311,38 +266,3 @@ export default function LandingPage({
     </Layout>
   );
 }
-
-const changelog = [
-  {
-    text: "New domain: meditationlab.ai",
-    date: "2025-04-25T13:00:00Z",
-  },
-  {
-    text: "Introduce newsletter",
-    date: "2025-04-25T10:00:00Z",
-  },
-  {
-    text: "Add playback buttons for instant reader",
-    date: "2025-04-22T17:00:00Z",
-  },
-  {
-    text: "First draft of instant reader",
-    date: "2025-04-21T12:00:00Z",
-  },
-  {
-    text: "Upload meditation cover image",
-    date: "2025-04-11T12:00:00Z",
-  },
-  {
-    text: "Two new voices available",
-    date: "2025-04-11T09:00:00Z",
-  },
-  {
-    text: "Reddit posts displayed on landing page",
-    date: "2025-04-08T12:00:00Z",
-  },
-  {
-    text: "Ending bell added to meditation player",
-    date: "2025-04-07T12:00:00Z",
-  },
-];

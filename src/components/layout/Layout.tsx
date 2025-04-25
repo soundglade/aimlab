@@ -11,6 +11,7 @@ interface LayoutProps {
   showHeader?: boolean;
   showFooter?: boolean;
   variant?: "default" | "page";
+  showChangelog?: boolean;
 }
 
 export function Layout({
@@ -18,6 +19,7 @@ export function Layout({
   variant = "default",
   showHeader = true,
   showFooter = true,
+  showChangelog = false,
 }: LayoutProps) {
   return (
     <div
@@ -82,7 +84,7 @@ export function Layout({
 
       {variant === "page" ? (
         <>
-          {showHeader && <Header />}
+          {showHeader && <Header showChangelog={showChangelog} />}
           <main className="flex w-full flex-1 flex-col items-center">
             <div className="md:border-1 md:px-19 mx-auto max-w-4xl rounded-xl px-4 py-6 md:mb-5 md:mt-10 md:bg-white md:py-12 md:shadow-sm dark:md:bg-gray-900">
               {children}
@@ -92,7 +94,7 @@ export function Layout({
         </>
       ) : (
         <>
-          {showHeader && <Header />}
+          {showHeader && <Header showChangelog={showChangelog} />}
           <main className="flex w-full flex-1 flex-col items-center">
             {children}
           </main>
