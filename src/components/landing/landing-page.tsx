@@ -103,7 +103,7 @@ export default function LandingPage({
           {showChangelog && (
             <div
               id="changelog-card"
-              className="bg-muted mt-2 w-full max-w-md space-y-2 rounded-xl border p-3"
+              className="bg-background mt-2 w-full max-w-md space-y-2 rounded-xl border p-3"
             >
               <ul className="space-y-2">
                 {changelog.slice(1).map((item, idx) => (
@@ -316,6 +316,14 @@ export default function LandingPage({
 }
 
 const changelog = [
+  {
+    text: "New domain: meditationlab.ai",
+    date: "2025-04-25T13:00:00Z",
+  },
+  {
+    text: "Introduce newsletter",
+    date: "2025-04-25T10:00:00Z",
+  },
   {
     text: "Add playback buttons for instant reader",
     date: "2025-04-22T17:00:00Z",

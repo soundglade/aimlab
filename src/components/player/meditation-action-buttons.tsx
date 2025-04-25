@@ -75,7 +75,7 @@ export function MeditationActionButtons({
   const handleShare = () => {
     if (navigator.clipboard) {
       navigator.clipboard
-        .writeText(`https://aimlab.soundglade.com/m/${meditationId}`)
+        .writeText(`https://meditationlab.ai/m/${meditationId}`)
         .then(() => {
           toast.success("URL copied to clipboard");
         })

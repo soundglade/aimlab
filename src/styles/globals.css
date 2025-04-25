@@ -10,6 +10,7 @@
   --color-slate-250: #d6dfea;
   --color-slate-350: #adbcce;
   --color-slate-850: #162035;
+  --color-gray-850: #151e2d;
 }
 
 :root {
@@ -94,6 +95,7 @@
 @theme inline {
   --color-slate-250: var(--color-slate-250);
   --color-slate-850: var(--color-slate-850);
+  --color-gray-850: var(--color-gray-850);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

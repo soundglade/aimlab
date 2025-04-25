@@ -31,15 +31,15 @@ Quite happy to see this [r/AIMeditationLab](https://www.reddit.com/r/AIMeditatio
 
 Many of you also started experimenting. I want to highlight some of the meditations you created:
 
-[Becoming-Animal Meditation](https://aimlab.soundglade.com/m/pngvpwi) – a fascinating blend of post-structuralist philosophy and contemplative practice
+[Becoming-Animal Meditation](https://meditationlab.ai/m/pngvpwi) – a fascinating blend of post-structuralist philosophy and contemplative practice
 
 >Let the word human soften. Let it loosen its grip on you. What remains when "human" fades? What flickers underneath?
 
-[Focusing on Developing Non-Self](https://aimlab.soundglade.com/m/vfo9ipk) – a rich blend of traditional mindfulness, non-self inquiry, and compassion
+[Focusing on Developing Non-Self](https://meditationlab.ai/m/vfo9ipk) – a rich blend of traditional mindfulness, non-self inquiry, and compassion
 
 >So what remains? Just awareness. Not your awareness… just knowing. Impersonal. Spacious. Unclinging. Let awareness rest in itself. No center. No boundary. Just this open field, where life unfolds.
 
-[The Detective of You](https://aimlab.soundglade.com/m/o53jyxp) – an intriguing and creative inquiry into selfhood
+[The Detective of You](https://meditationlab.ai/m/o53jyxp) – an intriguing and creative inquiry into selfhood
 
 >Welcome! Today, you're going to be a detective—not chasing clues in a far-off city, but solving the most fascinating mystery of all: who you really are.
 
@@ -49,7 +49,7 @@ I'm really impressed by the creativity and depth. Thanks to everyone who contrib
 
 Last week I discovered [Awakin.ai](http://Awakin.ai): a set of AI chatbots trained to guide users through different spiritual practices. Unlike general bots like ChatGPT, their answers include source references, which makes them more trustworthy. Some highlights: [Compassion Bot](https://www.awakin.ai/compassion/ask), [Ask Headless](https://www.awakin.ai/headless/ask), [SharonBot](https://www.awakin.ai/sharon/ask), and the [BatGapBot](https://www.awakin.ai/batgap/ask).
 
-I played with the Headless Bot to generate guided meditations and was impressed by its creative potential. They're not just repeating pre-written content, they can generate new creative material. For example, I asked it to list 10 Headless Way meditations, picked one, then asked it to script it with pauses. I used AIM Lab to synthesize it (here it is: [Headless Mirror Meditation](https://aimlab.soundglade.com/m/5h5nly3)). That's a whole new creative workflow.
+I played with the Headless Bot to generate guided meditations and was impressed by its creative potential. They're not just repeating pre-written content, they can generate new creative material. For example, I asked it to list 10 Headless Way meditations, picked one, then asked it to script it with pauses. I used AIM Lab to synthesize it (here it is: [Headless Mirror Meditation](https://meditationlab.ai/m/5h5nly3)). That's a whole new creative workflow.
 
 ## Shinzen Young and a bottom-up revolution
 
@@ -65,7 +65,7 @@ One of the most unusual aspects of the ChatGPT revolution is that it's been a bo
 
 Last week was packed with new features for AIM Lab.
 
-You can now add a **description** and even a **cover image** for each meditation. I like asking ChatGPT "Can you write me a description for this meditation using Markdown?". I also enjoyed crafting cover images using ChatGPT's new imagegen, a creative new way to relate to a meditation. Here is [an example of an image for a meditation on equanimity](https://aimlab.soundglade.com/m/nldggl9).
+You can now add a **description** and even a **cover image** for each meditation. I like asking ChatGPT "Can you write me a description for this meditation using Markdown?". I also enjoyed crafting cover images using ChatGPT's new imagegen, a creative new way to relate to a meditation. Here is [an example of an image for a meditation on equanimity](https://meditationlab.ai/m/nldggl9).
 
 I've introduced two new voices for the Meditation Composer. These are slightly more expressive than the existing one, as they use ElevenLabs V2. You can read more about it in [this post](https://www.reddit.com/r/AIMeditationLab/comments/1jwn2oi/new_voices_for_meditation_composer/).
 

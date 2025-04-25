@@ -21,7 +21,7 @@ export default function BlogPost() {
   );
 }
 
-const content = `Last week was very different from the first one: way less community engagement, more technical work. Most of my focus was on developing the [Instant Meditation Reader](https://aimlab.soundglade.com/reader), and I'm super happy with how it's been coming along.
+const content = `Last week was very different from the first one: way less community engagement, more technical work. Most of my focus was on developing the [Instant Meditation Reader](https://meditationlab.ai/reader), and I'm super happy with how it's been coming along.
 
 When I started looking at it on Monday I wasn't even sure if it was feasible, but by the end of the week I had a workable version.
 
@@ -31,7 +31,7 @@ Let's list other interesting updates.
 
 ## Multi-lingual meditations
 
-We've got new interesting meditations this week! Feel free to explore them: [https://aimlab.soundglade.com/meditations](https://aimlab.soundglade.com/meditations)
+We've got new interesting meditations this week! Feel free to explore them: [https://meditationlab.ai/meditations](https://meditationlab.ai/meditations)
 
 We had our first non-English meditation: a breath-awareness practice in Russian.  
 I'm pleasantly surprised that there is interest in meditations in other languages. This is, after all, another great advantage of using AI.
@@ -62,7 +62,7 @@ At the same time, I've also had new ideas that are tipping the scale more toward
 
 As we enter the third week of this journey, I'm excited to see where these different paths might lead us. Whether AIM Lab evolves more into an artistic exploration, a research endeavor, or something in between, I'm grateful for your engagement and support along the way.
 
-I'd love for you to try out the new [Instant Meditation Reader](https://aimlab.soundglade.com/reader) and share your experiences with it! What kind of meditations are you creating? How is the experience different from using the Composer? Your feedback will be super useful as I continue to develop and refine it.
+I'd love for you to try out the new [Instant Meditation Reader](https://meditationlab.ai/reader) and share your experiences with it! What kind of meditations are you creating? How is the experience different from using the Composer? Your feedback will be super useful as I continue to develop and refine it.
 
 And of course, I hope to see some of you joining the 7-day meditation challenge! It's a great opportunity to experience the new reader while refreshing your practice.
 

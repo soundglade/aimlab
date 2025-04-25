@@ -50,9 +50,9 @@ export default function PublicMeditation({
 
   const pageTitle = `${metadata.title} | AIM Lab`;
   const pageDescription = "AIM Lab - The AI Meditation Playground";
-  const pageUrl = `https://aimlab.soundglade.com/m/${meditationId}`;
+  const pageUrl = `https://meditationlab.ai/m/${meditationId}`;
   const ogImage =
-    metadata.coverImageUrl || "https://aimlab.soundglade.com/og-image-2.jpg";
+    metadata.coverImageUrl || "https://meditationlab.ai/og-image-2.jpg";
 
   const displaySummary = metadata.description || metadata.coverImageUrl;
 
