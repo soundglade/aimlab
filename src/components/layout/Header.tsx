@@ -30,7 +30,7 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
       </nav>
 
       {showChangelog && (
-        <div className="absolute left-1/2 mt-1 hidden -translate-x-1/2 flex-col items-center md:flex">
+        <div className="absolute left-1/2 mt-1 hidden -translate-x-1/2 flex-col items-center opacity-70 hover:opacity-100 md:flex">
           <Popover>
             <PopoverTrigger asChild>
               <Button
