@@ -23,11 +23,12 @@ export default function StudioPage() {
           </h1>
 
           <p className="text-muted-foreground mb-4 text-center">
-            Synthesize and share your own guided meditations starting from a
+            Synthesize and share your own guided
+            <br className="block sm:hidden" /> meditations starting from a
             script
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-6 max-w-3xl rounded-lg p-4 text-sm">
+          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-2 max-w-[400px] rounded-lg p-4 text-sm md:max-w-3xl">
             <p>
               Generate a script with{" "}
               <Link
@@ -55,7 +56,9 @@ export default function StudioPage() {
             </p>
           </div>
 
-          <div className="mb-0 flex justify-center">
+          <ResourcesInfoBar />
+
+          <div className="mb-6 flex justify-center">
             <Button
               onClick={() => setOpen(true)}
               size="lg"
@@ -64,8 +67,6 @@ export default function StudioPage() {
               Open Meditation Studio
             </Button>
           </div>
-
-          <ResourcesInfoBar />
 
           <div className="mb-12">
             <YourMeditations />
@@ -79,7 +80,7 @@ export default function StudioPage() {
 
 const ResourcesInfoBar = () => {
   return (
-    <div className="mb-10 mt-3 flex w-full items-center justify-center rounded-lg px-4 py-3 text-sm">
+    <div className="mb-4 mt-3 flex w-full items-center justify-center rounded-lg px-4 py-3 text-sm">
       <div className="text-muted-foreground flex flex-col items-center space-y-4 md:flex-row md:space-x-3 md:space-y-0">
         <div className="flex items-center">
           <CircleHelp className="mr-2 h-4 w-4" />
