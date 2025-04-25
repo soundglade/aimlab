@@ -57,15 +57,12 @@ export default function LandingPage({
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
         </h1>
-        <h2 className="text-secondary-foreground mb-4 text-2xl tracking-tight">
+        <h2 className="text-secondary-foreground mb-2 text-2xl tracking-tight">
           The AI Meditation Playground
         </h2>
-        <p className="text-muted-foreground mb-5 max-w-2xl">
-          Welcome to AIM Lab, a creative hub to explore AI and meditation.
-          <br className="hidden sm:block" />
-          {` `}
-          We've designed this space for collaborative experimentation and
-          discovery.
+        <p className="text-muted-foreground mb-10 max-w-2xl">
+          Welcome to AIM Lab, a creative hub <br className="block sm:hidden" />
+          to explore AI and meditation.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
