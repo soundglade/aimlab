@@ -179,7 +179,7 @@ export default function ReaderPage() {
               className="w-full"
               disabled={isSubmitting || !script.trim()}
             >
-              {isSubmitting ? "Reading..." : "Read"}
+              {isSubmitting ? "Playing..." : "Play"}
             </Button>
           </form>
 

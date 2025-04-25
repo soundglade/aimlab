@@ -48,7 +48,7 @@ export default function LandingPage({
     <Layout showChangelog={true}>
       {/* Hero */}
       <section
-        className={`mb-14 mt-2 flex w-full flex-col items-center px-4 text-center md:mt-8`}
+        className={`mb-12 mt-2 flex w-full flex-col items-center px-4 text-center md:mt-8`}
       >
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
@@ -74,9 +74,10 @@ export default function LandingPage({
             </Link>
           </Button>
         </div>
-        <Button asChild size="lg" variant="link" className="mt-4">
+        <Button asChild size="lg" variant="link" className="mt-2 md:mt-4">
           <Link href="/articles/creative-examples">
-            Need inspiration? <BookOpen className="h-4 w-4" /> Check out some
+            <span className="hidden md:inline">Need inspiration? </span>
+            <BookOpen className="hidden h-4 w-4 md:inline" /> Check out some
             creative examples
           </Link>
         </Button>
