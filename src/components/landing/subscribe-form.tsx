@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function SubscribeForm() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function SubscribeForm() {
     if (!email) return;
     setStatus("sending");
     try {
-      const res = await fetch("https://aimlab.substack.com/api/v1/free", {
+      const res = await fetch("/api/subscribe-newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -21,6 +22,9 @@ export default function SubscribeForm() {
       if (!res.ok) throw new Error("Signup failed");
       setStatus("success");
       setEmail("");
+      toast.message("🎉 Welcome! Check your inbox for a magic link", {
+        duration: 3000,
+      });
     } catch {
       setStatus("error");
     }
@@ -57,10 +61,6 @@ export default function SubscribeForm() {
             : "Subscribe"}
         </Button>
       </div>
-
-      {status === "success" && (
-        <span className="text-success text-sm">Thank you!</span>
-      )}
 
       {status === "error" && (
         <p className="text-destructive text-sm">
