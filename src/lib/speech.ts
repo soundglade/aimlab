@@ -21,8 +21,8 @@ type SpeechRequest = {
 // Maximum concurrent requests per service
 const MAX_CONCURRENT = {
   replicateKokoro: 3,
-  selfHostedKokoro: 1,
-  elevenlabs: 2,
+  selfHostedKokoro: 2,
+  elevenlabs: 4,
   test: 2,
 };
 
