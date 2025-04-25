@@ -22,13 +22,15 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
   const latest = changelog[0];
 
   return (
-    <header className="flex w-full max-w-4xl items-center justify-between px-4 py-3 md:py-4">
-      <Link href="/" className="flex items-center gap-2">
-        <span className="font-medium">AIM Lab</span>
-      </Link>
+    <header className="relative flex h-16 w-full max-w-4xl items-center justify-between px-4 py-3 md:py-4">
+      <nav className="flex items-center gap-4">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="font-medium">/ AIM Lab</span>
+        </Link>
+      </nav>
 
       {showChangelog && (
-        <div className="hidden min-w-[370px] flex-col items-center gap-2 md:flex">
+        <div className="absolute left-1/2 mt-1 hidden -translate-x-1/2 flex-col items-center md:flex">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -51,7 +53,7 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
             <PopoverContent
               id="changelog-card"
               className="mt-2 w-[370px] max-w-md space-y-2 rounded-xl border p-3"
-              align="end"
+              align="center"
             >
               <ul className="space-y-2">
                 {changelog.slice(1).map((item, idx) => (
@@ -72,13 +74,6 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
       )}
 
       <nav className="mt-[1px] flex items-center gap-4 md:gap-5">
-        <Link
-          href="/meditations"
-          className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors"
-        >
-          <ScrollText className="h-4 w-4" />
-          <span className="hidden md:block">Meditations</span>
-        </Link>
         <Link
           href="/composer"
           className="text-muted-foreground hover:text-foreground md:hover:bg-accent -mx-2 -mr-3 flex items-center rounded-md px-2 py-1 text-sm transition-colors md:-mr-1"

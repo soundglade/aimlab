@@ -47,7 +47,7 @@ export default function LandingPage({
     <Layout showChangelog={true}>
       {/* Hero */}
       <section
-        className={`mb-16 mt-2 flex w-full flex-col items-center px-4 text-center md:mt-4`}
+        className={`mb-14 mt-2 flex w-full flex-col items-center px-4 text-center md:mt-8`}
       >
         <h1 className="text-primary mb-3 text-5xl font-semibold tracking-tighter">
           AIM Lab
@@ -55,7 +55,7 @@ export default function LandingPage({
         <h2 className="text-secondary-foreground mb-2 text-2xl tracking-tight">
           The AI Meditation Playground
         </h2>
-        <p className="text-muted-foreground mb-10 max-w-2xl">
+        <p className="text-muted-foreground mb-6 max-w-2xl">
           Welcome to AIM Lab, a creative hub <br className="block sm:hidden" />
           to explore AI and meditation
         </p>
