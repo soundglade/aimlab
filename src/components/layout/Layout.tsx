@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 import Head from "next/head";
 
 export const gradientBackgroundClasses =
-  "bg-gradient-to-b from-white via-sky-50 to-white dark:from-slate-850 dark:via-slate-800 dark:to-slate-850";
+  "bg-gradient-to-b from-white via-blue-50 to-white dark:from-slate-850 dark:via-slate-800 dark:to-slate-850";
 
 interface LayoutProps {
   children: ReactNode;
