@@ -75,8 +75,7 @@ export default function LandingPage({
                 "group flex h-full flex-col justify-between gap-4 md:gap-6",
                 "px-1 py-6",
                 "text-left",
-                "hover:bg-accent",
-                "md:px-6 md:py-10"
+                "hover:bg-accent"
               )}
             >
               <CardHeader>
@@ -106,8 +105,7 @@ export default function LandingPage({
                 "group flex h-full flex-col justify-between gap-4 md:gap-6",
                 "px-1 py-6",
                 "text-left",
-                "hover:bg-accent",
-                "md:px-6 md:py-10"
+                "hover:bg-accent"
               )}
             >
               <CardHeader>
@@ -154,7 +152,7 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <ScrollText className="h-5 w-5" />
-            Meditations
+            Community Meditations
           </h2>
           <Button variant="ghost" asChild size="sm">
             <Link
