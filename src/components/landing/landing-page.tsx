@@ -2,6 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   ArrowRight,
   Sparkles,
   Users,
@@ -60,25 +67,83 @@ export default function LandingPage({
           Welcome to AIM Lab, a creative hub <br className="block sm:hidden" />
           to explore AI and meditation
         </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg">
-            <Link href="/instant">
-              Instant Player
-              <Sparkles className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="secondary">
-            <Link href="/studio">
-              Publish & Share Studio
-              <PencilRuler className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
+
+        <div className="grid max-w-[700px] gap-4 sm:grid-cols-2">
+          <Link href="/instant">
+            <Card
+              className={cn(
+                "group flex h-full flex-col justify-between gap-4 md:gap-6",
+                "px-1 py-6",
+                "text-left",
+                "hover:bg-accent",
+                "md:px-6 md:py-10"
+              )}
+            >
+              <CardHeader>
+                <CardTitle className="mb-1 flex items-center gap-3">
+                  <Sparkles className="h-5 w-5" />
+                  Listen instantly
+                </CardTitle>
+                <CardDescription>
+                  Paste any AI-generated script, hit play, and hear it stream in
+                  real time
+                </CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Button
+                  size="lg"
+                  className="group-hover:bg-primary hover:bg-primary"
+                >
+                  Play a script
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </Link>
+          <Link href="/studio">
+            <Card
+              className={cn(
+                "group flex h-full flex-col justify-between gap-4 md:gap-6",
+                "px-1 py-6",
+                "text-left",
+                "hover:bg-accent",
+                "md:px-6 md:py-10"
+              )}
+            >
+              <CardHeader>
+                <CardTitle className="mb-1 flex items-center gap-3">
+                  <PencilRuler className="h-5 w-5" />
+                  Create a shareable meditation
+                </CardTitle>
+                <CardDescription>
+                  Step-by-step synthesis, custom voice, cover image, and a
+                  public URL
+                </CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="group-hover:bg-background hover:bg-background dark:group-hover:bg-background/50 dark:hover:bg-background/50"
+                >
+                  Start creating
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </Link>
         </div>
-        <Button asChild size="lg" variant="link" className="mt-2 md:mt-4">
+
+        <Button
+          asChild
+          size="lg"
+          variant="outline"
+          className="text-muted-foreground border-primary/40 mt-4 md:mt-5"
+        >
           <Link href="/articles/creative-examples">
             <span className="hidden md:inline">Need inspiration? </span>
-            <BookOpen className="hidden h-4 w-4 md:inline" /> Check out some
-            creative examples
+            <BookOpen className="text-primary hidden h-4 w-4 md:inline" /> Check
+            out some creative examples
           </Link>
         </Button>
       </section>

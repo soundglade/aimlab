@@ -101,6 +101,10 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
 
 const changelog = [
   {
+    text: "Instant player published",
+    date: "2025-04-25T16:00:00Z",
+  },
+  {
     text: "New domain: meditationlab.ai",
     date: "2025-04-25T13:00:00Z",
   },
