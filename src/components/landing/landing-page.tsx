@@ -9,6 +9,7 @@ import {
   ScrollText,
   Megaphone,
   ExternalLink,
+  PencilRuler,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SubscribeForm } from "./subscribe-form";
@@ -61,18 +62,24 @@ export default function LandingPage({
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
-            <Link href="/studio">
-              Create a Meditation
-              <Sparkles className="ml-2 h-4 w-4" />
+            <Link href="/instant">
+              Instant Player
+              <Sparkles className="ml-1 h-4 w-4" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="secondary">
-            <Link href="/articles/creative-examples">
-              Check out Examples
-              <BookOpen className="ml-2 h-4 w-4" />
+            <Link href="/studio">
+              Publish & Share Studio
+              <PencilRuler className="ml-1 h-4 w-4" />
             </Link>
           </Button>
         </div>
+        <Button asChild size="lg" variant="link" className="mt-4">
+          <Link href="/articles/creative-examples">
+            Need inspiration? <BookOpen className="h-4 w-4" /> Check out some
+            creative examples
+          </Link>
+        </Button>
       </section>
 
       <div id="meditations" className="invisible relative -top-4"></div>
