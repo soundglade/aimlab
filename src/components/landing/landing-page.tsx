@@ -163,14 +163,14 @@ export default function LandingPage({
             Last week's newsletter
           </h2>
 
-          <Button variant="ghost" asChild size="sm">
+          <Button className="hidden" variant="ghost" asChild size="sm">
             <Link
-              href="https://aimlab.substack.com/"
+              href="#"
               target="_blank"
               className="text-muted-foreground mt-1 flex items-center md:mr-0"
             >
-              <span className="hidden md:inline">Visit Substack</span>
-              <ExternalLink className="-ml-1 h-4 w-4 md:ml-1" />
+              <span className="hidden md:inline">View all</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
             </Link>
           </Button>
         </div>
@@ -206,7 +206,7 @@ export default function LandingPage({
             </div>
           </div>
 
-          <div className="bg-accent/50 px-6 py-4 md:px-10 md:py-4">
+          <div className="bg-accent/60 px-6 py-4 md:px-10 md:py-4">
             <SubscribeForm />
           </div>
         </div>
