@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Play } from "lucide-react";
 import { MeditationPlayerDialog } from "./meditation-player-dialog";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Meditation } from "@/components/types";
 import { MeditationHeader } from "./meditation-header";
 
@@ -13,6 +14,32 @@ interface MeditationSummaryProps {
   audioUrl: string;
   embedded?: boolean;
 }
+
+const MAX_URL_LENGTH = 50;
+
+const CustomLink = ({
+  href,
+  children,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  let linkText = children;
+
+  if (
+    Array.isArray(children) &&
+    children.length === 1 &&
+    typeof children[0] === "string" &&
+    children[0] === href &&
+    href.length > MAX_URL_LENGTH
+  ) {
+    linkText = `${href.substring(0, MAX_URL_LENGTH)}...`;
+  }
+
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+      {linkText}
+    </a>
+  );
+};
 
 export function MeditationSummary({
   meditationId,
@@ -39,8 +66,13 @@ export function MeditationSummary({
           />
         )}
         {meditation.description && (
-          <div className="prose prose-headings:font-normal prose-p:leading-[1.6] prose-headings:tracking-tight dark:prose-invert text-left [&_img]:mx-auto [&_img]:mt-2 [&_img]:block [&_img]:max-h-[500px]">
-            <ReactMarkdown>{meditation.description}</ReactMarkdown>
+          <div className="prose prose-headings:font-normal prose-p:leading-[1.6] prose-headings:tracking-tight dark:prose-invert break-words text-left [&_img]:mx-auto [&_img]:mt-2 [&_img]:block [&_img]:max-h-[500px]">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{ a: CustomLink }}
+            >
+              {meditation.description}
+            </ReactMarkdown>
           </div>
         )}
       </Card>
