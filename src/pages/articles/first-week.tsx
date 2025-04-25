@@ -67,13 +67,13 @@ Last week was packed with new features for AIM Lab.
 
 You can now add a **description** and even a **cover image** for each meditation. I like asking ChatGPT "Can you write me a description for this meditation using Markdown?". I also enjoyed crafting cover images using ChatGPT's new imagegen, a creative new way to relate to a meditation. Here is [an example of an image for a meditation on equanimity](https://meditationlab.ai/m/nldggl9).
 
-I've introduced two new voices for the Meditation Composer. These are slightly more expressive than the existing one, as they use ElevenLabs V2. You can read more about it in [this post](https://www.reddit.com/r/AIMeditationLab/comments/1jwn2oi/new_voices_for_meditation_composer/).
+I've introduced two new voices for the Meditation Studio. These are slightly more expressive than the existing one, as they use ElevenLabs V2. You can read more about it in [this post](https://www.reddit.com/r/AIMeditationLab/comments/1jwn2oi/new_voices_for_meditation_composer/).
 
 As some of you pointed out, sometimes ElevenLabs voices speed up in random ways. It's kind of hilarious, but it also ruins the experience a bit. I've found this to be a common problem, often reported on r/ElevenLabs. I may take a deeper look into this to see if there are workarounds.
 
 ## What's next?
 
-This week I'm thinking of focusing mostly on building a new tool, beyond the Meditation Composer. The composer is great when you want to craft a high-quality meditation, to share or store. But wouldn't it be great if there were a simpler way to just "play" a meditation script? Kind of like an instant meditation script reader.
+This week I'm thinking of focusing mostly on building a new tool, beyond the Meditation Studio. The studio is great when you want to craft a high-quality meditation, to share or store. But wouldn't it be great if there were a simpler way to just "play" a meditation script? Kind of like an instant meditation script reader.
 
 There are some technical challenges involved, but I've got some ideas that may just work... I'll let you know how it goes.
 

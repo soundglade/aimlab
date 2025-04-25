@@ -75,7 +75,7 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
 
       <nav className="mt-[1px] flex items-center gap-4 md:gap-5">
         <Link
-          href="/composer"
+          href="/instant"
           className="text-muted-foreground hover:text-foreground md:hover:bg-accent -mx-2 -mr-3 flex items-center rounded-md px-2 py-1 text-sm transition-colors md:-mr-1"
         >
           <Sparkles className="h-4 w-4" />

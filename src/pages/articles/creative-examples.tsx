@@ -386,7 +386,7 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
 
           <div className="not-prose mb-8 mt-14 flex justify-center">
             <Button asChild size="lg" className="group">
-              <Link href="/composer">
+              <Link href="/studio">
                 Create a Meditation
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>

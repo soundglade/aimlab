@@ -22,15 +22,12 @@ import {
 
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 
-interface ComposerFlowDialogProps {
+interface StudioFlowDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const ComposerFlowDialog = ({
-  open,
-  onOpenChange,
-}: ComposerFlowDialogProps) => {
+const StudioFlowDialog = ({ open, onOpenChange }: StudioFlowDialogProps) => {
   // Get atoms
   const [step, setStep] = useAtom(stepAtom);
   const [, setMeditationScript] = useAtom(meditationScriptAtom);
@@ -182,7 +179,7 @@ const ComposerFlowDialog = ({
         locked={true}
         headerContent={
           <div className="text-muted-foreground inline-flex items-center space-x-2 rounded-full pl-2">
-            <span className="text-sm font-medium">Meditation Composer</span>
+            <span className="text-sm font-medium">Meditation Studio</span>
             <div className="flex space-x-1">
               {[1, 2, 3].map((i) => (
                 <div
@@ -214,4 +211,4 @@ const ComposerFlowDialog = ({
   );
 };
 
-export default ComposerFlowDialog;
+export default StudioFlowDialog;

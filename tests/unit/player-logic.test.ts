@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { optimizeStepsForPlayer } from "@/components/reader/player-logic";
+import { optimizeStepsForPlayer } from "@/components/instant/player-logic";
 import type { ReadingStep, PlayerStep } from "@/components/types";
 import {
   reducer,
   type State,
   type Action,
-} from "@/components/reader/player-logic";
+} from "@/components/instant/player-logic";
 
 describe("optimizeStepsForPlayer", () => {
   it("filters out headings", () => {

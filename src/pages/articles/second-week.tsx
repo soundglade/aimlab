@@ -40,7 +40,7 @@ If you are planning to create meditations in other languages feel free to experi
 
 ## Private and personal meditations
 
-Someone last week published a meditation that contained some personal details. I've hidden the meditation from the landing page, but please remember that all meditations created using the Composer are public!
+Someone last week published a meditation that contained some personal details. I've hidden the meditation from the landing page, but please remember that all meditations created using the Studio are public!
 
 But this made me also reflect how not having the possibility to have private, personal meditations is defeating one of the main benefits of AI meditations.
 
@@ -62,7 +62,7 @@ At the same time, I've also had new ideas that are tipping the scale more toward
 
 As we enter the third week of this journey, I'm excited to see where these different paths might lead us. Whether AIM Lab evolves more into an artistic exploration, a research endeavor, or something in between, I'm grateful for your engagement and support along the way.
 
-I'd love for you to try out the new [Instant Meditation Reader](https://meditationlab.ai/reader) and share your experiences with it! What kind of meditations are you creating? How is the experience different from using the Composer? Your feedback will be super useful as I continue to develop and refine it.
+I'd love for you to try out the new [Instant Meditation Reader](https://meditationlab.ai/reader) and share your experiences with it! What kind of meditations are you creating? How is the experience different from using the Studio? Your feedback will be super useful as I continue to develop and refine it.
 
 And of course, I hope to see some of you joining the 7-day meditation challenge! It's a great opportunity to experience the new reader while refreshing your practice.
 

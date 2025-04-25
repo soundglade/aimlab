@@ -61,7 +61,7 @@ export default function LandingPage({
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
-            <Link href="/composer">
+            <Link href="/studio">
               Create a Meditation
               <Sparkles className="ml-2 h-4 w-4" />
             </Link>

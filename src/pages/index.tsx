@@ -39,7 +39,7 @@ const blogPosts: BlogPost[] = [
     title: "How to create meditations using AIM Lab",
     date: "March 27, 2025",
     excerpt:
-      "A step-by-step guide on creating custom guided meditations by using AI chatbots, adding pause markers, and synthesizing them with the Meditation Composer.",
+      "A step-by-step guide on creating custom guided meditations by using AI chatbots, adding pause markers, and synthesizing them with the Meditation Studio.",
   },
   {
     slug: "welcome",

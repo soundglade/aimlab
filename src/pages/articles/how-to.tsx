@@ -31,7 +31,7 @@ export default function BlogPost() {
           <p>
             The basic method is quite simple: first, you'll use an AI chatbot,
             such as ChatGPT, to creatively generate a unique meditation script.
-            Then, you just copy that script into our Meditation Composer,{" "}
+            Then, you just copy that script into our Meditation Studio,{" "}
             <i>et voilà!</i> You'll instantly have your very own, customized
             guided meditation ready to play, download, or share however you
             like.
@@ -51,7 +51,7 @@ export default function BlogPost() {
           <ol>
             <li>gathering sources of inspiration (optional)</li>
             <li>generating and refining your script with a chatbot</li>
-            <li>synthesizing it with the Meditation Composer</li>
+            <li>synthesizing it with the Meditation Studio</li>
           </ol>
 
           <h2>Generating a Script with ChatGPT</h2>
@@ -72,7 +72,7 @@ export default function BlogPost() {
             However, a quick heads-up: sometimes ChatGPT suggests it can also
             generate sounds or music for your meditation. Unfortunately, that’s
             an hallucination. ChatGPT can’t do this (yet!), and that's why we
-            built a separate tool: the Meditation Composer.
+            built a separate tool: the Meditation Studio.
           </p>
 
           <h2>Adding Pauses to Your Meditation Script</h2>
@@ -89,19 +89,20 @@ export default function BlogPost() {
           </Prompt>
 
           <p>
-            The Meditation Composer is pretty clever, so don't stress too much
+            The Meditation Studio is pretty clever, so don't stress too much
             about exact formatting: it usually figures it out just fine.
             However, right now it supports precise pauses only. If your script
             says something vague like <i>"Pause for one or two minutes"</i> the
-            composer will pick a specific length for you. I’m considering making
-            pauses more flexible, but for now, it picks a fixed duration.
+            meditation studio will pick a specific length for you. I’m
+            considering making pauses more flexible, but for now, it picks a
+            fixed duration.
           </p>
 
-          <h2>Using the Meditation Composer</h2>
+          <h2>Using the Meditation Studio</h2>
 
           <p>
             With your script ready, <b>copy and paste it</b> into the Meditation
-            Composer. You'll see an area where you can paste the text and{" "}
+            Studio. You'll see an area where you can paste the text and{" "}
             <b>choose a voice</b>. Currently, there are only two voices
             available, but I'm planning to expand this soon, perhaps even
             letting you pick voices from services like ElevenLabs. You can
@@ -109,7 +110,7 @@ export default function BlogPost() {
           </p>
 
           <p>
-            The Meditation Composer uses AI to process your script, adding
+            The Meditation Studio uses AI to process your script, adding
             structure to ensure pauses, text, and headings are correctly
             interpreted by the synthesizer. However, sometimes it makes
             mistakes. That's why the second step is important: <b>reviewing</b>{" "}
@@ -170,7 +171,7 @@ export default function BlogPost() {
 
           <p>
             You can also view all the meditations you've created in one place,
-            on the Meditation Composer main page, where you can easily open or
+            on the Meditation Studio main page, where you can easily open or
             delete them.
           </p>
 
@@ -231,7 +232,7 @@ export default function BlogPost() {
             So, to quickly recap: creating a guided meditation using AIM Lab
             involves gathering inspiration (optional), generating and refining
             scripts with a chatbot, and then synthesizing them with the
-            meditation composer.
+            meditation studio.
           </p>
 
           <p>

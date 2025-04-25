@@ -108,7 +108,7 @@ export default function ReaderPage() {
       <div className="pb-0 pt-8">
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="mb-2 text-center text-3xl tracking-tight">
-            Meditation Reader
+            Instant Meditation Player
           </h1>
 
           <p className="text-muted-foreground mb-4 text-center">
