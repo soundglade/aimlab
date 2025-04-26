@@ -146,48 +146,6 @@ export default function LandingPage({
         </Button>
       </section>
 
-      <div id="meditations" className="invisible relative -top-4"></div>
-      {/* Recent Community Meditations */}
-      <section className={`mb-10 w-full max-w-4xl px-4`}>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <ScrollText className="h-5 w-5" />
-            Community Meditations
-          </h2>
-          <Button variant="ghost" asChild size="sm">
-            <Link
-              href="/meditations"
-              className="text-muted-foreground mt-1 flex items-center md:mr-0"
-            >
-              <span className="hidden md:inline">View all</span>
-              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
-            </Link>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-          {latestMeditations.map((meditation, index) => (
-            <Button
-              key={index}
-              type="button"
-              variant="outline"
-              className={cn(
-                "hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors",
-                index > 3 && "hidden sm:block"
-              )}
-              onClick={() => handleMeditationClick(meditation.link)}
-            >
-              <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-                <span className="truncate">{meditation.title}</span>
-                <span className="text-muted-foreground whitespace-nowrap text-xs">
-                  {meditation.timeAgo}
-                </span>
-              </div>
-            </Button>
-          ))}
-        </div>
-      </section>
-
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
@@ -208,7 +166,7 @@ export default function LandingPage({
         </div>
 
         <div className="border-1 overflow-hidden rounded-xl">
-          <div className="bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+          <div className="bg-background px-6 py-6">
             <div className="space-y-10">
               {latestNewsletter && (
                 <Link
@@ -246,6 +204,47 @@ export default function LandingPage({
           <div className="bg-accent/60 px-6 py-4 md:px-10 md:py-4">
             <SubscribeForm />
           </div>
+        </div>
+      </section>
+
+      {/* Recent Community Meditations */}
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
+            <ScrollText className="h-5 w-5" />
+            Meditations
+          </h2>
+          <Button variant="ghost" asChild size="sm">
+            <Link
+              href="/meditations"
+              className="text-muted-foreground mt-1 flex items-center md:mr-0"
+            >
+              <span className="hidden md:inline">View all</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+          {latestMeditations.map((meditation, index) => (
+            <Button
+              key={index}
+              type="button"
+              variant="outline"
+              className={cn(
+                "hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors",
+                index > 3 && "hidden sm:block"
+              )}
+              onClick={() => handleMeditationClick(meditation.link)}
+            >
+              <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
+                <span className="truncate">{meditation.title}</span>
+                <span className="text-muted-foreground whitespace-nowrap text-xs">
+                  {meditation.timeAgo}
+                </span>
+              </div>
+            </Button>
+          ))}
         </div>
       </section>
 

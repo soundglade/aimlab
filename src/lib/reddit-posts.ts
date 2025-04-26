@@ -87,7 +87,7 @@ async function getRedditToken(): Promise<string> {
 }
 
 export async function getLatestRedditPosts(
-  maxCount: number = 4
+  maxCount: number = 3
 ): Promise<RedditPost[]> {
   try {
     // Check if cache exists and is fresh
