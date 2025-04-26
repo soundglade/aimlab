@@ -64,7 +64,8 @@ export default function LandingPage({
           The AI Meditation Playground
         </h2>
         <p className="text-muted-foreground mb-6 max-w-2xl">
-          Welcome to AIM Lab, a creative hub <br className="block sm:hidden" />
+          Welcome to AIM Lab, a creative, open-source hub{" "}
+          <br className="block sm:hidden" />
           to explore AI and meditation
         </p>
 
