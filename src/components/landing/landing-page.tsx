@@ -39,7 +39,7 @@ export default function LandingPage({
   const router = useRouter();
 
   // Hardcoded slug for the latest newsletter
-  const latestNewsletterSlug = "second-week";
+  const latestNewsletterSlug = "third-week";
   const latestNewsletter = blogPosts.find(
     (post) => post.slug === latestNewsletterSlug
   );

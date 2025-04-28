@@ -14,6 +14,14 @@ export type BlogPost = {
 // Hardcoded blog posts data
 const blogPosts: BlogPost[] = [
   {
+    slug: "third-week",
+    title:
+      "Instant meditation player, new domain, and surprising AI connections.",
+    date: "April 28, 2025",
+    excerpt:
+      "Launch of the instant meditation player, new meditationlab.ai domain, newsletter, and some interesting reflections on AI-generated meditations and human experience.",
+  },
+  {
     slug: "second-week",
     title:
       "Meditation reader, multilingual practices, and a 7-day challenge: week two updates.",
