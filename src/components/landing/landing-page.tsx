@@ -74,7 +74,7 @@ export default function LandingPage({
             <Card
               className={cn(
                 "group flex h-full flex-col justify-between gap-4 md:gap-6",
-                "px-1 py-6",
+                "px-2 py-7",
                 "text-left",
                 "hover:bg-accent"
               )}
@@ -104,7 +104,7 @@ export default function LandingPage({
             <Card
               className={cn(
                 "group flex h-full flex-col justify-between gap-4 md:gap-6",
-                "px-1 py-6",
+                "px-2 py-7",
                 "text-left",
                 "hover:bg-accent"
               )}
@@ -151,7 +151,7 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Megaphone className="h-5 w-5" />
-            Last week's newsletter
+            Newsletter
           </h2>
 
           <Button className="hidden" variant="ghost" asChild size="sm">
@@ -167,7 +167,7 @@ export default function LandingPage({
         </div>
 
         <div className="overflow-hidden rounded-xl">
-          <div className="bg-background px-6 py-6">
+          <div className="bg-background px-8 py-7">
             <div className="space-y-10">
               {latestNewsletter && (
                 <Link
@@ -270,7 +270,7 @@ export default function LandingPage({
         </div>
 
         <div className="rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
-          <div className="space-y-6">
+          <div className="space-y-8">
             {latestRedditPosts.map((post, index) => (
               <Link
                 href={post.permalink}

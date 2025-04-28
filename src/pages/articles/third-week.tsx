@@ -20,15 +20,13 @@ export default function BlogPost() {
 }
 
 const content = `
-What a week it's been for AIM Lab! After the technical focus of last week, I'm glad to share some significant developments that are making our tools more accessible and immediate.
-
-## New Developments
+Hi there. Here is what happened in the last week.
 
 ### The instant meditation player is live!
 
 If you haven't seen it yet, go check it out: [https://meditationlab.ai/instant](https://meditationlab.ai/instant)
 
-It may not look like much, and in fact it's a stripped-down and simplified version of the tool we used so far to synthesize meditations. But just because it's so easy and immediate to use, it can open new possibilities.
+It may not look like much, and in fact it's a stripped-down and simplified version of the previous meditation composer. But because it's so easy and immediate to use, it can open new possibilities.
 
 For once: you can now use it for your daily meditations. Unlike the Studio which is designed for crafting more polished, shareable meditations, the Instant Player lets you quickly generate a practice without the wait or public sharing.
 
@@ -36,13 +34,15 @@ I tested it last week, experimenting with asking ChatGPT to write me a meditatio
 
 ### New domain and newsletter
 
-I've registered a new domain! I felt like AIM Lab needed its own place, separate from SoundGlade. So here we are, you can now find us at [meditationlab.ai](https://meditationlab.ai).
+As you may have noticed, we are now hosted on a new domain. I felt like AIM Lab needed its own place, separate from SoundGlade. So here we are, you can now find us at [meditationlab.ai](https://meditationlab.ai).
 
 I've also created a newsletter. If you want to receive these weekly updates in your inbox, make sure to [subscribe](https://newsletter.meditationlab.ai/).
 
 ## 7-days of meditations with ChatGPT
 
-I've completed my little challenge of meditating everyday with ChatGPT. I really liked it, and in fact, I'm likely to keep doing it.
+Last week I completed my challenge of meditating everyday with ChatGPT.
+
+I really liked it, and in fact, I'm likely to keep doing it.
 
 ### The power of personal context
 
@@ -89,9 +89,9 @@ Testing a 10-minute guided meditation, I was quite surprised by how the experien
 
 You may think that AI meditations would feel cold, robotic, synthetic, fake, but my perception was exactly the opposite.
 
-Not only did the voice feel very human, but it felt more personal, more connected, than your usual meditation. Because the script was personalized based on my request, but mostly, because it talked directly to me, even referencing me by my name.
+Not only did the voice felt very human, but it felt more personal, more connected, than your usual meditation. Because the script was personalized based on my request, but mostly, because it talked directly to me, even referencing me by my name.
 
-This really surprised me. It echoes what many of us have already felt with generative AI, such with ChatGPT, that experience of sensing a deep emotional connection. This is quite the opposite of what one would expect from a "robot".
+This really surprised me. It echoes what many of us have already felt with generative AI, such as with ChatGPT, the experience of sensing a deep emotional connection. This is quite the opposite of what one would expect from a "robot".
 
 ### The human touch behind AI
 
@@ -99,15 +99,13 @@ And I wonder if one of the reasons is that actually, behind it, there is a human
 
 I am more and more convinced that empathy and even elusive concepts such as soulfulness can be felt in the product of our creativity, even when that product is inorganic, synthetic, artificial.
 
-Imagine entering a new room: what can you sense? How does that space make you feel? What does that tell you about the person who cared for that space? A room is just a collection of inanimate objects, and still it carries the creative spirit of the people who architected, furnished it, and cared for it.
+Imagine entering a new room: what can you sense? How does that space make you feel? What does that tell you about the person who cared for that space? A room is just a collection of objects, and still it carries the creative spirit of the people who architected, furnished it, and cared for it.
 
 What do you think? Have you experienced this unexpected sense of connection with AI-generated content? Does it challenge your assumptions about what makes an experience "human"?
 
 ## Looking forward
 
 As we continue exploring this fascinating intersection of AI and meditation, I'm excited to see how the community uses the new instant meditation player. Will you create daily personalized practices? Will you experiment with different styles or techniques? I'm curious to hear about your experiences!
-
-The surprise emotional connection I felt from AI-generated meditations has me thinking about deeper questions: How do we perceive presence and connection? What elements make a meditation feel personal and meaningful?
 
 I'd love to hear your thoughts, experiences, and any ideas you have for future developments. Feel free to share in the comments, join us on Reddit, or reach out directly.
 

@@ -19,7 +19,7 @@ const blogPosts: BlogPost[] = [
       "Instant meditation player, new domain, and surprising AI connections.",
     date: "April 28, 2025",
     excerpt:
-      "Launch of the instant meditation player, new meditationlab.ai domain, newsletter, and some interesting reflections on AI-generated meditations and human experience.",
+      "Announcing the launch of the instant meditation player, new domain, newsletter, and some interesting reflections on AI-generated meditations and human experience.",
   },
   {
     slug: "second-week",
