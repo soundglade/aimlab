@@ -19,6 +19,7 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useUserInactivity } from "./user-inactivity";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -68,15 +69,18 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   // Ref for the active step
   const activeStepRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to center the active step when it changes
+  // Use inactivity hook (10 seconds)
+  const isInactive = useUserInactivity(10000);
+
+  // Auto-scroll to center the active step when it changes, only if user is inactive
   useEffect(() => {
-    if (activeStepRef.current) {
+    if (isInactive && activeStepRef.current) {
       activeStepRef.current.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
     }
-  }, [playingStepIdx]);
+  }, [playingStepIdx /* isInactive ignored on purpose */]);
 
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
