@@ -18,7 +18,7 @@ import {
   RotateCcw,
   LoaderCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -65,6 +65,19 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const { audioRef, playingStepIdx, jumpToStep, play, pause, status } =
     usePlayer(stepsForPlayer);
 
+  // Ref for the active step
+  const activeStepRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to center the active step when it changes
+  useEffect(() => {
+    if (activeStepRef.current) {
+      activeStepRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [playingStepIdx]);
+
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
 
@@ -108,6 +121,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
             const isPlayable = step.type === "speech" || step.type === "pause";
             return (
               <div
+                ref={isActive ? activeStepRef : undefined}
                 onClick={
                   isPlayable && step.audio ? () => jumpToStep(idx) : undefined
                 }
