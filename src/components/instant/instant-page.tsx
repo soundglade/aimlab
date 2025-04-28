@@ -115,7 +115,7 @@ export default function ReaderPage() {
             Instantly read your own guided meditations.
           </p>
 
-          <div className="bg-card border-accent border-1 text-muted-foreground mx-auto mb-4 max-w-3xl rounded-lg p-4 text-sm">
+          <div className="bg-card shadow-xs text-muted-foreground mx-auto mb-4 max-w-3xl rounded-lg p-4 text-sm">
             <ul className="list-inside space-y-2">
               <li>
                 Use <i>ChatGPT</i>,{" "}
@@ -142,7 +142,7 @@ export default function ReaderPage() {
                   key={example.label}
                   variant="outline"
                   size="sm"
-                  className="text-muted-foreground shrink-0 text-xs md:text-sm"
+                  className="text-muted-foreground shrink-0 border-0 text-xs md:text-sm"
                   onClick={() => {
                     setScript(example.script);
                     setTimeout(() => {
@@ -160,7 +160,7 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="border-accent border-1 bg-card mx-auto max-w-3xl space-y-4 rounded-lg p-6"
+            className="shadow-xs bg-card mx-auto max-w-3xl space-y-4 rounded-lg p-6"
           >
             <div>
               <Textarea

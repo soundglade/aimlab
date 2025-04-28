@@ -137,7 +137,7 @@ export default function LandingPage({
           asChild
           size="lg"
           variant="outline"
-          className="text-muted-foreground border-primary/40 mt-4 md:mt-5"
+          className="text-muted-foreground mt-4 border-0 md:mt-5"
         >
           <Link href="/articles/creative-examples">
             <span className="hidden md:inline">Need inspiration? </span>
@@ -166,7 +166,7 @@ export default function LandingPage({
           </Button>
         </div>
 
-        <div className="border-1 overflow-hidden rounded-xl">
+        <div className="overflow-hidden rounded-xl">
           <div className="bg-background px-6 py-6">
             <div className="space-y-10">
               {latestNewsletter && (
@@ -233,7 +233,7 @@ export default function LandingPage({
               type="button"
               variant="outline"
               className={cn(
-                "hover:bg-accent group h-auto w-full justify-start px-5 py-3 transition-colors",
+                "hover:bg-accent border-0 group h-auto w-full justify-start px-5 py-3 transition-colors",
                 index > 3 && "hidden sm:block"
               )}
               onClick={() => handleMeditationClick(meditation.link)}
@@ -269,7 +269,7 @@ export default function LandingPage({
           </Button>
         </div>
 
-        <div className="border-1 rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+        <div className="rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
           <div className="space-y-6">
             {latestRedditPosts.map((post, index) => (
               <Link
@@ -304,7 +304,7 @@ export default function LandingPage({
           <BookOpen className="h-5 w-5" />
           Articles
         </h2>
-        <div className="border-1 mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
+        <div className="mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
           <div className="space-y-10">
             {filteredBlogPosts.map((post) => (
               <Link

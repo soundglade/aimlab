@@ -36,7 +36,7 @@ export default function BlogPost() {
           <p>Let's dive right in.</p>
 
           <div className="w-full">
-            <div className="border-border bg-accent/50 not-prose mx-auto my-6 mt-14 max-w-sm rounded-lg border p-4 sm:max-w-none">
+            <div className="bg-accent/50 not-prose mx-auto my-6 mt-14 max-w-sm rounded-lg p-4 sm:max-w-none">
               <h2 className="text-muted-foreground mb-2 text-sm tracking-tight">
                 Contents
               </h2>

@@ -40,9 +40,9 @@ const CreationScreen = ({ onPlayMeditation, error }: CreationScreenProps) => {
       )}
 
       <div
-        className={`bg-muted rounded-md p-6 max-w-md ${
-          isCompleted ? "border border-primary/30" : ""
-        } ${error ? "border border-destructive/30" : ""}`}
+        className={`bg-background rounded-md p-7 max-w-md  ${
+          error ? "border border-destructive/30" : ""
+        }`}
       >
         {error ? (
           <>

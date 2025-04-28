@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 import Head from "next/head";
 
 export const gradientBackgroundClasses =
-  "bg-gradient-to-b from-white via-blue-50 to-white dark:from-slate-850 dark:via-slate-800 dark:to-slate-850";
+  "bg-gradient-to-b from-gray-50 via-slate-100 to-gray-50 dark:from-slate-850 dark:via-slate-800 dark:to-slate-850";
 
 interface LayoutProps {
   children: ReactNode;
@@ -86,7 +86,7 @@ export function Layout({
         <>
           {showHeader && <Header showChangelog={showChangelog} />}
           <main className="flex w-full flex-1 flex-col items-center">
-            <div className="md:border-1 md:px-19 mx-auto max-w-4xl rounded-xl px-4 py-6 md:mb-5 md:mt-4 md:bg-white md:py-12 md:shadow-sm dark:md:bg-gray-900">
+            <div className="md:px-19 mx-auto max-w-4xl rounded-xl px-4 py-6 md:mb-5 md:mt-4 md:bg-white md:py-12 dark:md:bg-gray-900">
               {children}
             </div>
           </main>
