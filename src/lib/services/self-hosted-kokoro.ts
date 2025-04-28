@@ -13,9 +13,17 @@ const settings = {
     voice: "af_v0nicole+af_heart(0.5)",
     speed: 0.8,
   },
+  nicole_kore: {
+    voice: "af_nicole+af_kore(0.2)",
+    speed: 0.9,
+  },
+  nicole_aoede: {
+    voice: "af_nicole+af_aoede(0.2)",
+    speed: 0.9,
+  },
 };
 
-const CURRENT_SETTINGS = settings.nicole;
+const CURRENT_SETTINGS = settings.nicole_aoede;
 
 /**
  * Generate speech using self-hosted Kokoro TTS
