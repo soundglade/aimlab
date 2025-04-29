@@ -115,14 +115,14 @@ export default function ReaderPage() {
             Instantly read your own guided meditations.
           </p>
 
-          <div className="bg-card shadow-xs text-muted-foreground mx-auto mb-4 max-w-3xl rounded-lg p-4 text-sm">
+          <div className="bg-card shadow-xs text-muted-foreground mx-auto mb-3 max-w-3xl rounded-lg p-4 text-sm md:mb-4">
             <ul className="list-inside space-y-2">
               <li>
                 Use <i>ChatGPT</i>,{" "}
                 <Link
                   href="https://awakin.ai"
                   target="_blank"
-                  className="text-primary"
+                  className="text-primary hidden sm:inline"
                 >
                   Awakin.ai
                 </Link>{" "}
@@ -132,7 +132,7 @@ export default function ReaderPage() {
             </ul>
           </div>
 
-          <div className="mx-auto mb-2 max-w-3xl px-1 md:mb-4 md:px-3">
+          <div className="mx-auto mb-3 max-w-3xl px-1 md:mb-4 md:px-3">
             <div className="h-8 max-w-full flex-nowrap items-center space-x-1 space-y-3 overflow-y-hidden md:space-x-2">
               <span className="text-muted-foreground shrink-0 pr-1 text-sm">
                 Examples
