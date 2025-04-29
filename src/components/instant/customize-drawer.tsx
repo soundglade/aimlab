@@ -30,16 +30,16 @@ export default function CustomizeDrawer() {
   const [useSpeakerBoost, setUseSpeakerBoost] = useState(false);
 
   useEffect(() => {
-    if (open && storedSettings) {
-      setApiKey(storedSettings.apiKey || "");
-      setVoiceId(storedSettings.voiceId || "");
-      setModelId(storedSettings.modelId || "");
-      setSpeed(storedSettings.speed || "");
-      setStability(storedSettings.stability || "");
-      setSimilarityBoost(storedSettings.similarityBoost || "");
-      setUseSpeakerBoost(!!storedSettings.useSpeakerBoost);
+    if (open) {
+      setApiKey(storedSettings?.apiKey || "");
+      setVoiceId(storedSettings?.voiceId || "");
+      setModelId(storedSettings?.modelId || "");
+      setSpeed(storedSettings?.speed || "");
+      setStability(storedSettings?.stability || "");
+      setSimilarityBoost(storedSettings?.similarityBoost || "");
+      setUseSpeakerBoost(!!storedSettings?.useSpeakerBoost);
     }
-  }, [open, storedSettings]);
+  }, [open]);
 
   function handleCancel() {
     setOpen(false);
@@ -55,6 +55,11 @@ export default function CustomizeDrawer() {
       similarityBoost,
       useSpeakerBoost,
     });
+    setOpen(false);
+  }
+
+  function handleReset() {
+    setStoredSettings(null);
     setOpen(false);
   }
 
@@ -171,6 +176,14 @@ export default function CustomizeDrawer() {
                 className="flex-1"
               >
                 Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleReset}
+                className="flex-1"
+              >
+                Reset
               </Button>
               <Button type="submit" className="flex-1">
                 Save
