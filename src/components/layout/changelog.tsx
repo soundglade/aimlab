@@ -2,7 +2,7 @@ import { timeAgo } from "@/lib/time";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Megaphone } from "lucide-react";
+import { CircleCheckBig } from "lucide-react";
 
 // Changelog as JSX
 export const changelogEntries = [
@@ -100,14 +100,14 @@ export const changelogEntries = [
 
 export function ChangelogList() {
   return (
-    <ul className="space-y-6">
+    <ul className="space-y-8">
       {changelogEntries.map((item, idx) => (
-        <li key={idx} className="border-b pb-4 last:border-b-0 last:pb-0">
+        <li key={idx}>
+          <span className="text-muted-foreground whitespace-nowrap text-xs">
+            {timeAgo(item.date)}
+          </span>
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-base font-medium">{item.title}</span>
-            <span className="text-muted-foreground whitespace-nowrap text-xs">
-              {timeAgo(item.date)}
-            </span>
+            <span>{item.title}</span>
           </div>
           <div className="text-muted-foreground text-sm leading-relaxed">
             {item.description}
@@ -125,7 +125,7 @@ export function Changelog({ show }: { show: boolean }) {
   if (!show) return null;
 
   return (
-    <div className="absolute left-1/2 mt-1 hidden -translate-x-1/2 flex-col items-center opacity-70 hover:opacity-100 md:flex">
+    <div className="absolute left-1/2 mt-1 -translate-x-1/2 flex-col items-center opacity-70 hover:opacity-100">
       <Button
         type="button"
         variant="outline"
@@ -135,23 +135,23 @@ export function Changelog({ show }: { show: boolean }) {
       >
         <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
           <span className="text-muted-foreground flex items-center gap-1.5 truncate text-sm font-normal">
-            <Megaphone className="mr-1 h-3.5 w-3.5" />
-            {latest.title}
+            <CircleCheckBig className="mr-1 h-3.5 w-3.5" />
+            <span className="hidden md:inline">{latest.title}</span>
           </span>
-          <span className="text-muted-foreground whitespace-nowrap text-xs">
+          <span className="text-muted-foreground hidden whitespace-nowrap text-xs md:inline">
             {timeAgo(latest.date)}
           </span>
         </div>
       </Button>
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-4xl flex-col bg-white p-0 dark:bg-gray-900">
-          <div className="flex items-center justify-between border-b px-4 py-3">
-            <div className="flex items-center gap-2 text-lg font-semibold">
-              <Megaphone className="h-5 w-5" />
+        <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-3xl flex-col bg-white px-2 dark:bg-gray-900 md:px-6">
+          <div className="flex items-center justify-between px-4 pb-2 pt-3">
+            <div className="flex items-center gap-2 text-2xl tracking-tight">
+              <CircleCheckBig className="h-5 w-5 opacity-50" />
               Changelog
             </div>
           </div>
-          <div className="flex-1 overflow-auto px-4 py-4">
+          <div className="scrollbar-thin flex-1 overflow-auto px-4 py-8 md:px-4">
             <ChangelogList />
           </div>
         </DrawerContent>
