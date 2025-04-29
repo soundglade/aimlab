@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, useRef } from "react";
 import { ReadingDrawer } from "./reading-drawer";
 import Link from "next/link";
-import { EXAMPLES } from "./examples";
 import { AudioContextRefresher } from "./audio-context-refresher";
+import { ExamplesSelect } from "./examples-select";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -132,30 +132,17 @@ export default function ReaderPage() {
             </ul>
           </div>
 
-          <div className="mx-auto mb-3 max-w-3xl px-1 md:mb-4 md:px-3">
-            <div className="h-8 max-w-full flex-nowrap items-center space-x-1 space-y-3 overflow-y-hidden md:space-x-2">
-              <span className="text-muted-foreground shrink-0 pr-1 text-sm">
-                Examples
-              </span>
-              {EXAMPLES.map((example) => (
-                <Button
-                  key={example.label}
-                  variant="outline"
-                  size="sm"
-                  className="text-muted-foreground shrink-0 border-0 text-xs md:text-sm"
-                  onClick={() => {
-                    setScript(example.script);
-                    setTimeout(() => {
-                      if (scriptTextareaRef.current) {
-                        scriptTextareaRef.current.scrollTop = 0;
-                      }
-                    }, 0);
-                  }}
-                >
-                  {example.label}
-                </Button>
-              ))}
-            </div>
+          <div className="mx-auto mb-3 flex justify-center md:mb-4">
+            <ExamplesSelect
+              onSelect={(example) => {
+                setScript(example.script);
+                setTimeout(() => {
+                  if (scriptTextareaRef.current) {
+                    scriptTextareaRef.current.scrollTop = 0;
+                  }
+                }, 0);
+              }}
+            />
           </div>
 
           <form
