@@ -73,7 +73,9 @@ export async function synthesizeMeditation(
 
         let audioBuffer: ArrayBuffer;
         if (speechService === "elevenlabs") {
-          audioBuffer = await speechGenerator(step.text, "elevenlabs", voiceId);
+          audioBuffer = await speechGenerator(step.text, "elevenlabs", {
+            preset: voiceId,
+          });
         } else {
           audioBuffer = await speechGenerator(step.text, speechService);
         }

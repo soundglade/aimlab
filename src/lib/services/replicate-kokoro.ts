@@ -12,9 +12,13 @@ const KOKORO_MODEL_ID =
 /**
  * Generate speech using Kokoro TTS
  * @param text Text to convert to speech
+ * @param options Optional parameters
  * @returns ArrayBuffer containing the audio data
  */
-export async function generateSpeech(text: string): Promise<ArrayBuffer> {
+export async function generateSpeech(
+  text: string,
+  options?: any
+): Promise<ArrayBuffer> {
   try {
     // Call Kokoro TTS API via Replicate
     const input = { text, voice: "af_nicole" };

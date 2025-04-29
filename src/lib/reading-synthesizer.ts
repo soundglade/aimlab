@@ -6,11 +6,13 @@ import path from "path";
 import { customAlphabet } from "nanoid";
 import { generateSpeech } from "@/lib/speech";
 import slugify from "slugify";
+import type { SpeechService } from "@/lib/speech";
 
 interface SynthesizeReadingOptions {
   script: string;
   onData: (data: any) => void;
   signal?: AbortSignal;
+  settings?: any;
 }
 
 function tryRepairAndParseJSON(text: string) {
@@ -33,6 +35,7 @@ export async function synthesizeReading({
   script,
   onData,
   signal,
+  settings,
 }: SynthesizeReadingOptions) {
   // Generate a unique reading id for this session
   const generateReadingId = customAlphabet(
@@ -80,11 +83,17 @@ export async function synthesizeReading({
     try {
       const text = step.text;
       if (!text) return;
-      // Synthesize speech using kokoro
+      // Determine service and serviceOptions from settings
+      let service: SpeechService = "selfHostedKokoro";
+      let serviceOptions = undefined;
+      if (settings && typeof settings === "object" && settings.service) {
+        service = settings.service;
+        serviceOptions = settings.serviceOptions;
+      }
       const audioBuffer = await generateSpeech(
         text,
-        "selfHostedKokoro",
-        undefined,
+        service,
+        serviceOptions,
         signal
       );
 

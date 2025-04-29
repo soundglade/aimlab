@@ -54,59 +54,41 @@ export function transformSpeechText(text: string): string {
 /**
  * Generate speech using ElevenLabs TTS and convert PCM to WAV
  * @param text Text to convert to speech
- * @param voiceKey Logical voice key (e.g., "drew", "newVoice1", "newVoice2")
+ * @param options Optional settings for custom speech generation
  * @returns ArrayBuffer containing the WAV audio data
  */
 export async function generateSpeech(
   text: string,
-  voiceKey: string = "drew"
-): Promise<ArrayBuffer> {
-  try {
-    const elevenlabs = new ElevenLabsClient({
-      apiKey: process.env.ELEVENLABS_API_KEY,
-    });
-
-    // Transform the text to add pauses between sentences
-    const transformedText = transformSpeechText(text);
-
-    // Look up settings for the requested voice
-    const config = ELEVENLABS_VOICE_CONFIG[voiceKey] ||
-      ELEVENLABS_VOICE_CONFIG["drew"] || {
-        voice_id: DEFAULT_VOICE_ID,
-        model_id: DEFAULT_MODEL_ID,
-        speed: 0.85,
-        stability: 0.5,
-        similarity_boost: 0.75,
-      };
-
-    // Request PCM data from ElevenLabs
-    const audio = await elevenlabs.generate({
-      voice: config.voice_id,
-      text: transformedText,
-      model_id: config.model_id,
-      output_format: "pcm_24000",
-      voice_settings: {
-        speed: config.speed ?? 0.85,
-        stability: config.stability ?? 0.5,
-        similarity_boost: config.similarity_boost ?? 0.75,
-      },
-    });
-
-    // Convert stream to PCM buffer
-    const pcmBuffer = await streamToBuffer(audio);
-
-    // Convert PCM to WAV by directly adding WAV headers
-    const wavBuffer = addWavHeader(pcmBuffer, 24000, 1, 16);
-
-    // Return the WAV as an ArrayBuffer
-    return wavBuffer.buffer.slice(
-      wavBuffer.byteOffset,
-      wavBuffer.byteOffset + wavBuffer.byteLength
-    ) as ArrayBuffer;
-  } catch (error) {
-    console.error("ElevenLabs speech generation error:", error);
-    throw error;
+  options?: {
+    apiKey?: string;
+    voice_id?: string;
+    model_id?: string;
+    speed?: number;
+    stability?: number;
+    similarity_boost?: number;
+    style?: number;
+    use_speaker_boost?: boolean;
+    preset?: string;
   }
+): Promise<ArrayBuffer> {
+  let config: any = { ...options };
+  if (options?.preset) {
+    const presetConfig = ELEVENLABS_VOICE_CONFIG[options.preset];
+    if (!presetConfig) {
+      throw new Error(`Unknown ElevenLabs preset: ${options.preset}`);
+    }
+    // Merge preset config over options (preset values take precedence)
+    config = { ...options, ...presetConfig };
+  }
+  if (!config.voice_id || !config.model_id) {
+    // If still missing, use 'drew' as fallback
+    const drewConfig = ELEVENLABS_VOICE_CONFIG["drew"];
+    config = { ...config, ...drewConfig };
+  }
+  return generateSpeechWithSettings({
+    text,
+    ...config,
+  });
 }
 
 /**
@@ -123,10 +105,11 @@ export async function generateSpeechWithSettings(options: {
   style?: number;
   use_speaker_boost?: boolean;
   speed?: number;
+  apiKey?: string;
 }): Promise<ArrayBuffer> {
   try {
     const elevenlabs = new ElevenLabsClient({
-      apiKey: process.env.ELEVENLABS_API_KEY,
+      apiKey: options.apiKey || process.env.ELEVENLABS_API_KEY,
     });
 
     const {

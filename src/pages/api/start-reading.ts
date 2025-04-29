@@ -13,11 +13,31 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { script } = req.body;
+  const { script, settings } = req.body;
   if (!script || typeof script !== "string") {
     return res
       .status(400)
       .json({ error: "Script is required and must be a string" });
+  }
+
+  // Validate settings for ElevenLabs
+  if (settings && typeof settings === "object") {
+    if (settings.service === "elevenlabs") {
+      if (
+        !settings.serviceOptions ||
+        typeof settings.serviceOptions.apiKey !== "string" ||
+        settings.serviceOptions.apiKey.trim() === ""
+      ) {
+        return res.status(400).json({
+          error:
+            "Invalid ElevenLabs settings: apiKey is required and must be a non-empty string.",
+        });
+      }
+    } else {
+      return res.status(400).json({
+        error: "Only ElevenLabs TTS is supported for custom settings.",
+      });
+    }
   }
 
   res.setHeader("Content-Type", "text/event-stream");
@@ -56,6 +76,7 @@ export default async function handler(
         if (typeof res.flush === "function") res.flush();
       },
       signal: abortController.signal,
+      settings,
     });
     res.end();
   } catch (error: any) {

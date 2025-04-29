@@ -1,9 +1,13 @@
 /**
  * Generate speech using Test service
  * @param text Text to convert to speech
+ * @param options Optional options for the service
  * @returns ArrayBuffer containing test audio data
  */
-export async function generateSpeech(text: string): Promise<ArrayBuffer> {
+export async function generateSpeech(
+  text: string,
+  options?: any
+): Promise<ArrayBuffer> {
   try {
     console.log(`Test service generating speech for: "${text}"`);
 

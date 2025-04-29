@@ -11,8 +11,16 @@ export type SpeechService =
 
 type SpeechRequest = {
   text: string;
-  // Only used for elevenlabs, ignored for others
-  voiceKey?: string;
+  service?: SpeechService;
+  serviceOptions?: {
+    apiKey?: string;
+    voice_id?: string;
+    model_id?: string;
+    speed?: number;
+    stability?: number;
+    similarity_boost?: number;
+    // ...future options
+  };
   resolve: (value: ArrayBuffer) => void;
   reject: (reason: any) => void;
   signal?: AbortSignal;
@@ -52,27 +60,47 @@ const activeRequests: Record<SpeechService, number> = {
 /**
  * Generate speech using one of the available TTS services
  * @param text Text to convert to speech
- * @param service TTS service to use (default: "replicateKokoro")
+ * @param service Optional service to use
+ * @param serviceOptions Optional settings for the TTS service
  * @param signal Optional AbortSignal to cancel queued requests
  * @returns ArrayBuffer containing the audio data
  */
 export async function generateSpeech(
   text: string,
-  service: SpeechService = "replicateKokoro",
-  voiceKey?: string,
+  service?: SpeechService,
+  serviceOptions?: {
+    apiKey?: string;
+    voice_id?: string;
+    model_id?: string;
+    speed?: number;
+    stability?: number;
+    similarity_boost?: number;
+    // ...future options
+  },
   signal?: AbortSignal
 ): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
-    // Immediately bail if already aborted
     if (signal?.aborted) {
       return reject(new DOMException("Aborted", "AbortError"));
     }
-    // Add request to the queue, including signal
-    const request: SpeechRequest = { text, voiceKey, resolve, reject, signal };
-    queues[service].push(request);
-
-    // Process queue if possible
-    processQueue(service);
+    const request: SpeechRequest = {
+      text,
+      service,
+      serviceOptions,
+      resolve,
+      reject,
+      signal,
+    };
+    const validServices: SpeechService[] = [
+      "replicateKokoro",
+      "selfHostedKokoro",
+      "elevenlabs",
+      "test",
+    ];
+    const resolvedService: SpeechService =
+      service && validServices.includes(service) ? service : "replicateKokoro";
+    queues[resolvedService].push(request);
+    processQueue(resolvedService);
   });
 }
 
@@ -81,32 +109,33 @@ export async function generateSpeech(
  * @param service Speech service to process
  */
 function processQueue(service: SpeechService): void {
-  // Keep processing while there's capacity and items in the queue
   while (
     activeRequests[service] < MAX_CONCURRENT[service] &&
     queues[service].length > 0
   ) {
     const request = queues[service].shift();
     if (!request) return;
-    // Skip any jobs whose signal has been aborted
     if (request.signal?.aborted) {
       request.reject(new DOMException("Aborted", "AbortError"));
       continue;
     }
     activeRequests[service]++;
-
-    const { text, voiceKey, resolve, reject } = request;
-    const serviceImpl =
-      service === "replicateKokoro"
-        ? replicateKokoro
-        : service === "selfHostedKokoro"
-        ? selfHostedKokoro
-        : service === "elevenlabs"
-        ? elevenlabs
-        : test;
-
+    const { text, serviceOptions, resolve, reject, signal } = request;
+    let serviceImpl;
+    if (service === "replicateKokoro") {
+      serviceImpl = replicateKokoro;
+    } else if (service === "selfHostedKokoro") {
+      serviceImpl = selfHostedKokoro;
+    } else if (service === "elevenlabs") {
+      serviceImpl = elevenlabs;
+    } else {
+      serviceImpl = test;
+    }
+    let speechPromise: Promise<ArrayBuffer> = serviceImpl.generateSpeech(
+      text,
+      serviceOptions
+    );
     let clearRequestTimeout: () => void;
-
     const timeoutPromise = new Promise<never>((_, timeoutReject) => {
       const timeoutId = setTimeout(() => {
         timeoutReject(
@@ -117,16 +146,8 @@ function processQueue(service: SpeechService): void {
           )
         );
       }, REQUEST_TIMEOUT_MS[service]);
-
       clearRequestTimeout = () => clearTimeout(timeoutId);
     });
-
-    // For elevenlabs, pass voiceKey; for others, ignore
-    const speechPromise =
-      service === "elevenlabs"
-        ? serviceImpl.generateSpeech(text, voiceKey)
-        : serviceImpl.generateSpeech(text);
-
     Promise.race([speechPromise, timeoutPromise])
       .then((result) => {
         resolve(result as ArrayBuffer);
@@ -139,8 +160,6 @@ function processQueue(service: SpeechService): void {
           clearRequestTimeout();
         }
         activeRequests[service]--;
-
-        // Once a request completes, try to process more of the queue
         processQueue(service);
       });
   }

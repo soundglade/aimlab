@@ -28,9 +28,13 @@ const CURRENT_SETTINGS = settings.nicole_aoede;
 /**
  * Generate speech using self-hosted Kokoro TTS
  * @param text Text to convert to speech
+ * @param options Optional options
  * @returns ArrayBuffer containing the audio data
  */
-export async function generateSpeech(text: string): Promise<ArrayBuffer> {
+export async function generateSpeech(
+  text: string,
+  options?: any
+): Promise<ArrayBuffer> {
   try {
     const response = await fetch(
       "https://kokoro.soundglade.com/v1/audio/speech",
