@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
 import { ExamplesSelect } from "./examples-select";
 import CustomizeDrawer from "./customize-drawer";
+import { useLocalStorage } from "@rehooks/local-storage";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -15,6 +16,8 @@ export default function ReaderPage() {
   const [response, setResponse] = useState<any | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const scriptTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [customSettings] = useLocalStorage("custom-voice-settings", null);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +34,10 @@ export default function ReaderPage() {
       const response = await fetch("/api/start-reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ script }),
+        body: JSON.stringify({
+          script,
+          ...(customSettings ? { settings: customSettings } : {}),
+        }),
         signal: controller.signal,
       });
 
@@ -102,6 +108,10 @@ export default function ReaderPage() {
         }
       }
     };
+  }, []);
+
+  useEffect(() => {
+    setHasMounted(true);
   }, []);
 
   return (
@@ -175,7 +185,11 @@ export default function ReaderPage() {
               className="w-full"
               disabled={isSubmitting || !script.trim()}
             >
-              {isSubmitting ? "Playing..." : "Play"}
+              {isSubmitting
+                ? "Playing..."
+                : hasMounted && customSettings
+                ? "Play with custom ElevenLabs settings"
+                : "Play"}
             </Button>
           </form>
 

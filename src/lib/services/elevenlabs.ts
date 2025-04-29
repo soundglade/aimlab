@@ -60,7 +60,7 @@ export function transformSpeechText(text: string): string {
 export async function generateSpeech(
   text: string,
   options?: {
-    apiKey?: string;
+    api_key?: string;
     voice_id?: string;
     model_id?: string;
     speed?: number;
@@ -105,11 +105,11 @@ export async function generateSpeechWithSettings(options: {
   style?: number;
   use_speaker_boost?: boolean;
   speed?: number;
-  apiKey?: string;
+  api_key?: string;
 }): Promise<ArrayBuffer> {
   try {
     const elevenlabs = new ElevenLabsClient({
-      apiKey: options.apiKey || process.env.ELEVENLABS_API_KEY,
+      apiKey: options.api_key || process.env.ELEVENLABS_API_KEY,
     });
 
     const {

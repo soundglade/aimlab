@@ -25,8 +25,8 @@ export default async function handler(
     if (settings.service === "elevenlabs") {
       if (
         !settings.serviceOptions ||
-        typeof settings.serviceOptions.apiKey !== "string" ||
-        settings.serviceOptions.apiKey.trim() === ""
+        typeof settings.serviceOptions.api_key !== "string" ||
+        settings.serviceOptions.api_key.trim() === ""
       ) {
         return res.status(400).json({
           error:

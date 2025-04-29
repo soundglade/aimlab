@@ -7,20 +7,23 @@ import { Switch } from "@/components/ui/switch";
 import { Settings } from "lucide-react";
 import { useLocalStorage } from "@rehooks/local-storage";
 
-interface CustomVoiceSettings {
-  apiKey: string;
-  voiceId: string;
-  modelId: string;
-  speed: string;
-  stability: string;
-  similarityBoost: string;
-  useSpeakerBoost: boolean;
-}
+type ElevenLabsSettings = {
+  service: "elevenlabs";
+  serviceOptions: {
+    api_key: string;
+    voice_id: string;
+    model_id: string;
+    speed?: number;
+    stability?: number;
+    similarity_boost?: number;
+    use_speaker_boost?: boolean;
+  };
+};
 
 export default function CustomizeDrawer() {
   const [open, setOpen] = useState(false);
   const [storedSettings, setStoredSettings] =
-    useLocalStorage<CustomVoiceSettings | null>("custom-voice-settings", null);
+    useLocalStorage<ElevenLabsSettings | null>("custom-voice-settings", null);
   const [apiKey, setApiKey] = useState("");
   const [voiceId, setVoiceId] = useState("");
   const [modelId, setModelId] = useState("");
@@ -31,13 +34,25 @@ export default function CustomizeDrawer() {
 
   useEffect(() => {
     if (open) {
-      setApiKey(storedSettings?.apiKey || "");
-      setVoiceId(storedSettings?.voiceId || "");
-      setModelId(storedSettings?.modelId || "");
-      setSpeed(storedSettings?.speed || "");
-      setStability(storedSettings?.stability || "");
-      setSimilarityBoost(storedSettings?.similarityBoost || "");
-      setUseSpeakerBoost(!!storedSettings?.useSpeakerBoost);
+      setApiKey(storedSettings?.serviceOptions.api_key || "");
+      setVoiceId(storedSettings?.serviceOptions.voice_id || "");
+      setModelId(storedSettings?.serviceOptions.model_id || "");
+      setSpeed(
+        storedSettings?.serviceOptions.speed !== undefined
+          ? String(storedSettings.serviceOptions.speed)
+          : ""
+      );
+      setStability(
+        storedSettings?.serviceOptions.stability !== undefined
+          ? String(storedSettings.serviceOptions.stability)
+          : ""
+      );
+      setSimilarityBoost(
+        storedSettings?.serviceOptions.similarity_boost !== undefined
+          ? String(storedSettings.serviceOptions.similarity_boost)
+          : ""
+      );
+      setUseSpeakerBoost(!!storedSettings?.serviceOptions.use_speaker_boost);
     }
   }, [open]);
 
@@ -47,13 +62,17 @@ export default function CustomizeDrawer() {
 
   function handleSave() {
     setStoredSettings({
-      apiKey,
-      voiceId,
-      modelId,
-      speed,
-      stability,
-      similarityBoost,
-      useSpeakerBoost,
+      service: "elevenlabs",
+      serviceOptions: {
+        api_key: apiKey,
+        voice_id: voiceId,
+        model_id: modelId,
+        speed: speed !== "" ? Number(speed) : undefined,
+        stability: stability !== "" ? Number(stability) : undefined,
+        similarity_boost:
+          similarityBoost !== "" ? Number(similarityBoost) : undefined,
+        use_speaker_boost: useSpeakerBoost,
+      },
     });
     setOpen(false);
   }
