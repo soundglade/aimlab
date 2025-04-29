@@ -19,10 +19,10 @@ export const VOICES = [
     previewFile: "/assets/drew-elevenlabs-voice-sample.mp3",
   },
   {
-    id: "britney",
-    name: "Britney",
-    description: "ElevenLabs v2",
-    previewFile: "/assets/britney-elevenlabs-voice-sample.mp3",
+    id: "nicole",
+    name: "Nicole",
+    description: "Kokoro TTS",
+    previewFile: "/assets/nicole-kokoro-voice-sample.mp3",
   },
   {
     id: "jameson",
@@ -31,10 +31,10 @@ export const VOICES = [
     previewFile: "/assets/jameson-elevenlabs-voice-sample.mp3",
   },
   {
-    id: "nicole",
-    name: "Nicole",
-    description: "Kokoro TTS",
-    previewFile: "/assets/nicole-kokoro-voice-sample.mp3",
+    id: "britney",
+    name: "Britney",
+    description: "ElevenLabs v2",
+    previewFile: "/assets/britney-elevenlabs-voice-sample.mp3",
   },
 ];
 
