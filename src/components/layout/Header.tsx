@@ -101,6 +101,10 @@ export function Header({ showChangelog }: { showChangelog: boolean }) {
 
 const changelog = [
   {
+    text: "Instant player supports custom ElevenLabs voices",
+    date: "2025-04-29T14:00:00Z",
+  },
+  {
     text: "Instant player published",
     date: "2025-04-25T16:00:00Z",
   },
