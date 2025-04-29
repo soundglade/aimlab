@@ -8,6 +8,7 @@ import { Settings } from "lucide-react";
 import { useLocalStorage } from "@rehooks/local-storage";
 import { toast } from "sonner";
 import { useRouter } from "next/router";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type ElevenLabsSettings = {
   service: "elevenlabs";
@@ -144,137 +145,146 @@ export default function CustomizeDrawer() {
         Customize
       </Button>
       <Drawer open={open} onOpenChange={setOpen} direction="right">
-        <DrawerContent className="w-[350px]! p-6">
-          <h2 className="mb-1 text-xl tracking-tight">Custom Voice Settings</h2>
-          <p className="mb-4 text-sm text-gray-500">
-            You can customize the voice settings by using ElevenLabs. You need
-            to have an account with them and an API key.
-          </p>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSave();
-            }}
-          >
-            <div>
-              <Label htmlFor="apiKey" className="mb-1 block text-xs">
-                API Key
-              </Label>
-              <Input
-                id="apiKey"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your ElevenLabs API key"
-                required
-              />
+        <DrawerContent className="w-[350px]!">
+          <ScrollArea className="h-full p-2">
+            <div className="p-2">
+              <h2 className="mb-1 text-xl tracking-tight">
+                Custom Voice Settings
+              </h2>
+              <p className="mb-4 text-sm text-gray-500">
+                You can customize the voice settings by using ElevenLabs. You
+                need to have an account with them and an API key.
+              </p>
+              <form
+                className="space-y-4 md:mt-8"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSave();
+                }}
+              >
+                <div>
+                  <Label htmlFor="apiKey" className="mb-1 block text-xs">
+                    API Key
+                  </Label>
+                  <Input
+                    id="apiKey"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="Enter your ElevenLabs API key"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="voiceId" className="mb-1 block text-xs">
+                    Voice ID
+                  </Label>
+                  <Input
+                    id="voiceId"
+                    value={voiceId}
+                    onChange={(e) => setVoiceId(e.target.value)}
+                    placeholder="Voice ID"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="modelId" className="mb-1 block text-xs">
+                    Model ID
+                  </Label>
+                  <Input
+                    id="modelId"
+                    value={modelId}
+                    onChange={(e) => setModelId(e.target.value)}
+                    placeholder="Model ID"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="speed" className="mb-1 block text-xs">
+                    Speed
+                  </Label>
+                  <Input
+                    id="speed"
+                    type="number"
+                    step="any"
+                    value={speed}
+                    onChange={(e) => setSpeed(e.target.value)}
+                    placeholder="Optional"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="stability" className="mb-1 block text-xs">
+                    Stability
+                  </Label>
+                  <Input
+                    id="stability"
+                    type="number"
+                    step="any"
+                    value={stability}
+                    onChange={(e) => setStability(e.target.value)}
+                    placeholder="Optional"
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="similarityBoost"
+                    className="mb-2 block text-xs"
+                  >
+                    Similarity Boost
+                  </Label>
+                  <Input
+                    id="similarityBoost"
+                    type="number"
+                    step="any"
+                    value={similarityBoost}
+                    onChange={(e) => setSimilarityBoost(e.target.value)}
+                    placeholder="Optional"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="speakerBoost"
+                    checked={useSpeakerBoost}
+                    onCheckedChange={setUseSpeakerBoost}
+                  />
+                  <Label htmlFor="speakerBoost">Use Speaker Boost</Label>
+                </div>
+                <div className="mt-6 flex flex-col gap-2 pt-2 md:mt-10">
+                  <div className="flex items-center justify-around gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleReset}
+                      className="flex-1"
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopyAsUrl}
+                      className="flex-1"
+                      disabled={!apiKey}
+                    >
+                      Copy as URL
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCancel}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="flex-1">
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </form>
             </div>
-            <div>
-              <Label htmlFor="voiceId" className="mb-1 block text-xs">
-                Voice ID
-              </Label>
-              <Input
-                id="voiceId"
-                value={voiceId}
-                onChange={(e) => setVoiceId(e.target.value)}
-                placeholder="Voice ID"
-              />
-            </div>
-            <div>
-              <Label htmlFor="modelId" className="mb-1 block text-xs">
-                Model ID
-              </Label>
-              <Input
-                id="modelId"
-                value={modelId}
-                onChange={(e) => setModelId(e.target.value)}
-                placeholder="Model ID"
-              />
-            </div>
-            <div>
-              <Label htmlFor="speed" className="mb-1 block text-xs">
-                Speed
-              </Label>
-              <Input
-                id="speed"
-                type="number"
-                step="any"
-                value={speed}
-                onChange={(e) => setSpeed(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-            <div>
-              <Label htmlFor="stability" className="mb-1 block text-xs">
-                Stability
-              </Label>
-              <Input
-                id="stability"
-                type="number"
-                step="any"
-                value={stability}
-                onChange={(e) => setStability(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-            <div>
-              <Label htmlFor="similarityBoost" className="mb-2 block text-xs">
-                Similarity Boost
-              </Label>
-              <Input
-                id="similarityBoost"
-                type="number"
-                step="any"
-                value={similarityBoost}
-                onChange={(e) => setSimilarityBoost(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="speakerBoost"
-                checked={useSpeakerBoost}
-                onCheckedChange={setUseSpeakerBoost}
-              />
-              <Label htmlFor="speakerBoost">Use Speaker Boost</Label>
-            </div>
-            <div className="flex flex-col gap-2 pt-2">
-              <div className="flex items-center justify-around gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleReset}
-                  className="flex-1"
-                >
-                  Reset
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCopyAsUrl}
-                  className="flex-1"
-                  disabled={!apiKey}
-                >
-                  Copy as URL
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleCancel}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="flex-1">
-                  Save
-                </Button>
-              </div>
-            </div>
-          </form>
+          </ScrollArea>
         </DrawerContent>
       </Drawer>
     </>
