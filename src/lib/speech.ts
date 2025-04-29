@@ -19,6 +19,7 @@ type SpeechRequest = {
     speed?: number;
     stability?: number;
     similarity_boost?: number;
+    preset?: string;
     // ...future options
   };
   resolve: (value: ArrayBuffer) => void;
@@ -61,7 +62,7 @@ const activeRequests: Record<SpeechService, number> = {
  * Generate speech using one of the available TTS services
  * @param text Text to convert to speech
  * @param service Optional service to use
- * @param serviceOptions Optional settings for the TTS service
+ * @param serviceOptions Optional settings for the TTS service (may include 'preset' for ElevenLabs)
  * @param signal Optional AbortSignal to cancel queued requests
  * @returns ArrayBuffer containing the audio data
  */
@@ -75,6 +76,7 @@ export async function generateSpeech(
     speed?: number;
     stability?: number;
     similarity_boost?: number;
+    preset?: string;
     // ...future options
   },
   signal?: AbortSignal
