@@ -105,7 +105,7 @@ export default function ReaderPage() {
 
   return (
     <Layout>
-      <div className="pb-0 pt-8">
+      <div className="pb-0 pt-1 md:pt-6">
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="mb-2 text-center text-3xl tracking-tight">
             Instant Meditation Player
@@ -115,7 +115,7 @@ export default function ReaderPage() {
             Instantly read your own guided meditations
           </p>
 
-          <div className="mx-auto mb-1 flex justify-center gap-4 md:mb-4">
+          <div className="mx-auto mb-1 flex justify-center gap-4">
             <ExamplesSelect
               onSelect={(example) => {
                 setScript(example.script);
@@ -165,7 +165,7 @@ export default function ReaderPage() {
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin field-sizing-fixed bg-background h-[300px] overflow-y-auto text-sm md:h-[400px] md:text-base"
+                className="scrollbar-thin field-sizing-fixed bg-background h-[300px] overflow-y-auto text-sm md:h-[350px] md:text-base"
                 value={script}
                 onChange={(e) => setScript(e.target.value)}
                 disabled={isSubmitting}
