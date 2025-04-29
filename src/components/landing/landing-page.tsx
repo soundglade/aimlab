@@ -81,7 +81,7 @@ export default function LandingPage({
             >
               <CardHeader>
                 <CardTitle className="mb-1 flex items-center gap-3">
-                  <Sparkles className="h-5 w-5" />
+                  <Sparkles className="h-5 w-5 opacity-50" />
                   Listen instantly
                 </CardTitle>
                 <CardDescription>
@@ -111,7 +111,7 @@ export default function LandingPage({
             >
               <CardHeader>
                 <CardTitle className="mb-1 flex items-center gap-3">
-                  <PencilRuler className="h-5 w-5" />
+                  <PencilRuler className="h-5 w-5 opacity-50" />
                   Create a shareable meditation
                 </CardTitle>
                 <CardDescription>
@@ -150,7 +150,7 @@ export default function LandingPage({
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <Megaphone className="h-5 w-5" />
+            <Megaphone className="h-5 w-5 opacity-50" />
             Newsletter
           </h2>
 
@@ -212,7 +212,7 @@ export default function LandingPage({
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <ScrollText className="h-5 w-5" />
+            <ScrollText className="h-5 w-5 opacity-50" />
             Meditations
           </h2>
           <Button variant="ghost" asChild size="sm">
@@ -254,7 +254,7 @@ export default function LandingPage({
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <Users className="h-5 w-5" />
+            <Users className="h-5 w-5 opacity-50" />
             Community
           </h2>
           <Button variant="ghost" asChild size="sm">
@@ -301,7 +301,7 @@ export default function LandingPage({
       {/* Articles */}
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-          <BookOpen className="h-5 w-5" />
+          <BookOpen className="h-5 w-5 opacity-50" />
           Articles
         </h2>
         <div className="mt-6 max-w-4xl rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
