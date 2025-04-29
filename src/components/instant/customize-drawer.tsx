@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Settings } from "lucide-react";
 import { useLocalStorage } from "@rehooks/local-storage";
+import { toast } from "sonner";
+import { useRouter } from "next/router";
 
 type ElevenLabsSettings = {
   service: "elevenlabs";
@@ -31,6 +33,7 @@ export default function CustomizeDrawer() {
   const [stability, setStability] = useState("");
   const [similarityBoost, setSimilarityBoost] = useState("");
   const [useSpeakerBoost, setUseSpeakerBoost] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (open) {
@@ -56,6 +59,28 @@ export default function CustomizeDrawer() {
     }
   }, [open]);
 
+  useEffect(() => {
+    // On mount: check for 'settings' param in URL
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get("settings");
+    if (encoded) {
+      try {
+        // Decode base64 to JSON string
+        const json = decodeURIComponent(escape(atob(encoded)));
+        const parsed = JSON.parse(json);
+        setStoredSettings(parsed);
+      } catch (e) {
+        // Optionally, you could show a toast here for invalid param
+      }
+      // Remove 'settings' param from URL and reload the page
+      params.delete("settings");
+      const newUrl = `${window.location.origin}${window.location.pathname}${
+        params.toString() ? "?" + params.toString() : ""
+      }`;
+      window.location.replace(newUrl); // This will reload the page
+    }
+  }, []);
+
   function handleCancel() {
     setOpen(false);
   }
@@ -80,6 +105,32 @@ export default function CustomizeDrawer() {
   function handleReset() {
     setStoredSettings(null);
     setOpen(false);
+  }
+
+  async function handleCopyAsUrl() {
+    try {
+      const settings = {
+        service: "elevenlabs",
+        serviceOptions: {
+          api_key: apiKey,
+          voice_id: voiceId,
+          model_id: modelId,
+          speed: speed !== "" ? Number(speed) : undefined,
+          stability: stability !== "" ? Number(stability) : undefined,
+          similarity_boost:
+            similarityBoost !== "" ? Number(similarityBoost) : undefined,
+          use_speaker_boost: useSpeakerBoost,
+        },
+      };
+      const json = JSON.stringify(settings);
+      // btoa only works with ASCII, so encodeURIComponent is used for safety
+      const base64 = btoa(unescape(encodeURIComponent(json)));
+      const url = `${window.location.origin}${window.location.pathname}?settings=${base64}`;
+      await navigator.clipboard.writeText(url);
+      toast.success("URL copied to clipboard");
+    } catch (e) {
+      toast.error("Failed to copy URL");
+    }
   }
 
   return (
@@ -187,26 +238,41 @@ export default function CustomizeDrawer() {
               />
               <Label htmlFor="speakerBoost">Use Speaker Boost</Label>
             </div>
-            <div className="flex gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleReset}
-                className="flex-1"
-              >
-                Reset
-              </Button>
-              <Button type="submit" className="flex-1">
-                Save
-              </Button>
+            <div className="flex flex-col gap-2 pt-2">
+              <div className="flex items-center justify-around gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="flex-1"
+                >
+                  Reset
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyAsUrl}
+                  className="flex-1"
+                  disabled={!apiKey}
+                >
+                  Copy as URL
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Save
+                </Button>
+              </div>
             </div>
           </form>
         </DrawerContent>
