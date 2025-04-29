@@ -172,7 +172,7 @@ export default function ReaderPage() {
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin field-sizing-fixed bg-background h-[300px] overflow-y-auto text-sm md:h-[350px] md:text-base"
+                className="scrollbar-thin text-muted-foreground field-sizing-fixed bg-background h-[300px] overflow-y-auto text-sm md:h-[350px] md:text-base"
                 value={script}
                 onChange={(e) => setScript(e.target.value)}
                 disabled={isSubmitting}

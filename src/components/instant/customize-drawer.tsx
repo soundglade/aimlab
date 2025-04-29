@@ -94,7 +94,7 @@ export default function CustomizeDrawer() {
       </Button>
       <Drawer open={open} onOpenChange={setOpen} direction="right">
         <DrawerContent className="w-[350px]! p-6">
-          <h2 className="mb-4 text-xl font-semibold">Custom Voice Settings</h2>
+          <h2 className="mb-1 text-xl tracking-tight">Custom Voice Settings</h2>
           <p className="mb-4 text-sm text-gray-500">
             You can customize the voice settings by using ElevenLabs. You need
             to have an account with them and an API key.
@@ -107,7 +107,7 @@ export default function CustomizeDrawer() {
             }}
           >
             <div>
-              <Label htmlFor="apiKey" className="mb-2 block">
+              <Label htmlFor="apiKey" className="mb-1 block text-xs">
                 API Key
               </Label>
               <Input
@@ -119,7 +119,7 @@ export default function CustomizeDrawer() {
               />
             </div>
             <div>
-              <Label htmlFor="voiceId" className="mb-2 block">
+              <Label htmlFor="voiceId" className="mb-1 block text-xs">
                 Voice ID
               </Label>
               <Input
@@ -130,7 +130,7 @@ export default function CustomizeDrawer() {
               />
             </div>
             <div>
-              <Label htmlFor="modelId" className="mb-2 block">
+              <Label htmlFor="modelId" className="mb-1 block text-xs">
                 Model ID
               </Label>
               <Input
@@ -141,7 +141,7 @@ export default function CustomizeDrawer() {
               />
             </div>
             <div>
-              <Label htmlFor="speed" className="mb-2 block">
+              <Label htmlFor="speed" className="mb-1 block text-xs">
                 Speed
               </Label>
               <Input
@@ -154,7 +154,7 @@ export default function CustomizeDrawer() {
               />
             </div>
             <div>
-              <Label htmlFor="stability" className="mb-2 block">
+              <Label htmlFor="stability" className="mb-1 block text-xs">
                 Stability
               </Label>
               <Input
@@ -167,7 +167,7 @@ export default function CustomizeDrawer() {
               />
             </div>
             <div>
-              <Label htmlFor="similarityBoost" className="mb-2 block">
+              <Label htmlFor="similarityBoost" className="mb-2 block text-xs">
                 Similarity Boost
               </Label>
               <Input
