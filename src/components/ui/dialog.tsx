@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { gradientBackgroundClasses } from "@/components/layout/Layout";
+import { gradientBackgroundClasses } from "@/components/layout/layout";
 
 function Dialog({
   ...props

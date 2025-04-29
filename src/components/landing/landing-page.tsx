@@ -18,7 +18,7 @@ import {
   ExternalLink,
   PencilRuler,
 } from "lucide-react";
-import { Layout } from "@/components/layout/Layout";
+import { Layout } from "@/components/layout/layout";
 import { SubscribeForm } from "./subscribe-form";
 
 import { BlogPost } from "@/pages/index";

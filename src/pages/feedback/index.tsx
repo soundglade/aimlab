@@ -1,4 +1,4 @@
-import { Layout } from "@/components/layout/Layout";
+import { Layout } from "@/components/layout/layout";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
