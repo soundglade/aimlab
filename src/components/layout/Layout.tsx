@@ -32,6 +32,10 @@ export function Layout({
           name="description"
           content="An experimental space exploring the intersection of AI and meditation."
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
         {/* Open Graph / Facebook */}
         <meta key="og:type" property="og:type" content="website" />
         <meta
