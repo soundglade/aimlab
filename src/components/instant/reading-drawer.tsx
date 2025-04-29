@@ -1,6 +1,5 @@
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
-import type { MeditationFormatterResult } from "@/lib/meditation-formatter";
 import { ReadingDrawerContent } from "./reading-drawer-content";
 
 interface ReadingDrawerProps {

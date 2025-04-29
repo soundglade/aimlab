@@ -6,7 +6,8 @@ import { ReadingDrawer } from "./reading-drawer";
 import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
 import { ExamplesSelect } from "./examples-select";
-import { Settings } from "lucide-react";
+import CustomizeDrawer from "./customize-drawer";
+
 export default function ReaderPage() {
   const [script, setScript] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,11 +127,7 @@ export default function ReaderPage() {
                 }, 0);
               }}
             />
-
-            <Button variant="outline" className="justify-between border-0">
-              <Settings className="opacity-50" />
-              Customize
-            </Button>
+            <CustomizeDrawer />
           </div>
 
           <div className="text-muted-foreground mx-auto mb-1 max-w-3xl rounded-lg p-4 text-sm">
