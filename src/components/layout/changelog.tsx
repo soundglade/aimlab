@@ -3,6 +3,37 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { CircleCheckBig } from "lucide-react";
+import Link from "next/link";
+
+// CustomLink component for consistent link style
+function CustomLink({
+  href,
+  children,
+  className = "",
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) {
+  const isExternal = href.startsWith("http://") || href.startsWith("https://");
+  const baseClass =
+    "text-primary underline underline-offset-2 transition-colors hover:opacity-80";
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${baseClass} ${className}`}
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={`${baseClass} ${className}`} {...props}>
+      {children}
+    </Link>
+  );
+}
 
 // Changelog as JSX
 export const changelogEntries = [
@@ -11,8 +42,9 @@ export const changelogEntries = [
     date: "2025-04-29T14:00:00Z",
     description: (
       <>
-        You can now use your own <b>custom ElevenLabs voices</b> in the instant
-        player. Just add your API key and voice ID in the settings!
+        You can now use your own custom ElevenLabs voices in the{" "}
+        <CustomLink href="/instant">instant player</CustomLink>. Use the new
+        "Customize" button to add your API key and voice settings.
       </>
     ),
   },
@@ -22,70 +54,78 @@ export const changelogEntries = [
     description: (
       <>
         The instant player is now live! Instantly listen to your own guided
-        meditations with AI voices.
+        meditations. Great for quick experiments and daily practice. Unlike the
+        Studio meditations are not public.
       </>
     ),
   },
   {
-    title: "New domain: meditationlab.ai",
+    title: "New domain: MeditationLab.ai",
     date: "2025-04-25T13:00:00Z",
     description: (
       <>
         We have a new home:{" "}
-        <a
-          href="https://meditationlab.ai"
-          className="underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          meditationlab.ai
-        </a>
+        <CustomLink href="https://meditationlab.ai">
+          MeditationLab.ai
+        </CustomLink>
       </>
     ),
   },
   {
-    title: "Introduce newsletter",
+    title: "Introducing the weekly newsletter",
     date: "2025-04-25T10:00:00Z",
     description: (
       <>
-        Stay up to date with new features and meditations by subscribing to our
-        newsletter.
+        Stay up to date with new features and meditations by{" "}
+        <CustomLink href="https://newsletter.meditationlab.ai">
+          subscribing to our newsletter
+        </CustomLink>
+        . We publish updates every week.
       </>
     ),
   },
   {
-    title: "Add playback buttons for instant reader",
+    title: "Add playback buttons for instant player demo",
     date: "2025-04-22T17:00:00Z",
-    description: (
-      <>
-        The instant reader now has playback controls for a smoother listening
-        experience.
-      </>
-    ),
+    description: <>The instant player demo now has playback controls.</>,
   },
   {
-    title: "First draft of instant reader",
+    title: "First demo of instant player",
     date: "2025-04-21T12:00:00Z",
     description: (
-      <>The first version of the instant reader is available for testing.</>
+      <>The first version of the instant player is available for testing.</>
     ),
   },
   {
     title: "Upload meditation cover image",
     date: "2025-04-11T12:00:00Z",
-    description: <>You can now upload a cover image for your meditations.</>,
+    description: (
+      <>
+        You can now upload a cover image for your meditations. You can find the
+        new option under the Edit menu of the meditation page.
+      </>
+    ),
   },
   {
     title: "Two new voices available",
     date: "2025-04-11T09:00:00Z",
-    description: <>Added two new high-quality voices for your meditations.</>,
+    description: (
+      <>
+        Added two new high-quality voices using ElevenLabs v2 for your
+        meditations.
+      </>
+    ),
   },
   {
     title: "Reddit posts displayed on landing page",
     date: "2025-04-08T12:00:00Z",
     description: (
       <>
-        Latest Reddit posts are now shown on the landing page for inspiration.
+        Latest Reddit posts from{" "}
+        <CustomLink href="https://www.reddit.com/r/AIMeditationLab/">
+          r/AIMeditationLab
+        </CustomLink>{" "}
+        are now shown on the landing page.
       </>
     ),
   },
@@ -93,7 +133,10 @@ export const changelogEntries = [
     title: "Ending bell added to meditation player",
     date: "2025-04-07T12:00:00Z",
     description: (
-      <>A gentle bell now signals the end of your meditation session.</>
+      <>
+        A gentle bell now signals the end of your meditation session. You toggle
+        the bell using the mute bell button.
+      </>
     ),
   },
 ];
@@ -144,14 +187,14 @@ export function Changelog({ show }: { show: boolean }) {
         </div>
       </Button>
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-3xl flex-col bg-white px-2 dark:bg-gray-900 md:px-6">
+        <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-2xl flex-col bg-white px-2 dark:bg-gray-900 md:px-6">
           <div className="flex items-center justify-between px-4 pb-2 pt-3">
             <div className="flex items-center gap-2 text-2xl tracking-tight">
               <CircleCheckBig className="h-5 w-5 opacity-50" />
               Changelog
             </div>
           </div>
-          <div className="scrollbar-thin flex-1 overflow-auto px-4 py-8 md:px-4">
+          <div className="scrollbar-thin flex-1 overflow-auto px-4 py-4 md:px-4">
             <ChangelogList />
           </div>
         </DrawerContent>
