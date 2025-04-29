@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Lightbulb, Users, CircleHelp } from "lucide-react";
 import Link from "next/link";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/layout-component";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import StudioFlowDialog from "@/components/studio/studio-flow-dialog";

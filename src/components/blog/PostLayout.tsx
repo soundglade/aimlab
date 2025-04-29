@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/layout-component";
 
 interface PostLayoutProps {
   title: React.ReactNode | string;

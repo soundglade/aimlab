@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/layout-component";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, useRef } from "react";
 import { ReadingDrawer } from "./reading-drawer";

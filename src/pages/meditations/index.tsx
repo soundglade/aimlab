@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/layout-component";
 import { Meditation } from "@/lib/latest-meditations";
 import { getLatestMeditations } from "@/lib/latest-meditations";
 import { GetServerSideProps } from "next";

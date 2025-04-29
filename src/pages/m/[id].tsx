@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { MeditationPlayer } from "@/components/player/meditation-player";
 import { MeditationSummary } from "@/components/player/meditation-summary";
 import { Meditation } from "@/components/types";
-import { Layout } from "@/components/layout/layout";
+import { Layout } from "@/components/layout/layout-component";
 import { fetchMeditationData } from "@/lib/fetch-meditation";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {

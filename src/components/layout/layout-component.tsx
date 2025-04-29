@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { Header } from "./header";
-import { Footer } from "./footer";
+import { Header } from "./header-component";
+import { Footer } from "./footer-component";
 import Head from "next/head";
 
 export const gradientBackgroundClasses =
