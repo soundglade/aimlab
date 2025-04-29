@@ -6,7 +6,7 @@ import { ReadingDrawer } from "./reading-drawer";
 import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
 import { ExamplesSelect } from "./examples-select";
-
+import { Settings } from "lucide-react";
 export default function ReaderPage() {
   const [script, setScript] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,27 +112,10 @@ export default function ReaderPage() {
           </h1>
 
           <p className="text-muted-foreground mb-4 text-center">
-            Instantly read your own guided meditations.
+            Instantly read your own guided meditations
           </p>
 
-          <div className="bg-card shadow-xs text-muted-foreground mx-auto mb-3 max-w-3xl rounded-lg p-4 text-sm md:mb-4">
-            <ul className="list-inside space-y-2">
-              <li>
-                Use <i>ChatGPT</i>,{" "}
-                <Link
-                  href="https://awakin.ai"
-                  target="_blank"
-                  className="text-primary hidden sm:inline"
-                >
-                  Awakin.ai
-                </Link>{" "}
-                or another chatbot to generate a meditation script, then paste
-                it down here
-              </li>
-            </ul>
-          </div>
-
-          <div className="mx-auto mb-3 flex justify-center md:mb-4">
+          <div className="mx-auto mb-1 flex justify-center gap-4 md:mb-4">
             <ExamplesSelect
               onSelect={(example) => {
                 setScript(example.script);
@@ -143,6 +126,35 @@ export default function ReaderPage() {
                 }, 0);
               }}
             />
+
+            <Button variant="outline" className="justify-between border-0">
+              <Settings className="opacity-50" />
+              Customize
+            </Button>
+          </div>
+
+          <div className="text-muted-foreground mx-auto mb-1 max-w-3xl rounded-lg p-4 text-sm">
+            <ul className="list-inside space-y-2">
+              <li>
+                <span className="hidden sm:inline">
+                  {" "}
+                  Use <i>ChatGPT</i>,{" "}
+                  <Link
+                    href="https://awakin.ai"
+                    target="_blank"
+                    className="text-primary"
+                  >
+                    Awakin.ai
+                  </Link>{" "}
+                  or another chatbot to generate a meditation script, then paste
+                  it here
+                </span>
+                <span className="sm:hidden">
+                  Create a meditation script with <i>ChatGPT</i> or any other
+                  chatbot, then copy and paste it down here
+                </span>
+              </li>
+            </ul>
           </div>
 
           <form
