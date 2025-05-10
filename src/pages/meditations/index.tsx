@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/layout-component";
 import { Meditation } from "@/components/types";
 import { getLatestMeditations } from "@/lib/latest-meditations";
 import { GetServerSideProps } from "next";
-import { MarkdownDescription } from "@/components/ui/markdown-description";
+import removeMarkdown from "remove-markdown";
 
 interface MeditationsIndexProps {
   latestMeditations: (Meditation & {
@@ -25,7 +25,7 @@ export default function MeditationsIndex({
 
   return (
     <Layout>
-      <header className="mb-10 mt-8 text-center md:mt-14">
+      <header className="mb-4 mt-8 text-center sm:mb-10 md:mt-14">
         <h1 className="mb-3 text-3xl tracking-tight">Meditations</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl">
           Explore all meditations created and shared by the community
@@ -33,38 +33,38 @@ export default function MeditationsIndex({
       </header>
 
       {featured.length > 0 && (
-        <section className="mb-12">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="mb-4 text-xl font-semibold tracking-tight text-center">
-              Featured Meditations
-            </h2>
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mb-3 sm:mb-12">
+          <div className="mx-auto max-w-4xl px-2">
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-4">
               {featured.map((meditation) => (
-                <li
-                  key={meditation.link}
-                  className="bg-background border rounded-lg p-4 flex flex-col h-full"
-                >
-                  <Link href={meditation.link} className="hover:underline">
-                    <h3 className="text-lg font-medium mb-2 line-clamp-2">
-                      {meditation.title}
-                    </h3>
+                <li key={meditation.link}>
+                  <Link
+                    href={meditation.link}
+                    className="hover:bg-accent bg-background group relative flex h-full max-h-64 flex-col overflow-hidden rounded-lg px-4 py-2 transition-colors"
+                  >
+                    <h3 className="mb-2 text-lg">{meditation.title}</h3>
+                    <span className="text-muted-foreground mb-2 text-xs">
+                      {meditation.timeAgo}
+                    </span>
+                    {meditation.coverImageUrl && (
+                      <img
+                        src={meditation.coverImageUrl}
+                        alt="Cover"
+                        className="mx-auto mb-3 block max-h-[200px] max-w-full rounded object-cover"
+                        style={{ maxWidth: 200, maxHeight: 200 }}
+                      />
+                    )}
+                    {meditation.description && (
+                      <div className="text-muted-foreground mt-1 overflow-hidden text-sm">
+                        {removeMarkdown(meditation.description).replace(
+                          /\n{2,}/g,
+                          "\n"
+                        )}
+                      </div>
+                    )}
+                    {/* Gradient always at the bottom of the card */}
+                    <div className="from-background group-hover:from-accent pointer-events-none absolute left-0 top-[216px] h-10 w-full bg-gradient-to-t to-transparent transition-colors" />
                   </Link>
-                  <span className="text-muted-foreground text-xs mb-2">
-                    {meditation.timeAgo}
-                  </span>
-                  {meditation.coverImageUrl && (
-                    <img
-                      src={meditation.coverImageUrl}
-                      alt="Cover"
-                      className="rounded mb-3 mx-auto block max-h-[200px] max-w-full object-cover"
-                      style={{ maxWidth: 200, maxHeight: 200 }}
-                    />
-                  )}
-                  {meditation.description && (
-                    <div className="mt-1">
-                      <MarkdownDescription content={meditation.description} />
-                    </div>
-                  )}
                 </li>
               ))}
             </ul>
@@ -79,7 +79,7 @@ export default function MeditationsIndex({
               <li key={meditation.link}>
                 <Link
                   href={meditation.link}
-                  className="hover:bg-accent bg-background flex justify-between gap-6 rounded-lg border px-3 py-2 transition-colors"
+                  className="hover:bg-accent bg-background flex justify-between gap-6 rounded-lg px-3 py-2 transition-colors"
                 >
                   <h2>{meditation.title}</h2>
                   <span className="text-muted-foreground whitespace-nowrap text-sm">

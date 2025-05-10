@@ -71,6 +71,7 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-html": "^16.0.1",
+    "remove-markdown": "^0.6.2",
     "replicate": "^1.0.1",
     "slugify": "^1.6.6",
     "sonner": "^2.0.1",
