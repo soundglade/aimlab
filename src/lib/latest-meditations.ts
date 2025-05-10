@@ -1,15 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { timeAgo } from "./time";
-
-export interface Meditation {
-  title: string;
-  description: string;
-  duration: string;
-  timestamp?: number;
-  timeAgo: string;
-  link: string;
-}
+import { Meditation } from "@/components/types";
 
 const CACHE_FILE = path.join(process.cwd(), "cache", "latest-meditations.json");
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -26,7 +18,9 @@ const HIDDEN_MEDITATIONS: string[] = [
 
 export async function getLatestMeditations(
   maxCount: number = 6
-): Promise<Meditation[]> {
+): Promise<
+  (Meditation & { timestamp?: number; timeAgo: string; link: string })[]
+> {
   try {
     // Check if cache exists and is fresh
     if (fs.existsSync(CACHE_FILE)) {

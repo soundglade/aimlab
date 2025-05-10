@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { Meditation } from "@/components/types";
 import { MeditationHeader } from "./meditation-header";
 import { cn } from "@/lib/utils";
+import { MarkdownDescription } from "@/components/ui/markdown-description";
 
 interface MeditationSummaryProps {
   meditationId: string;
@@ -67,24 +68,7 @@ export function MeditationSummary({
           />
         )}
         {meditation.description && (
-          <div
-            className={cn(
-              "prose dark:prose-invert",
-              "prose-headings:font-normal prose-headings:tracking-tigh prose-headings:mt-8 prose-headings:mb-4",
-              "prose-a:text-primary prose-a:no-underline prose-a:hover:underline",
-              "prose-p:leading-[1.6]",
-              "max-w-none [&_p+p]:-mt-1",
-              "break-words text-left",
-              "[&_img]:mx-auto [&_img]:mt-2 [&_img]:block [&_img]:max-h-[500px]"
-            )}
-          >
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{ a: CustomLink }}
-            >
-              {meditation.description}
-            </ReactMarkdown>
-          </div>
+          <MarkdownDescription content={meditation.description} />
         )}
       </Card>
 
