@@ -38,6 +38,17 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Highlight featured meditations",
+    date: "2025-05-10T14:00:00Z",
+    description: (
+      <>
+        Community meditations with a custom markdown description or cover image
+        are now shown at the top of the{" "}
+        <CustomLink href="/meditations">meditations page</CustomLink>.
+      </>
+    ),
+  },
+  {
     title: "Instant player supports custom ElevenLabs voices",
     date: "2025-04-29T14:00:00Z",
     description: (
