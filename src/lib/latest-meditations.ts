@@ -16,11 +16,15 @@ const HIDDEN_MEDITATIONS: string[] = [
   "7c9c1rr", // hidden because user added personal info
 ];
 
+export type LatestMeditation = Meditation & {
+  timestamp?: number;
+  timeAgo: string;
+  link: string;
+};
+
 export async function getLatestMeditations(
   maxCount: number = 6
-): Promise<
-  (Meditation & { timestamp?: number; timeAgo: string; link: string })[]
-> {
+): Promise<LatestMeditation[]> {
   try {
     // Check if cache exists and is fresh
     if (fs.existsSync(CACHE_FILE)) {

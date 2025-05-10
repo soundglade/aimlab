@@ -22,7 +22,7 @@ import { Layout } from "@/components/layout/layout-component";
 import { SubscribeForm } from "./subscribe-form";
 
 import { BlogPost } from "@/pages/index";
-import { Meditation } from "@/lib/latest-meditations";
+import { LatestMeditation } from "@/lib/latest-meditations";
 import { RedditPost } from "@/lib/reddit-posts";
 import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,7 @@ export default function LandingPage({
   latestRedditPosts,
 }: {
   blogPosts: BlogPost[];
-  latestMeditations: Meditation[];
+  latestMeditations: LatestMeditation[];
   latestRedditPosts: RedditPost[];
 }) {
   const router = useRouter();

@@ -1,6 +1,9 @@
 import LandingPage from "@/components/landing/landing-page";
 import { GetServerSideProps } from "next";
-import { getLatestMeditations, Meditation } from "@/lib/latest-meditations";
+import {
+  getLatestMeditations,
+  LatestMeditation,
+} from "@/lib/latest-meditations";
 import { getLatestRedditPosts, RedditPost } from "@/lib/reddit-posts";
 
 // Define our own BlogPost type since we removed the blog.ts library
@@ -62,7 +65,7 @@ export default function Home({
   latestMeditations,
   latestRedditPosts,
 }: {
-  latestMeditations: Meditation[];
+  latestMeditations: LatestMeditation[];
   latestRedditPosts: RedditPost[];
 }) {
   return (
