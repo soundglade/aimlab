@@ -38,6 +38,19 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Auto-improve pauses",
+    date: "2025-05-12T17:00:00Z",
+    description: (
+      <>
+        The most requested feature so far: improved default pauses. AI chatbots
+        struggle to position and extend pauses appropriately. With this change,
+        the instant player can now automatically improve pauses based on
+        different criteria. It makes pauses more natural, respecting space for
+        breathing and practice instructions.
+      </>
+    ),
+  },
+  {
     title: "Highlight featured meditations",
     date: "2025-05-10T14:00:00Z",
     description: (
