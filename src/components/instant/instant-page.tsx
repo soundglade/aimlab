@@ -10,6 +10,8 @@ import CustomizeDrawer from "./customize-drawer";
 import { useLocalStorage } from "@rehooks/local-storage";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -20,7 +22,7 @@ export default function ReaderPage() {
   const scriptTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
-  const [improvePauses, setImprovePauses] = useState(false);
+  const [improvePauses, setImprovePauses] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,13 +172,13 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="shadow-xs bg-card mx-auto max-w-3xl space-y-4 rounded-lg p-6"
+            className="shadow-xs bg-card mx-auto max-w-3xl space-y-3 rounded-lg p-6"
           >
             <div>
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin text-muted-foreground field-sizing-fixed bg-background h-[300px] overflow-y-auto text-sm md:h-[350px] md:text-base"
+                className="scrollbar-thin text-muted-foreground field-sizing-fixed bg-background h-[250px] overflow-y-auto text-sm md:h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => setScript(e.target.value)}
                 disabled={isSubmitting}
@@ -184,18 +186,10 @@ export default function ReaderPage() {
                 ref={scriptTextareaRef}
               />
             </div>
-            <div className="flex items-center gap-3 py-2">
-              <Switch
-                id="improve-pauses"
-                checked={improvePauses}
-                onCheckedChange={setImprovePauses}
-                disabled={isSubmitting}
-              />
-              <Label htmlFor="improve-pauses">Improve pauses</Label>
-            </div>
+
             <Button
               type="submit"
-              className="w-full"
+              className="w-full text-base"
               disabled={isSubmitting || !script.trim()}
             >
               {isSubmitting
@@ -204,6 +198,25 @@ export default function ReaderPage() {
                 ? "Play with custom ElevenLabs settings"
                 : "Play"}
             </Button>
+            <Label
+              htmlFor="improve-pauses"
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "sm" }),
+                "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
+                isSubmitting || !script.trim()
+                  ? "cursor-not-allowed opacity-50"
+                  : ""
+              )}
+            >
+              <Switch
+                id="improve-pauses"
+                checked={improvePauses}
+                onCheckedChange={!isSubmitting ? setImprovePauses : undefined}
+                disabled={isSubmitting}
+                className="opacity-50"
+              />
+              Improve pauses
+            </Label>
           </form>
 
           <ReadingDrawer
