@@ -37,7 +37,7 @@ export default function SubscribeForm() {
           htmlFor="email"
           className="text-muted-foreground whitespace-nowrap text-center text-base sm:text-left"
         >
-          Join the weekly newsletter
+          Join the newsletter
         </label>
 
         <Input

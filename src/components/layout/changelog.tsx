@@ -91,7 +91,6 @@ export const changelogEntries = [
         <CustomLink href="https://newsletter.meditationlab.ai">
           subscribing to our newsletter
         </CustomLink>
-        . We publish updates every week.
       </>
     ),
   },
