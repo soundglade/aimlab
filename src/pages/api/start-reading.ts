@@ -13,7 +13,8 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { script, settings } = req.body;
+  const { script, settings, improvePauses } = req.body;
+
   if (!script || typeof script !== "string") {
     return res
       .status(400)
@@ -77,6 +78,7 @@ export default async function handler(
       },
       signal: abortController.signal,
       settings,
+      improvePauses,
     });
     res.end();
   } catch (error: any) {

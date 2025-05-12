@@ -119,6 +119,15 @@ Steps to follow:
 Return NOTHING else, no extra commentary. Output MUST be valid JSON conforming to the schema.
 `;
 
+const PAUSE_IMPROVEMENT_INSTRUCTIONS = `
+PAUSE IMPROVEMENT INSTRUCTIONS:
+- Carefully review and improve the placement and duration of pauses in the script.
+- Ensure all pauses are at least 3 seconds long; do not use shorter pauses.
+- Check that there are not more than two consecutive speech steps without a pause in between. If so, add appropriate pauses to allow the text to breathe and give the listener time to reflect.
+- Pay special attention to breathing exercises: if the script instructs the user to take several breaths, ensure there is a pause long enough for the user to complete them comfortably.
+- Use your judgment to create a natural, thoughtful pacing. The goal is to provide enough time for the listener to absorb the guidance and have a good experience.
+- Note: Use shorter pauses to let the speech breathe, and longer pauses for user practice or exercises. Distinguish and apply each type as needed.`;
+
 // OpenAI chat config for both streaming and non-streaming calls
 const OPENAI_CHAT_CONFIG = {
   model: "gpt-4o",
@@ -129,7 +138,7 @@ const OPENAI_CHAT_CONFIG = {
  * Formats a meditation script using OpenAI, returning a structured result or streaming tokens.
  *
  * @param rawScript The raw meditation script to format.
- * @param options Optional: stream (boolean) for streaming mode, onToken callback for streamed tokens.
+ * @param options Optional: stream (boolean) for streaming mode, onToken callback for streamed tokens, improvePauses (boolean) for improving pauses.
  * @returns MeditationFormatterResult (non-streaming) or undefined (streaming mode).
  */
 const formatMeditationScript = async (
@@ -137,6 +146,7 @@ const formatMeditationScript = async (
   options?: {
     stream?: boolean;
     onToken?: (token: string) => void;
+    improvePauses?: boolean;
   }
 ): Promise<MeditationFormatterResult | undefined> => {
   const openai = new OpenAI();
@@ -147,10 +157,14 @@ const formatMeditationScript = async (
     rejectionReason: reason,
   });
 
+  const systemPromptWithPauses =
+    SYSTEM_PROMPT +
+    (options?.improvePauses ? "\n" + PAUSE_IMPROVEMENT_INSTRUCTIONS : "");
+
   if (options?.stream) {
     try {
       const streamingPrompt = [
-        SYSTEM_PROMPT,
+        systemPromptWithPauses,
         "",
         "Here is the JSON schema you must follow:",
         schemaString,
@@ -192,7 +206,10 @@ const formatMeditationScript = async (
     const completion = await openai.beta.chat.completions.parse({
       ...OPENAI_CHAT_CONFIG,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        {
+          role: "system",
+          content: systemPromptWithPauses,
+        },
         { role: "user", content: rawScript },
       ],
       response_format: zodResponseFormat(

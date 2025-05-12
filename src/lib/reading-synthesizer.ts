@@ -13,6 +13,7 @@ interface SynthesizeReadingOptions {
   onData: (data: any) => void;
   signal?: AbortSignal;
   settings?: any;
+  improvePauses?: boolean;
 }
 
 function tryRepairAndParseJSON(text: string) {
@@ -36,6 +37,7 @@ export async function synthesizeReading({
   onData,
   signal,
   settings,
+  improvePauses,
 }: SynthesizeReadingOptions) {
   // Generate a unique reading id for this session
   const generateReadingId = customAlphabet(
@@ -176,6 +178,7 @@ export async function synthesizeReading({
 
       sendAugmentedData();
     },
+    improvePauses,
   });
 
   // Wait for all processing to finish before completing

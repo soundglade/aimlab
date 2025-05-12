@@ -8,6 +8,8 @@ import { AudioContextRefresher } from "./audio-context-refresher";
 import { ExamplesSelect } from "./examples-select";
 import CustomizeDrawer from "./customize-drawer";
 import { useLocalStorage } from "@rehooks/local-storage";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -18,6 +20,7 @@ export default function ReaderPage() {
   const scriptTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
+  const [improvePauses, setImprovePauses] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +40,7 @@ export default function ReaderPage() {
         body: JSON.stringify({
           script,
           ...(customSettings ? { settings: customSettings } : {}),
+          improvePauses,
         }),
         signal: controller.signal,
       });
@@ -179,6 +183,15 @@ export default function ReaderPage() {
                 required
                 ref={scriptTextareaRef}
               />
+            </div>
+            <div className="flex items-center gap-3 py-2">
+              <Switch
+                id="improve-pauses"
+                checked={improvePauses}
+                onCheckedChange={setImprovePauses}
+                disabled={isSubmitting}
+              />
+              <Label htmlFor="improve-pauses">Improve pauses</Label>
             </div>
             <Button
               type="submit"
