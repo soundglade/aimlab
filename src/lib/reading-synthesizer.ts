@@ -187,11 +187,11 @@ export async function synthesizeReading({
 }
 
 // Helper to generate a random mp3 filename based on step text
-function randomMp3Name(stepText: string) {
+export function randomMp3Name(stepText: string) {
   // Take the first 8 words
   const words = stepText.split(/\s+/).slice(0, 8).join(" ");
   // Use slugify for robust slug generation
-  const slug = slugify(words, { lower: true });
+  const slug = slugify(words, { lower: true, strict: true });
   // Add random number for uniqueness
   const rand = Math.floor(Math.random() * 1e9);
   return `${slug}-${rand}.mp3`;
