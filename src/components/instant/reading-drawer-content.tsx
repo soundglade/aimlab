@@ -17,9 +17,11 @@ import {
   BellOff,
   RotateCcw,
   LoaderCircle,
+  Maximize,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useUserInactivity } from "./user-inactivity";
+import { FocusMode } from "./focus-mode";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -60,6 +62,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const completed = script?.completed;
 
   const [bellEnabled, setBellEnabled] = useState(true);
+  const [focusModeActive, setFocusModeActive] = useState(false);
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
@@ -82,6 +85,13 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     }
   }, [playingStepIdx /* isInactive ignored on purpose */]);
 
+  // Auto-activate focus mode when playing and inactive
+  useEffect(() => {
+    if (status === "playing" && isInactive) {
+      setFocusModeActive(true);
+    }
+  }, [status, isInactive]);
+
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
 
@@ -102,13 +112,25 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     return null;
   })();
 
+  // Manual trigger handler
+  const handleManualFocusMode = () => setFocusModeActive(true);
+
   return (
     <>
       {/* Header (fixed) */}
-      <div className="border-muted-foreground/10 z-10 shrink-0 border-b-2 px-4 pb-2 pt-3">
-        <div className="text-center text-2xl tracking-tight md:mb-2 md:text-3xl">
+      <div className="border-muted-foreground/10 z-10 flex shrink-0 items-center justify-between border-b-2 px-4 pb-2 pt-3">
+        <div className="flex-1 text-center text-2xl tracking-tight md:mb-2 md:text-3xl">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Enter focus mode"
+          onClick={handleManualFocusMode}
+          className="ml-2"
+        >
+          <Maximize className="size-6" />
+        </Button>
       </div>
       {/* Main scrollable content */}
       <div
@@ -268,6 +290,23 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         style={{ display: "none" }}
         controls={false}
         preload="auto"
+      />
+      {/* Focus Mode Overlay */}
+      <FocusMode
+        visible={focusModeActive}
+        onExit={() => setFocusModeActive(false)}
+        content={(() => {
+          const step = steps[playingStepIdx ?? -1];
+          if (!step) return null;
+          if (step.type === "speech") return <div>{step.text}</div>;
+          if (step.type === "pause")
+            return (
+              <div className="text-muted-foreground/70 italic">
+                {step.duration}s pause
+              </div>
+            );
+          return null;
+        })()}
       />
     </>
   );
