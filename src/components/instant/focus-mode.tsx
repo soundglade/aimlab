@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { gradientBackgroundClasses } from "@/components/layout/layout-component";
 import { ReadingStep } from "../types";
@@ -57,7 +58,19 @@ export function FocusMode({ visible, onExit, activeStep }) {
       aria-hidden={!visible}
     >
       <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
-        {renderStep(activeStep)}
+        <AnimatePresence mode="wait">
+          {activeStep && (
+            <motion.div
+              key={activeStep.id || activeStep.text || activeStep.type}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+            >
+              {renderStep(activeStep)}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
