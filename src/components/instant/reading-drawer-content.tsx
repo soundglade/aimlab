@@ -72,8 +72,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   // Ref for the active step
   const activeStepRef = useRef<HTMLDivElement>(null);
 
-  // Use inactivity hook (10 seconds)
   const isInactive = useUserInactivity(10000);
+  const isLongInactive = useUserInactivity(30000);
 
   // Auto-scroll to center the active step when it changes, only if user is inactive
   useEffect(() => {
@@ -87,10 +87,10 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   // Auto-activate focus mode when playing and inactive
   useEffect(() => {
-    if (status === "playing" && isInactive) {
+    if (status === "playing" && isLongInactive) {
       setFocusModeActive(true);
     }
-  }, [status, isInactive]);
+  }, [status, isLongInactive]);
 
   // Find the edge: the first step (type 'speech') that is not completed or missing audio
   const edgeIdx = getReadyEdgeIdx(steps);
@@ -122,15 +122,21 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         <div className="flex-1 text-center text-2xl tracking-tight md:mb-2 md:text-3xl">
           {title ? title : <Skeleton className="mx-auto h-8 w-2/3 md:h-10" />}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Enter focus mode"
-          onClick={handleManualFocusMode}
-          className="ml-2"
-        >
-          <Maximize className="size-6" />
-        </Button>
+
+        <Tooltip delayDuration={500}>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Focus"
+              onClick={handleManualFocusMode}
+              className="size-7 sm:size-9 absolute right-2 top-2 sm:right-3 sm:top-3"
+            >
+              <Maximize className="size-3 md:size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Focus</TooltipContent>
+        </Tooltip>
       </div>
       {/* Main scrollable content */}
       <div
