@@ -3,8 +3,21 @@ import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 import { gradientBackgroundClasses } from "@/components/layout/layout-component";
+import { ReadingStep } from "../types";
 
-export function FocusMode({ content, visible, onExit }) {
+const renderStep = (step: ReadingStep | undefined) => {
+  if (!step) return null;
+  if (step.type === "speech") return <div>{step.text}</div>;
+  if (step.type === "pause")
+    return (
+      <div className="text-muted-foreground/70 italic">
+        {step.duration}s pause
+      </div>
+    );
+  return null;
+};
+
+export function FocusMode({ visible, onExit, activeStep }) {
   useEffect(() => {
     if (!visible) return;
     let timeoutId;
@@ -17,6 +30,7 @@ export function FocusMode({ content, visible, onExit }) {
         "keydown",
         "scroll",
         "touchstart",
+        "tap",
       ];
       events.forEach((event) =>
         window.addEventListener(event, exitOnActivity, { once: true })
@@ -43,7 +57,7 @@ export function FocusMode({ content, visible, onExit }) {
       aria-hidden={!visible}
     >
       <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
-        {content}
+        {renderStep(activeStep)}
       </div>
     </div>
   );

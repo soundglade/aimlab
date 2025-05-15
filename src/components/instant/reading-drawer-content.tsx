@@ -301,18 +301,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
       <FocusMode
         visible={focusModeActive}
         onExit={() => setFocusModeActive(false)}
-        content={(() => {
-          const step = steps[playingStepIdx ?? -1];
-          if (!step) return null;
-          if (step.type === "speech") return <div>{step.text}</div>;
-          if (step.type === "pause")
-            return (
-              <div className="text-muted-foreground/70 italic">
-                {step.duration}s pause
-              </div>
-            );
-          return null;
-        })()}
+        activeStep={steps[playingStepIdx ?? -1]}
       />
     </>
   );
