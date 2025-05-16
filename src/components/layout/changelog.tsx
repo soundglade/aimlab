@@ -38,6 +38,17 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "New focus mode",
+    date: "2025-05-16T11:00:00Z",
+    description: (
+      <>
+        The <CustomLink href="/instant">instant player</CustomLink> now supports
+        focus mode. In focus mode the player goes full screen and only shows the
+        current step.
+      </>
+    ),
+  },
+  {
     title: "Auto-improve pauses",
     date: "2025-05-12T17:00:00Z",
     description: (
