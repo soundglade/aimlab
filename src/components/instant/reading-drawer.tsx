@@ -8,6 +8,14 @@ interface ReadingDrawerProps {
   response: any | null;
 }
 
+function sanitizeScript(script: any) {
+  if (!script || !Array.isArray(script.steps)) return script;
+  return {
+    ...script,
+    steps: script.steps.map((step: any, idx: number) => ({ ...step, idx })),
+  };
+}
+
 export function ReadingDrawer({
   open,
   onOpenChange,
@@ -15,10 +23,12 @@ export function ReadingDrawer({
 }: ReadingDrawerProps) {
   const script = response?.script || { title: "", steps: [], completed: false };
 
+  const sanitizedScript = sanitizeScript(script);
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="mx-auto flex h-[calc(100%-40px)] max-w-4xl flex-col bg-white p-0 dark:bg-gray-900">
-        <ReadingDrawerContent script={script} />
+        <ReadingDrawerContent script={sanitizedScript} />
       </DrawerContent>
     </Drawer>
   );

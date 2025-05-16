@@ -2,23 +2,11 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 
 import { gradientBackgroundClasses } from "@/components/layout/layout-component";
-import { ReadingStep } from "../types";
 import { useMount, useUnmount } from "react-use";
 import useBus from "use-bus";
-
-const renderStep = (step: ReadingStep | undefined) => {
-  if (!step) return null;
-  if (step.type === "speech") return <div>{step.text}</div>;
-  if (step.type === "pause")
-    return (
-      <div className="text-muted-foreground/70 italic">
-        {step.duration}s pause
-      </div>
-    );
-  return null;
-};
 
 const events = [
   "mousemove",
@@ -47,24 +35,46 @@ export function FocusMode({ onExit, activeStep, steps, stepsForPlayer }) {
   useBus("PLAYER_EVENT", (event) => {
     if (event.payload.type === "PLAY") {
       const playerStep = stepsForPlayer[event.payload.idx];
-      const nextStep = steps[playerStep.originalIdx + 1];
+      if (!playerStep) return;
 
-      if (playerStep.type == "gap" && nextStep) {
+      const playingStepIdx = playerStep.originalIdx;
+      const nextStep = (() => {
+        if (playingStepIdx == null) return null;
+        for (let i = playingStepIdx + 1; i < steps.length; i++) {
+          if (steps[i]?.type !== "heading") return steps[i];
+        }
+        return null;
+      })();
+
+      if (playerStep.type == "gap") {
         setDisplayStep(nextStep);
+      }
+
+      if (playerStep.type == "pause") {
+        setTimeout(() => {
+          setDisplayStep(nextStep);
+        }, playerStep.duration * 1000 - 1500);
       }
     }
   });
 
   useEffect(() => {
     setDisplayStep(activeStep);
-  }, [activeStep]);
+  }, [activeStep?.idx]);
 
+  const overlay = <FocusOverlay onExit={onExit} step={displayStep} />;
+
+  if (typeof window === "undefined") return null;
+  return createPortal(overlay, document.body);
+}
+
+function FocusOverlay({ onExit, step }) {
   const handleExit = (e) => {
     e.stopPropagation();
     onExit();
   };
 
-  const overlay = (
+  return (
     <div
       className={cn(
         "fixed inset-0 z-[9999] flex items-center justify-center",
@@ -75,24 +85,52 @@ export function FocusMode({ onExit, activeStep, steps, stepsForPlayer }) {
       onMouseDown={handleExit}
       onTouchStart={handleExit}
     >
-      <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
-        <AnimatePresence mode="wait">
-          {displayStep && (
-            <motion.div
-              key={displayStep.id || displayStep.text || displayStep.type}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
-            >
-              {renderStep(displayStep)}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {step && (
+        <OverlayContent
+          stepId={step.idx}
+          stepText={step.text}
+          stepType={step.type}
+          stepDuration={step.duration}
+        />
+      )}
     </div>
   );
-
-  if (typeof window === "undefined") return null;
-  return createPortal(overlay, document.body);
 }
+
+type OverlayContentProps = {
+  stepId: any;
+  stepText: any;
+  stepType: any;
+  stepDuration: any;
+};
+
+const OverlayContent = React.memo(function OverlayContent({
+  stepId,
+  stepText,
+  stepType,
+  stepDuration,
+}: OverlayContentProps) {
+  return (
+    <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
+      <AnimatePresence mode="wait">
+        {stepId !== null && (
+          <motion.div
+            key={stepId}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
+          >
+            {stepType === "speech" ? (
+              <div>{stepText}</div>
+            ) : stepType === "pause" ? (
+              <div className="text-muted-foreground/70 italic">
+                {stepDuration}s pause
+              </div>
+            ) : null}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+});
