@@ -298,11 +298,12 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         preload="auto"
       />
       {/* Focus Mode Overlay */}
-      <FocusMode
-        visible={focusModeActive}
-        onExit={() => setFocusModeActive(false)}
-        activeStep={steps[playingStepIdx ?? -1]}
-      />
+      {focusModeActive && (
+        <FocusMode
+          onExit={() => setFocusModeActive(false)}
+          activeStep={steps[playingStepIdx ?? -1]}
+        />
+      )}
     </>
   );
 }

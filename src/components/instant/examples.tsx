@@ -360,7 +360,6 @@ senses, thoughts, emotions, all blinking at once.
 [pause for 6 seconds]
 
 You don’t need to fix it.  
-You’re not broken.  
 We’re just slowing everything down.  
 
 [pause for 8 seconds]
