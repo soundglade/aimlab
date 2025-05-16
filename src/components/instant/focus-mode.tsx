@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,7 +29,9 @@ const events = [
   "tap",
 ];
 
-export function FocusMode({ onExit, activeStep }) {
+export function FocusMode({ onExit, activeStep, steps, stepsForPlayer }) {
+  const [displayStep, setDisplayStep] = useState(activeStep);
+
   useMount(() => {
     setTimeout(() => {
       events.forEach((event) =>
@@ -43,8 +45,19 @@ export function FocusMode({ onExit, activeStep }) {
   });
 
   useBus("PLAYER_EVENT", (event) => {
-    console.log("FocusMode received PLAYER_EVENT:", event.payload);
+    if (event.payload.type === "PLAY") {
+      const playerStep = stepsForPlayer[event.payload.idx];
+      const nextStep = steps[playerStep.originalIdx + 1];
+
+      if (playerStep.type == "gap" && nextStep) {
+        setDisplayStep(nextStep);
+      }
+    }
   });
+
+  useEffect(() => {
+    setDisplayStep(activeStep);
+  }, [activeStep]);
 
   const handleExit = (e) => {
     e.stopPropagation();
@@ -64,15 +77,15 @@ export function FocusMode({ onExit, activeStep }) {
     >
       <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
         <AnimatePresence mode="wait">
-          {activeStep && (
+          {displayStep && (
             <motion.div
-              key={activeStep.id || activeStep.text || activeStep.type}
+              key={displayStep.id || displayStep.text || displayStep.type}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5 }}
             >
-              {renderStep(activeStep)}
+              {renderStep(displayStep)}
             </motion.div>
           )}
         </AnimatePresence>

@@ -302,6 +302,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         <FocusMode
           onExit={() => setFocusModeActive(false)}
           activeStep={steps[playingStepIdx ?? -1]}
+          steps={steps}
+          stepsForPlayer={stepsForPlayer}
         />
       )}
     </>
