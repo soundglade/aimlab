@@ -110,5 +110,10 @@
     "tsx": "^4.19.3",
     "typescript": "^5",
     "vitest": "^3.1.1"
+  },
+  "overrides": {
+    "use-bus": {
+      "react": "^19.0.0"
+    }
   }
 }
