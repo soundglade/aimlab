@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { gradientBackgroundClasses } from "@/components/layout/layout-component";
 import { ReadingStep } from "../types";
+import { useMount, useUnmount } from "react-use";
 
 const renderStep = (step: ReadingStep | undefined) => {
   if (!step) return null;
@@ -18,33 +19,43 @@ const renderStep = (step: ReadingStep | undefined) => {
   return null;
 };
 
+const events = [
+  "mousemove",
+  "mousedown",
+  "keydown",
+  "scroll",
+  "touchstart",
+  "tap",
+];
+
 export function FocusMode({ onExit, activeStep }) {
-  useEffect(() => {
-    const events = [
-      "mousemove",
-      "mousedown",
-      "keydown",
-      "scroll",
-      "touchstart",
-      "tap",
-    ];
+  useMount(() => {
+    setTimeout(() => {
+      events.forEach((event) =>
+        window.addEventListener(event, onExit, { once: true })
+      );
+    }, 1000);
+  });
 
-    events.forEach((event) =>
-      window.addEventListener(event, onExit, { once: true })
-    );
+  useUnmount(() => {
+    events.forEach((event) => window.removeEventListener(event, onExit));
+  });
 
-    return () => {
-      events.forEach((event) => window.removeEventListener(event, onExit));
-    };
-  }, []);
+  const handleExit = (e) => {
+    e.stopPropagation();
+    onExit();
+  };
 
   const overlay = (
     <div
       className={cn(
-        "fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-[1.5s]",
-        gradientBackgroundClasses,
-        "opacity-100"
+        "fixed inset-0 z-[9999] flex items-center justify-center",
+        "animate-[fadeIn_1.5s_forwards]",
+        gradientBackgroundClasses
       )}
+      onClick={handleExit}
+      onMouseDown={handleExit}
+      onTouchStart={handleExit}
     >
       <div className="text-foreground max-w-2xl px-8 text-center text-2xl leading-tight md:text-3xl">
         <AnimatePresence mode="wait">
