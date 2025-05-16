@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { gradientBackgroundClasses } from "@/components/layout/layout-component";
 import { ReadingStep } from "../types";
 import { useMount, useUnmount } from "react-use";
+import useBus from "use-bus";
 
 const renderStep = (step: ReadingStep | undefined) => {
   if (!step) return null;
@@ -39,6 +40,10 @@ export function FocusMode({ onExit, activeStep }) {
 
   useUnmount(() => {
     events.forEach((event) => window.removeEventListener(event, onExit));
+  });
+
+  useBus("PLAYER_EVENT", (event) => {
+    console.log("FocusMode received PLAYER_EVENT:", event.payload);
   });
 
   const handleExit = (e) => {

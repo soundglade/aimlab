@@ -1,5 +1,6 @@
 import { useEffect, useRef, useReducer } from "react";
 import type { PlayerStep } from "@/components/types";
+import { dispatch as busDispatch } from "use-bus";
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -52,11 +53,16 @@ const reducer = (state: State, action: Action): State => {
  * Accepts PlayerStep[] instead of ReadingStep[].
  */
 export const usePlayer = (steps: PlayerStep[]) => {
-  const [state, dispatch] = useReducer(reducer, {
+  const [state, originalDispatch] = useReducer(reducer, {
     status: "waiting",
     playingIdx: -1,
     pendingIdx: 0,
   } as State);
+
+  const dispatch = (action: Action) => {
+    originalDispatch(action);
+    busDispatch({ type: "PLAYER_EVENT", payload: action });
+  };
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const latestStepsRef = useRef<PlayerStep[]>(steps);
