@@ -152,17 +152,8 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <ScrollText className="h-5 w-5 opacity-50" />
-            Meditations
+            Latest meditations
           </h2>
-          <Button variant="ghost" asChild size="sm">
-            <Link
-              href="/meditations"
-              className="text-muted-foreground mt-1 flex items-center md:mr-0"
-            >
-              <span className="hidden md:inline">View all</span>
-              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
-            </Link>
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
@@ -186,6 +177,18 @@ export default function LandingPage({
             </Button>
           ))}
         </div>
+
+        <div className="flex justify-center">
+          <Button variant="secondary" asChild size="lg">
+            <Link
+              href="/meditations"
+              className="mt-4 flex items-center md:mr-0 md:mt-8"
+            >
+              <span>View all meditations</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       <div id="community" className="invisible relative -top-4"></div>
@@ -196,16 +199,6 @@ export default function LandingPage({
             <Users className="h-5 w-5 opacity-50" />
             Community
           </h2>
-          <Button variant="ghost" asChild size="sm">
-            <Link
-              href="https://www.reddit.com/r/AIMeditationLab/"
-              target="_blank"
-              className="text-muted-foreground mt-1 flex items-center md:mr-0"
-            >
-              <span className="hidden md:inline">Visit r/AIMeditationLab</span>
-              <ExternalLink className="-ml-1 h-4 w-4 md:ml-1" />
-            </Link>
-          </Button>
         </div>
 
         <div className="rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
@@ -234,6 +227,19 @@ export default function LandingPage({
                 </article>
               </Link>
             ))}
+          </div>
+
+          <div className="flex justify-center">
+            <Button variant="secondary" asChild size="lg">
+              <Link
+                href="https://www.reddit.com/r/AIMeditationLab/"
+                target="_blank"
+                className="mt-8 flex items-center md:-mb-2"
+              >
+                <span>Visit r/AIMeditationLab</span>
+                <ExternalLink className="-ml-1 h-4 w-4 md:ml-1" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
