@@ -15,7 +15,7 @@ import {
   ChevronRight,
   Bell,
   BellOff,
-  RotateCcw,
+  Download,
   LoaderCircle,
   Maximize,
 } from "lucide-react";
@@ -200,15 +200,18 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label="Restart"
-                  onClick={() => jumpToStep(0)}
-                  disabled={!stepsForPlayer[0]?.audio}
+                  aria-label={
+                    bellEnabled ? "Mute ending bell" : "Enable ending bell"
+                  }
+                  onClick={() => setBellEnabled((b) => !b)}
                   className="md:size-6 md:h-11 md:w-11"
                 >
-                  <RotateCcw size={20} />
+                  {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Restart</TooltipContent>
+              <TooltipContent>
+                {bellEnabled ? "Mute ending bell" : "Enable ending bell"}
+              </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -274,18 +277,15 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label={
-                    bellEnabled ? "Mute ending bell" : "Enable ending bell"
-                  }
-                  onClick={() => setBellEnabled((b) => !b)}
+                  aria-label="Download"
+                  onClick={() => jumpToStep(0)}
+                  disabled={!stepsForPlayer[0]?.audio}
                   className="md:size-6 md:h-11 md:w-11"
                 >
-                  {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
+                  <Download size={20} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                {bellEnabled ? "Mute ending bell" : "Enable ending bell"}
-              </TooltipContent>
+              <TooltipContent>Download</TooltipContent>
             </Tooltip>
           </div>
         </div>
