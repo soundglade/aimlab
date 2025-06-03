@@ -156,6 +156,8 @@ export async function synthesizeReading({
         }
         return step;
       });
+
+      response.script.synthesized = calculateSynthesized(response.script);
     }
 
     onData(response);
@@ -195,4 +197,24 @@ export function randomMp3Name(stepText: string) {
   // Add random number for uniqueness
   const rand = Math.floor(Math.random() * 1e9);
   return `${slug}-${rand}.mp3`;
+}
+
+function calculateSynthesized(script: any): boolean {
+  // Default to false if script is not completed
+  if (!script?.completed) return false;
+
+  // Check if all steps are completed
+  const allStepsCompleted = script.steps.every((step: any) => step.completed);
+  if (!allStepsCompleted) return false;
+
+  // Check if all speech and pause steps have audio ending with .mp3
+  const speechAndPauseSteps = script.steps.filter(
+    (step: any) => step.type === "speech" || step.type === "pause"
+  );
+
+  const allAudioSynthesized = speechAndPauseSteps.every(
+    (step: any) => typeof step.audio === "string" && step.audio.endsWith(".mp3")
+  );
+
+  return allAudioSynthesized;
 }
