@@ -147,67 +147,6 @@ export default function LandingPage({
         </Button>
       </section>
 
-      <section className={`mb-10 w-full max-w-4xl px-4`}>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <Megaphone className="h-5 w-5 opacity-50" />
-            Newsletter
-          </h2>
-
-          <Button className="hidden" variant="ghost" asChild size="sm">
-            <Link
-              href="#"
-              target="_blank"
-              className="text-muted-foreground mt-1 flex items-center md:mr-0"
-            >
-              <span className="hidden md:inline">View all</span>
-              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
-            </Link>
-          </Button>
-        </div>
-
-        <div className="overflow-hidden rounded-xl">
-          <div className="bg-background px-8 py-7">
-            <div className="space-y-10">
-              {latestNewsletter && (
-                <Link
-                  href={`/articles/${latestNewsletter.slug}`}
-                  key={latestNewsletter.slug}
-                  className="group block"
-                >
-                  <article className="space-y-1">
-                    {latestNewsletter.date && (
-                      <p className="text-muted-foreground text-xs">
-                        {new Date(latestNewsletter.date).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
-                      </p>
-                    )}
-                    <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
-                      {latestNewsletter.title}
-                    </h2>
-                    {latestNewsletter.excerpt && (
-                      <p className="text-muted-foreground">
-                        {latestNewsletter.excerpt}
-                      </p>
-                    )}
-                  </article>
-                </Link>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-accent/60 px-6 py-4 md:px-10 md:py-4">
-            <SubscribeForm />
-          </div>
-        </div>
-      </section>
-
       {/* Recent Community Meditations */}
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
@@ -298,6 +237,68 @@ export default function LandingPage({
           </div>
         </div>
       </section>
+
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
+            <Megaphone className="h-5 w-5 opacity-50" />
+            Newsletter
+          </h2>
+
+          <Button className="hidden" variant="ghost" asChild size="sm">
+            <Link
+              href="#"
+              target="_blank"
+              className="text-muted-foreground mt-1 flex items-center md:mr-0"
+            >
+              <span className="hidden md:inline">View all</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="overflow-hidden rounded-xl">
+          <div className="bg-background px-8 py-7">
+            <div className="space-y-10">
+              {latestNewsletter && (
+                <Link
+                  href={`/articles/${latestNewsletter.slug}`}
+                  key={latestNewsletter.slug}
+                  className="group block"
+                >
+                  <article className="space-y-1">
+                    {latestNewsletter.date && (
+                      <p className="text-muted-foreground text-xs">
+                        {new Date(latestNewsletter.date).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                    )}
+                    <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
+                      {latestNewsletter.title}
+                    </h2>
+                    {latestNewsletter.excerpt && (
+                      <p className="text-muted-foreground">
+                        {latestNewsletter.excerpt}
+                      </p>
+                    )}
+                  </article>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-accent/60 px-6 py-4 md:px-10 md:py-4">
+            <SubscribeForm />
+          </div>
+        </div>
+      </section>
+
       {/* Articles */}
       <section className={`mb-10 w-full max-w-4xl px-4`}>
         <h2 className="flex items-center gap-2 text-2xl tracking-tight">
