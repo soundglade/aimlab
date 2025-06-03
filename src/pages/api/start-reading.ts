@@ -75,7 +75,6 @@ export default async function handler(
         if (!data) return;
         res.write(`data: ${JSON.stringify(data)}\n\n`);
         if (typeof res.flush === "function") {
-          console.log("flushing", data);
           res.flush();
         }
       },

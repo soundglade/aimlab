@@ -62,10 +62,6 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const completed = script?.completed;
   const fullAudio = script?.fullAudio;
 
-  useEffect(() => {
-    console.log("fullAudio", fullAudio);
-  }, [fullAudio]);
-
   const [bellEnabled, setBellEnabled] = useState(true);
   const [focusModeActive, setFocusModeActive] = useState(false);
 
@@ -283,8 +279,18 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                   variant="outline"
                   size="icon"
                   aria-label="Download"
-                  onClick={() => jumpToStep(0)}
-                  disabled={!stepsForPlayer[0]?.audio}
+                  onClick={() => {
+                    if (fullAudio) {
+                      // Create a temporary anchor element to trigger download
+                      const link = document.createElement("a");
+                      link.href = fullAudio;
+                      link.download = `${title || "meditation"}.mp3`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }
+                  }}
+                  disabled={!fullAudio}
                   className="md:size-6 md:h-11 md:w-11"
                 >
                   <Download size={20} />
