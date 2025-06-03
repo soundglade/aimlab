@@ -1,7 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Reading, ReadingStep } from "@/components/types";
-import { usePlayer, optimizeStepsForPlayer } from "./player-logic";
+import { usePlayer } from "./player-logic";
+import { optimizeStepsForPlayer } from "@/lib/reading-timings";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,

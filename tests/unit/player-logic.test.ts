@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { optimizeStepsForPlayer } from "@/components/instant/player-logic";
+import { optimizeStepsForPlayer } from "@/lib/reading-timings";
 import type { ReadingStep, PlayerStep } from "@/components/types";
 import {
   reducer,

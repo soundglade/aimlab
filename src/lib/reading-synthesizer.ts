@@ -7,6 +7,7 @@ import { customAlphabet } from "nanoid";
 import { generateSpeech } from "@/lib/speech";
 import slugify from "slugify";
 import type { SpeechService } from "@/lib/speech";
+import { optimizeStepsForPlayer } from "./reading-timings";
 
 interface SynthesizeReadingOptions {
   script: string;
@@ -178,9 +179,10 @@ export async function synthesizeReading({
   async function concatenateAudio(script: any) {
     try {
       // Get all audio files from speech and pause steps
-      const audioFiles = script.steps
-        .filter((step: any) => step.type === "speech" || step.type === "pause")
-        .map((step: any) => step.audio);
+
+      const audioFiles = optimizeStepsForPlayer(script.steps).map(
+        (s) => s.audio
+      );
 
       // Convert relative paths to absolute paths
       const absoluteAudioPaths = audioFiles.map((audioPath: string) =>
@@ -197,6 +199,11 @@ export async function synthesizeReading({
 
       // Set the full audio path (relative to public directory)
       fullAudio = `/storage/readings/${readingId}/${outputFilename}`;
+
+      // Save the script as a JSON file
+      const scriptFilename = `script.json`;
+      const scriptPath = path.join(readingDir, scriptFilename);
+      fs.writeFileSync(scriptPath, JSON.stringify(script, null, 2));
 
       // Update the response with the full audio path
       sendAugmentedData();
