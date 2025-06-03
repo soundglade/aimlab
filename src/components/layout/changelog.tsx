@@ -38,7 +38,7 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
-    title: "Download mp3 from instant player",
+    title: "Download MP3 from instant player",
     date: "2025-06-03T11:00:00Z",
     description: (
       <>
