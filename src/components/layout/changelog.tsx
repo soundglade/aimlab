@@ -38,6 +38,18 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Download mp3 from instant player",
+    date: "2025-06-03T11:00:00Z",
+    description: (
+      <>
+        It is now possible to download the MP3 file of the meditation from the{" "}
+        <CustomLink href="/instant">instant player</CustomLink>. The download
+        button becomes active when the mp3 is ready, once all the audio files
+        have been synthesized.
+      </>
+    ),
+  },
+  {
     title: "New focus mode",
     date: "2025-05-16T11:00:00Z",
     description: (

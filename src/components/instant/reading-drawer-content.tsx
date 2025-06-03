@@ -310,7 +310,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                {fullAudio ? "Download" : "Synthesizing..."}
+                {fullAudio ? "Download" : "Download not ready yet..."}
               </TooltipContent>
             </Tooltip>
           </div>
