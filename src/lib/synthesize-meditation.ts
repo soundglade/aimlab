@@ -5,7 +5,7 @@ import {
 } from "@/lib/speech";
 import { Meditation } from "@/components/types";
 import { addTimelineToMeditation } from "@/components/utils/meditation-timeline";
-import { createConcatenatedAudio } from "@/lib/audio";
+import { createConcatenatedAudioFromTimeline } from "@/lib/audio";
 
 // Progress allocation constants
 const SPEECH_GENERATION_PROGRESS_PERCENTAGE = 50;
@@ -16,7 +16,7 @@ export async function synthesizeMeditation(
   {
     speechGenerator = generateSpeech,
     durationCalculator = getAudioDurationMs,
-    audioConcatenator = createConcatenatedAudio,
+    audioConcatenator = createConcatenatedAudioFromTimeline,
     voiceId = "drew",
     onProgress = (progress: number) => {},
     onComplete = (

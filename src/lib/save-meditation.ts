@@ -51,7 +51,7 @@ export async function saveMeditation(
       JSON.stringify(meditation, null, 2)
     );
 
-    // Save audio file (already in MP3 format from createConcatenatedAudio)
+    // Save audio file (already in MP3 format from createConcatenatedAudioFromTimeline)
     await fs.writeFile(path.join(saveDir, "audio.mp3"), audioBuffer);
 
     // Generate URL

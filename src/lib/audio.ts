@@ -19,7 +19,7 @@ ffmpeg.setFfprobePath(FFPROBE_PATH);
  * @param highQualitySilence - Optional flag to generate high-quality silence segments (44.1kHz, 128kbps) instead of default low-quality.
  * @returns Promise resolving to a Buffer containing the MP3 audio.
  */
-export async function createConcatenatedAudio(
+export async function createConcatenatedAudioFromTimeline(
   audioBuffers: Map<number, ArrayBuffer>,
   timeline: NonNullable<Meditation["timeline"]>,
   onProgress = (progress: number) => {}
@@ -130,4 +130,56 @@ export function generateSilentMp3(
       .on("end", resolve)
       .run();
   });
+}
+
+/**
+ * Concatenates multiple MP3 files into a single MP3 file.
+ * @param mp3FilePaths - Array of file paths to MP3 files to concatenate.
+ * @param outputPath - The output file path for the concatenated MP3.
+ * @returns Promise that resolves when the concatenation is complete.
+ */
+export async function saveConcatenatedMp3(
+  mp3FilePaths: string[],
+  outputPath: string
+): Promise<void> {
+  if (mp3FilePaths.length === 0) {
+    throw new Error("No MP3 files provided for concatenation");
+  }
+
+  // Create a temporary directory for the concat list file
+  const tmpDir = await fsPromises.mkdtemp(
+    path.join(os.tmpdir(), "concat-mp3-")
+  );
+  const listFile = path.join(tmpDir, "concat-list.txt");
+
+  try {
+    // Write ffmpeg concat list file
+    const listContent = mp3FilePaths
+      .map((filePath) => "file '" + filePath.replace(/'/g, "\\'") + "'")
+      .join("\n");
+    await fsPromises.writeFile(listFile, listContent);
+
+    // Run ffmpeg concat
+    await new Promise<void>((resolve, reject) => {
+      ffmpeg()
+        .input(listFile)
+        .inputOptions(["-f", "concat", "-safe", "0"])
+        .outputOptions([
+          "-c:a",
+          "libmp3lame",
+          "-b:a",
+          "128k",
+          "-ar",
+          "44100",
+          "-ac",
+          "1",
+        ])
+        .on("error", reject)
+        .on("end", resolve)
+        .save(outputPath);
+    });
+  } finally {
+    // Always cleanup temporary directory
+    await fsPromises.rm(tmpDir, { recursive: true, force: true });
+  }
 }

@@ -1,6 +1,6 @@
 import { formatMeditationScript } from "@/lib/meditation-formatter";
 import { jsonrepair } from "jsonrepair";
-import { generateSilentMp3 } from "@/lib/audio";
+import { generateSilentMp3, saveConcatenatedMp3 } from "@/lib/audio";
 import fs from "fs";
 import path from "path";
 import { customAlphabet } from "nanoid";
@@ -53,24 +53,41 @@ export async function synthesizeReading({
 
   let response: any = null;
   let steps: any[] = [];
+  let startedConcatenation = false;
+  let fullAudio: string | null = null;
+
+  const readingDir = path.join(
+    process.cwd(),
+    "public",
+    "storage",
+    "readings",
+    readingId
+  );
+
+  const pausesDir = path.join(
+    process.cwd(),
+    "public",
+    "storage",
+    "readings",
+    "_pauses"
+  );
+
+  if (!fs.existsSync(readingDir)) {
+    fs.mkdirSync(readingDir, { recursive: true });
+  }
+
+  if (!fs.existsSync(pausesDir)) {
+    fs.mkdirSync(pausesDir, { recursive: true });
+  }
 
   // Helper to process a pause step
   async function processPauseStep(index: number, step: any) {
     if (signal?.aborted) throw new Error("Aborted");
     const duration = Math.round(step.duration); // round to nearest second
-    const pausesDir = path.join(
-      process.cwd(),
-      "public",
-      "storage",
-      "readings",
-      "_pauses"
-    );
+
     const mp3Filename = `${duration}-seconds.mp3`;
     const mp3Path = path.join(pausesDir, mp3Filename);
-    // Ensure pauses directory exists
-    if (!fs.existsSync(pausesDir)) {
-      fs.mkdirSync(pausesDir, { recursive: true });
-    }
+
     // Generate file if it doesn't exist
     if (!fs.existsSync(mp3Path)) {
       await generateSilentMp3(duration, mp3Path);
@@ -99,20 +116,9 @@ export async function synthesizeReading({
         signal
       );
 
-      // Ensure output directory exists
-      const speechDir = path.join(
-        process.cwd(),
-        "public",
-        "storage",
-        "readings",
-        readingId
-      );
-      if (!fs.existsSync(speechDir)) {
-        fs.mkdirSync(speechDir, { recursive: true });
-      }
       // Generate a unique filename for this step
       const filename = randomMp3Name(text);
-      const filePath = path.join(speechDir, filename);
+      const filePath = path.join(readingDir, filename);
       fs.writeFileSync(filePath, Buffer.from(audioBuffer));
       // Store the public path
       stepAudioFiles[index] = `/storage/readings/${readingId}/${filename}`;
@@ -157,10 +163,45 @@ export async function synthesizeReading({
         return step;
       });
 
-      response.script.synthesized = calculateSynthesized(response.script);
+      if (readyForConcatenation(response.script) && !startedConcatenation) {
+        startedConcatenation = true;
+        concatenateAudio(response.script);
+      }
+
+      response.script.fullAudio = fullAudio;
     }
 
     onData(response);
+  }
+
+  async function concatenateAudio(script: any) {
+    try {
+      // Get all audio files from speech and pause steps
+      const audioFiles = script.steps
+        .filter((step: any) => step.type === "speech" || step.type === "pause")
+        .map((step: any) => step.audio);
+
+      // Convert relative paths to absolute paths
+      const absoluteAudioPaths = audioFiles.map((audioPath: string) =>
+        path.join(process.cwd(), "public", audioPath)
+      );
+
+      // Generate output filename
+      const slug = slugify(script.title, { lower: true, strict: true });
+      const outputFilename = `${slug}.mp3`;
+      const outputPath = path.join(readingDir, outputFilename);
+
+      // Concatenate audio files
+      await saveConcatenatedMp3(absoluteAudioPaths, outputPath);
+
+      // Set the full audio path (relative to public directory)
+      fullAudio = `/storage/readings/${readingId}/${outputFilename}`;
+
+      // Update the response with the full audio path
+      sendAugmentedData();
+    } catch (err: any) {
+      console.error("Error concatenating audio:", err);
+    }
   }
 
   await formatMeditationScript(script, {
@@ -199,7 +240,7 @@ export function randomMp3Name(stepText: string) {
   return `${slug}-${rand}.mp3`;
 }
 
-function calculateSynthesized(script: any): boolean {
+function readyForConcatenation(script: any): boolean {
   // Default to false if script is not completed
   if (!script?.completed) return false;
 

@@ -60,11 +60,11 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const title = script?.title;
   const steps = script?.steps || [];
   const completed = script?.completed;
-  const synthesized = script?.synthesized;
+  const fullAudio = script?.fullAudio;
 
   useEffect(() => {
-    console.log("synthesized", synthesized);
-  }, [synthesized]);
+    console.log("fullAudio", fullAudio);
+  }, [fullAudio]);
 
   const [bellEnabled, setBellEnabled] = useState(true);
   const [focusModeActive, setFocusModeActive] = useState(false);

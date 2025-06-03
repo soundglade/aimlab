@@ -28,7 +28,7 @@ export interface Reading {
   title: string;
   steps: ReadingStep[];
   completed?: boolean;
-  synthesized?: boolean;
+  fullAudio?: string;
 }
 
 // PlayerStep: used by the player, always references the original ReadingStep by originalIdx
