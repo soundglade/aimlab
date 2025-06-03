@@ -21,7 +21,6 @@ describe("randomMp3Name", () => {
     const input =
       "++@@@!!! çrãzŸ)))   ^^^ test~~~ mañŷ symbølß   123```²³⁴   ♠♥♦♣   →↓←↑   ☺☻♥♦♣   αβγδε   ¿¡   çñ   π∞√∆≤≥≠±   {}|[]";
     const name = randomMp3Name(input);
-    console.log(name);
     expect(name.startsWith("crazy-test-many-symbolss-123-love-")).toBe(true);
   });
 
