@@ -54,6 +54,7 @@ export async function synthesizeReading({
   let response: any = null;
   let steps: any[] = [];
   let startedConcatenation = false;
+  let concatenationPromise: Promise<void> | null = null;
   let fullAudio: string | null = null;
 
   const readingDir = path.join(
@@ -165,7 +166,7 @@ export async function synthesizeReading({
 
       if (readyForConcatenation(response.script) && !startedConcatenation) {
         startedConcatenation = true;
-        concatenateAudio(response.script);
+        concatenationPromise = concatenateAudio(response.script);
       }
 
       response.script.fullAudio = fullAudio;
@@ -227,6 +228,11 @@ export async function synthesizeReading({
   // Wait for all processing to finish before completing
   if (signal?.aborted) throw new Error("Aborted");
   await Promise.all(stepProcessingPromises);
+
+  // Also wait for concatenation to complete if it was started
+  if (concatenationPromise) {
+    await concatenationPromise;
+  }
 }
 
 // Helper to generate a random mp3 filename based on step text
