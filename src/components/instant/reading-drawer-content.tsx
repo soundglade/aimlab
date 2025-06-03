@@ -23,6 +23,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useUserInactivity } from "./user-inactivity";
 import { FocusMode } from "./focus-mode";
+import { toast } from "sonner";
 
 interface ReadingDrawerContentProps {
   script: Reading;
@@ -276,10 +277,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label="Download"
+                <span
+                  className="inline-block"
                   onClick={() => {
                     if (fullAudio) {
                       // Create a temporary anchor element to trigger download
@@ -289,15 +288,30 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
+                    } else {
+                      toast.message(
+                        "The meditation is not ready for download yet. Please try again in a moment.",
+                        {
+                          position: "bottom-center",
+                        }
+                      );
                     }
                   }}
-                  disabled={!fullAudio}
-                  className="md:size-6 md:h-11 md:w-11"
                 >
-                  <Download size={20} />
-                </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label="Download"
+                    disabled={!fullAudio}
+                    className="md:size-6 md:h-11 md:w-11"
+                  >
+                    <Download size={20} />
+                  </Button>
+                </span>
               </TooltipTrigger>
-              <TooltipContent>Download</TooltipContent>
+              <TooltipContent>
+                {fullAudio ? "Download" : "Synthesizing..."}
+              </TooltipContent>
             </Tooltip>
           </div>
         </div>
