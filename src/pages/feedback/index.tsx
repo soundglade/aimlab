@@ -9,7 +9,6 @@ import { CheckCircle, AlertCircle, Send } from "lucide-react";
 
 export default function FeedbackIndex() {
   const [message, setMessage] = useState("");
-  const [contact, setContact] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
 
@@ -24,7 +23,7 @@ export default function FeedbackIndex() {
       const response = await fetch("/api/submit-feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, contact }),
+        body: JSON.stringify({ message }),
       });
 
       if (response.ok) {
@@ -46,10 +45,8 @@ export default function FeedbackIndex() {
           Feedback
         </h1>
         <p className="text-muted-foreground max-w-2xl">
-          Thank you for taking the time to share your feedback with us. Feel
-          free to report bugs, suggest new features, or share appreciation. If
-          you provide contact information, we'll do our best to follow up with
-          you directly. 🙏
+          Feel free to report bugs, suggest new features, or share appreciation.
+          🙏
         </p>
       </header>
 
@@ -64,19 +61,6 @@ export default function FeedbackIndex() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contact">
-              <span>Contact information (optional)</span>
-            </Label>
-            <Input
-              id="contact"
-              className="bg-background"
-              placeholder="Email address or social media handle for follow-up"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
             />
           </div>
 

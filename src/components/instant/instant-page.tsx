@@ -12,6 +12,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
+import { useRouter } from "next/router";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -23,6 +25,7 @@ export default function ReaderPage() {
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
   const [improvePauses, setImprovePauses] = useState(true);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,6 +147,16 @@ export default function ReaderPage() {
               }}
             />
             <CustomizeDrawer />
+            <Button
+              variant="outline"
+              className="justify-between border-0"
+              onClick={() => {
+                router.push("/feedback");
+              }}
+            >
+              <MessageSquare className="opacity-50" />
+              Feedback
+            </Button>
           </div>
 
           <div className="text-muted-foreground mx-auto mb-1 max-w-3xl rounded-lg p-4 text-sm">
