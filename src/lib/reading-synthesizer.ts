@@ -82,6 +82,22 @@ export async function synthesizeReading({
     fs.mkdirSync(pausesDir, { recursive: true });
   }
 
+  // Throttling parameters for speech steps
+  const MAX_CONCURRENT_SPEECH = 2;
+  let runningSpeech = 0;
+  const speechQueue: (() => Promise<void>)[] = [];
+  function runNextSpeech() {
+    if (runningSpeech >= MAX_CONCURRENT_SPEECH) return;
+    const next = speechQueue.shift();
+    if (next) {
+      runningSpeech++;
+      next().finally(() => {
+        runningSpeech--;
+        runNextSpeech();
+      });
+    }
+  }
+
   // Helper to process a pause step
   async function processPauseStep(index: number, step: any) {
     if (signal?.aborted) throw new Error("Aborted");
@@ -104,6 +120,7 @@ export async function synthesizeReading({
     try {
       const text = step.text;
       if (!text) return;
+
       // Determine service and serviceOptions from settings
       let service: SpeechService = "selfHostedKokoro";
       let serviceOptions = undefined;
@@ -142,13 +159,25 @@ export async function synthesizeReading({
     if (processedSteps.has(index)) return Promise.resolve();
     processedSteps.add(index);
     const step = steps[index];
-    // Handle pause step
+    // Handle pause step (not throttled)
     if (step && step.type === "pause" && typeof step.duration === "number") {
       return processPauseStep(index, step);
     }
-    // Handle speech step
+    // Handle speech step (throttled)
     if (step && step.type === "speech" && typeof step.text === "string") {
-      return processSpeechStep(index, step);
+      // Wrap the speech step in a Promise that resolves when the throttled execution is done
+      return new Promise<void>((resolve, reject) => {
+        const run = async () => {
+          try {
+            await processSpeechStep(index, step);
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
+        };
+        speechQueue.push(run);
+        runNextSpeech();
+      });
     }
     // Unknown step type: skip
     return Promise.resolve();
