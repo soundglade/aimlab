@@ -24,6 +24,31 @@ const settings = {
     voice: "af_nicole+af_aoede(0.2)",
     speed: 0.9,
   },
+  echo_gurney_nicole: {
+    voice: "am_echo+am_v0gurney(0.3)+af_nicole(0.2)",
+    speed: 0.8,
+  },
+  michael_nichole_gurney: {
+    voice: "am_michael+af_nicole(0.9)+am_v0gurney(0.5)",
+    speed: 0.9,
+  },
+  michael_gurney: {
+    voice: "am_michael+am_v0gurney(0.5)",
+    speed: 0.9,
+  },
+  lewis_gurney_michael: {
+    voice: "bm_lewis+am_v0gurney(0.4)+am_michael(0.4)",
+    speed: 0.9,
+  },
+  lewis_gurney_michael_aoede: {
+    voice: "bm_lewis+am_v0gurney(0.5)+am_michael(0.3)+af_aoede(0.5)",
+    speed: 0.9,
+  },
+  matthew: {
+    voice:
+      "am_v0gurney(1.7)+am_michael(0.2)+af_kore(0.6)+am_onyx(1.3)+af_nicole(1.5)",
+    speed: 0.9,
+  },
 };
 
 const CURRENT_SETTINGS = settings.nicole_aoede;
