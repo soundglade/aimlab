@@ -1,5 +1,8 @@
 // Kokoro self-hosted TTS service
 
+const SELF_HOSTED_KOKORO_URL =
+  process.env.SELF_HOSTED_KOKORO_URL || "http://localhost:8880";
+
 const settings = {
   nicole: {
     voice: "af_nicole",
@@ -36,19 +39,16 @@ export async function generateSpeech(
   options?: any
 ): Promise<ArrayBuffer> {
   try {
-    const response = await fetch(
-      "https://kokoro.soundglade.com/v1/audio/speech",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "kokoro",
-          input: text,
-          response_format: "mp3",
-          ...CURRENT_SETTINGS,
-        }),
-      }
-    );
+    const response = await fetch(SELF_HOSTED_KOKORO_URL + "/v1/audio/speech", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "kokoro",
+        input: text,
+        response_format: "mp3",
+        ...CURRENT_SETTINGS,
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -69,9 +69,7 @@ export async function generateSpeech(
  */
 export async function fetchVoices(): Promise<string[]> {
   try {
-    const response = await fetch(
-      "https://kokoro.soundglade.com/v1/audio/voices"
-    );
+    const response = await fetch(SELF_HOSTED_KOKORO_URL + "/v1/audio/voices");
     if (!response.ok) {
       throw new Error(
         `Failed to fetch voices: ${response.status} ${response.statusText}`

@@ -12,6 +12,9 @@ if (typeof fetch === "undefined") {
   globalThis.fetch = require("node-fetch");
 }
 
+const SELF_HOSTED_KOKORO_URL =
+  process.env.SELF_HOSTED_KOKORO_URL || "http://localhost:8880";
+
 const SAMPLE_TEXT =
   "Find a comfortable sitting position, whether on a chair, cushion, or directly on the ground. Allow your body to settle into this space, feeling supported by the earth beneath you.";
 const OUTPUT_DIR = path.resolve(".tmp/kokoro-samples");
@@ -33,7 +36,7 @@ async function main() {
     try {
       // Use the generateSpeech function, overriding the voice
       const response = await fetch(
-        "https://kokoro.soundglade.com/v1/audio/speech",
+        SELF_HOSTED_KOKORO_URL + "/v1/audio/speech",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
