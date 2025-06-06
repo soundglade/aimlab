@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Speech, Pause, Check } from "lucide-react";
 import { useRouter } from "next/router";
 
 export default function ReaderPage() {
@@ -25,7 +25,53 @@ export default function ReaderPage() {
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
   const [improvePauses, setImprovePauses] = useState(true);
+  const [selectedVoice, setSelectedVoice] = useState("sarah");
+  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
+
+  // Voice configuration for instant meditation
+  const VOICES = [
+    {
+      id: "sarah",
+      name: "Sarah",
+      description: "Calm female voice",
+      previewFile: "/assets/sarah-voice-sample.mp3",
+    },
+    {
+      id: "matthew",
+      name: "Matthew",
+      description: "Soothing male voice",
+      previewFile: "/assets/matthew-voice-sample.mp3",
+    },
+  ];
+
+  const handlePlayVoice = (voiceId: string, previewFile: string) => {
+    const isCurrentlyPlaying = playingVoiceId === voiceId;
+
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    // If already playing this voice, just stop it
+    if (isCurrentlyPlaying) {
+      setPlayingVoiceId(null);
+      return;
+    }
+
+    // Play the selected voice
+    const audio = new Audio(previewFile);
+    audio.onended = () => setPlayingVoiceId(null);
+    audio.play();
+    audioRef.current = audio;
+    setPlayingVoiceId(voiceId);
+  };
+
+  const handleSelectVoice = (selectedVoiceId: string) => {
+    setSelectedVoice(selectedVoiceId);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +169,16 @@ export default function ReaderPage() {
     setHasMounted(true);
   }, []);
 
+  // Stop audio when component unmounts
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <Layout>
       <div className="pb-0 pt-1 md:pt-6">
@@ -199,7 +255,83 @@ export default function ReaderPage() {
                 ref={scriptTextareaRef}
               />
             </div>
+            <div className="flex items-center justify-center gap-4">
+              <div>
+                <div className="flex gap-2">
+                  {VOICES.map((voice) => {
+                    const isSelected = voice.id === selectedVoice;
 
+                    return (
+                      <div
+                        key={voice.id}
+                        className={`flex items-center space-x-2 rounded-2xl pr-3 transition-colors ${
+                          !isSubmitting ? "cursor-pointer" : ""
+                        }
+                            ${
+                              isSelected
+                                ? "bg-primary/10"
+                                : "bg-card hover:bg-accent/50"
+                            }`}
+                        onClick={() =>
+                          !isSubmitting && handleSelectVoice(voice.id)
+                        }
+                      >
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 flex-shrink-0 p-0"
+                          disabled={isSubmitting}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlayVoice(voice.id, voice.previewFile);
+                          }}
+                        >
+                          {playingVoiceId === voice.id ? (
+                            <Pause className="text-primary h-4 w-4" />
+                          ) : (
+                            <Speech className="text-primary h-4 w-4" />
+                          )}
+                        </Button>
+
+                        <div className="flex-grow">
+                          <div className="flex items-center justify-between">
+                            <span
+                              className={`text-sm ${
+                                isSelected ? "text-primary" : ""
+                              }`}
+                            >
+                              {voice.name}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <Label
+                    htmlFor="improve-pauses"
+                    className={cn(
+                      buttonVariants({ variant: "secondary", size: "sm" }),
+                      "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
+                      isSubmitting || !script.trim()
+                        ? "cursor-not-allowed opacity-50"
+                        : ""
+                    )}
+                  >
+                    <Switch
+                      id="improve-pauses"
+                      checked={improvePauses}
+                      onCheckedChange={
+                        !isSubmitting ? setImprovePauses : undefined
+                      }
+                      disabled={isSubmitting}
+                      className="opacity-50"
+                    />
+                    Improve pauses
+                  </Label>
+                </div>
+              </div>
+            </div>
             <Button
               type="submit"
               className="w-full text-base"
@@ -211,25 +343,6 @@ export default function ReaderPage() {
                 ? "Play with custom ElevenLabs settings"
                 : "Play"}
             </Button>
-            <Label
-              htmlFor="improve-pauses"
-              className={cn(
-                buttonVariants({ variant: "secondary", size: "sm" }),
-                "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
-                isSubmitting || !script.trim()
-                  ? "cursor-not-allowed opacity-50"
-                  : ""
-              )}
-            >
-              <Switch
-                id="improve-pauses"
-                checked={improvePauses}
-                onCheckedChange={!isSubmitting ? setImprovePauses : undefined}
-                disabled={isSubmitting}
-                className="opacity-50"
-              />
-              Improve pauses
-            </Label>
           </form>
 
           <ReadingDrawer
