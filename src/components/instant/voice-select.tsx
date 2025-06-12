@@ -24,14 +24,34 @@ interface Voice {
 // Predefined voices for instant meditation
 const VOICES: Voice[] = [
   {
-    id: "sarah",
-    name: "Sarah",
-    previewFile: "/assets/sarah-voice-sample.mp3",
+    id: "grace",
+    name: "Grace",
+    previewFile: "/assets/grace-voice-sample.mp3",
+  },
+  {
+    id: "kate",
+    name: "Kate",
+    previewFile: "/assets/kate-voice-sample.mp3",
+  },
+  {
+    id: "emily",
+    name: "Emily",
+    previewFile: "/assets/emily-voice-sample.mp3",
+  },
+  {
+    id: "ben",
+    name: "Ben",
+    previewFile: "/assets/ben-voice-sample.mp3",
   },
   {
     id: "matthew",
     name: "Matthew",
     previewFile: "/assets/matthew-voice-sample.mp3",
+  },
+  {
+    id: "james",
+    name: "James",
+    previewFile: "/assets/idris-voice-sample.mp3",
   },
 ];
 

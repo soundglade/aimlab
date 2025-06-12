@@ -20,10 +20,6 @@ const settings = {
     voice: "af_nicole+af_kore(0.2)",
     speed: 0.9,
   },
-  nicole_aoede: {
-    voice: "af_nicole+af_aoede(0.2)",
-    speed: 0.9,
-  },
   echo_gurney_nicole: {
     voice: "am_echo+am_v0gurney(0.3)+af_nicole(0.2)",
     speed: 0.8,
@@ -44,30 +40,38 @@ const settings = {
     voice: "bm_lewis+am_v0gurney(0.5)+am_michael(0.3)+af_aoede(0.5)",
     speed: 0.9,
   },
-  matthew: {
-    voice:
-      "am_v0gurney(1.7)+am_michael(0.2)+af_kore(0.6)+am_onyx(1.3)+af_nicole(1.5)",
+  jack: {
+    voice: "am_michael+am_onyx(0.5)+am_v0gurney(0.5)",
     speed: 0.9,
   },
-  sarah: {
+  // Instant meditation voices
+  grace: {
+    voice: "af_nicole+af_aoede(0.2)",
+    speed: 0.9,
+  },
+  kate: {
     voice: "af_nicole+af_aoede",
     speed: 0.9,
   },
-  jack: {
-    voice: "am_michael+am_onyx(0.8)+am_v0gurney(0.5)",
-    speed: 0.9,
-  },
-  echo: {
-    voice: "am_echo+am_v0gurney(0.3)",
-    speed: 0.9,
-  },
-  lily: {
+  emily: {
     voice: "bf_lily+af_nicole(0.4)",
     speed: 0.9,
   },
+  ben: {
+    voice: "am_echo+am_v0gurney(0.2)",
+    speed: 0.9,
+  },
+  matthew: {
+    voice: "am_michael+af_aoede(0.5)+am_v0gurney",
+    speed: 0.85,
+  },
+  james: {
+    voice: "bm_lewis+am_onyx(0.2)+af_aoede(0.2)+am_v0gurney(0.2)",
+    speed: 0.85,
+  },
 };
 
-const CURRENT_SETTINGS = settings.sarah;
+const CURRENT_SETTINGS = settings.grace;
 
 /**
  * Generate speech using self-hosted Kokoro TTS
