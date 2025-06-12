@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/layout-component";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, useRef } from "react";
+import { useAtom } from "jotai";
+import { voiceIdAtom } from "./atoms";
 import { ReadingDrawer } from "./reading-drawer";
 import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
@@ -26,7 +28,7 @@ export default function ReaderPage() {
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
   const [improvePauses, setImprovePauses] = useState(true);
-  const [selectedVoice, setSelectedVoice] = useState("sarah");
+  const [selectedVoice, setSelectedVoice] = useAtom(voiceIdAtom);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -139,10 +141,6 @@ export default function ReaderPage() {
     setHasMounted(true);
   }, []);
 
-  const handleSelectVoice = (voiceId: string) => {
-    setSelectedVoice(voiceId);
-  };
-
   return (
     <Layout>
       <div className="pb-0 pt-1 md:pt-6">
@@ -232,11 +230,7 @@ export default function ReaderPage() {
             </Button>
 
             <div className="flex items-center justify-center gap-4">
-              <VoiceSelect
-                value={selectedVoice}
-                onChange={handleSelectVoice}
-                disabled={isSubmitting}
-              />
+              <VoiceSelect disabled={isSubmitting} />
               <div>
                 <div className="flex gap-2">
                   <Label

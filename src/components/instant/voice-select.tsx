@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useAtom } from "jotai";
+import { voiceIdAtom } from "./atoms";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -56,8 +58,6 @@ const VOICES: Voice[] = [
 ];
 
 interface VoiceSelectProps {
-  value: string; // selectedVoiceId
-  onChange: (voiceId: string) => void;
   disabled?: boolean;
 }
 
@@ -77,15 +77,13 @@ function useMediaQuery(query: string) {
   return matches;
 }
 
-export function VoiceSelect({
-  value,
-  onChange,
-  disabled = false,
-}: VoiceSelectProps) {
+export function VoiceSelect({ disabled = false }: VoiceSelectProps) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [selectedVoiceId, setSelectedVoiceId] = useAtom(voiceIdAtom);
+  const [mounted, setMounted] = React.useState(false);
 
-  const selectedVoice = VOICES.find((v) => v.id === value);
+  const selectedVoice = VOICES.find((v) => v.id === selectedVoiceId);
   const buttonLabel = selectedVoice
     ? `Voice: ${selectedVoice.name}`
     : "Select voice";
@@ -105,7 +103,7 @@ export function VoiceSelect({
 
   const handleSelect = (voiceId: string) => {
     if (disabled) return;
-    onChange(voiceId);
+    setSelectedVoiceId(voiceId);
     setOpen(false);
   };
 
@@ -114,6 +112,7 @@ export function VoiceSelect({
       variant="outline"
       className="justify-between border-0"
       disabled={disabled}
+      style={{ opacity: mounted ? 1 : 0 }}
     >
       <Speech className="opacity-50" />
       {buttonLabel}
@@ -132,6 +131,10 @@ export function VoiceSelect({
     };
   }, []);
 
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
@@ -140,7 +143,7 @@ export function VoiceSelect({
           <VoiceList
             disabled={disabled}
             voices={VOICES}
-            selectedVoiceId={value}
+            selectedVoiceId={selectedVoiceId}
             playingVoiceId={playingVoiceId}
             onSelect={handleSelect}
             onPlay={(voiceId, previewFile) => {
@@ -176,7 +179,7 @@ export function VoiceSelect({
           <VoiceList
             disabled={disabled}
             voices={VOICES}
-            selectedVoiceId={value}
+            selectedVoiceId={selectedVoiceId}
             playingVoiceId={playingVoiceId}
             onSelect={handleSelect}
             onPlay={(voiceId, previewFile) => {
