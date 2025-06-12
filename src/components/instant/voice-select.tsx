@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Pause, Speech } from "lucide-react";
+import { Pause, Speech, Play } from "lucide-react";
 
 interface Voice {
   id: string;
@@ -109,12 +109,13 @@ export function VoiceSelect({ disabled = false }: VoiceSelectProps) {
 
   const button = (
     <Button
-      variant="outline"
-      className="justify-between border-0"
+      variant="secondary"
+      size="sm"
+      className="px-3! justify-between border-0"
       disabled={disabled}
       style={{ opacity: mounted ? 1 : 0 }}
     >
-      <Speech className="opacity-50" />
+      <Speech className="text-primary mx-0.5 opacity-80" />
       {buttonLabel}
     </Button>
   );
@@ -239,18 +240,20 @@ function VoiceList({
                   onSelect(voice.id);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center justify-between ${
-                  isSelected ? "bg-primary/10" : ""
+                className={`flex w-full items-center cursor-pointer justify-between ${
+                  isSelected ? "!bg-primary/40" : ""
                 }`}
                 disabled={disabled}
               >
-                <span className={`${isSelected ? "text-primary" : ""}`}>
+                <span
+                  className={`${isSelected ? "!ext-primary-foreground" : ""}`}
+                >
                   {voice.name}
                 </span>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 w-7 flex-shrink-0 p-0"
+                  className="bg-secondary hover:bg-secondary h-7 w-7 flex-shrink-0 p-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (disabled) return;
@@ -261,7 +264,7 @@ function VoiceList({
                   {isPlaying ? (
                     <Pause className="text-primary h-4 w-4" />
                   ) : (
-                    <Speech className="text-primary h-4 w-4" />
+                    <Play className="text-primary h-4 w-4" />
                   )}
                 </Button>
               </CommandItem>

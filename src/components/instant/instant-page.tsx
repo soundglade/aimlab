@@ -238,9 +238,7 @@ export default function ReaderPage() {
                     className={cn(
                       buttonVariants({ variant: "secondary", size: "sm" }),
                       "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
-                      isSubmitting || !script.trim()
-                        ? "cursor-not-allowed opacity-50"
-                        : ""
+                      isSubmitting ? "cursor-not-allowed opacity-50" : ""
                     )}
                   >
                     <Switch
