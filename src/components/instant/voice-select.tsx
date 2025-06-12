@@ -24,7 +24,7 @@ interface Voice {
 }
 
 // Predefined voices for instant meditation
-const VOICES: Voice[] = [
+export const VOICES: Voice[] = [
   {
     id: "grace",
     name: "Grace",
@@ -53,7 +53,7 @@ const VOICES: Voice[] = [
   {
     id: "james",
     name: "James",
-    previewFile: "/assets/idris-voice-sample.mp3",
+    previewFile: "/assets/james-voice-sample.mp3",
   },
 ];
 

@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { Meditation } from "@/components/types";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg";

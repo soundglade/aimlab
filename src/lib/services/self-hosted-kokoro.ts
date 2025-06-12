@@ -51,15 +51,15 @@ const settings = {
   },
   kate: {
     voice: "af_nicole+af_aoede",
-    speed: 0.9,
+    speed: 0.85,
   },
   emily: {
-    voice: "bf_lily+af_nicole(0.4)",
-    speed: 0.9,
+    voice: "bf_lily+af_nicole(0.3)",
+    speed: 0.85,
   },
   ben: {
-    voice: "am_echo+am_v0gurney(0.2)",
-    speed: 0.9,
+    voice: "am_echo+am_v0gurney(0.3)",
+    speed: 0.85,
   },
   matthew: {
     voice: "am_michael+af_aoede(0.5)+am_v0gurney",
