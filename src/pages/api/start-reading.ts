@@ -21,7 +21,7 @@ export default async function handler(
       .json({ error: "Script is required and must be a string" });
   }
 
-  // Validate settings for ElevenLabs
+  // Validate settings
   if (settings && typeof settings === "object") {
     if (settings.service === "elevenlabs") {
       if (
@@ -34,9 +34,12 @@ export default async function handler(
             "Invalid ElevenLabs settings: apiKey is required and must be a non-empty string.",
         });
       }
+    } else if (settings.service === "selfHostedKokoro") {
+      // Allow selfHostedKokoro service - minimal validation
     } else {
       return res.status(400).json({
-        error: "Only ElevenLabs TTS is supported for custom settings.",
+        error:
+          "Only ElevenLabs and selfHostedKokoro TTS are supported for custom settings.",
       });
     }
   }

@@ -41,12 +41,26 @@ export default function ReaderPage() {
     setResponse(null);
 
     try {
+      // Create voice settings for self-hosted Kokoro
+      const voiceSettings = selectedVoice
+        ? {
+            service: "selfHostedKokoro",
+            serviceOptions: {
+              voiceId: selectedVoice,
+            },
+          }
+        : null;
+
       const response = await fetch("/api/start-reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           script,
-          ...(customSettings ? { settings: customSettings } : {}),
+          ...(customSettings
+            ? { settings: customSettings }
+            : voiceSettings
+            ? { settings: voiceSettings }
+            : {}),
           improvePauses,
         }),
         signal: controller.signal,

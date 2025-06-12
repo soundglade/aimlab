@@ -80,6 +80,11 @@ export async function generateSpeech(
   options?: any
 ): Promise<ArrayBuffer> {
   try {
+    // Use voice from options if provided, otherwise use default
+    const voiceId = options?.voiceId;
+    const voiceSettings =
+      voiceId && settings[voiceId] ? settings[voiceId] : CURRENT_SETTINGS;
+
     const response = await fetch(SELF_HOSTED_KOKORO_URL + "/v1/audio/speech", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -87,7 +92,7 @@ export async function generateSpeech(
         model: "kokoro",
         input: text,
         response_format: "mp3",
-        ...CURRENT_SETTINGS,
+        ...voiceSettings,
       }),
     });
 

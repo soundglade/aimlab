@@ -26,13 +26,11 @@ const VOICES: Voice[] = [
   {
     id: "sarah",
     name: "Sarah",
-    description: "Calm female voice",
     previewFile: "/assets/sarah-voice-sample.mp3",
   },
   {
     id: "matthew",
     name: "Matthew",
-    description: "Soothing male voice",
     previewFile: "/assets/matthew-voice-sample.mp3",
   },
 ];
