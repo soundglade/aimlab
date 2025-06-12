@@ -194,6 +194,8 @@ export async function synthesizeReading({
         return step;
       });
 
+      response.script.settings = settings;
+
       if (readyForConcatenation(response.script) && !startedConcatenation) {
         startedConcatenation = true;
         concatenationPromise = concatenateAudio(response.script);
