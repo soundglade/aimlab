@@ -49,9 +49,25 @@ const settings = {
       "am_v0gurney(1.7)+am_michael(0.2)+af_kore(0.6)+am_onyx(1.3)+af_nicole(1.5)",
     speed: 0.9,
   },
+  sarah: {
+    voice: "af_nicole+af_aoede",
+    speed: 0.9,
+  },
+  jack: {
+    voice: "am_michael+am_onyx(0.8)+am_v0gurney(0.5)",
+    speed: 0.9,
+  },
+  echo: {
+    voice: "am_echo+am_v0gurney(0.3)",
+    speed: 0.9,
+  },
+  lily: {
+    voice: "bf_lily+af_nicole(0.4)",
+    speed: 0.9,
+  },
 };
 
-const CURRENT_SETTINGS = settings.nicole_aoede;
+const CURRENT_SETTINGS = settings.sarah;
 
 /**
  * Generate speech using self-hosted Kokoro TTS
