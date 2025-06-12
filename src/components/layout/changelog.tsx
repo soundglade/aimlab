@@ -38,6 +38,16 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "New voices for instant player",
+    date: "2025-06-12T13:00:00Z",
+    description: (
+      <>
+        It's now possible to chose between 6 different voices for the{" "}
+        <CustomLink href="/instant">instant player</CustomLink>.
+      </>
+    ),
+  },
+  {
     title: "Download MP3 from instant player",
     date: "2025-06-03T11:00:00Z",
     description: (
