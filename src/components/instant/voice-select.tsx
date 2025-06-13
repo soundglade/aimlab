@@ -85,8 +85,12 @@ export function VoiceSelect({ disabled = false }: VoiceSelectProps) {
 
   const selectedVoice = VOICES.find((v) => v.id === selectedVoiceId);
   const buttonLabel = selectedVoice
-    ? `Voice: ${selectedVoice.name}`
-    : "Select voice";
+    ? isDesktop
+      ? `Voice: ${selectedVoice.name}`
+      : selectedVoice.name
+    : isDesktop
+    ? "Select voice"
+    : "Voice";
 
   const [playingVoiceId, setPlayingVoiceId] = React.useState<string | null>(
     null

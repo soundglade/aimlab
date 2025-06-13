@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/layout-component";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, useRef } from "react";
 import { useAtom } from "jotai";
-import { voiceIdAtom } from "./atoms";
+import { voiceIdAtom, languageAtom } from "./atoms";
 import { ReadingDrawer } from "./reading-drawer";
 import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 import { VoiceSelect } from "./voice-select";
+import { LanguageSelect } from "./language-select";
 import { useRouter } from "next/router";
 
 export default function ReaderPage() {
@@ -29,6 +30,7 @@ export default function ReaderPage() {
   const [hasMounted, setHasMounted] = useState(false);
   const [improvePauses, setImprovePauses] = useState(true);
   const [selectedVoice, setSelectedVoice] = useAtom(voiceIdAtom);
+  const [selectedLanguage, setSelectedLanguage] = useAtom(languageAtom);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,6 +66,7 @@ export default function ReaderPage() {
             ? { settings: voiceSettings }
             : {}),
           improvePauses,
+          language: selectedLanguage,
         }),
         signal: controller.signal,
       });
@@ -165,16 +168,6 @@ export default function ReaderPage() {
               }}
             />
             <CustomizeDrawer />
-            <Button
-              variant="outline"
-              className="justify-between border-0"
-              onClick={() => {
-                router.push("/feedback");
-              }}
-            >
-              <MessageSquare className="opacity-50" />
-              Feedback
-            </Button>
           </div>
 
           <div className="text-muted-foreground mx-auto mb-1 max-w-3xl rounded-lg p-4 text-sm">
@@ -203,7 +196,7 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="shadow-xs bg-card mx-auto max-w-3xl space-y-3 rounded-lg p-6"
+            className="shadow-xs bg-card mx-auto max-w-3xl space-y-3 rounded-lg p-4 md:p-6"
           >
             <div>
               <Textarea
@@ -229,7 +222,9 @@ export default function ReaderPage() {
                 : "Play"}
             </Button>
 
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-2">
+              <LanguageSelect disabled={isSubmitting} />
+
               <VoiceSelect disabled={isSubmitting} />
               <div>
                 <div className="flex gap-2">
