@@ -64,32 +64,40 @@ export const VOICES: Voice[] = [
     language: "en",
   },
 
+  // Spanish voices
+  {
+    id: "carmen",
+    name: "Carmen",
+    previewFile: "/assets/carmen-voice-sample.mp3",
+    language: "es",
+  },
+  {
+    id: "diego",
+    name: "Diego",
+    previewFile: "/assets/diego-voice-sample.mp3",
+    language: "es",
+  },
+
+  // Portuguese voices
+  {
+    id: "ana",
+    name: "Ana",
+    previewFile: "/assets/ana-voice-sample.mp3",
+    language: "pt",
+  },
+  {
+    id: "pedro",
+    name: "Pedro",
+    previewFile: "/assets/pedro-voice-sample.mp3",
+    language: "pt",
+  },
+
   // French voices
   {
     id: "marie",
     name: "Marie",
     previewFile: "/assets/marie-voice-sample.mp3",
     language: "fr",
-  },
-  {
-    id: "pierre",
-    name: "Pierre",
-    previewFile: "/assets/pierre-voice-sample.mp3",
-    language: "fr",
-  },
-
-  // Spanish voices
-  {
-    id: "sofia",
-    name: "Sofia",
-    previewFile: "/assets/sofia-voice-sample.mp3",
-    language: "es",
-  },
-  {
-    id: "carlos",
-    name: "Carlos",
-    previewFile: "/assets/carlos-voice-sample.mp3",
-    language: "es",
   },
 
   // Italian voices
@@ -100,31 +108,31 @@ export const VOICES: Voice[] = [
     language: "it",
   },
   {
-    id: "marco",
-    name: "Marco",
-    previewFile: "/assets/marco-voice-sample.mp3",
+    id: "luca",
+    name: "Luca",
+    previewFile: "/assets/luca-voice-sample.mp3",
     language: "it",
   },
 
   // Japanese voices
   {
-    id: "yuki",
-    name: "Yuki",
-    previewFile: "/assets/yuki-voice-sample.mp3",
+    id: "naomi",
+    name: "Naomi",
+    previewFile: "/assets/naomi-voice-sample.mp3",
     language: "ja",
   },
   {
-    id: "hiroshi",
-    name: "Hiroshi",
-    previewFile: "/assets/hiroshi-voice-sample.mp3",
+    id: "kenji",
+    name: "Kenji",
+    previewFile: "/assets/kenji-voice-sample.mp3",
     language: "ja",
   },
 
   // Chinese voices
   {
-    id: "mei",
-    name: "Mei",
-    previewFile: "/assets/mei-voice-sample.mp3",
+    id: "li",
+    name: "Li",
+    previewFile: "/assets/li-voice-sample.mp3",
     language: "zh",
   },
   {
@@ -142,24 +150,10 @@ export const VOICES: Voice[] = [
     language: "hi",
   },
   {
-    id: "arjun",
-    name: "Arjun",
-    previewFile: "/assets/arjun-voice-sample.mp3",
+    id: "ravi",
+    name: "Ravi",
+    previewFile: "/assets/ravi-voice-sample.mp3",
     language: "hi",
-  },
-
-  // Portuguese voices
-  {
-    id: "ana",
-    name: "Ana",
-    previewFile: "/assets/ana-voice-sample.mp3",
-    language: "pt",
-  },
-  {
-    id: "joao",
-    name: "João",
-    previewFile: "/assets/joao-voice-sample.mp3",
-    language: "pt",
   },
 ];
 

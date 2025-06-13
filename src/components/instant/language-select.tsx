@@ -30,14 +30,19 @@ export const LANGUAGES: Language[] = [
     flag: "🇬🇧",
   },
   {
-    id: "fr",
-    name: "French",
-    flag: "🇫🇷",
-  },
-  {
     id: "es",
     name: "Spanish",
     flag: "🇪🇸",
+  },
+  {
+    id: "pt",
+    name: "Portuguese",
+    flag: "🇵🇹",
+  },
+  {
+    id: "fr",
+    name: "French",
+    flag: "🇫🇷",
   },
   {
     id: "it",
@@ -58,11 +63,6 @@ export const LANGUAGES: Language[] = [
     id: "hi",
     name: "Hindi",
     flag: "🇮🇳",
-  },
-  {
-    id: "pt",
-    name: "Portuguese",
-    flag: "🇵🇹",
   },
 ];
 
