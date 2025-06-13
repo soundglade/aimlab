@@ -68,6 +68,7 @@ export const LANGUAGES: Language[] = [
 
 interface LanguageSelectProps {
   disabled?: boolean;
+  onLanguageSelect?: (languageId: string) => void;
 }
 
 function useMediaQuery(query: string) {
@@ -86,7 +87,10 @@ function useMediaQuery(query: string) {
   return matches;
 }
 
-export function LanguageSelect({ disabled = false }: LanguageSelectProps) {
+export function LanguageSelect({
+  disabled = false,
+  onLanguageSelect,
+}: LanguageSelectProps) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedLanguageId, setSelectedLanguageId] = useAtom(languageAtom);
@@ -112,6 +116,8 @@ export function LanguageSelect({ disabled = false }: LanguageSelectProps) {
     if (disabled) return;
     setSelectedLanguageId(languageId);
     setOpen(false);
+    // Notify parent component that user manually selected a language
+    onLanguageSelect?.(languageId);
   };
 
   const button = (

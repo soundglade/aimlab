@@ -18,6 +18,7 @@ import { MessageSquare } from "lucide-react";
 import { VoiceSelect } from "./voice-select";
 import { LanguageSelect } from "./language-select";
 import { useRouter } from "next/router";
+import { useLanguageDetection } from "@/hooks/use-language-detection";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -32,6 +33,13 @@ export default function ReaderPage() {
   const [selectedVoice, setSelectedVoice] = useAtom(voiceIdAtom);
   const [selectedLanguage, setSelectedLanguage] = useAtom(languageAtom);
   const router = useRouter();
+
+  // Language detection hook
+  const { detectFromText, markUserSelected } = useLanguageDetection({
+    minLength: 50,
+    debounceMs: 500,
+    enabled: true,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,6 +168,8 @@ export default function ReaderPage() {
             <ExamplesSelect
               onSelect={(example) => {
                 setScript(example.script);
+                // Trigger language detection for the example
+                detectFromText(example.script);
                 setTimeout(() => {
                   if (scriptTextareaRef.current) {
                     scriptTextareaRef.current.scrollTop = 0;
@@ -204,7 +214,12 @@ export default function ReaderPage() {
                 placeholder="Paste your meditation script here..."
                 className="scrollbar-thin text-muted-foreground field-sizing-fixed bg-background h-[250px] overflow-y-auto text-sm md:h-[300px] md:text-base"
                 value={script}
-                onChange={(e) => setScript(e.target.value)}
+                onChange={(e) => {
+                  const newScript = e.target.value;
+                  setScript(newScript);
+                  // Trigger language detection
+                  detectFromText(newScript);
+                }}
                 disabled={isSubmitting}
                 required
                 ref={scriptTextareaRef}
@@ -223,7 +238,10 @@ export default function ReaderPage() {
             </Button>
 
             <div className="flex items-center justify-center gap-2">
-              <LanguageSelect disabled={isSubmitting} />
+              <LanguageSelect
+                disabled={isSubmitting}
+                onLanguageSelect={markUserSelected}
+              />
 
               <VoiceSelect disabled={isSubmitting} />
               <div>
