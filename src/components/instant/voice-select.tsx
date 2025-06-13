@@ -281,7 +281,7 @@ export function VoiceSelect({ disabled = false }: VoiceSelectProps) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>{button}</PopoverTrigger>
-        <PopoverContent className="w-[260px] p-0" align="center">
+        <PopoverContent className="w-[260px] p-0" align="center" side="top">
           <VoiceList
             disabled={disabled}
             voices={availableVoices}
