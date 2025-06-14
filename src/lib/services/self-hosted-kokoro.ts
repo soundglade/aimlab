@@ -81,11 +81,11 @@ const settings = {
   // Spanish voices
   carmen: {
     voice: "ef_dora",
-    speed: 0.9,
+    speed: 0.8,
   },
   diego: {
     voice: "em_alex",
-    speed: 0.9,
+    speed: 0.8,
   },
   // French voices
   marie: {

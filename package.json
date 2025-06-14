@@ -17,6 +17,7 @@
     "extract-meditations": "tsx scripts/simulate-chatgpt-meditations/extract-meditations.ts",
     "regenerate-missing": "tsx scripts/simulate-chatgpt-meditations/regenerate-missing.ts",
     "kokoro-sampler": "tsx scripts/kokoro-sampler/generate-samples.ts",
+    "kokoro-previews": "tsx scripts/kokoro-sampler/generate-voice-previews.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
