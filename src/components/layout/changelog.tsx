@@ -38,6 +38,19 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Add support for more languages",
+    date: "2025-06-14T15:00:00Z",
+    description: (
+      <>
+        The <CustomLink href="/instant">instant player</CustomLink> now supports
+        7 new languages. Each language has its own set of voices. Unfortunately
+        the quality of these new voices is... well, so-so! 😅 Sorry about that.
+        I've resisted publishing these voices because of their quality, but I'm
+        releasing them just in case someone still finds them useful.
+      </>
+    ),
+  },
+  {
     title: "New voices for instant player",
     date: "2025-06-12T13:00:00Z",
     description: (

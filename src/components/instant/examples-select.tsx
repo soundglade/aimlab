@@ -80,7 +80,7 @@ function ExampleList({ setOpen, setSelected }) {
   return (
     <Command>
       <CommandInput placeholder="Search examples..." />
-      <CommandList>
+      <CommandList className="max-h-none">
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
           {EXAMPLES.map((example) => (
