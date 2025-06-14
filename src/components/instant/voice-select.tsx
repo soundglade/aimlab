@@ -101,16 +101,17 @@ export const VOICES: Voice[] = [
   },
 
   // Italian voices
-  {
-    id: "giulia",
-    name: "Giulia",
-    previewFile: "/assets/giulia-voice-sample.mp3",
-    language: "it",
-  },
+
   {
     id: "luca",
     name: "Luca",
     previewFile: "/assets/luca-voice-sample.mp3",
+    language: "it",
+  },
+  {
+    id: "giulia",
+    name: "Giulia",
+    previewFile: "/assets/giulia-voice-sample.mp3",
     language: "it",
   },
 

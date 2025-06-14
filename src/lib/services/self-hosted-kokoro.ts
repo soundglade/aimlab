@@ -72,64 +72,64 @@ const settings = {
   // Italian voices
   giulia: {
     voice: "if_sara",
-    speed: 0.9,
+    speed: 0.85,
   },
   luca: {
     voice: "im_nicola",
-    speed: 0.9,
+    speed: 0.85,
   },
   // Spanish voices
   carmen: {
     voice: "ef_dora",
-    speed: 0.8,
+    speed: 0.85,
   },
   diego: {
     voice: "em_alex",
-    speed: 0.8,
+    speed: 0.85,
   },
   // French voices
   marie: {
     voice: "ff_siwis",
-    speed: 0.9,
+    speed: 0.85,
   },
   // Portuguese voices
   ana: {
     voice: "pf_dora",
-    speed: 0.8,
+    speed: 0.85,
   },
   pedro: {
     voice: "pm_alex",
-    speed: 0.8,
+    speed: 0.85,
   },
 
   // Japanese voices
   naomi: {
     voice: "jf_gongitsune",
-    speed: 0.9,
+    speed: 0.85,
   },
   kenji: {
     voice: "jm_kumo",
-    speed: 0.9,
+    speed: 0.85,
   },
 
   // Chinese voices
   li: {
     voice: "zf_xiaobei",
-    speed: 0.9,
+    speed: 0.85,
   },
   wei: {
     voice: "zm_yunjian",
-    speed: 0.9,
+    speed: 0.85,
   },
 
   // Hindi voices
   priya: {
     voice: "hf_alpha",
-    speed: 0.9,
+    speed: 0.85,
   },
   ravi: {
     voice: "hm_omega",
-    speed: 0.9,
+    speed: 0.85,
   },
 };
 

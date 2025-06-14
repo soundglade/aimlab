@@ -134,10 +134,10 @@ Carry this feeling of self-compassion with you as you return to your caregiving 
 
 Welcome.  
 This is a short meditation designed for coders, tinkerers, and digital architects  
-who’ve been staring at a screen long enough to forget where their body ends  
+who've been staring at a screen long enough to forget where their body ends  
 and the terminal begins.  
 
-Let’s unplug the mind for a moment, without pulling the whole power cable.
+Let's unplug the mind for a moment, without pulling the whole power cable.
 
 [pause for 5 seconds]
 
@@ -152,7 +152,7 @@ And exhale slowly.
 
 Feel the sensation of your body sitting.  
 Chair, floor, cushion—whatever you're on—it's supporting you.  
-You don’t need to support *everything* right now.
+You don't need to support *everything* right now.
 
 [pause for 8 seconds]
 
@@ -173,7 +173,7 @@ just notice it with a smirk.
 
 Now bring your attention gently to the breath.  
 No need to optimize it.  
-Let it run in whatever janky version it’s currently using.
+Let it run in whatever janky version it's currently using.
 
 [pause for 10 seconds]
 
@@ -183,8 +183,8 @@ Simple, boring, perfect.
 
 [pause for 10 seconds]
 
-You’re not here to *do* anything right now.  
-You’re just noticing.  
+You're not here to *do* anything right now.  
+You're just noticing.  
 Observing the code of your own awareness...  
 without trying to fix the bugs.
 
@@ -195,13 +195,13 @@ without trying to fix the bugs.
 ## 🧩 Returning to Clarity
 
 Let thoughts come and go, like logs in a console.  
-You don’t have to respond.  
+You don't have to respond.  
 Not every warning is urgent.
 
 [pause for 8 seconds]
 
 As the mind quiets a little,  
-see if there’s a small feeling of space—  
+see if there's a small feeling of space—  
 a fresh commit of clarity starting to push through.
 
 [pause for 10 seconds]
@@ -228,7 +228,7 @@ Which, let's face it, is better than most refactors.
 ## 🧭 Optional Prompt
 
 Before returning to work, you might ask:  
-**“What’s one small thing I *don’t* need to do right now?”**
+**"What's one small thing I *don't* need to do right now?"**
 
 Sometimes clarity begins with subtraction.
 
@@ -252,7 +252,7 @@ with interest, hesitation, and the occasional sudden zoomies.
 [pause for 5 seconds]
 
 No need to achieve anything here.  
-You’re just here to look around.
+You're just here to look around.
 
 [pause for 5 seconds]
 
@@ -260,13 +260,13 @@ You’re just here to look around.
 
 ## 👃 Sniffing the Moment
 
-Let’s start by noticing what’s here—right now.  
+Let's start by noticing what's here—right now.  
 Noticing is the key word.  
 Not analyzing. Not fixing. Just... noticing.
 
 [pause for 6 seconds]
 
-What’s the air like?  
+What's the air like?  
 The sounds around you?  
 The tension in your tail?  
 (Okay, maybe no tail. But check your shoulders.)
@@ -284,13 +284,13 @@ Backing off if it gets weird.
 
 [pause for 6 seconds]
 
-What’s happening in your breath right now?  
-Don’t control it—just be near it.  
+What's happening in your breath right now?  
+Don't control it—just be near it.  
 Like you're lying next to it on a windowsill.
 
 [pause for 10 seconds]
 
-Now, what’s the mood in your body?  
+Now, what's the mood in your body?  
 No labels. Just tones. Sensations.  
 Fluffiness? Tension? Sleepy paws?
 
@@ -302,15 +302,15 @@ Fluffiness? Tension? Sleepy paws?
 
 Let your attention wander.  
 But keep it *softly tethered*—  
-as if there’s an invisible string from you to this moment.
+as if there's an invisible string from you to this moment.
 
 [pause for 8 seconds]
 
 And when your thoughts leap up like a cat spotting a shadow,  
-just notice: “Ah, mind doing mind things.”
+just notice: "Ah, mind doing mind things."
 
 No need to chase it.  
-Let it come back when it’s ready.
+Let it come back when it's ready.
 
 [pause for 10 seconds]
 
@@ -323,7 +323,7 @@ And exhale with a little sigh, if you like.
 
 [pause for 6 seconds]
 
-Notice that you’ve been here this whole time.  
+Notice that you've been here this whole time.  
 Just hanging out.  
 A curious cat in the sunshine of now.
 
@@ -334,7 +334,7 @@ A curious cat in the sunshine of now.
 ## 🧶 Optional Prompt
 
 Before you go:  
-**What’s one thing in your environment you haven’t really noticed today?**  
+**What's one thing in your environment you haven't really noticed today?**  
 Go find it. Look at it like a cat would.  
 And maybe knock it off the table.  
 
@@ -359,8 +359,8 @@ senses, thoughts, emotions, all blinking at once.
 
 [pause for 6 seconds]
 
-You don’t need to fix it.  
-We’re just slowing everything down.  
+You don't need to fix it.  
+We're just slowing everything down.  
 
 [pause for 8 seconds]
 
@@ -376,7 +376,7 @@ And let it fall out, gently.
 Now again.  
 Just air moving in…  
 And out.  
-That’s all.
+That's all.
 
 [pause for 12 seconds]
 
@@ -402,10 +402,10 @@ Feel them without moving.
 
 [pause for 10 seconds]
 
-If there’s tightness anywhere—  
-Don’t force it to release.  
+If there's tightness anywhere—  
+Don't force it to release.  
 Just be near it.  
-Like sitting next to a friend who’s upset.
+Like sitting next to a friend who's upset.
 
 [pause for 12 seconds]
 
@@ -416,7 +416,7 @@ Like sitting next to a friend who’s upset.
 Sounds may still be around you.  
 Let them come.  
 Let them go.  
-You don’t have to make sense of them.
+You don't have to make sense of them.
 
 [pause for 10 seconds]
 
@@ -426,7 +426,7 @@ Just one.
 
 [pause for 10 seconds]
 
-You don’t need silence.  
+You don't need silence.  
 You just need space.
 
 [pause for 12 seconds]
@@ -452,12 +452,12 @@ Pick one. Stay there.
 
 ## 🫧 Closing Gently
 
-You’ve made space.  
+You've made space.  
 That matters.  
 
 [pause for 6 seconds]
 
-When you’re ready,  
+When you're ready,  
 look around the room—slowly.  
 Notice a color.  
 A shape.  
@@ -465,7 +465,7 @@ Something simple.
 
 [pause for 10 seconds]
 
-You don’t have to do anything next.  
+You don't have to do anything next.  
 Just… a little more space than before.
 
 ---
@@ -473,11 +473,312 @@ Just… a little more space than before.
 ## 🧭 Optional Prompt
 
 If you want:  
-**What’s one thing you could pause or mute for a little while?**  
-It doesn’t need to be forever.  
+**What's one thing you could pause or mute for a little while?**  
+It doesn't need to be forever.  
 Just long enough to breathe.
 
 ---
+`,
+  },
+  {
+    label: "🇪🇸 Brisa Matutina",
+    script: `# Brisa Matutina
+
+*Una meditación corta para recibir el nuevo día con suavidad.*
+
+---
+
+## 🌅 Introducción
+
+Bienvenido.
+Durante los próximos minutos, dejaremos que la mente se abra como una ventana al amanecer. [pausa 5 segundos]
+
+---
+
+## 🌬️ Sintiendo el Aire
+
+Inhala profundamente por la nariz.
+Siente la brisa imaginaria que recorre tu pecho.
+Exhala lenta y silenciosamente.
+Observa cómo el aire se lleva las últimas sombras del sueño. [pausa 10 segundos]
+
+---
+
+## 🔆 Despertar de los Sentidos
+
+Mueve la atención a los sonidos más lejanos…
+luego a los más cercanos…
+y por último al suave silencio entre ellos. [pausa 12 segundos]
+
+Observa la luz que toca tu piel, incluso si tus ojos están cerrados. [pausa 10 segundos]
+
+---
+
+## ☕ Pequeña Intención
+
+Antes de continuar el día, pregunta:
+**¿Cuál es la cualidad que quiero cultivar hoy?**
+Elige una palabra sencilla y deja que repose como el primer sorbo de café. [pausa 10 segundos]
+
+---
+
+## 🚪 Cierre
+
+Respira una vez más.
+Abre lentamente los ojos si estaban cerrados.
+Siente el cuerpo listo, como una puerta entreabierta a nuevas posibilidades. [pausa 6 segundos]
+`,
+  },
+  {
+    label: "🇫🇷 Pause Café Intérieure",
+    script: `# Pause Café Intérieure
+
+*Une méditation éclair pour savourer un moment de présence entre deux gorgées.*
+
+---
+
+## ☕ Invitation
+
+Installe-toi confortablement, tasse réelle ou imaginaire entre les mains.
+Sens sa chaleur, son poids. [pause 6 secondes]
+
+---
+
+## 👃 Arôme de l'Instant
+
+Inspire lentement par le nez.
+Perçois peut-être un parfum, ou juste l'air.
+Expire et laisse se diffuser une note de calme. [pause 10 secondes]
+
+---
+
+## 🫖 Tour de Dégustation
+
+1. Observe la couleur du liquide (ou de l'espace derrière tes paupières).
+2. Écoute le clapotis subtil de la respiration.
+3. Goûte la minuscule pause qui s'offre à toi. [pause 12 secondes]
+
+---
+
+## 💬 Question Douce
+
+Demande-toi : **De quoi suis-je déjà nourri ?**
+Laisse la réponse monter comme la vapeur au-dessus de la tasse. [pause 8 secondes]
+
+---
+
+## 👋 Reprise
+
+Prends une dernière inspiration.
+Dépose doucement la tasse imaginaire.
+Reviens à tes activités, le palais encore imprégné de présence. [pause 5 secondes]
+`,
+  },
+  {
+    label: "🇵🇹 Maré Serena",
+    script: `# Maré Serena
+
+*Uma prática curta para acompanhar o ritmo das ondas internas.*
+
+---
+
+## 🌊 Chegada
+
+Sente-te como se estivesses à beira-mar, mesmo que estejas num escritório.
+Ouve o vai-e-vem do ar que entra e sai. [pausa 8 segundos]
+
+---
+
+## 🫁 Respiração Ondulante
+
+Inspira — a maré sobe.
+Expira — a maré desce.
+Mantém o fluxo natural, sem pressa. [pausa 12 segundos]
+
+Imagina que cada expiração suaviza a areia sob os pés. [pausa 10 segundos]
+
+---
+
+## 🐚 Eco do Silêncio
+
+Leva a atenção a um ponto no corpo que peça cuidado.
+Escuta-o como se pusesses uma concha no ouvido.
+Sem julgar, apenas ouvindo. [pausa 15 segundos]
+
+---
+
+## 🌅 Fecho
+
+Respira fundo uma última vez.
+Sente a maré a estabilizar-se.
+Quando quiseres, abre os olhos e leva contigo o som discreto das ondas. [pausa 6 segundos]
+`,
+  },
+  {
+    label: "🇮🇹 Sospeso tra Due Respiri",
+    script: `# Sospeso tra Due Respiri
+
+*Meditazione lampo per ritrovare equilibrio negli interstizi del tempo.*
+
+---
+
+## 🎯 Punto di Partenza
+
+Porta l'attenzione al momento esatto tra un'inspirazione e un'espirazione.
+Quell'istante sospeso dove tutto è possibile. [pausa 6 secondi]
+
+---
+
+## 🔍 Esplorazione del Vuoto
+
+1. Inspira naturalmente.
+2. Nota la micro-pausa prima dell'espirazione.
+3. Rimani in quel silenzio per un battito di cuore. [pausa 12 secondi]
+
+Lascia che la mente si rilassi in quel minuscolo spazio aperto. [pausa 10 secondi]
+
+---
+
+## 🛠️ Mini-Reset
+
+Chiediti: **Cosa posso lasciare andare proprio ora?**
+Osserva la risposta svanire con l'aria che esce. [pausa 8 secondi]
+
+---
+
+## 🚦 Rientro
+
+Fai un respiro completo e profondo.
+Muovi dolcemente le dita.
+Ritorna alle tue attività, portando con te il ricordo di quello spazio tra due respiri. [pausa 5 secondi]
+`,
+  },
+  {
+    label: "🇮🇳 ध्यान की बूँद",
+    script: `# ध्यान की बूँद
+
+*क्षणिक अभ्यास जो मन को ओस की बूंद-सा स्वच्छ करता है*
+
+---
+
+## 🌼 आरंभ
+
+सभ्य मुद्रा में बैठें या खड़े रहें。
+आँखें नरम कर लें, दृष्टि भीतर की ओर। [रुकें 5 सेकंड]
+
+---
+
+## 💧 एक बूँद जागरूकता
+
+एक गहरी साँस लें。
+कल्पना करें कि यह साँस पारदर्शी बूँद बनकर मन में ठहर गई है।
+देखें कैसे वह स्पष्टता फैलाती है। [रुकें 12 सेकंड]
+
+---
+
+## 🔆 चमकती उपस्थिति
+
+अपने शरीर में उस स्थान पर ध्यान दें जहाँ ऊर्जा सबसे अधिक महसूस हो।
+बस महसूस करें, परिवर्तन की आवश्यकता नहीं। [रुकें 15 सेकंड]
+
+---
+
+## 🌻 अंतरीय प्रश्न
+
+मन-ही-मन पूछें: **अभी मुझे किस सरलता की आवश्यकता है?**
+उत्तर को बिना पकड़े, आने-जाने दें। [रुकें 8 सेकंड]
+
+---
+
+## 🚪 समापन
+
+धीरे-धीरे पलकों को खोलें।
+हथेलियों को रगड़ें, ऊष्मा चेहरे पर ले जाएँ।
+नई ताजगी के साथ दिन में अग्रसर हों। [रुकें 5 सेकंड]
+`,
+  },
+  {
+    label: "🇯🇵 静かな湖",
+    script: `# 静かな湖
+
+＊心を湖面のように静める短い瞑想＊
+
+---
+
+## 🌾 導入
+
+椅子でも床でも、楽な姿勢で座ります。
+目を閉じ、内側にそっと視線を向けます。［５秒間 静止］
+
+---
+
+## 💧 一滴の波紋
+
+呼吸を一度だけ深く。
+その息が湖に落ちる一滴となり、
+波紋が広がる様子を思い浮かべます。［１０秒間 静止］
+
+---
+
+## 🫧 静寂に溶ける
+
+波紋が消え、湖面が鏡のようになるのを感じます。
+外の音が遠ざかり、
+ただ透明な静けさだけが残ります。［１５秒間 静止］
+
+---
+
+## 🌱 結び
+
+もう一度、小さく息を吸って吐きます。
+静かな湖を胸にしまい、
+ゆっくりまぶたを開けて、日常へ戻りましょう。［５秒間 静止］
+`,
+  },
+  {
+    label: "🇨🇳 云端漫步",
+    script: `# 云端漫步
+
+*一段让思绪轻盈如云的快速练习*
+
+---
+
+## ☁️ 起步
+
+想象自己站在柔软的云层上。
+脚下没有坠落，只有轻轻的支撑。［暂停 6 秒］
+
+---
+
+## 💨 云的呼吸
+
+吸气——白云聚拢。
+呼气——白云散开。
+让呼吸像天空一样宽阔。［暂停 12 秒］
+
+---
+
+## 🔭 俯瞰
+
+在云端向下望，
+纷杂的事务似乎缩小成安静的点。
+只是观看，不评判。［暂停 15 秒］
+
+---
+
+## ✨ 落地点
+
+选择一件此刻真正重要的事，
+像选定一朵云的影子。
+把专注轻轻放在其上。［暂停 10 秒］
+
+---
+
+## 🛬 回到地面
+
+深吸一口气。
+随着呼气，感受脚重新触地。
+睁开眼，你已带回一片天空的开阔。［暂停 6 秒］
 `,
   },
 ];
