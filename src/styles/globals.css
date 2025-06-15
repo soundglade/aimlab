@@ -218,3 +218,43 @@ html body[data-scroll-locked] {
     opacity: 1;
   }
 }
+
+/* Auto-resizing textarea utilities for older browser compatibility */
+.textarea-auto-resize {
+  display: grid;
+  position: relative;
+}
+
+.textarea-auto-resize::after {
+  content: attr(data-replicated-value) " ";
+  white-space: pre-wrap;
+  visibility: hidden;
+  grid-area: 1 / 1 / 2 / 2;
+  font: inherit;
+  padding: inherit;
+  border: inherit;
+  margin: inherit;
+  resize: none;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: inherit;
+}
+
+.textarea-auto-resize > textarea {
+  resize: none;
+  overflow: hidden;
+  grid-area: 1 / 1 / 2 / 2;
+  font: inherit;
+  word-wrap: break-word;
+}
+
+/* Fallback for browsers that support field-sizing */
+@supports (field-sizing: content) {
+  .textarea-auto-resize > textarea {
+    field-sizing: content;
+  }
+
+  .textarea-auto-resize::after {
+    display: none;
+  }
+}

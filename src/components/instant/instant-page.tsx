@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/layout-component";
-import { Textarea } from "@/components/ui/textarea";
+import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { useState, useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 import { voiceIdAtom, languageAtom } from "./atoms";
@@ -209,10 +209,10 @@ export default function ReaderPage() {
             className="mx-auto max-w-4xl space-y-3 py-4 md:py-6"
           >
             <div>
-              <Textarea
+              <AutoResizeTextarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin bg-card/20 text-foreground/90 field-sizing-content min-h-[250px] resize-none rounded-xl border-none p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
+                className="scrollbar-thin bg-card/20 text-foreground/90 min-h-[250px] rounded-xl border-none p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => {
                   const newScript = e.target.value;
