@@ -206,13 +206,13 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="mx-auto max-w-4xl space-y-3 py-4 md:py-6"
+            className="mx-auto mt-0 max-w-4xl space-y-3 sm:mt-2"
           >
             <div>
               <AutoResizeTextarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin bg-card/20 text-foreground/90 min-h-[250px] rounded-xl border-none p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
+                className="scrollbar-thin dark:bg-card/30 text-foreground/90 min-h-[250px] rounded-xl border-none bg-slate-200/50 p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => {
                   const newScript = e.target.value;
