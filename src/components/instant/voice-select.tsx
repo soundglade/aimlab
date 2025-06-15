@@ -28,15 +28,15 @@ interface Voice {
 export const VOICES: Voice[] = [
   // English voices
   {
-    id: "grace",
-    name: "Grace",
-    previewFile: "/assets/grace-voice-sample.mp3",
-    language: "en",
-  },
-  {
     id: "kate",
     name: "Kate",
     previewFile: "/assets/kate-voice-sample.mp3",
+    language: "en",
+  },
+  {
+    id: "grace",
+    name: "Grace",
+    previewFile: "/assets/grace-voice-sample.mp3",
     language: "en",
   },
   {

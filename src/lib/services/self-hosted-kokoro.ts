@@ -133,7 +133,7 @@ const settings = {
   },
 };
 
-const CURRENT_SETTINGS = settings.grace;
+const CURRENT_SETTINGS = settings.kate;
 
 /**
  * Generate speech using self-hosted Kokoro TTS
