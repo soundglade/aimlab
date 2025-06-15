@@ -195,7 +195,7 @@ function useMediaQuery(query: string) {
 
 export function VoiceSelect({ disabled = false }: VoiceSelectProps) {
   const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 40rem)");
   const [selectedVoiceId, setSelectedVoiceId] = useAtom(voiceIdAtom);
   const [selectedLanguage] = useAtom(languageAtom);
   const [mounted, setMounted] = React.useState(false);

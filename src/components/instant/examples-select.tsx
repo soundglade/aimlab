@@ -35,7 +35,7 @@ function useMediaQuery(query) {
 
 export function ExamplesSelect({ onSelect }) {
   const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 40rem)");
   const [selected, setSelected] = React.useState<any>(null);
 
   const handleSelect = (example) => {

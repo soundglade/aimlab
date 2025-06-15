@@ -206,13 +206,13 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="shadow-xs bg-card/50 mx-auto max-w-3xl space-y-3 rounded-2xl p-4 md:p-6"
+            className="mx-auto max-w-4xl space-y-3 py-4 md:py-6"
           >
             <div>
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin text-muted-foreground field-sizing-content min-h-[250px] resize-none border-none bg-transparent text-sm md:min-h-[300px] md:text-base"
+                className="scrollbar-thin bg-card/20 text-foreground/90 field-sizing-content min-h-[250px] resize-none rounded-xl border-none p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => {
                   const newScript = e.target.value;
@@ -226,48 +226,52 @@ export default function ReaderPage() {
               />
             </div>
 
-            <div className="text-center">
-              <Button
-                type="submit"
-                className="mx-auto w-full max-w-[200px] text-base"
-                disabled={isSubmitting || !script.trim()}
-              >
-                {isSubmitting
-                  ? "Playing..."
-                  : hasMounted && customSettings
-                  ? "Play with custom ElevenLabs settings"
-                  : "Play"}
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-center gap-2">
-              <LanguageSelect
-                disabled={isSubmitting}
-                onLanguageSelect={markUserSelected}
-              />
-
-              <VoiceSelect disabled={isSubmitting} />
-              <div>
-                <div className="flex gap-2">
-                  <Label
-                    htmlFor="improve-pauses"
-                    className={cn(
-                      buttonVariants({ variant: "secondary", size: "sm" }),
-                      "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
-                      isSubmitting ? "cursor-not-allowed opacity-50" : ""
-                    )}
+            <div className="sticky bottom-0 -mx-8 mt-4 text-center sm:bottom-6 sm:mx-auto md:mt-6">
+              <div className="bg-card/80 z-10 mx-auto inline-block w-full max-w-lg space-y-3 rounded-xl p-3 pb-6 pt-4 backdrop-blur-sm sm:w-auto sm:rounded-3xl sm:p-4">
+                <div className="text-center">
+                  <Button
+                    type="submit"
+                    className="mx-auto w-full max-w-[200px] text-base"
+                    disabled={isSubmitting || !script.trim()}
                   >
-                    <Switch
-                      id="improve-pauses"
-                      checked={improvePauses}
-                      onCheckedChange={
-                        !isSubmitting ? setImprovePauses : undefined
-                      }
-                      disabled={isSubmitting}
-                      className="opacity-50"
-                    />
-                    Improve pauses
-                  </Label>
+                    {isSubmitting
+                      ? "Playing..."
+                      : hasMounted && customSettings
+                      ? "Play with custom ElevenLabs settings"
+                      : "Play"}
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-center gap-2">
+                  <LanguageSelect
+                    disabled={isSubmitting}
+                    onLanguageSelect={markUserSelected}
+                  />
+
+                  <VoiceSelect disabled={isSubmitting} />
+                  <div>
+                    <div className="flex gap-2">
+                      <Label
+                        htmlFor="improve-pauses"
+                        className={cn(
+                          buttonVariants({ variant: "secondary", size: "sm" }),
+                          "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
+                          isSubmitting ? "cursor-not-allowed opacity-50" : ""
+                        )}
+                      >
+                        <Switch
+                          id="improve-pauses"
+                          checked={improvePauses}
+                          onCheckedChange={
+                            !isSubmitting ? setImprovePauses : undefined
+                          }
+                          disabled={isSubmitting}
+                          className="opacity-50"
+                        />
+                        Improve pauses
+                      </Label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

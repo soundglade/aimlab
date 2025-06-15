@@ -92,7 +92,7 @@ export function LanguageSelect({
   onLanguageSelect,
 }: LanguageSelectProps) {
   const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 40rem)");
   const [selectedLanguageId, setSelectedLanguageId] = useAtom(languageAtom);
   const [mounted, setMounted] = React.useState(false);
 
