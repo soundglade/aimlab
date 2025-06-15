@@ -154,7 +154,7 @@ export default function ReaderPage() {
 
   return (
     <Layout>
-      <div className="pb-0 pt-1 md:pt-6">
+      <div className="w-full pb-0 pt-1 md:pt-6">
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="mb-2 text-center text-3xl tracking-tight">
             Instant Meditation Player
@@ -164,7 +164,7 @@ export default function ReaderPage() {
             Instantly read your own guided meditations
           </p>
 
-          <div className="mx-auto mb-1 flex justify-center gap-4">
+          <div className="mx-auto mb-0.5 flex justify-center gap-4">
             <ExamplesSelect
               onSelect={(example) => {
                 setScript(example.script);
@@ -180,8 +180,8 @@ export default function ReaderPage() {
             <CustomizeDrawer />
           </div>
 
-          <div className="text-muted-foreground mx-auto mb-1 max-w-3xl rounded-lg p-4 text-sm">
-            <ul className="list-inside space-y-2">
+          <div className="text-muted-foreground mx-auto mb-1 max-w-4xl rounded-lg p-4 text-sm">
+            <ul className="list-inside space-y-2 text-center">
               <li>
                 <span className="hidden sm:inline">
                   {" "}
@@ -206,13 +206,13 @@ export default function ReaderPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="shadow-xs bg-card mx-auto max-w-3xl space-y-3 rounded-lg p-4 md:p-6"
+            className="shadow-xs bg-card/50 mx-auto max-w-3xl space-y-3 rounded-2xl p-4 md:p-6"
           >
             <div>
               <Textarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin text-muted-foreground field-sizing-fixed bg-background h-[250px] overflow-y-auto text-sm md:h-[300px] md:text-base"
+                className="scrollbar-thin text-muted-foreground field-sizing-content min-h-[250px] resize-none border-none bg-transparent text-sm md:min-h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => {
                   const newScript = e.target.value;
@@ -225,17 +225,20 @@ export default function ReaderPage() {
                 ref={scriptTextareaRef}
               />
             </div>
-            <Button
-              type="submit"
-              className="w-full text-base"
-              disabled={isSubmitting || !script.trim()}
-            >
-              {isSubmitting
-                ? "Playing..."
-                : hasMounted && customSettings
-                ? "Play with custom ElevenLabs settings"
-                : "Play"}
-            </Button>
+
+            <div className="text-center">
+              <Button
+                type="submit"
+                className="mx-auto w-full max-w-[200px] text-base"
+                disabled={isSubmitting || !script.trim()}
+              >
+                {isSubmitting
+                  ? "Playing..."
+                  : hasMounted && customSettings
+                  ? "Play with custom ElevenLabs settings"
+                  : "Play"}
+              </Button>
+            </div>
 
             <div className="flex items-center justify-center gap-2">
               <LanguageSelect
