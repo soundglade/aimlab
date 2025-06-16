@@ -310,6 +310,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
               <Button
                 variant="ghost"
                 onClick={handleDownload}
+                disabled={!fullAudio}
                 className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-l-full border-0 p-1 px-4 sm:p-1.5"
               >
                 mp3
@@ -318,6 +319,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
               <Button
                 variant="ghost"
                 onClick={handleSave}
+                disabled={!fullAudio}
                 className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
               >
                 save
@@ -326,6 +328,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
               <Button
                 variant="ghost"
                 onClick={handleShare}
+                disabled={!fullAudio}
                 className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-r-full border-0 p-1 px-4 tracking-wider sm:p-1.5"
               >
                 share
