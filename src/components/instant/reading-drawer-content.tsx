@@ -307,32 +307,102 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
           </div>
           <div className="mb-4 mt-2 flex items-center justify-center">
             <div className="border-input flex rounded-full border opacity-60">
-              <Button
-                variant="ghost"
-                onClick={handleDownload}
-                disabled={!fullAudio}
-                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-l-full border-0 p-1 px-4 sm:p-1.5"
-              >
-                mp3
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className="inline-block"
+                    onClick={() => {
+                      if (fullAudio) {
+                        handleDownload();
+                      } else {
+                        toast.message(
+                          "The meditation is not ready for download yet. Please try again in a moment.",
+                          {
+                            position: "bottom-center",
+                          }
+                        );
+                      }
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      disabled={!fullAudio}
+                      className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-l-full border-0 p-1 px-4 sm:p-1.5"
+                    >
+                      mp3
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {fullAudio ? "Download MP3" : "Download not ready yet..."}
+                </TooltipContent>
+              </Tooltip>
               <div className="bg-border w-px" />
-              <Button
-                variant="ghost"
-                onClick={handleSave}
-                disabled={!fullAudio}
-                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
-              >
-                save
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className="inline-block"
+                    onClick={() => {
+                      if (fullAudio) {
+                        handleSave();
+                      } else {
+                        toast.message(
+                          "The meditation is not ready to save yet. Please try again in a moment.",
+                          {
+                            position: "bottom-center",
+                          }
+                        );
+                      }
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      disabled={!fullAudio}
+                      className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
+                    >
+                      save
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {fullAudio
+                    ? "Save meditation privately"
+                    : "Save not ready yet..."}
+                </TooltipContent>
+              </Tooltip>
               <div className="bg-border w-px" />
-              <Button
-                variant="ghost"
-                onClick={handleShare}
-                disabled={!fullAudio}
-                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-r-full border-0 p-1 px-4 tracking-wider sm:p-1.5"
-              >
-                share
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className="inline-block"
+                    onClick={() => {
+                      if (fullAudio) {
+                        handleShare();
+                      } else {
+                        toast.message(
+                          "The meditation is not ready to share yet. Please try again in a moment.",
+                          {
+                            position: "bottom-center",
+                          }
+                        );
+                      }
+                    }}
+                  >
+                    <Button
+                      variant="ghost"
+                      disabled={!fullAudio}
+                      className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-r-full border-0 p-1 px-4 tracking-wider sm:p-1.5"
+                    >
+                      share
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {fullAudio
+                    ? "Share meditation publicly"
+                    : "Share not ready yet..."}
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
