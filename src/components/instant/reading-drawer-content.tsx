@@ -16,7 +16,6 @@ import {
   ChevronRight,
   Bell,
   BellOff,
-  Download,
   LoaderCircle,
   RotateCcw,
   Maximize,
@@ -121,7 +120,13 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   // Button click handlers (no functionality implemented yet)
   const handleDownload = () => {
-    // TODO: Implement download functionality
+    // Create a temporary anchor element to trigger download
+    const link = document.createElement("a");
+    link.href = fullAudio || "";
+    link.download = `${title || "meditation"}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSave = () => {
