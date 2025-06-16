@@ -212,7 +212,7 @@ export default function ReaderPage() {
               <AutoResizeTextarea
                 id="meditation-script"
                 placeholder="Paste your meditation script here..."
-                className="scrollbar-thin dark:bg-card/30 text-foreground/90 min-h-[250px] rounded-xl border-none bg-slate-200/50 p-4 text-sm sm:p-8 md:min-h-[300px] md:text-base"
+                className="scrollbar-thin dark:bg-card/40 text-foreground/80 sm:text-lg! min-h-[250px] rounded-xl border-none bg-slate-200/40 px-2 py-4 text-base sm:p-8 md:min-h-[300px] md:text-base"
                 value={script}
                 onChange={(e) => {
                   const newScript = e.target.value;
@@ -228,10 +228,10 @@ export default function ReaderPage() {
 
             <div className="sticky bottom-0 -mx-8 mt-4 text-center sm:bottom-6 sm:mx-auto md:mt-6">
               <div className="bg-card/80 z-10 mx-auto inline-block w-full max-w-lg space-y-3 rounded-xl p-3 pb-6 pt-4 backdrop-blur-sm sm:w-auto sm:rounded-3xl sm:p-4">
-                <div className="text-center">
+                <div className="mx-6 text-center">
                   <Button
                     type="submit"
-                    className="mx-auto w-full max-w-[200px] text-base"
+                    className="w-full text-base sm:mx-auto sm:max-w-[200px]"
                     disabled={isSubmitting || !script.trim()}
                   >
                     {isSubmitting
