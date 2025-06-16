@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play } from "lucide-react";
-import { MeditationPlayerDialog } from "./meditation-player-dialog";
 import { Reading } from "@/components/types";
 import { MeditationHeader } from "./meditation-header";
 import { MarkdownDescription } from "@/components/ui/markdown-description";
+import { ReadingDrawer } from "../instant/reading-drawer";
 
 interface ReadingSummaryProps {
   readingId: string;
@@ -20,7 +20,7 @@ export function ReadingSummary({
   audioUrl,
   embedded,
 }: ReadingSummaryProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <>
@@ -44,17 +44,20 @@ export function ReadingSummary({
       </Card>
 
       <div className="mt-8 flex justify-center">
-        <Button size="lg" onClick={() => setDialogOpen(true)} className="gap-2">
+        <Button
+          size="lg"
+          onClick={() => setIsDrawerOpen(true)}
+          className="gap-2"
+        >
           <Play className="h-5 w-5" />
           Play Meditation
         </Button>
       </div>
 
-      <MeditationPlayerDialog
-        meditationId={readingId}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        minimal={true}
+      <ReadingDrawer
+        open={isDrawerOpen}
+        onOpenChange={setIsDrawerOpen}
+        response={{ script: reading }}
       />
     </>
   );
