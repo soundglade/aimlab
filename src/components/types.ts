@@ -26,6 +26,8 @@ export type ReadingStep = FormattedScript["steps"][number] & {
 
 export interface Reading {
   title: string;
+  description?: string;
+  coverImageUrl?: string;
   steps: ReadingStep[];
   completed?: boolean;
   fullAudio?: string;
