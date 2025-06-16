@@ -18,6 +18,7 @@ import {
   BellOff,
   Download,
   LoaderCircle,
+  RotateCcw,
   Maximize,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -118,6 +119,19 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   // Manual trigger handler
   const handleManualFocusMode = () => setFocusModeActive(true);
 
+  // Button click handlers (no functionality implemented yet)
+  const handleDownload = () => {
+    // TODO: Implement download functionality
+  };
+
+  const handleSave = () => {
+    // TODO: Implement save functionality
+  };
+
+  const handleShare = () => {
+    // TODO: Implement share functionality
+  };
+
   return (
     <>
       {/* Header (fixed) */}
@@ -193,7 +207,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         )}
       </div>
       {/* Footer (fixed) */}
-      <div className="border-muted-foreground/10 z-10 shrink-0 border-t-2 px-4 py-3">
+      <div className="border-muted-foreground/10 z-10 shrink-0 border-t-2 px-4 pb-3 pt-2">
         {/* Playback controls UI */}
         <div className="space-y-0">
           {/* Control buttons UI  */}
@@ -203,18 +217,15 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label={
-                    bellEnabled ? "Mute ending bell" : "Enable ending bell"
-                  }
-                  onClick={() => setBellEnabled((b) => !b)}
+                  onClick={() => jumpToStep(0)}
+                  disabled={previousPlayableStepIdx == null}
+                  aria-label="Restart"
                   className="md:size-6 md:h-11 md:w-11"
                 >
-                  {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
+                  <RotateCcw size={20} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                {bellEnabled ? "Mute ending bell" : "Enable ending bell"}
-              </TooltipContent>
+              <TooltipContent>Restart</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -277,42 +288,49 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span
-                  className="inline-block"
-                  onClick={() => {
-                    if (fullAudio) {
-                      // Create a temporary anchor element to trigger download
-                      const link = document.createElement("a");
-                      link.href = fullAudio;
-                      link.download = `${title || "meditation"}.mp3`;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    } else {
-                      toast.message(
-                        "The meditation is not ready for download yet. Please try again in a moment.",
-                        {
-                          position: "bottom-center",
-                        }
-                      );
-                    }
-                  }}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label={
+                    bellEnabled ? "Mute ending bell" : "Enable ending bell"
+                  }
+                  onClick={() => setBellEnabled((b) => !b)}
+                  className="md:size-6 md:h-11 md:w-11"
                 >
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    aria-label="Download"
-                    disabled={!fullAudio}
-                    className="md:size-6 md:h-11 md:w-11"
-                  >
-                    <Download size={20} />
-                  </Button>
-                </span>
+                  {bellEnabled ? <Bell size={20} /> : <BellOff size={20} />}
+                </Button>
               </TooltipTrigger>
               <TooltipContent>
-                {fullAudio ? "Download" : "Download not ready yet..."}
+                {bellEnabled ? "Mute ending bell" : "Enable ending bell"}
               </TooltipContent>
             </Tooltip>
+          </div>
+          <div className="mb-4 mt-2 flex items-center justify-center">
+            <div className="border-input flex rounded-full border opacity-60">
+              <Button
+                variant="ghost"
+                onClick={handleDownload}
+                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-l-full border-0 p-1 px-4 sm:p-1.5"
+              >
+                mp3
+              </Button>
+              <div className="bg-border w-px" />
+              <Button
+                variant="ghost"
+                onClick={handleSave}
+                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
+              >
+                save
+              </Button>
+              <div className="bg-border w-px" />
+              <Button
+                variant="ghost"
+                onClick={handleShare}
+                className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-r-full border-0 p-1 px-4 tracking-wider sm:p-1.5"
+              >
+                share
+              </Button>
+            </div>
           </div>
         </div>
       </div>
