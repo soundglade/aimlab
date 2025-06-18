@@ -1,6 +1,26 @@
 import { useLocalStorage } from "@rehooks/local-storage";
+import * as cookie from "cookie";
 
 const STORAGE_KEY = "my-meditations";
+
+// Cookie utilities
+const setCookie = (name: string, value: string) => {
+  const cookieString = cookie.serialize(name, value, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  document.cookie = cookieString;
+};
+
+const deleteCookie = (name: string) => {
+  const cookieString = cookie.serialize(name, "", {
+    path: "/",
+    maxAge: 0,
+  });
+  document.cookie = cookieString;
+};
 
 export interface SavedMeditation {
   id: string;
@@ -43,6 +63,13 @@ export function useMyMeditations() {
     };
 
     setMeditations([...getMeditations(), newMeditation]);
+
+    // Set cookie for server-side access
+    setCookie(
+      `meditation-ownerKey-${newMeditation.id}`,
+      newMeditation.ownerKey
+    );
+
     return newMeditation;
   };
 
@@ -71,6 +98,9 @@ export function useMyMeditations() {
         console.error("Error deleting meditation:", error);
       }
     }
+
+    // Delete cookie
+    deleteCookie(`meditation-ownerKey-${id}`);
 
     // Update local storage regardless of API success
     const updatedMeditations = getMeditations().filter(

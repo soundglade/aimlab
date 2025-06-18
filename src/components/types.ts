@@ -31,6 +31,7 @@ export interface Reading {
   steps: ReadingStep[];
   completed?: boolean;
   fullAudio?: string;
+  public?: boolean;
 }
 
 // PlayerStep: used by the player, always references the original ReadingStep by originalIdx

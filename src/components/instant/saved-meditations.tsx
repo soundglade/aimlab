@@ -98,7 +98,7 @@ export default function SavedMeditations() {
                       e.stopPropagation();
                       setMeditationToDelete(meditation.id);
                     }}
-                    className="hover:bg-destructive hover:text-destructive-foreground absolute right-2 top-[10px] rounded-full p-1 opacity-30 transition-all hover:opacity-100 focus:outline-none"
+                    className="hover:bg-destructive hover:text-destructive-foreground absolute right-2 top-[8px] rounded-full p-1 opacity-30 transition-all hover:opacity-100 focus:outline-none"
                     aria-label="Delete meditation"
                   >
                     <X size={14} />

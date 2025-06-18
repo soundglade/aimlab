@@ -1,21 +1,75 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import crypto from "crypto";
 import { Card } from "@/components/ui/card";
 import { Reading } from "@/components/types";
 import { Layout } from "@/components/layout/layout-component";
 import { fetchReadingData } from "@/lib/fetch-reading";
 import { ReadingSummary } from "@/components/player/reading-summary";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+/**
+ * Generates a unique owner key for a meditation/reading
+ */
+function generateOwnerKey(id: string): string {
+  const secret = process.env.JWT_SECRET || "fallback-secret-key";
+  return crypto.createHmac("sha256", secret).update(id).digest("hex");
+}
+
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+}) => {
   const id = params?.id as string;
   const readingData = await fetchReadingData(id);
+
+  // If there's an error or no script, return it as-is
+  if (readingData.error || !readingData.script) {
+    return {
+      props: readingData,
+    };
+  }
+
+  // Check if the reading is public
+  const isPublic = readingData.script.public === true;
+
+  if (!isPublic) {
+    // For private readings, check if user has valid ownerKey
+    // Next.js provides parsed cookies in req.cookies
+    const ownerKey = req.cookies[`meditation-ownerKey-${id}`];
+
+    if (!ownerKey) {
+      // No ownerKey found, return not found
+      return {
+        props: {
+          readingId: id,
+          script: null,
+          error:
+            "Meditation not found. The script may not exist or has been removed.",
+        },
+      };
+    }
+
+    // Validate ownerKey against the expected ownerKey for this reading
+    const expectedOwnerKey = generateOwnerKey(id);
+    if (ownerKey !== expectedOwnerKey) {
+      // Invalid ownerKey, return not found
+      return {
+        props: {
+          readingId: id,
+          script: null,
+          error:
+            "Meditation not found. The script may not exist or has been removed.",
+        },
+      };
+    }
+  }
 
   return {
     props: readingData,
   };
 };
 
-export default function PublicReading({
+export default function ReadingPage({
   readingId,
   script,
   error,

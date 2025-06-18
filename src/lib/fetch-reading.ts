@@ -30,7 +30,7 @@ export async function fetchReadingData(id: string): Promise<ReadingData> {
         readingId: id,
         script: null,
         error:
-          "Reading not found. The script may not exist or has been removed.",
+          "Meditation not found. The script may not exist or has been removed.",
       };
     }
   } catch (error) {
