@@ -15,7 +15,7 @@ function makeBell(originalIdx: number): PlayerStep {
   return {
     type: "sound",
     duration: 2,
-    audio: "assets/ending-bell-wp50.mp3",
+    audio: "/assets/ending-bell-wp50.mp3",
     originalIdx,
   };
 }

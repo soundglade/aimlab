@@ -25,10 +25,12 @@ import { useUserInactivity } from "./user-inactivity";
 import { FocusMode } from "./focus-mode";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
+import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 
 interface ReadingDrawerContentProps {
   script: Reading;
   readingId?: string;
+  isSaved?: boolean;
 }
 
 // Skeleton for steps
@@ -63,6 +65,7 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
 export function ReadingDrawerContent({
   script,
   readingId,
+  isSaved: initialIsSaved,
 }: ReadingDrawerContentProps) {
   const title = script?.title;
   const steps = script?.steps || [];
@@ -71,7 +74,8 @@ export function ReadingDrawerContent({
 
   const [bellEnabled, setBellEnabled] = useState(true);
   const [focusModeActive, setFocusModeActive] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(initialIsSaved ?? false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   const { addMeditation } = useMyMeditations();
 
@@ -170,7 +174,85 @@ export function ReadingDrawerContent({
   };
 
   const handleShare = () => {
-    // TODO: Implement share functionality
+    if (!fullAudio) {
+      toast.message(
+        "The meditation is not ready to share yet. Please try again in a moment.",
+        {
+          position: "bottom-center",
+        }
+      );
+      return;
+    }
+    setShowShareDialog(true);
+  };
+
+  const handleConfirmShare = async () => {
+    try {
+      if (!isSaved) {
+        // Meditation not saved yet - call save API with public flag
+        const response = await fetch("/api/save-instant-meditation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ readingId: readingId!, public: true }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          addMeditation({
+            id: readingId!,
+            title: data.title,
+            url: data.url,
+            ownerKey: data.ownerKey,
+            type: "instant",
+          });
+
+          toast.success("Meditation shared publicly");
+          setIsSaved(true);
+        } else {
+          toast.error(data.error || "Failed to share meditation");
+        }
+      } else {
+        // Meditation already saved - call share API
+        const savedMeditations = JSON.parse(
+          localStorage.getItem("my-meditations") || "[]"
+        );
+        const meditation = savedMeditations.find(
+          (med: any) => med.id === readingId
+        );
+
+        if (!meditation?.ownerKey) {
+          toast.error("Unable to share: missing ownership information");
+          return;
+        }
+
+        const response = await fetch("/api/share-meditation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            readingId: readingId!,
+            ownerKey: meditation.ownerKey,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success("Meditation shared publicly");
+        } else {
+          toast.error(data.error || "Failed to share meditation");
+        }
+      }
+    } catch (error) {
+      console.error("Error sharing meditation:", error);
+      toast.error("Failed to share meditation");
+    } finally {
+      setShowShareDialog(false);
+    }
   };
 
   return (
@@ -417,21 +499,7 @@ export function ReadingDrawerContent({
               <div className="bg-border w-px" />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span
-                    className="inline-block"
-                    onClick={() => {
-                      if (fullAudio) {
-                        handleShare();
-                      } else {
-                        toast.message(
-                          "The meditation is not ready to share yet. Please try again in a moment.",
-                          {
-                            position: "bottom-center",
-                          }
-                        );
-                      }
-                    }}
-                  >
+                  <span className="inline-block" onClick={handleShare}>
                     <Button
                       variant="ghost"
                       disabled={!fullAudio}
@@ -467,6 +535,18 @@ export function ReadingDrawerContent({
           stepsForPlayer={stepsForPlayer}
         />
       )}
+
+      {/* Share Confirmation Dialog */}
+      <ConfirmDestructiveDialog
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        title="Share meditation"
+        description="Shared meditations are visible to everyone. Are you sure you want to share it publicly?"
+        confirmText="Share Publicly"
+        onConfirm={handleConfirmShare}
+      >
+        <div />
+      </ConfirmDestructiveDialog>
     </>
   );
 }

@@ -136,7 +136,7 @@ describe("optimizeStepsForPlayer meditation bell", () => {
     expect(result[result.length - 1]).toMatchObject({
       type: "sound",
       duration: 2,
-      audio: "assets/ending-bell-wp50.mp3",
+      audio: "/assets/ending-bell-wp50.mp3",
       originalIdx: 1,
     });
   });

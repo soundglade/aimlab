@@ -21,7 +21,7 @@ export default async function handler(
   }
 
   try {
-    const { readingId } = req.body;
+    const { readingId, public: isPublic } = req.body;
 
     if (!readingId || typeof readingId !== "string") {
       return res.status(400).json({ error: "Missing or invalid readingId" });
@@ -105,8 +105,11 @@ export default async function handler(
       description = `A guided meditation session titled "${script.title}". This practice offers moments of mindfulness and relaxation.`;
     }
 
-    // Update script with description
+    // Update script with description and public flag
     script.description = description;
+    if (isPublic === true) {
+      script.public = true;
+    }
 
     // Save updated script back to file
     await fs.writeFile(scriptPath, JSON.stringify(script, null, 2));
@@ -124,6 +127,7 @@ export default async function handler(
       title: script.title,
       url,
       description,
+      public: script.public || false,
     });
   } catch (error) {
     console.error("Error saving instant meditation:", error);

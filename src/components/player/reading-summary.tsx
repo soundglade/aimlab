@@ -59,6 +59,7 @@ export function ReadingSummary({
         onOpenChange={setIsDrawerOpen}
         response={{ script: reading }}
         readingId={readingId}
+        isSaved={true}
       />
     </>
   );
