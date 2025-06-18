@@ -8,7 +8,19 @@ export interface SavedMeditation {
   url: string;
   ownerKey: string;
   createdAt: number;
+  type?: string; // "studio" | "instant" - optional for backward compatibility
 }
+
+// Helper function to filter meditations by type
+const filterMeditationsByType = (
+  meditations: SavedMeditation[],
+  type?: string
+) => {
+  if (!type) return meditations;
+  return meditations.filter(
+    (med) => med.type === type || (!med.type && type === "studio")
+  );
+};
 
 export function useMyMeditations() {
   const [meditations, setMeditations] = useLocalStorage<SavedMeditation[]>(
@@ -18,8 +30,10 @@ export function useMyMeditations() {
 
   const getMeditations = () => meditations || [];
 
-  const getSortedMeditations = () => {
-    return getMeditations().sort((a, b) => b.createdAt - a.createdAt);
+  const getSortedMeditations = (type?: string) => {
+    return filterMeditationsByType(getMeditations(), type).sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
   };
 
   const addMeditation = (meditation: Omit<SavedMeditation, "createdAt">) => {
@@ -181,14 +195,22 @@ export function useMyMeditations() {
     return false;
   };
 
-  const clearMeditations = async () => {
-    const currentMeditationsIds = getMeditations().map((med) => med.id);
+  const clearMeditations = async (type?: string) => {
+    const currentMeditations = getMeditations();
+    const meditationsToDelete = filterMeditationsByType(
+      currentMeditations,
+      type
+    );
 
-    for (const meditationId of currentMeditationsIds) {
-      await deleteMeditation(meditationId);
+    for (const meditation of meditationsToDelete) {
+      await deleteMeditation(meditation.id);
     }
 
-    setMeditations([]);
+    const remainingMeditations = currentMeditations.filter(
+      (med) => !meditationsToDelete.includes(med)
+    );
+
+    setMeditations(remainingMeditations);
   };
 
   const saveMeditation = (
@@ -214,5 +236,6 @@ export function useMyMeditations() {
     saveMeditation,
     ownsMeditation,
     editMeditationCoverImage,
+    getSortedMeditations, // Export this for type filtering
   };
 }

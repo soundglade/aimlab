@@ -6,6 +6,7 @@ interface ReadingDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   response: any | null;
+  readingId?: string;
 }
 
 function sanitizeScript(script: any) {
@@ -23,6 +24,7 @@ export function ReadingDrawer({
   open,
   onOpenChange,
   response,
+  readingId,
 }: ReadingDrawerProps) {
   const script = response?.script || { title: "", steps: [], completed: false };
 
@@ -31,7 +33,7 @@ export function ReadingDrawer({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="mx-auto flex h-[calc(100%-20px)] max-w-4xl flex-col bg-white p-0 dark:bg-gray-900">
-        <ReadingDrawerContent script={sanitizedScript} />
+        <ReadingDrawerContent script={sanitizedScript} readingId={readingId} />
       </DrawerContent>
     </Drawer>
   );

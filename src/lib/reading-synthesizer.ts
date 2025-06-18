@@ -204,6 +204,9 @@ export async function synthesizeReading({
       response.script.fullAudio = fullAudio;
     }
 
+    // Include readingId in the response
+    response.readingId = readingId;
+
     onData(response);
   }
 

@@ -24,9 +24,11 @@ import { useState, useRef, useEffect } from "react";
 import { useUserInactivity } from "./user-inactivity";
 import { FocusMode } from "./focus-mode";
 import { toast } from "sonner";
+import { useMyMeditations } from "@/components/utils/use-my-meditations";
 
 interface ReadingDrawerContentProps {
   script: Reading;
+  readingId?: string;
 }
 
 // Skeleton for steps
@@ -58,7 +60,10 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
   return steps.length;
 }
 
-export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
+export function ReadingDrawerContent({
+  script,
+  readingId,
+}: ReadingDrawerContentProps) {
   const title = script?.title;
   const steps = script?.steps || [];
   const completed = script?.completed;
@@ -66,6 +71,9 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const [bellEnabled, setBellEnabled] = useState(true);
   const [focusModeActive, setFocusModeActive] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const { addMeditation } = useMyMeditations();
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
@@ -129,8 +137,36 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
     document.body.removeChild(link);
   };
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
+  const handleSave = async () => {
+    try {
+      const response = await fetch("/api/save-instant-meditation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ readingId: readingId! }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        addMeditation({
+          id: readingId!,
+          title: data.title,
+          url: data.url,
+          ownerKey: data.ownerKey,
+          type: "instant",
+        });
+
+        toast.success("Meditation saved privately");
+        setIsSaved(true);
+      } else {
+        toast.error(data.error || "Failed to save meditation");
+      }
+    } catch (error) {
+      console.error("Error saving meditation:", error);
+      toast.error("Failed to save meditation");
+    }
   };
 
   const handleShare = () => {
@@ -310,6 +346,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
               </TooltipContent>
             </Tooltip>
           </div>
+          {/* Save, share, download buttons UI  */}
           <div className="mb-4 mt-2 flex items-center justify-center">
             <div className="border-input flex rounded-full border opacity-60">
               <Tooltip>
@@ -343,38 +380,40 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
                 </TooltipContent>
               </Tooltip>
               <div className="bg-border w-px" />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span
-                    className="inline-block"
-                    onClick={() => {
-                      if (fullAudio) {
-                        handleSave();
-                      } else {
-                        toast.message(
-                          "The meditation is not ready to save yet. Please try again in a moment.",
-                          {
-                            position: "bottom-center",
-                          }
-                        );
-                      }
-                    }}
-                  >
-                    <Button
-                      variant="ghost"
-                      disabled={!fullAudio}
-                      className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
+              {!isSaved && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span
+                      className="inline-block"
+                      onClick={() => {
+                        if (fullAudio) {
+                          handleSave();
+                        } else {
+                          toast.message(
+                            "The meditation is not ready to save yet. Please try again in a moment.",
+                            {
+                              position: "bottom-center",
+                            }
+                          );
+                        }
+                      }}
                     >
-                      save
-                    </Button>
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {fullAudio
-                    ? "Save meditation privately"
-                    : "Save not ready yet..."}
-                </TooltipContent>
-              </Tooltip>
+                      <Button
+                        variant="ghost"
+                        disabled={!fullAudio}
+                        className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
+                      >
+                        save
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {fullAudio
+                      ? "Save meditation privately"
+                      : "Save not ready yet..."}
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <div className="bg-border w-px" />
               <Tooltip>
                 <TooltipTrigger asChild>

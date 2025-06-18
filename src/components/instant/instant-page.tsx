@@ -431,6 +431,7 @@ export default function ReaderPage() {
             open={isDrawerOpen}
             onOpenChange={setIsDrawerOpen}
             response={response}
+            readingId={response?.readingId}
           />
 
           <DownloadProgressDialog
