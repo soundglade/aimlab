@@ -227,7 +227,7 @@ export function useMyMeditations() {
   };
 
   return {
-    meditations: getSortedMeditations(),
+    meditations: getSortedMeditations("studio"),
     addMeditation,
     deleteMeditation,
     editMeditationTitle,

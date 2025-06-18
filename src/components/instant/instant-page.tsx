@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import SavedMeditations from "./saved-meditations";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -440,6 +441,11 @@ export default function ReaderPage() {
             response={downloadResponse}
             onCancel={handleCancelDownload}
           />
+        </div>
+
+        {/* Saved Meditations Section */}
+        <div className="mx-auto max-w-4xl px-4 pb-8 pt-8">
+          <SavedMeditations />
         </div>
       </div>
       <AudioContextRefresher />
