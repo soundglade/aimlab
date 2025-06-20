@@ -14,11 +14,16 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Download } from "lucide-react";
 import { VoiceSelect } from "./voice-select";
 import { LanguageSelect } from "./language-select";
 import { useRouter } from "next/router";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -229,17 +234,35 @@ export default function ReaderPage() {
             <div className="sticky bottom-0 -mx-8 mt-4 text-center sm:bottom-6 sm:mx-auto md:mt-6">
               <div className="bg-card/80 z-10 mx-auto inline-block w-full max-w-lg space-y-3 rounded-xl p-3 pb-6 pt-4 backdrop-blur-sm sm:w-auto sm:rounded-3xl sm:p-4">
                 <div className="mx-6 text-center">
-                  <Button
-                    type="submit"
-                    className="w-full text-base sm:mx-auto sm:max-w-[200px]"
-                    disabled={isSubmitting || !script.trim()}
-                  >
-                    {isSubmitting
-                      ? "Playing..."
-                      : hasMounted && customSettings
-                      ? "Play with custom ElevenLabs settings"
-                      : "Play"}
-                  </Button>
+                  <div className="relative sm:inline-block">
+                    <Button
+                      type="submit"
+                      className="relative w-full pr-5 text-base sm:mx-auto sm:w-[200px]"
+                      disabled={isSubmitting || !script.trim()}
+                    >
+                      {isSubmitting ? "Playing..." : "Play"}
+                    </Button>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-full opacity-50"
+                          disabled={isSubmitting || !script.trim()}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert("hi");
+                          }}
+                        >
+                          <Download className="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Synthesize and download</TooltipContent>
+                    </Tooltip>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-center gap-2">
