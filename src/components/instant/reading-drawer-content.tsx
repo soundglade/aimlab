@@ -216,10 +216,8 @@ export function ReadingDrawerContent({
             type: "instant",
           });
 
-          toast.success("Meditation shared publicly", {
-            position: "bottom-center",
-            duration: 3000,
-          });
+          // Redirect to the meditation URL instead of showing toast
+          window.location.href = data.url;
           setIsSaved(true);
         } else {
           toast.error(data.error || "Failed to share meditation");
@@ -252,10 +250,8 @@ export function ReadingDrawerContent({
         const data = await response.json();
 
         if (data.success) {
-          toast.success("Meditation shared publicly", {
-            position: "bottom-center",
-            duration: 3000,
-          });
+          // Redirect to the meditation URL instead of showing toast
+          window.location.href = data.url;
         } else {
           toast.error(data.error || "Failed to share meditation");
         }
