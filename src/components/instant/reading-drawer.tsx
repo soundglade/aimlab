@@ -5,9 +5,7 @@ import { ReadingDrawerContent } from "./reading-drawer-content";
 interface ReadingDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  response: any | null;
-  readingId?: string;
-  isSaved?: boolean;
+  script: any | null;
 }
 
 function sanitizeScript(script: any) {
@@ -24,22 +22,21 @@ function sanitizeScript(script: any) {
 export function ReadingDrawer({
   open,
   onOpenChange,
-  response,
-  readingId,
-  isSaved,
+  script,
 }: ReadingDrawerProps) {
-  const script = response?.script || { title: "", steps: [], completed: false };
+  const tmpScript = script || {
+    readingId: "id",
+    title: "",
+    steps: [],
+    completed: false,
+  };
 
-  const sanitizedScript = sanitizeScript(script);
+  const sanitizedScript = sanitizeScript(tmpScript);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="mx-auto flex h-[calc(100%-20px)] max-w-4xl flex-col bg-white p-0 dark:bg-gray-900">
-        <ReadingDrawerContent
-          script={sanitizedScript}
-          readingId={readingId}
-          isSaved={isSaved}
-        />
+        <ReadingDrawerContent script={sanitizedScript} />
       </DrawerContent>
     </Drawer>
   );

@@ -205,7 +205,7 @@ export async function synthesizeReading({
     }
 
     // Include readingId in the response
-    if (response) response.readingId = readingId;
+    if (response?.script) response.script.readingId = readingId;
 
     onData(response);
   }

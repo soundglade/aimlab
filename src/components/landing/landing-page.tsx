@@ -152,7 +152,7 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <ScrollText className="h-5 w-5 opacity-50" />
-            Latest meditations
+            Latest public meditations
           </h2>
         </div>
 
@@ -184,7 +184,7 @@ export default function LandingPage({
               href="/meditations"
               className="mt-4 flex items-center md:mr-0 md:mt-8"
             >
-              <span>View all meditations</span>
+              <span>View all public meditations</span>
               <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
             </Link>
           </Button>
@@ -197,7 +197,7 @@ export default function LandingPage({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Users className="h-5 w-5 opacity-50" />
-            Community
+            Reddit community
           </h2>
         </div>
 

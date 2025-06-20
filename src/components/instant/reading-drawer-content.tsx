@@ -28,9 +28,7 @@ import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 
 interface ReadingDrawerContentProps {
-  script: Reading;
-  readingId?: string;
-  isSaved?: boolean;
+  script: any;
 }
 
 // Skeleton for steps
@@ -62,11 +60,9 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
   return steps.length;
 }
 
-export function ReadingDrawerContent({
-  script,
-  readingId,
-  isSaved: initialIsSaved,
-}: ReadingDrawerContentProps) {
+export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
+  const readingId = script?.readingId;
+  const savedByScript = script?.saved;
   const title = script?.title;
   const steps = script?.steps || [];
   const completed = script?.completed;
@@ -74,7 +70,8 @@ export function ReadingDrawerContent({
 
   const [bellEnabled, setBellEnabled] = useState(true);
   const [focusModeActive, setFocusModeActive] = useState(false);
-  const [isSaved, setIsSaved] = useState(initialIsSaved ?? false);
+  const [wasSavedHere, setWasSavedHere] = useState(false);
+  const isSaved = savedByScript || wasSavedHere;
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -168,7 +165,7 @@ export function ReadingDrawerContent({
           position: "bottom-center",
           duration: 3000,
         });
-        setIsSaved(true);
+        setWasSavedHere(true);
       } else {
         toast.error(data.error || "Failed to save meditation");
       }
@@ -219,7 +216,7 @@ export function ReadingDrawerContent({
 
           // Redirect to the meditation URL instead of showing toast
           window.location.href = data.url;
-          setIsSaved(true);
+          setWasSavedHere(true);
         } else {
           toast.error(data.error || "Failed to share meditation");
         }

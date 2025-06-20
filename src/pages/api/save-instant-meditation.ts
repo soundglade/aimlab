@@ -107,6 +107,7 @@ export default async function handler(
 
     // Update script with description and public flag
     script.description = description;
+    script.saved = true;
     if (isPublic === true) {
       script.public = true;
     }
@@ -128,6 +129,7 @@ export default async function handler(
       url,
       description,
       public: script.public || false,
+      saved: script.saved || false,
     });
   } catch (error) {
     console.error("Error saving instant meditation:", error);

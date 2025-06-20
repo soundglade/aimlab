@@ -457,8 +457,7 @@ export default function ReaderPage() {
           <ReadingDrawer
             open={isDrawerOpen}
             onOpenChange={setIsDrawerOpen}
-            response={response}
-            readingId={response?.readingId}
+            script={response?.script}
           />
 
           <DownloadProgressDialog
