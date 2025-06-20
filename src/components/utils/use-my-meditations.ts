@@ -28,6 +28,7 @@ export interface SavedMeditation {
   url: string;
   ownerKey: string;
   createdAt: number;
+  public?: boolean;
   type?: string; // "studio" | "instant" - optional for backward compatibility
 }
 

@@ -213,6 +213,7 @@ export function ReadingDrawerContent({
             title: data.title,
             url: data.url,
             ownerKey: data.ownerKey,
+            public: true,
             type: "instant",
           });
 

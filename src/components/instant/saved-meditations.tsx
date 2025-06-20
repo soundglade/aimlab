@@ -1,22 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { useRouter } from "next/router";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 
 export default function SavedMeditations() {
-  const { getSortedMeditations, deleteMeditation, clearMeditations } =
-    useMyMeditations();
+  const { getSortedMeditations, deleteMeditation } = useMyMeditations();
   const router = useRouter();
   const [meditationToDelete, setMeditationToDelete] = useState<string | null>(
     null
   );
-  const [showClearAllDialog, setShowClearAllDialog] = useState(false);
 
-  // Get only instant meditations
+  // Get only instant meditations and split into public and private
   const instantMeditations = getSortedMeditations("instant");
+  const publicMeditations = instantMeditations.filter(
+    (med) => med.public === true
+  );
+  const privateMeditations = instantMeditations.filter(
+    (med) => med.public !== true
+  );
 
   // If there are no instant meditations, don't render anything
   if (instantMeditations.length === 0) {
@@ -36,40 +40,23 @@ export default function SavedMeditations() {
     }
   };
 
-  // Handle confirming clearing all instant meditations
-  const handleConfirmClearAll = () => {
-    clearMeditations("instant");
-    setShowClearAllDialog(false);
-  };
+  // Render meditation card component
+  const renderMeditationCard = (
+    meditations: typeof instantMeditations,
+    title: string
+  ) => {
+    if (meditations.length === 0) return null;
 
-  return (
-    <div>
+    return (
       <Card className="bg-card/50">
         <CardContent>
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6">
             <h2 className="text-muted-foreground text-xl leading-tight">
-              Saved Meditations
+              {title}
             </h2>
-            <ConfirmDestructiveDialog
-              open={showClearAllDialog}
-              onOpenChange={setShowClearAllDialog}
-              title="Clear all saved meditations"
-              description="Are you sure? This will remove all your saved instant meditations."
-              confirmText="Clear all"
-              onConfirm={handleConfirmClearAll}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="-mt-1 mr-1 h-8 border-none px-2 text-xs"
-              >
-                <Trash2 size={14} className="mr-1" />
-                Clear all
-              </Button>
-            </ConfirmDestructiveDialog>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {instantMeditations.map((meditation, index) => (
+            {meditations.map((meditation, index) => (
               <div key={meditation.id} className="relative">
                 <Button
                   type="button"
@@ -109,6 +96,13 @@ export default function SavedMeditations() {
           </div>
         </CardContent>
       </Card>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      {renderMeditationCard(publicMeditations, "Public Meditations")}
+      {renderMeditationCard(privateMeditations, "Private Meditations")}
     </div>
   );
 }
