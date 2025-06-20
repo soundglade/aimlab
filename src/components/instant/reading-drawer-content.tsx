@@ -72,6 +72,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const [focusModeActive, setFocusModeActive] = useState(false);
   const [wasSavedHere, setWasSavedHere] = useState(false);
   const isSaved = savedByScript || wasSavedHere;
+  const isPublic = script?.public;
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -188,6 +189,45 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
       return;
     }
     setShowShareDialog(true);
+  };
+
+  const handleHide = async () => {
+    try {
+      const savedMeditations = JSON.parse(
+        localStorage.getItem("my-meditations") || "[]"
+      );
+      const meditation = savedMeditations.find(
+        (med: any) => med.id === readingId
+      );
+
+      if (!meditation?.ownerKey) {
+        toast.error("Unable to hide: missing ownership information");
+        return;
+      }
+
+      const response = await fetch("/api/hide-meditation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          readingId: readingId!,
+          ownerKey: meditation.ownerKey,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Redirect to the instant page
+        window.location.href = "/instant";
+      } else {
+        toast.error(data.error || "Failed to hide meditation");
+      }
+    } catch (error) {
+      console.error("Error hiding meditation:", error);
+      toast.error("Failed to hide meditation");
+    }
   };
 
   const handleConfirmShare = async () => {
@@ -532,20 +572,27 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
               <div className="bg-border w-px" />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="inline-block" onClick={handleShare}>
+                  <span
+                    className="inline-block"
+                    onClick={isPublic ? handleHide : handleShare}
+                  >
                     <Button
                       variant="ghost"
                       disabled={!fullAudio}
                       className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none rounded-r-full border-0 p-1 px-4 tracking-wider sm:p-1.5"
                     >
-                      share
+                      {isPublic ? "hide" : "share"}
                     </Button>
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {fullAudio
-                    ? "Share meditation publicly"
-                    : "Share not ready yet..."}
+                  {!fullAudio
+                    ? isPublic
+                      ? "Hide not ready yet..."
+                      : "Share not ready yet..."
+                    : isPublic
+                    ? "Make meditation private"
+                    : "Share meditation publicly"}
                 </TooltipContent>
               </Tooltip>
             </div>

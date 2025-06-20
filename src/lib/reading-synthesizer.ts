@@ -233,6 +233,7 @@ export async function synthesizeReading({
 
       // Set the full audio path (relative to public directory)
       fullAudio = `/storage/readings/${readingId}/${outputFilename}`;
+      script.fullAudio = fullAudio;
 
       // Save the script as a JSON file
       const scriptFilename = `script.json`;

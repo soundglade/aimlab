@@ -48,7 +48,6 @@ export function MeditationCoverDialog({
           data.secure_url
         );
         if (success) {
-          toast.success("Cover image updated");
           window.location.reload();
         } else {
           toast.error("Failed to update cover image");
