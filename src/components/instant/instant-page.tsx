@@ -383,7 +383,7 @@ export default function ReaderPage() {
                           <Download className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Synthesize and download</TooltipContent>
+                      <TooltipContent>Just download the MP3</TooltipContent>
                     </Tooltip>
                   </div>
                 </div>
