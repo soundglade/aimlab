@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 import { voiceIdAtom, languageAtom } from "./atoms";
 import { ReadingDrawer } from "./reading-drawer";
+import { DownloadProgressDialog } from "./download-progress-dialog";
 import Link from "next/link";
 import { AudioContextRefresher } from "./audio-context-refresher";
 import { ExamplesSelect } from "./examples-select";
@@ -30,7 +31,14 @@ export default function ReaderPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [response, setResponse] = useState<any | null>(null);
+
+  // Download-specific state
+  const [isDownloadDialogOpen, setIsDownloadDialogOpen] = useState(false);
+  const [downloadResponse, setDownloadResponse] = useState<any | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const abortControllerRef = useRef<AbortController | null>(null);
+  const downloadAbortControllerRef = useRef<AbortController | null>(null);
   const scriptTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
   const [hasMounted, setHasMounted] = useState(false);
@@ -130,6 +138,105 @@ export default function ReaderPage() {
     }
   };
 
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDownloading(true);
+    setIsDownloadDialogOpen(true);
+
+    if (downloadAbortControllerRef.current) {
+      downloadAbortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    downloadAbortControllerRef.current = controller;
+    setDownloadResponse(null);
+
+    try {
+      // Create voice settings for self-hosted Kokoro
+      const voiceSettings = selectedVoice
+        ? {
+            instantDownload: true,
+            service: "selfHostedKokoro",
+            serviceOptions: {
+              voiceId: selectedVoice,
+            },
+          }
+        : null;
+
+      const response = await fetch("/api/start-reading", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          script,
+          ...(customSettings
+            ? { settings: customSettings }
+            : voiceSettings
+            ? { settings: voiceSettings }
+            : {}),
+          improvePauses,
+          language: selectedLanguage,
+        }),
+        signal: controller.signal,
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          let eventEnd;
+          while ((eventEnd = buffer.indexOf("\n\n")) !== -1) {
+            const event = buffer.slice(0, eventEnd);
+            buffer = buffer.slice(eventEnd + 2);
+
+            // Find the data line(s)
+            const dataLines = event
+              .split("\n")
+              .filter((line) => line.startsWith("data: "))
+              .map((line) => line.slice(6));
+            if (dataLines.length > 0) {
+              const dataStr = dataLines.join("");
+              try {
+                const data = JSON.parse(dataStr);
+                setDownloadResponse(data);
+              } catch (err) {
+                console.error("Error parsing JSON response:", err, dataStr);
+              }
+            }
+          }
+        }
+      }
+    } catch (error: any) {
+      // Gracefully handle user aborts
+      if (error.name === "AbortError") {
+        console.log("Download SSE fetch aborted by user");
+      } else {
+        console.error("Download error:", error);
+      }
+    } finally {
+      setIsDownloading(false);
+      // Clear controller when done
+      downloadAbortControllerRef.current = null;
+    }
+  };
+
+  const handleCancelDownload = () => {
+    if (downloadAbortControllerRef.current) {
+      try {
+        downloadAbortControllerRef.current.abort();
+      } catch {
+        // ignore abort exceptions
+      }
+    }
+    setIsDownloading(false);
+    downloadAbortControllerRef.current = null;
+  };
+
   useEffect(() => {
     if (!isDrawerOpen && abortControllerRef.current) {
       // Abort the ongoing fetch, ignore errors
@@ -142,10 +249,28 @@ export default function ReaderPage() {
   }, [isDrawerOpen]);
 
   useEffect(() => {
+    if (!isDownloadDialogOpen && downloadAbortControllerRef.current) {
+      // Abort the ongoing download fetch, ignore errors
+      try {
+        downloadAbortControllerRef.current.abort();
+      } catch {
+        // ignore abort exceptions
+      }
+    }
+  }, [isDownloadDialogOpen]);
+
+  useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
         try {
           abortControllerRef.current.abort();
+        } catch {
+          // ignore abort exceptions
+        }
+      }
+      if (downloadAbortControllerRef.current) {
+        try {
+          downloadAbortControllerRef.current.abort();
         } catch {
           // ignore abort exceptions
         }
@@ -225,7 +350,7 @@ export default function ReaderPage() {
                   // Trigger language detection
                   detectFromText(newScript);
                 }}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isDownloading}
                 required
                 ref={scriptTextareaRef}
               />
@@ -238,7 +363,7 @@ export default function ReaderPage() {
                     <Button
                       type="submit"
                       className="relative w-full pr-5 text-base sm:mx-auto sm:w-[200px]"
-                      disabled={isSubmitting || !script.trim()}
+                      disabled={isSubmitting || isDownloading || !script.trim()}
                     >
                       {isSubmitting ? "Playing..." : "Play"}
                     </Button>
@@ -250,12 +375,10 @@ export default function ReaderPage() {
                           variant="secondary"
                           size="icon"
                           className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-full opacity-50"
-                          disabled={isSubmitting || !script.trim()}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            alert("hi");
-                          }}
+                          disabled={
+                            isSubmitting || isDownloading || !script.trim()
+                          }
+                          onClick={handleDownload}
                         >
                           <Download className="h-3 w-3" />
                         </Button>
@@ -267,11 +390,11 @@ export default function ReaderPage() {
 
                 <div className="flex items-center justify-center gap-2">
                   <LanguageSelect
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isDownloading}
                     onLanguageSelect={markUserSelected}
                   />
 
-                  <VoiceSelect disabled={isSubmitting} />
+                  <VoiceSelect disabled={isSubmitting || isDownloading} />
                   <div>
                     <div className="flex gap-2">
                       <Label
@@ -279,16 +402,20 @@ export default function ReaderPage() {
                         className={cn(
                           buttonVariants({ variant: "secondary", size: "sm" }),
                           "flex h-auto w-fit mx-auto cursor-pointer items-center justify-center gap-3 py-1.5",
-                          isSubmitting ? "cursor-not-allowed opacity-50" : ""
+                          isSubmitting || isDownloading
+                            ? "cursor-not-allowed opacity-50"
+                            : ""
                         )}
                       >
                         <Switch
                           id="improve-pauses"
                           checked={improvePauses}
                           onCheckedChange={
-                            !isSubmitting ? setImprovePauses : undefined
+                            !(isSubmitting || isDownloading)
+                              ? setImprovePauses
+                              : undefined
                           }
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || isDownloading}
                           className="opacity-50"
                         />
                         Improve pauses
@@ -304,6 +431,13 @@ export default function ReaderPage() {
             open={isDrawerOpen}
             onOpenChange={setIsDrawerOpen}
             response={response}
+          />
+
+          <DownloadProgressDialog
+            open={isDownloadDialogOpen}
+            onOpenChange={setIsDownloadDialogOpen}
+            response={downloadResponse}
+            onCancel={handleCancelDownload}
           />
         </div>
       </div>

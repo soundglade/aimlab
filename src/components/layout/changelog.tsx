@@ -2,7 +2,7 @@ import { timeAgo } from "@/lib/time";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { CircleCheckBig } from "lucide-react";
+import { CircleCheckBig, Download } from "lucide-react";
 import Link from "next/link";
 
 // CustomLink component for consistent link style
@@ -37,6 +37,19 @@ function CustomLink({
 
 // Changelog as JSX
 export const changelogEntries = [
+  {
+    title: "New instant download",
+    date: "2025-06-20T13:00:00Z",
+    description: (
+      <>
+        The <CustomLink href="/instant">instant player</CustomLink> now supports
+        instant MP3 downloads, without the need to play the meditation first.
+        The download button (
+        <Download className="bg-secondary inline-block h-4 w-4 rounded-full" />)
+        is on the right side of the play button.
+      </>
+    ),
+  },
   {
     title: "Add support for more languages",
     date: "2025-06-14T15:00:00Z",
