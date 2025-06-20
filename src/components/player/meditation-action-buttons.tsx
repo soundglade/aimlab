@@ -9,6 +9,7 @@ import {
   TextCursorInput,
   FileText,
   Image as ImageIcon,
+  EyeOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
@@ -42,7 +43,7 @@ export function MeditationActionButtons({
   audioUrl: string;
   meditationTitle: string;
   embedded?: boolean;
-  meditation?: Meditation;
+  meditation?: any;
 }) {
   const {
     ownsMeditation,
@@ -50,6 +51,7 @@ export function MeditationActionButtons({
     editMeditationTitle,
     editMeditationDescription,
     editMeditationCoverImage,
+    hideMeditation,
   } = useMyMeditations();
   const canEdit = !embedded && ownsMeditation(meditationId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -106,6 +108,16 @@ export function MeditationActionButtons({
       toast.error("Title cannot be empty");
     }
     setShowEditTitleDialog(false);
+  };
+
+  const handleMakePrivate = async () => {
+    try {
+      await hideMeditation(meditationId);
+      // Hard redirect to /instant without showing toast
+      window.location.href = "/instant";
+    } catch (error) {
+      toast.error("Failed to make meditation private");
+    }
   };
 
   // Cover image dialog logic is now in MeditationCoverDialog
@@ -183,6 +195,12 @@ export function MeditationActionButtons({
                         ? "Edit cover image"
                         : "Add cover image"}
                     </DropdownMenuItem>
+                    {meditation?.readingId && (
+                      <DropdownMenuItem onClick={handleMakePrivate}>
+                        <EyeOff className="mr-2 h-4 w-4" />
+                        Make private
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TooltipTrigger>
