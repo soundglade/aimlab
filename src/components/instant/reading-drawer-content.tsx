@@ -76,8 +76,13 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { addMeditation, deleteMeditation, hideMeditation } =
-    useMyMeditations();
+  const {
+    addMeditation,
+    deleteMeditation,
+    hideMeditation,
+    saveInstantMeditation,
+    shareInstantMeditation,
+  } = useMyMeditations();
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
@@ -144,36 +149,16 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch("/api/save-instant-meditation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ readingId: readingId! }),
+      await saveInstantMeditation(readingId!, false);
+      toast.success("Meditation saved privately", {
+        position: "bottom-center",
+        duration: 3000,
       });
-
-      const data = await response.json();
-
-      if (data.success) {
-        addMeditation({
-          id: readingId!,
-          title: data.title,
-          url: data.url,
-          ownerKey: data.ownerKey,
-          type: "instant",
-        });
-
-        toast.success("Meditation saved privately", {
-          position: "bottom-center",
-          duration: 3000,
-        });
-        setWasSavedHere(true);
-      } else {
-        toast.error(data.error || "Failed to save meditation");
-      }
+      setWasSavedHere(true);
     } catch (error) {
-      console.error("Error saving meditation:", error);
-      toast.error("Failed to save meditation");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save meditation"
+      );
     } finally {
       setIsSaving(false);
     }
@@ -207,70 +192,19 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const handleConfirmShare = async () => {
     try {
       if (!isSaved) {
-        // Meditation not saved yet - call save API with public flag
-        const response = await fetch("/api/save-instant-meditation", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ readingId: readingId!, public: true }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          addMeditation({
-            id: readingId!,
-            title: data.title,
-            url: data.url,
-            ownerKey: data.ownerKey,
-            public: true,
-            type: "instant",
-          });
-
-          // Redirect to the meditation URL instead of showing toast
-          window.location.href = data.url;
-          setWasSavedHere(true);
-        } else {
-          toast.error(data.error || "Failed to share meditation");
-        }
+        // Meditation not saved yet - save with public flag
+        const result = await saveInstantMeditation(readingId!, true);
+        window.location.href = result.url;
+        setWasSavedHere(true);
       } else {
-        // Meditation already saved - call share API
-        const savedMeditations = JSON.parse(
-          localStorage.getItem("my-meditations") || "[]"
-        );
-        const meditation = savedMeditations.find(
-          (med: any) => med.id === readingId
-        );
-
-        if (!meditation?.ownerKey) {
-          toast.error("Unable to share: missing ownership information");
-          return;
-        }
-
-        const response = await fetch("/api/share-meditation", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            readingId: readingId!,
-            ownerKey: meditation.ownerKey,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          // Redirect to the meditation URL instead of showing toast
-          window.location.href = data.url;
-        } else {
-          toast.error(data.error || "Failed to share meditation");
-        }
+        // Meditation already saved - share it
+        const result = await shareInstantMeditation(readingId!);
+        window.location.href = result.url;
       }
     } catch (error) {
-      console.error("Error sharing meditation:", error);
-      toast.error("Failed to share meditation");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to share meditation"
+      );
     } finally {
       setShowShareDialog(false);
     }

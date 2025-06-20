@@ -297,6 +297,92 @@ export function useMyMeditations() {
     return getMeditations().some((meditation) => meditation.id === id);
   };
 
+  const saveInstantMeditation = async (
+    readingId: string,
+    isPublic: boolean = false
+  ) => {
+    try {
+      const response = await fetch("/api/save-instant-meditation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          readingId,
+          public: isPublic,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to save meditation");
+      }
+
+      // Add to local storage
+      const savedMeditation = addMeditation({
+        id: readingId,
+        title: data.title,
+        url: data.url,
+        ownerKey: data.ownerKey,
+        public: isPublic,
+        type: "instant",
+      });
+
+      return {
+        success: true,
+        meditation: savedMeditation,
+        url: data.url,
+        title: data.title,
+      };
+    } catch (error) {
+      console.error("Error saving instant meditation:", error);
+      throw error;
+    }
+  };
+
+  const shareInstantMeditation = async (readingId: string) => {
+    // Find the meditation to get the ownerKey
+    const meditation = getMeditations().find((med) => med.id === readingId);
+
+    if (!meditation?.ownerKey) {
+      throw new Error("Unable to share: missing ownership information");
+    }
+
+    try {
+      const response = await fetch("/api/share-meditation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          readingId,
+          ownerKey: meditation.ownerKey,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to share meditation");
+      }
+
+      // Update local storage to mark meditation as public
+      const updatedMeditations = getMeditations().map((med) =>
+        med.id === readingId ? { ...med, public: true } : med
+      );
+      setMeditations(updatedMeditations);
+
+      return {
+        success: true,
+        url: data.url,
+      };
+    } catch (error) {
+      console.error("Error sharing meditation:", error);
+      throw error;
+    }
+  };
+
   return {
     meditations: getSortedMeditations("studio"),
     addMeditation,
@@ -309,5 +395,7 @@ export function useMyMeditations() {
     ownsMeditation,
     editMeditationCoverImage,
     getSortedMeditations, // Export this for type filtering
+    saveInstantMeditation,
+    shareInstantMeditation,
   };
 }
