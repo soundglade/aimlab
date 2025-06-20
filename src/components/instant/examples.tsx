@@ -1,5 +1,14 @@
 export const EXAMPLES = [
   {
+    label: "Micro Meditation",
+    script: `# Micro Meditation
+
+Step 1: Take a deep breath in 
+Step 2: Exhale smiling
+Step 3: Have a great day!
+`,
+  },
+  {
     label: "Grounding",
     script: `# 5-Minute Grounding Meditation
 

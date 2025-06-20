@@ -519,15 +519,9 @@ export function ReadingDrawerContent({
                   <TooltipTrigger asChild>
                     <span
                       className="inline-block"
-                      onClick={() => {
-                        if (readingId) {
-                          deleteMeditation(readingId);
-                          setIsSaved(false);
-                          toast.success("Meditation deleted", {
-                            position: "bottom-center",
-                            duration: 3000,
-                          });
-                        }
+                      onClick={async () => {
+                        await deleteMeditation(readingId!);
+                        window.location.href = "/instant";
                       }}
                     >
                       <Button
