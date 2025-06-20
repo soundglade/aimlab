@@ -76,6 +76,7 @@ export function ReadingDrawerContent({
   const [focusModeActive, setFocusModeActive] = useState(false);
   const [isSaved, setIsSaved] = useState(initialIsSaved ?? false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { addMeditation } = useMyMeditations();
 
@@ -142,6 +143,7 @@ export function ReadingDrawerContent({
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       const response = await fetch("/api/save-instant-meditation", {
         method: "POST",
@@ -170,6 +172,8 @@ export function ReadingDrawerContent({
     } catch (error) {
       console.error("Error saving meditation:", error);
       toast.error("Failed to save meditation");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -468,9 +472,9 @@ export function ReadingDrawerContent({
                     <span
                       className="inline-block"
                       onClick={() => {
-                        if (fullAudio) {
+                        if (fullAudio && !isSaving) {
                           handleSave();
-                        } else {
+                        } else if (!fullAudio) {
                           toast.message(
                             "The meditation is not ready to save yet. Please try again in a moment.",
                             {
@@ -482,15 +486,21 @@ export function ReadingDrawerContent({
                     >
                       <Button
                         variant="ghost"
-                        disabled={!fullAudio}
+                        disabled={!fullAudio || isSaving}
                         className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
                       >
-                        save
+                        {isSaving ? (
+                          <LoaderCircle className="size-4 animate-spin" />
+                        ) : (
+                          "save"
+                        )}
                       </Button>
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    {fullAudio
+                    {isSaving
+                      ? "Saving..."
+                      : fullAudio
                       ? "Save meditation privately"
                       : "Save not ready yet..."}
                   </TooltipContent>
