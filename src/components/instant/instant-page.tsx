@@ -445,7 +445,7 @@ export default function ReaderPage() {
 
         {/* Saved Meditations Section */}
         <div className="mx-auto max-w-4xl px-4 pb-8 pt-8">
-          <SavedMeditations />
+          {hasMounted && <SavedMeditations />}
         </div>
       </div>
       <AudioContextRefresher />

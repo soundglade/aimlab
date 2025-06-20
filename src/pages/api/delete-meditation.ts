@@ -45,22 +45,23 @@ export default async function handler(
       return res.status(403).json({ error: "Unauthorized: Invalid owner key" });
     }
 
-    // Define paths
+    // Define paths for both directories
     const meditationDir = path.join(
       process.cwd(),
       "public/storage/meditations",
       meditationId
     );
-    const metadataFile = path.join(meditationDir, "metadata.json");
-    const audioFile = path.join(meditationDir, "audio.mp3");
+    const readingDir = path.join(
+      process.cwd(),
+      "public/storage/readings",
+      meditationId
+    );
 
-    // Delete files and directory
-    await Promise.all([
-      fs.unlink(metadataFile).catch(() => {}),
-      fs.unlink(audioFile).catch(() => {}),
+    // Attempt to delete from both directories (ignore errors if directory doesn't exist)
+    await Promise.allSettled([
+      fs.rmdir(meditationDir, { recursive: true }),
+      fs.rmdir(readingDir, { recursive: true }),
     ]);
-
-    await fs.rmdir(meditationDir).catch(() => {});
 
     flushMeditationCache();
 

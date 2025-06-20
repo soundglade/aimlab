@@ -78,7 +78,7 @@ export function ReadingDrawerContent({
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { addMeditation } = useMyMeditations();
+  const { addMeditation, deleteMeditation } = useMyMeditations();
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
@@ -164,7 +164,10 @@ export function ReadingDrawerContent({
           type: "instant",
         });
 
-        toast.success("Meditation saved privately");
+        toast.success("Meditation saved privately", {
+          position: "bottom-center",
+          duration: 3000,
+        });
         setIsSaved(true);
       } else {
         toast.error(data.error || "Failed to save meditation");
@@ -213,7 +216,10 @@ export function ReadingDrawerContent({
             type: "instant",
           });
 
-          toast.success("Meditation shared publicly");
+          toast.success("Meditation shared publicly", {
+            position: "bottom-center",
+            duration: 3000,
+          });
           setIsSaved(true);
         } else {
           toast.error(data.error || "Failed to share meditation");
@@ -246,7 +252,10 @@ export function ReadingDrawerContent({
         const data = await response.json();
 
         if (data.success) {
-          toast.success("Meditation shared publicly");
+          toast.success("Meditation shared publicly", {
+            position: "bottom-center",
+            duration: 3000,
+          });
         } else {
           toast.error(data.error || "Failed to share meditation");
         }
@@ -466,7 +475,7 @@ export function ReadingDrawerContent({
                 </TooltipContent>
               </Tooltip>
               <div className="bg-border w-px" />
-              {!isSaved && (
+              {!isSaved ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span
@@ -504,6 +513,32 @@ export function ReadingDrawerContent({
                       ? "Save meditation privately"
                       : "Save not ready yet..."}
                   </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span
+                      className="inline-block"
+                      onClick={() => {
+                        if (readingId) {
+                          deleteMeditation(readingId);
+                          setIsSaved(false);
+                          toast.success("Meditation deleted", {
+                            position: "bottom-center",
+                            duration: 3000,
+                          });
+                        }
+                      }}
+                    >
+                      <Button
+                        variant="ghost"
+                        className="hover:bg-accent hover:text-accent-foreground text-muted-foreground h-auto w-[80px] rounded-none border-0 p-1 px-4 sm:p-1.5"
+                      >
+                        delete
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete saved meditation</TooltipContent>
                 </Tooltip>
               )}
               <div className="bg-border w-px" />
