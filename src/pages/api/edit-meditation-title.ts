@@ -45,13 +45,39 @@ export default async function handler(
       return res.status(403).json({ error: "Unauthorized: Invalid owner key" });
     }
 
-    // Define paths
-    const meditationDir = path.join(
+    // Try to find the meditation in either format
+    let meditationDir: string;
+    let metadataFile: string;
+
+    // Check for meditation format first
+    const meditationPath = path.join(
       process.cwd(),
       "public/storage/meditations",
       meditationId
     );
-    const metadataFile = path.join(meditationDir, "metadata.json");
+    const meditationMetadataFile = path.join(meditationPath, "metadata.json");
+
+    // Check for reading format
+    const readingPath = path.join(
+      process.cwd(),
+      "public/storage/readings",
+      meditationId
+    );
+    const readingMetadataFile = path.join(readingPath, "script.json");
+
+    try {
+      await fs.access(meditationMetadataFile);
+      meditationDir = meditationPath;
+      metadataFile = meditationMetadataFile;
+    } catch {
+      try {
+        await fs.access(readingMetadataFile);
+        meditationDir = readingPath;
+        metadataFile = readingMetadataFile;
+      } catch {
+        return res.status(404).json({ error: "Meditation not found" });
+      }
+    }
 
     // Read metadata file
     const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
