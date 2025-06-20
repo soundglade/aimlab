@@ -110,6 +110,46 @@ export function useMyMeditations() {
     setMeditations(updatedMeditations);
   };
 
+  const hideMeditation = async (id: string) => {
+    // Find the meditation to get the ownerKey
+    const meditation = getMeditations().find((med) => med.id === id);
+
+    if (!meditation?.ownerKey) {
+      throw new Error("Unable to hide: missing ownership information");
+    }
+
+    try {
+      // Call the API to hide the meditation
+      const response = await fetch("/api/hide-meditation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          readingId: id,
+          ownerKey: meditation.ownerKey,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to hide meditation");
+      }
+
+      // Update local storage to mark meditation as private
+      const updatedMeditations = getMeditations().map((med) =>
+        med.id === id ? { ...med, public: false } : med
+      );
+      setMeditations(updatedMeditations);
+
+      return data;
+    } catch (error) {
+      console.error("Error hiding meditation:", error);
+      throw error;
+    }
+  };
+
   const editMeditationTitle = async (id: string, newTitle: string) => {
     // Find the meditation to get the ownerKey
     const meditation = getMeditations().find((med) => med.id === id);
@@ -261,6 +301,7 @@ export function useMyMeditations() {
     meditations: getSortedMeditations("studio"),
     addMeditation,
     deleteMeditation,
+    hideMeditation,
     editMeditationTitle,
     editMeditationDescription,
     clearMeditations,

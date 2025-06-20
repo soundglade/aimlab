@@ -76,7 +76,8 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { addMeditation, deleteMeditation } = useMyMeditations();
+  const { addMeditation, deleteMeditation, hideMeditation } =
+    useMyMeditations();
 
   const stepsForPlayer = optimizeStepsForPlayer(steps, completed, bellEnabled);
 
@@ -193,40 +194,13 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const handleHide = async () => {
     try {
-      const savedMeditations = JSON.parse(
-        localStorage.getItem("my-meditations") || "[]"
-      );
-      const meditation = savedMeditations.find(
-        (med: any) => med.id === readingId
-      );
-
-      if (!meditation?.ownerKey) {
-        toast.error("Unable to hide: missing ownership information");
-        return;
-      }
-
-      const response = await fetch("/api/hide-meditation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          readingId: readingId!,
-          ownerKey: meditation.ownerKey,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Redirect to the instant page
-        window.location.href = "/instant";
-      } else {
-        toast.error(data.error || "Failed to hide meditation");
-      }
+      await hideMeditation(readingId!);
+      // Redirect to the instant page
+      window.location.href = "/instant";
     } catch (error) {
-      console.error("Error hiding meditation:", error);
-      toast.error("Failed to hide meditation");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to hide meditation"
+      );
     }
   };
 
