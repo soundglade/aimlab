@@ -6,7 +6,13 @@ import { useRouter } from "next/router";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
 import { useState } from "react";
 
-export default function SavedMeditations() {
+interface SavedMeditationsProps {
+  loadPrivateMeditation?: (meditationId: string) => void;
+}
+
+export default function SavedMeditations({
+  loadPrivateMeditation,
+}: SavedMeditationsProps) {
   const { getSortedMeditations, deleteMeditation } = useMyMeditations();
   const router = useRouter();
   const [meditationToDelete, setMeditationToDelete] = useState<string | null>(
@@ -28,8 +34,16 @@ export default function SavedMeditations() {
   }
 
   // Handle click on a meditation button
-  const handleMeditationClick = (url: string) => {
-    router.push(url);
+  const handleMeditationClick = (
+    meditation: (typeof instantMeditations)[0]
+  ) => {
+    // For private meditations, use the callback if provided
+    if (meditation.public !== true && loadPrivateMeditation) {
+      loadPrivateMeditation(meditation.id);
+    } else {
+      // For public meditations, navigate as before
+      router.push(meditation.url);
+    }
   };
 
   // Handle confirming deletion of a single meditation
@@ -62,7 +76,7 @@ export default function SavedMeditations() {
                   type="button"
                   variant="outline"
                   className="hover:bg-accent group h-auto w-full justify-start border-none px-3 py-2 shadow-none transition-colors"
-                  onClick={() => handleMeditationClick(meditation.url)}
+                  onClick={() => handleMeditationClick(meditation)}
                 >
                   <div className="mr-5 flex w-full items-center gap-2 overflow-hidden text-left font-normal">
                     <span className="truncate">{meditation.title}</span>

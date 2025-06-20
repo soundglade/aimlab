@@ -238,6 +238,32 @@ export default function ReaderPage() {
     downloadAbortControllerRef.current = null;
   };
 
+  const loadPrivateMeditation = async (meditationId: string) => {
+    // Open drawer immediately with empty response
+    setResponse(null);
+    setIsDrawerOpen(true);
+
+    try {
+      const response = await fetch("/api/fetch-instant-meditation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: meditationId }),
+      });
+
+      const data = await response.json();
+
+      if (data.script) {
+        // Transform the API response to match the expected format
+        setResponse({
+          script: data.script,
+          readingId: data.readingId,
+        });
+      }
+    } catch (error) {
+      console.error("Error loading private meditation:", error);
+    }
+  };
+
   useEffect(() => {
     if (!isDrawerOpen && abortControllerRef.current) {
       // Abort the ongoing fetch, ignore errors
@@ -445,7 +471,9 @@ export default function ReaderPage() {
 
         {/* Saved Meditations Section */}
         <div className="mx-auto max-w-4xl px-4 pb-8 pt-8">
-          {hasMounted && <SavedMeditations />}
+          {hasMounted && (
+            <SavedMeditations loadPrivateMeditation={loadPrivateMeditation} />
+          )}
         </div>
       </div>
       <AudioContextRefresher />
