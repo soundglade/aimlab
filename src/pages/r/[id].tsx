@@ -48,7 +48,7 @@ export default function ReadingPage({
     return (
       <Layout>
         <Head>
-          <title key="title">Meditation Not Found | AIM Lab</title>
+          <title key="title">Meditation not found | AIM Lab</title>
           <meta
             key="description"
             name="description"
@@ -56,7 +56,7 @@ export default function ReadingPage({
           />
         </Head>
         <Card className="p-6">
-          <h1 className="mb-6 text-center text-2xl">Meditation Not Found</h1>
+          <h1 className="text-center text-2xl">Meditation not found</h1>
           <p className="text-muted-foreground text-center">
             {error || "Failed to load meditation"}
           </p>

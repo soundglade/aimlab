@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { LoaderCircle } from "lucide-react";
 
 type ConfirmDestructiveDialogProps = {
   open?: boolean;
@@ -20,6 +21,7 @@ type ConfirmDestructiveDialogProps = {
   confirmText?: string;
   onConfirm: () => void;
   children: React.ReactNode;
+  isLoading?: boolean;
 };
 
 export function ConfirmDestructiveDialog({
@@ -31,6 +33,7 @@ export function ConfirmDestructiveDialog({
   confirmText = "Confirm",
   onConfirm,
   children,
+  isLoading = false,
 }: ConfirmDestructiveDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -41,14 +44,18 @@ export function ConfirmDestructiveDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            disabled={isLoading}
             onClick={(e) => {
               e.preventDefault();
               onConfirm();
             }}
           >
+            {isLoading && <LoaderCircle className="mr-2 size-4 animate-spin" />}
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

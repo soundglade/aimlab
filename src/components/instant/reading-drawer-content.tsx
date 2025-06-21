@@ -75,6 +75,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
   const isPublic = script?.public;
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const {
     addMeditation,
@@ -191,21 +192,22 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const handleConfirmShare = async () => {
     try {
+      let result;
       if (!isSaved) {
-        // Meditation not saved yet - save with public flag
-        const result = await saveInstantMeditation(readingId!, true);
-        window.location.href = result.url;
-        setWasSavedHere(true);
+        // Meditation not saved yet - save with public flag (this is slow)
+        setIsSharing(true);
+        result = await saveInstantMeditation(readingId!, true);
       } else {
-        // Meditation already saved - share it
-        const result = await shareInstantMeditation(readingId!);
-        window.location.href = result.url;
+        // Meditation already saved - share it (this is fast)
+        result = await shareInstantMeditation(readingId!);
       }
+      window.location.href = result.url;
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to share meditation"
       );
-    } finally {
+
+      setIsSharing(false);
       setShowShareDialog(false);
     }
   };
@@ -532,6 +534,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         description="Shared meditations are visible to everyone, and everyone can copy and modify them. Are you sure you want to share it publicly?"
         confirmText="Share Publicly"
         onConfirm={handleConfirmShare}
+        isLoading={isSharing}
       >
         <div />
       </ConfirmDestructiveDialog>
