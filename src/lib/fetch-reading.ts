@@ -19,10 +19,6 @@ export async function fetchReadingData(id: string): Promise<ReadingData> {
       const scriptContent = await fs.readFile(scriptPath, "utf-8");
       const script = JSON.parse(scriptContent);
 
-      const slug = slugify(script.title, { lower: true, strict: true });
-      const fullAudio = `/storage/readings/${id}/${slug}.mp3`;
-      script.fullAudio = fullAudio;
-
       return { readingId: id, script };
     } catch (fileError) {
       // If script.json doesn't exist, return 404-like response

@@ -224,7 +224,8 @@ export async function synthesizeReading({
       );
 
       // Generate output filename
-      const slug = slugify(script.title, { lower: true, strict: true });
+      const slug =
+        slugify(script.title, { lower: true, strict: true }) || "nnn";
       const outputFilename = `${slug}.mp3`;
       const outputPath = path.join(readingDir, outputFilename);
 
@@ -282,7 +283,7 @@ export function randomMp3Name(stepText: string) {
   // Take the first 8 words
   const words = stepText.split(/\s+/).slice(0, 8).join(" ");
   // Use slugify for robust slug generation
-  const slug = slugify(words, { lower: true, strict: true });
+  const slug = slugify(words, { lower: true, strict: true }) || "nnn";
   // Add random number for uniqueness
   const rand = Math.floor(Math.random() * 1e9);
   return `${slug}-${rand}.mp3`;

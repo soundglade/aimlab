@@ -64,10 +64,9 @@ export function MeditationActionButtons({
     const downloadLink = document.createElement("a");
     downloadLink.href = audioUrl;
 
-    const filename = `${meditationTitle
-      .replace(/\s+/g, "-")
-      .toLowerCase()}.mp3`;
-    downloadLink.download = filename;
+    const filename = audioUrl.split("/").pop() || "meditation.mp3";
+    downloadLink.download =
+      filename === "nnn.mp3" ? `meditation-${meditationId}.mp3` : filename;
 
     document.body.appendChild(downloadLink);
     downloadLink.click();

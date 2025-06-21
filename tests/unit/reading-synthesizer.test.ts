@@ -21,8 +21,14 @@ describe("randomMp3Name", () => {
     const input =
       "++@@@!!! çrãzŸ)))   ^^^ test~~~ mañŷ symbølß   123```²³⁴   ♠♥♦♣   →↓←↑   ☺☻♥♦♣   αβγδε   ¿¡   çñ   π∞√∆≤≥≠±   {}|[]";
     const name = randomMp3Name(input);
-    console.log(name);
     expect(name.startsWith("crazy-test-many-symbolss-123-love-")).toBe(true);
+  });
+
+  it("should not use a completely empty slug", () => {
+    const input = "想象自己站在柔软的云层上。";
+    const name = randomMp3Name(input);
+    console.log({ name });
+    expect(name.startsWith("nnn-")).toBe(true);
   });
 
   it("should generate different filenames for the same input (randomness)", () => {
