@@ -21,10 +21,13 @@ Separate paragraphs with one or more empty lines to improve readability.
 
 You can quote the meditation content if it's relevant to the description.
 
-Be very concise, no noise, all signal.
+Use extremely concise language, no noise, all signal, like a Tweet.
+Do not start with banal and verbose sentence such as "This guided meditation...".
+
 Consider pauses and breaks in the meditation.
 
 If the meditation is not in English, still write the description in English, but mention the language in the description.
+
 
 Do not mention the language if the meditation is in English.`;
 

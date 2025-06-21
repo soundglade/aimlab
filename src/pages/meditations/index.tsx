@@ -16,13 +16,6 @@ interface MeditationsIndexProps {
 export default function MeditationsIndex({
   latestMeditations,
 }: MeditationsIndexProps) {
-  const featured = latestMeditations.filter(
-    (m) => m.description || m.coverImageUrl
-  );
-  const regular = latestMeditations.filter(
-    (m) => !m.description && !m.coverImageUrl
-  );
-
   return (
     <Layout>
       <header className="mb-4 mt-8 text-center sm:mb-10 md:mt-14">
@@ -32,59 +25,42 @@ export default function MeditationsIndex({
         </p>
       </header>
 
-      {featured.length > 0 && (
-        <section className="mb-3 sm:mb-12">
-          <div className="mx-auto max-w-4xl px-2">
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-4">
-              {featured.map((meditation) => (
-                <li key={meditation.link}>
-                  <Link
-                    href={meditation.link}
-                    className="hover:bg-accent bg-background group relative flex h-full max-h-64 flex-col overflow-hidden rounded-lg px-4 py-2 transition-colors"
-                  >
-                    <h3 className="mb-2 text-lg">{meditation.title}</h3>
-                    <span className="text-muted-foreground mb-2 text-xs">
-                      {meditation.timeAgo}
-                    </span>
-                    {meditation.coverImageUrl && (
-                      <img
-                        src={meditation.coverImageUrl}
-                        alt="Cover"
-                        className="mx-auto mb-3 block max-h-[200px] max-w-full rounded object-cover"
-                        style={{ maxWidth: 200, maxHeight: 200 }}
-                      />
-                    )}
-                    {meditation.description && (
-                      <div className="text-muted-foreground mt-1 overflow-hidden text-sm">
-                        {removeMarkdown(meditation.description).replace(
-                          /\n{2,}/g,
-                          "\n"
-                        )}
-                      </div>
-                    )}
-                    {/* Gradient always at the bottom of the card */}
-                    <div className="from-background group-hover:from-accent pointer-events-none absolute left-0 top-[216px] h-10 w-full bg-gradient-to-t to-transparent transition-colors" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
-      <div className="mb-10 space-y-6 px-2">
-        {regular.length > 0 ? (
-          <ul className="space-y-3">
-            {regular.map((meditation) => (
+      <div className="mx-auto mb-10 max-w-3xl space-y-4 px-2">
+        {latestMeditations.length > 0 ? (
+          <ul className="space-y-4">
+            {latestMeditations.map((meditation) => (
               <li key={meditation.link}>
                 <Link
                   href={meditation.link}
-                  className="hover:bg-accent bg-background flex justify-between gap-6 rounded-lg px-3 py-2 transition-colors"
+                  className="hover:bg-accent bg-background flex gap-4 rounded-lg p-4 transition-colors"
                 >
-                  <h2>{meditation.title}</h2>
-                  <span className="text-muted-foreground whitespace-nowrap text-sm">
-                    {meditation.timeAgo}
-                  </span>
+                  {meditation.coverImageUrl && (
+                    <div className="flex-shrink-0">
+                      <img
+                        src={meditation.coverImageUrl}
+                        alt="Cover"
+                        className="h-20 w-20 rounded object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex min-w-0 flex-1 flex-col justify-between">
+                    <div>
+                      <h2 className="mb-1 text-lg font-medium">
+                        {meditation.title}
+                      </h2>
+                      {meditation.description && (
+                        <div className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+                          {removeMarkdown(meditation.description).replace(
+                            /\n{2,}/g,
+                            "\n"
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-muted-foreground text-xs">
+                      {meditation.timeAgo}
+                    </span>
+                  </div>
                 </Link>
               </li>
             ))}
