@@ -529,7 +529,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         open={showShareDialog}
         onOpenChange={setShowShareDialog}
         title="Share meditation"
-        description="Shared meditations are visible to everyone. Are you sure you want to share it publicly?"
+        description="Shared meditations are visible to everyone, and everyone can copy and modify them. Are you sure you want to share it publicly?"
         confirmText="Share Publicly"
         onConfirm={handleConfirmShare}
       >

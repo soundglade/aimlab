@@ -136,6 +136,16 @@ const settings = {
 const CURRENT_SETTINGS = settings.kate;
 
 /**
+ * Preprocess text before sending to TTS API
+ * @param text The text to preprocess
+ * @returns The preprocessed text
+ */
+function preprocessText(text: string): string {
+  // Replace em-dashes with full stops
+  return text.toLowerCase().replace(/—/g, ". ");
+}
+
+/**
  * Generate speech using self-hosted Kokoro TTS
  * @param text Text to convert to speech
  * @param options Optional options
@@ -146,6 +156,9 @@ export async function generateSpeech(
   options?: any
 ): Promise<ArrayBuffer> {
   try {
+    // Preprocess the text before sending to API
+    const processedText = preprocessText(text);
+
     // Use voice from options if provided, otherwise use default
     const voiceId = options?.voiceId;
     const voiceSettings =
@@ -156,7 +169,7 @@ export async function generateSpeech(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "kokoro",
-        input: text,
+        input: processedText,
         response_format: "mp3",
         ...voiceSettings,
       }),

@@ -3,6 +3,30 @@ import path from "path";
 import fs from "fs/promises";
 import crypto from "crypto";
 import OpenAI from "openai";
+import { flushMeditationCache } from "@/lib/latest-meditations";
+
+/**
+ * System prompt for generating meditation descriptions
+ */
+const MEDITATION_DESCRIPTION_SYSTEM_PROMPT = `
+Based on the meditation content provided, write a short 1-3 sentence description in markdown format that describes what this guided meditation is about.
+
+Do not use Markdown headings and don't prodide titles or subtitles.
+
+Use markdown for formatting, stress, and improve readability (i.e. bold, italic, etc.).
+
+Keep it descriptive and matter-of-fact. Focus on the techniques used. Do not make assumptions about it's use and effects.
+
+Separate paragraphs with one or more empty lines to improve readability.
+
+You can quote the meditation content if it's relevant to the description.
+
+Be very concise, no noise, all signal.
+Consider pauses and breaks in the meditation.
+
+If the meditation is not in English, still write the description in English, but mention the language in the description.
+
+Do not mention the language if the meditation is in English.`;
 
 /**
  * Generates a unique owner key for a meditation
@@ -74,24 +98,19 @@ export default async function handler(
         }
       }
 
-      const prompt = `Based on this meditation titled "${
-        script.title
-      }" with content:\n\n${markdown.substring(
-        0,
-        1000
-      )}...\n\nWrite a short 2-4 sentence description in markdown format that describes what this guided meditation is about and its benefits. Keep it engaging and informative.`;
+      // Create the meditation content in markdown format
+      const meditationMarkdown = `# ${script.title}\n\n${markdown}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
-            content:
-              "You are a meditation expert writing brief, engaging descriptions for guided meditations. Write in markdown format.",
+            content: MEDITATION_DESCRIPTION_SYSTEM_PROMPT,
           },
           {
             role: "user",
-            content: prompt,
+            content: meditationMarkdown,
           },
         ],
         max_tokens: 200,
@@ -114,6 +133,8 @@ export default async function handler(
 
     // Save updated script back to file
     await fs.writeFile(scriptPath, JSON.stringify(script, null, 2));
+
+    flushMeditationCache();
 
     // Generate owner key
     const ownerKey = generateOwnerKey(readingId);
