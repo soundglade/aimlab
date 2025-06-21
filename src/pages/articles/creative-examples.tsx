@@ -305,6 +305,8 @@ When your mind wanders, **as minds naturally do**, simply bring it back to this 
             className="border-muted-foreground/50 mx-auto aspect-video w-full border-4"
             src="https://www.dhammatalks.org/Archive/Writings/Ebooks/WithEachAndEveryBreath_210603.pdf"
             allowFullScreen
+            tabIndex={-1}
+            loading="lazy"
           ></iframe>
 
           <p>
