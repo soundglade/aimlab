@@ -136,9 +136,10 @@ export function generateSilentMp3(
 }
 
 /**
- * Concatenates multiple MP3 files into a single MP3 file.
- * This function now normalizes all input files to ensure consistent format,
- * which prevents audio artifacts when mixing files from different TTS services.
+ * Concatenates multiple MP3 files into a single MP3 file with loudness normalization.
+ * This function normalizes all input files to ensure consistent format,
+ * then applies loudness normalization to the final output to ensure consistent volume levels.
+ * This is particularly useful for TTS services like ElevenLabs that may produce varying volume levels.
  * @param mp3FilePaths - Array of file paths to MP3 files to concatenate.
  * @param outputPath - The output file path for the concatenated MP3.
  * @returns Promise that resolves when the concatenation is complete.
@@ -186,6 +187,9 @@ export async function saveConcatenatedMp3(
       .join("\n");
     await fsPromises.writeFile(listFile, listContent);
 
+    // Create temporary concatenated file (before loudness normalization)
+    const tempConcatPath = path.join(tmpDir, "concatenated.mp3");
+
     // Run ffmpeg concat on normalized files
     await new Promise<void>((resolve, reject) => {
       ffmpeg()
@@ -201,6 +205,19 @@ export async function saveConcatenatedMp3(
           "-ac",
           "1",
         ])
+        .on("error", reject)
+        .on("end", resolve)
+        .save(tempConcatPath);
+    });
+
+    // Apply loudness normalization to the final concatenated file
+    await new Promise<void>((resolve, reject) => {
+      ffmpeg(tempConcatPath)
+        .audioFilters("loudnorm")
+        .audioCodec("libmp3lame")
+        .audioBitrate("128k")
+        .audioFrequency(44100)
+        .audioChannels(1)
         .on("error", reject)
         .on("end", resolve)
         .save(outputPath);
