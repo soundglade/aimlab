@@ -137,6 +137,8 @@ export function generateSilentMp3(
 
 /**
  * Concatenates multiple MP3 files into a single MP3 file.
+ * This function now normalizes all input files to ensure consistent format,
+ * which prevents audio artifacts when mixing files from different TTS services.
  * @param mp3FilePaths - Array of file paths to MP3 files to concatenate.
  * @param outputPath - The output file path for the concatenated MP3.
  * @returns Promise that resolves when the concatenation is complete.
@@ -149,20 +151,42 @@ export async function saveConcatenatedMp3(
     throw new Error("No MP3 files provided for concatenation");
   }
 
-  // Create a temporary directory for the concat list file
+  // Create a temporary directory for normalized files and concat list
   const tmpDir = await fsPromises.mkdtemp(
     path.join(os.tmpdir(), "concat-mp3-")
   );
-  const listFile = path.join(tmpDir, "concat-list.txt");
 
   try {
-    // Write ffmpeg concat list file
-    const listContent = mp3FilePaths
+    // First, normalize all input files to ensure consistent format
+    const normalizedFiles: string[] = [];
+
+    for (let i = 0; i < mp3FilePaths.length; i++) {
+      const inputPath = mp3FilePaths[i];
+      const normalizedPath = path.join(tmpDir, `normalized-${i}.mp3`);
+
+      // Normalize each file to consistent MP3 format (44.1kHz, 128kbps, mono)
+      await new Promise<void>((resolve, reject) => {
+        ffmpeg(inputPath)
+          .audioCodec("libmp3lame")
+          .audioBitrate("128k")
+          .audioFrequency(44100)
+          .audioChannels(1)
+          .on("error", reject)
+          .on("end", resolve)
+          .save(normalizedPath);
+      });
+
+      normalizedFiles.push(normalizedPath);
+    }
+
+    // Create ffmpeg concat list file with normalized files
+    const listFile = path.join(tmpDir, "concat-list.txt");
+    const listContent = normalizedFiles
       .map((filePath) => "file '" + filePath.replace(/'/g, "\\'") + "'")
       .join("\n");
     await fsPromises.writeFile(listFile, listContent);
 
-    // Run ffmpeg concat
+    // Run ffmpeg concat on normalized files
     await new Promise<void>((resolve, reject) => {
       ffmpeg()
         .input(listFile)
