@@ -205,6 +205,10 @@ describe("player reducer", () => {
       pendingIdx: null,
     };
     const next = reducer(playing, { type: "RESET" });
-    expect(next).toEqual({ status: "idle", playingIdx: -1, pendingIdx: null });
+    expect(next).toEqual({
+      status: "completed",
+      playingIdx: -1,
+      pendingIdx: null,
+    });
   });
 });
