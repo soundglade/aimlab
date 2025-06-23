@@ -64,7 +64,7 @@ export function ReadingSummary({
             <Button
               size="sm"
               variant="outline"
-              className="backdrop-blur-xs absolute bottom-4 right-4 h-8 w-8 rounded-full bg-transparent p-0"
+              className="backdrop-blur-xs absolute bottom-4 right-4 h-8 w-8 rounded-full bg-transparent p-0 opacity-60"
               onClick={handleEditDescription}
             >
               <Edit3 className="h-4 w-4" />

@@ -15,7 +15,9 @@ Do not use Markdown headings and don't prodide titles or subtitles.
 
 Use markdown for formatting, stress, and improve readability (i.e. bold, italic, etc.).
 
-Keep it descriptive and matter-of-fact. Focus on the techniques used. Do not make assumptions about it's use and effects.
+Keep it descriptive and matter-of-fact. Focus on the techniques used.
+
+IMPORTANT: Do not make assumptions about it's use and effects.
 
 Separate paragraphs with one or more empty lines to improve readability.
 

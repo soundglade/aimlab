@@ -546,6 +546,7 @@ export function ReadingDrawerContent({
         confirmText="Share Publicly"
         onConfirm={handleConfirmShare}
         isLoading={isSharing}
+        actionButtonClassName="bg-primary text-primary-foreground hover:bg-primary/90"
       >
         <div />
       </ConfirmDestructiveDialog>
