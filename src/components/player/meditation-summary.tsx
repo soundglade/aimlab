@@ -9,6 +9,7 @@ import { Meditation } from "@/components/types";
 import { MeditationHeader } from "./meditation-header";
 import { cn } from "@/lib/utils";
 import { MarkdownDescription } from "@/components/ui/markdown-description";
+import { DescriptionEditDialog } from "@/components/ui/description-edit-dialog";
 
 interface MeditationSummaryProps {
   meditationId: string;
@@ -84,6 +85,11 @@ export function MeditationSummary({
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         minimal={true}
+      />
+
+      <DescriptionEditDialog
+        meditation={meditation}
+        meditationId={meditationId}
       />
     </>
   );

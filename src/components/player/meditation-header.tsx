@@ -1,14 +1,6 @@
 import { Meditation } from "@/components/types";
-import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-// Import the action buttons component dynamically
-const MeditationActionButtons = dynamic(
-  () =>
-    import("./meditation-action-buttons").then(
-      (mod) => mod.MeditationActionButtons
-    ),
-  { ssr: false }
-);
+import { MeditationActionButtons } from "./meditation-action-buttons";
 
 interface MeditationHeaderProps {
   meditation: Meditation;

@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 import { MeditationCoverDialog } from "./meditation-cover-dialog";
 import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-dialog";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -24,13 +24,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InputDialog } from "@/components/ui/input-dialog";
-import { MarkdownDialog } from "@/components/ui/markdown-dialog";
+import {
+  DescriptionEditDialog,
+  DescriptionEditDialogRef,
+} from "@/components/ui/description-edit-dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Meditation } from "@/components/types";
+import { cn } from "@/lib/utils";
 
 export function MeditationActionButtons({
   meditationId,
@@ -49,15 +53,22 @@ export function MeditationActionButtons({
     ownsMeditation,
     deleteMeditation,
     editMeditationTitle,
-    editMeditationDescription,
     editMeditationCoverImage,
     hideMeditation,
   } = useMyMeditations();
-  const canEdit = !embedded && ownsMeditation(meditationId);
+
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditTitleDialog, setShowEditTitleDialog] = useState(false);
-  const [showDescriptionDialog, setShowDescriptionDialog] = useState(false);
   const [showCoverDialog, setShowCoverDialog] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const canEdit = isMounted && !embedded && ownsMeditation(meditationId);
+
+  const descriptionEditRef = useRef<DescriptionEditDialogRef>(null);
   const router = useRouter();
 
   const handleDownload = () => {
@@ -109,6 +120,10 @@ export function MeditationActionButtons({
     setShowEditTitleDialog(false);
   };
 
+  const handleEditDescription = () => {
+    descriptionEditRef.current?.open();
+  };
+
   const handleMakePrivate = async () => {
     try {
       await hideMeditation(meditationId);
@@ -121,7 +136,13 @@ export function MeditationActionButtons({
 
   // Cover image dialog logic is now in MeditationCoverDialog
   return (
-    <div className="flex justify-center gap-3">
+    <div
+      className={cn(
+        "flex justify-center gap-3",
+        !isMounted && "opacity-0",
+        isMounted && "opacity-100 transition-opacity"
+      )}
+    >
       <Button variant="link" size="sm" onClick={handleDownload}>
         <Download className="mr-1 h-4 w-4" />
         Download
@@ -144,14 +165,7 @@ export function MeditationActionButtons({
             placeholder="Enter new title"
             onConfirm={handleTitleUpdate}
           ></InputDialog>
-          {meditation && (
-            <MarkdownDialog
-              open={showDescriptionDialog}
-              onOpenChange={setShowDescriptionDialog}
-              meditation={meditation}
-              meditationId={meditationId}
-            />
-          )}
+
           <ConfirmDestructiveDialog
             open={showDeleteDialog}
             onOpenChange={setShowDeleteDialog}
@@ -180,9 +194,7 @@ export function MeditationActionButtons({
                       <TextCursorInput className="mr-2 h-4 w-4" />
                       Edit title
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setShowDescriptionDialog(true)}
-                    >
+                    <DropdownMenuItem onClick={handleEditDescription}>
                       <FileText className="mr-2 h-4 w-4" />
                       {meditation?.description
                         ? "Edit description"
@@ -206,6 +218,12 @@ export function MeditationActionButtons({
               <TooltipContent>Edit meditation options</TooltipContent>
             </Tooltip>
           </ConfirmDestructiveDialog>
+
+          <DescriptionEditDialog
+            ref={descriptionEditRef}
+            meditation={meditation}
+            meditationId={meditationId}
+          />
         </>
       )}
       <MeditationCoverDialog

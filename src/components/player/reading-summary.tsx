@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Edit3 } from "lucide-react";
 import { Reading } from "@/components/types";
 import { MeditationHeader } from "./meditation-header";
 import { MarkdownDescription } from "@/components/ui/markdown-description";
+import {
+  DescriptionEditDialog,
+  DescriptionEditDialogRef,
+} from "@/components/ui/description-edit-dialog";
 import { ReadingDrawer } from "../instant/reading-drawer";
 import { useMyMeditations } from "@/components/utils/use-my-meditations";
 
@@ -22,9 +26,19 @@ export function ReadingSummary({
   embedded,
 }: ReadingSummaryProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const descriptionEditRef = useRef<DescriptionEditDialogRef>(null);
 
   const { ownsMeditation } = useMyMeditations();
   const canEdit = ownsMeditation(readingId);
+
+  const handleEditDescription = () => {
+    descriptionEditRef.current?.open();
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <>
@@ -46,14 +60,12 @@ export function ReadingSummary({
           {reading.description && (
             <MarkdownDescription content={reading.description} />
           )}
-          {reading.description && canEdit && (
+          {reading.description && canEdit && isMounted && (
             <Button
               size="sm"
               variant="outline"
-              className="absolute bottom-4 right-4 h-8 w-8 rounded-full p-0"
-              onClick={() => {
-                // TODO: Add edit functionality
-              }}
+              className="backdrop-blur-xs absolute bottom-4 right-4 h-8 w-8 rounded-full bg-transparent p-0"
+              onClick={handleEditDescription}
             >
               <Edit3 className="h-4 w-4" />
             </Button>
@@ -76,6 +88,12 @@ export function ReadingSummary({
         open={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
         script={reading}
+      />
+
+      <DescriptionEditDialog
+        ref={descriptionEditRef}
+        meditation={reading}
+        meditationId={readingId}
       />
     </>
   );

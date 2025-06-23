@@ -37,17 +37,15 @@ export function MarkdownDialog({
     if (inputValue.trim()) {
       const success = await editMeditationDescription(meditationId, inputValue);
       if (success) {
-        toast.success("Description updated");
-        // Hard refresh the page to show updated description
         window.location.reload();
       } else {
         toast.error("Failed to update description");
+        if (onOpenChange) onOpenChange(false);
       }
     } else {
       // If description is empty, treat it as a delete
       handleDelete();
     }
-    if (onOpenChange) onOpenChange(false);
   };
 
   const handleDelete = async () => {
