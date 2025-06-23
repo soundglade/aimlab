@@ -30,18 +30,20 @@ export function ReadingSummary({
         audioUrl={audioUrl}
         embedded={embedded}
       />
-      <Card className="max-w-xl2 mx-auto p-6 md:-mt-5">
-        {reading.coverImageUrl && (
-          <img
-            src={reading.coverImageUrl}
-            alt="Cover"
-            className="mx-auto mt-2 block max-h-[500px] rounded-lg"
-          />
-        )}
-        {reading.description && (
-          <MarkdownDescription content={reading.description} />
-        )}
-      </Card>
+      {(reading.coverImageUrl || reading.description) && (
+        <Card className="max-w-xl2 mx-auto p-6 md:-mt-5">
+          {reading.coverImageUrl && (
+            <img
+              src={reading.coverImageUrl}
+              alt="Cover"
+              className="mx-auto mt-2 block max-h-[500px] rounded-lg"
+            />
+          )}
+          {reading.description && (
+            <MarkdownDescription content={reading.description} />
+          )}
+        </Card>
+      )}
 
       <div className="mt-8 flex justify-center">
         <Button
@@ -50,7 +52,7 @@ export function ReadingSummary({
           className="gap-2"
         >
           <Play className="h-5 w-5" />
-          Play Meditation
+          Play
         </Button>
       </div>
 
