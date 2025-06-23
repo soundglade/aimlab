@@ -29,6 +29,7 @@ import { ConfirmDestructiveDialog } from "@/components/ui/confirm-destructive-di
 
 interface ReadingDrawerContentProps {
   script: any;
+  setIsDrawerOpen: (open: boolean) => void;
 }
 
 // Skeleton for steps
@@ -60,7 +61,10 @@ function getReadyEdgeIdx(steps: ReadingStep[]): number {
   return steps.length;
 }
 
-export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
+export function ReadingDrawerContent({
+  script,
+  setIsDrawerOpen,
+}: ReadingDrawerContentProps) {
   const readingId = script?.readingId;
   const savedByScript = script?.saved;
   const title = script?.title;
@@ -95,6 +99,7 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
 
   const isInactive = useUserInactivity(10000);
   const isLongInactive = useUserInactivity(30000);
+  const isPlaybackCompleted = status === "completed";
 
   // Auto-scroll to center the active step when it changes, only if user is inactive
   useEffect(() => {
@@ -156,6 +161,9 @@ export function ReadingDrawerContent({ script }: ReadingDrawerContentProps) {
         duration: 3000,
       });
       setWasSavedHere(true);
+      if (isPlaybackCompleted) {
+        setIsDrawerOpen(false);
+      }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to save meditation"

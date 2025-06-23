@@ -6,7 +6,7 @@ import { dispatch as busDispatch } from "use-bus";
 // Types
 // ──────────────────────────────────────────────────────────────
 
-type Status = "idle" | "playing" | "paused" | "waiting";
+type Status = "completed" | "playing" | "paused" | "waiting";
 
 interface State {
   /** Index in the *filtered* `steps` array. `-1` before first play. */
@@ -38,7 +38,7 @@ const reducer = (state: State, action: Action): State => {
     case "RESUME":
       return { ...state, status: "playing" };
     case "RESET":
-      return { status: "idle", playingIdx: -1, pendingIdx: null };
+      return { status: "completed", playingIdx: -1, pendingIdx: null };
     default:
       return state;
   }
