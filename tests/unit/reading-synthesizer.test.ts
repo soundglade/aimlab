@@ -27,7 +27,6 @@ describe("randomMp3Name", () => {
   it("should not use a completely empty slug", () => {
     const input = "想象自己站在柔软的云层上。";
     const name = randomMp3Name(input);
-    console.log({ name });
     expect(name.startsWith("nnn-")).toBe(true);
   });
 

@@ -1,5 +1,4 @@
-import { ElevenLabsClient } from "elevenlabs";
-import { Readable } from "stream";
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 
 const DEFAULT_VOICE_ID = "wgHvco1wiREKN0BdyVx5";
 const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
@@ -135,15 +134,24 @@ export async function generateSpeechWithSettings(options: {
       voice_settings.use_speaker_boost = use_speaker_boost;
     if (typeof speed === "number") voice_settings.speed = speed;
 
-    const audio = await elevenlabs.generate({
-      voice: voice_id,
+    // Convert snake_case to camelCase programmatically
+    const voiceSettings: Record<string, any> = {};
+    for (const [key, value] of Object.entries(voice_settings)) {
+      if (value === undefined) continue;
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) =>
+        letter.toUpperCase()
+      );
+      voiceSettings[camelKey] = value;
+    }
+
+    const audio = await elevenlabs.textToSpeech.convert(voice_id, {
       text: transformedText,
-      model_id,
-      output_format: "pcm_24000",
-      voice_settings,
+      modelId: model_id,
+      outputFormat: "pcm_24000",
+      voiceSettings: voiceSettings,
     });
 
-    const pcmBuffer = await streamToBuffer(audio);
+    const pcmBuffer = await readableStreamToBuffer(audio);
     const wavBuffer = addWavHeader(pcmBuffer, 24000, 1, 16);
 
     return wavBuffer.buffer.slice(
@@ -157,18 +165,38 @@ export async function generateSpeechWithSettings(options: {
 }
 
 /**
- * Convert a readable stream to a Buffer
- * @param stream Readable stream
+ * Convert a Web API ReadableStream to a Buffer
+ * @param stream ReadableStream from the new ElevenLabs SDK
  * @returns Promise resolving to a Buffer
  */
-async function streamToBuffer(stream: Readable): Promise<Buffer> {
-  const chunks: Buffer[] = [];
+async function readableStreamToBuffer(
+  stream: ReadableStream<Uint8Array>
+): Promise<Buffer> {
+  const chunks: Uint8Array[] = [];
+  const reader = stream.getReader();
 
-  for await (const chunk of stream) {
-    chunks.push(chunk as Buffer);
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
   }
 
-  return Buffer.concat(chunks);
+  // Calculate total length
+  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+
+  // Create a single Uint8Array and copy all chunks
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  return Buffer.from(result);
 }
 
 /**
