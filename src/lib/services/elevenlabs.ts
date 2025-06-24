@@ -3,6 +3,10 @@ import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 const DEFAULT_VOICE_ID = "wgHvco1wiREKN0BdyVx5";
 const DEFAULT_MODEL_ID = "eleven_multilingual_v1";
 
+// Weekly quota calculation constants
+const TOTAL_WEEKS = 4;
+const AVG_MEDITATION_CREDITS = 2000;
+
 // Voice config mapping logical keys to ElevenLabs settings
 export const ELEVENLABS_VOICE_CONFIG: Record<
   string,
@@ -36,6 +40,71 @@ export const ELEVENLABS_VOICE_CONFIG: Record<
     similarity_boost: 0.75,
   },
 };
+
+/**
+ * Calculate the number of premium meditations remaining for the current week
+ * based on ElevenLabs usage quota divided into 4 weekly allowances
+ * @param options Optional API key override and client injection for testing
+ * @returns Number of meditations remaining this week (0 if over quota)
+ */
+export async function getWeeklyMeditationsLeft(options?: {
+  api_key?: string;
+  client?: ElevenLabsClient;
+}): Promise<number> {
+  try {
+    const elevenlabs =
+      options?.client ||
+      new ElevenLabsClient({
+        apiKey: options?.api_key || process.env.ELEVENLABS_API_KEY,
+      });
+
+    // Get subscription info from ElevenLabs API
+    const subscription = await elevenlabs.user.subscription.get();
+
+    const creditsUsed = subscription.characterCount;
+    const creditsLimit = subscription.characterLimit;
+    const resetTimeMs = (subscription.nextCharacterCountResetUnix || 0) * 1000;
+
+    // Calculate which week of the 4-week cycle we're in
+    const now = Date.now();
+    const timeUntilResetMs = resetTimeMs - now;
+    const totalCycleDurationMs = 28 * 24 * 60 * 60 * 1000; // 28 days in ms
+    const timeElapsedInCycleMs = totalCycleDurationMs - timeUntilResetMs;
+    const weekIdx = Math.floor(
+      timeElapsedInCycleMs / (7 * 24 * 60 * 60 * 1000)
+    ); // 7 days in ms
+
+    // Ensure weekIdx is within bounds (0-3)
+    const currentWeek = Math.max(0, Math.min(3, weekIdx));
+
+    // Calculate weekly allowance
+    const creditsPerWeek = Math.floor(creditsLimit / TOTAL_WEEKS);
+
+    // Calculate how many credits should have been used by the start of this week
+    const creditsUsedByStartOfWeek = creditsPerWeek * currentWeek;
+
+    // Calculate how many credits have been used so far this week
+    const creditsUsedThisWeek = Math.max(
+      0,
+      creditsUsed - creditsUsedByStartOfWeek
+    );
+
+    // Calculate credits left for this week
+    const creditsLeftThisWeek = creditsPerWeek - creditsUsedThisWeek;
+
+    // Calculate meditations left (floor to whole meditations, clamp to 0)
+    const meditationsLeft = Math.max(
+      0,
+      Math.floor(creditsLeftThisWeek / AVG_MEDITATION_CREDITS)
+    );
+
+    return meditationsLeft;
+  } catch (error) {
+    console.error("Error fetching ElevenLabs subscription info:", error);
+    // Return 0 on error to be safe and prevent usage
+    return 0;
+  }
+}
 
 /**
  * Transforms speech text by adding pauses between sentences
