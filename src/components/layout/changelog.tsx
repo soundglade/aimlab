@@ -38,6 +38,20 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Save and share instant meditations",
+    date: "2025-06-25T18:00:00Z",
+    description: (
+      <>
+        It's now possible to save (privately) and share (publicly) your instant
+        meditations. Shared meditations work just like the regular ones created
+        with the Meditation Studio. You can edit the title, add a cover image,
+        and add a description. A default descriptions is automatically generated
+        from the meditation content. All your saved meditations are listed below
+        the <CustomLink href="/instant">instant player</CustomLink>.
+      </>
+    ),
+  },
+  {
     title: "New instant download",
     date: "2025-06-20T13:00:00Z",
     description: (
