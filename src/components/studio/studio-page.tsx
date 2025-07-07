@@ -39,20 +39,8 @@ export default function StudioPage() {
               >
                 ChatGPT
               </Link>{" "}
-              (or any AI), paste it into the{" "}
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpen(true);
-                }}
-              >
-                Studio
-              </a>
-              , choose a voice, then synthesize and play
+              (or any AI), paste it into the Studio, choose a voice, then
+              synthesize and play
             </p>
           </div>
 
@@ -60,7 +48,7 @@ export default function StudioPage() {
 
           <div className="mb-6 flex justify-center">
             <Button
-              onClick={() => setOpen(true)}
+              onClick={() => (window.location.href = "/instant")}
               size="lg"
               className="flex items-center gap-2"
             >
