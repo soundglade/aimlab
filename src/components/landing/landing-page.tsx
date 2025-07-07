@@ -69,7 +69,7 @@ export default function LandingPage({
           hub for exploring AI and meditation
         </p>
 
-        <div className="grid max-w-[700px] gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 text-center sm:max-w-[290px]">
           <Link href="/instant">
             <Card
               className={cn(
@@ -100,7 +100,7 @@ export default function LandingPage({
               </CardFooter>
             </Card>
           </Link>
-          <Link href="/studio">
+          <Link href="/studio" className="hidden">
             <Card
               className={cn(
                 "group flex h-full flex-col justify-between gap-4 md:gap-6",

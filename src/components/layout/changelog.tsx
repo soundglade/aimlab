@@ -38,6 +38,18 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Phasing out the Meditation Studio",
+    date: "2025-07-07T17:00:00Z",
+    description: (
+      <>
+        We are phasing out the legacy Meditation Studio. You can now save and
+        share meditations using the{" "}
+        <CustomLink href="/instant">instant player</CustomLink>, so there is no
+        need for the Studio anymore.
+      </>
+    ),
+  },
+  {
     title: "Save and share instant meditations",
     date: "2025-06-25T18:00:00Z",
     description: (
