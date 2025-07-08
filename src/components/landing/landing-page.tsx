@@ -20,11 +20,11 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/layout/layout-component";
 import { SubscribeForm } from "./subscribe-form";
+import removeMarkdown from "remove-markdown";
 
 import { BlogPost } from "@/pages/index";
 import { LatestMeditation } from "@/lib/latest-meditations";
 import { RedditPost } from "@/lib/reddit-posts";
-import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
 
 export default function LandingPage({
@@ -36,8 +36,6 @@ export default function LandingPage({
   latestMeditations: LatestMeditation[];
   latestRedditPosts: RedditPost[];
 }) {
-  const router = useRouter();
-
   // Hardcoded slug for the latest newsletter
   const latestNewsletterSlug = "third-week";
   const latestNewsletter = blogPosts.find(
@@ -46,10 +44,6 @@ export default function LandingPage({
   const filteredBlogPosts = blogPosts.filter(
     (post) => post.slug !== latestNewsletterSlug
   );
-
-  const handleMeditationClick = (url: string) => {
-    router.push(url);
-  };
 
   return (
     <Layout showChangelog={true}>
@@ -156,25 +150,44 @@ export default function LandingPage({
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+        <div className="space-y-4">
           {latestMeditations.map((meditation, index) => (
-            <Button
+            <Link
               key={index}
-              type="button"
-              variant="outline"
+              href={meditation.link}
               className={cn(
-                "hover:bg-accent border-0 group h-auto w-full justify-start px-5 py-3 transition-colors",
-                index > 3 && "hidden sm:block"
+                "hover:bg-accent bg-background flex gap-4 rounded-lg p-4 transition-colors",
+                index > 5 && "hidden sm:block"
               )}
-              onClick={() => handleMeditationClick(meditation.link)}
             >
-              <div className="flex w-full items-center justify-between gap-2 overflow-hidden text-left">
-                <span className="truncate">{meditation.title}</span>
-                <span className="text-muted-foreground whitespace-nowrap text-xs">
+              {meditation.coverImageUrl && (
+                <div className="flex-shrink-0">
+                  <img
+                    src={meditation.coverImageUrl}
+                    alt="Cover"
+                    className="h-20 w-20 rounded object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex min-w-0 flex-1 flex-col justify-between">
+                <div>
+                  <h3 className="mb-1 text-lg font-medium">
+                    {meditation.title}
+                  </h3>
+                  {meditation.description && (
+                    <div className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+                      {removeMarkdown(meditation.description).replace(
+                        /\n{2,}/g,
+                        "\n"
+                      )}
+                    </div>
+                  )}
+                </div>
+                <span className="text-muted-foreground text-xs">
                   {meditation.timeAgo}
                 </span>
               </div>
-            </Button>
+            </Link>
           ))}
         </div>
 
