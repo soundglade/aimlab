@@ -63,7 +63,7 @@ export default function LandingPage({
           hub for exploring AI and meditation
         </p>
 
-        <div className="grid gap-4 text-center sm:max-w-[290px]">
+        <div className="grid gap-4 text-center sm:max-w-[590px]">
           <Link href="/instant">
             <Card
               className={cn(
