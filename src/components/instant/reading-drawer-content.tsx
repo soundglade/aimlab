@@ -221,6 +221,32 @@ export function ReadingDrawerContent({
     }
   };
 
+  // Handle rejected scripts
+  if (script?.isRejected) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center px-4 text-center">
+        <div className="max-w-md space-y-4">
+          <p className="text-muted-foreground -mt-10 leading-relaxed">
+            Sorry! GPT-4o is not able to find a meditation script in the text
+            you provided. If this is an error, please try again, making sure the
+            text looks like a meditation.
+            <br />
+            <br />
+            Sometimes adding a title with the word "meditation" in it is enough
+            for it to understand.
+          </p>
+          <Button
+            onClick={() => setIsDrawerOpen(false)}
+            variant="outline"
+            className="mt-4"
+          >
+            Try again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Header (fixed) */}

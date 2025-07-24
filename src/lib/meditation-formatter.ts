@@ -74,15 +74,12 @@ const schemaString = JSON.stringify(meditationFormatterJsonSchema, null, 2);
 
 // The system prompt as a constant
 const SYSTEM_PROMPT = `
-You are a specialized AI that validates and transforms meditation scripts into a structured JSON format.
+You are a specialized AI that transforms meditation scripts into a structured JSON format.
 
 Steps to follow:
 1) Carefully read the user-provided meditation script.
 2) VALIDATION STAGE:
-   - Check if this is indeed a meditation script or if it includes content that cannot be supported 
-     (e.g., extremely vague or purely theoretical text that can't be turned into guided instructions).
-   - Check if we can transform its features into the supported JSON format. If any core aspect 
-     is mandatory and can't be approximated, we must reject the script.
+   - Check if there is a meditation script in the text. If the text does not contains meditations, but looks more like stories, poems, and other narrative content, allow that too, and see if you can transform it into a meditation script.
    - If the script is invalid or not feasible, respond with: 
        { "isRejected": true, "rejectionReason": "some reason" }
      and DO NOT provide any "script".

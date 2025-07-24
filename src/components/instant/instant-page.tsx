@@ -309,6 +309,11 @@ export default function ReaderPage() {
     setHasMounted(true);
   }, []);
 
+  const allData = {
+    ...response,
+    ...response?.script,
+  };
+
   return (
     <Layout>
       <div className="w-full pb-0 pt-1 md:pt-6">
@@ -457,7 +462,7 @@ export default function ReaderPage() {
           <ReadingDrawer
             open={isDrawerOpen}
             onOpenChange={setIsDrawerOpen}
-            script={response?.script}
+            script={allData}
           />
 
           <DownloadProgressDialog
