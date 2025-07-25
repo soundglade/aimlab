@@ -384,6 +384,7 @@ export default function ReaderPage() {
                 }}
                 disabled={isSubmitting || isDownloading}
                 required
+                maxLength={10000}
                 ref={scriptTextareaRef}
               />
             </div>
