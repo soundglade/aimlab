@@ -13,7 +13,7 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { script, settings, improvePauses } = req.body;
+  const { script, settings, improvePauses, explicitPauseMultiplier } = req.body;
 
   if (!script || typeof script !== "string") {
     return res
@@ -71,6 +71,23 @@ export default async function handler(
   });
 
   try {
+    // Clamp explicit pause multiplier from request
+    const multiplierRaw = explicitPauseMultiplier;
+    const explicitPauseMultiplierClamped =
+      typeof multiplierRaw === "number" && isFinite(multiplierRaw)
+        ? Math.min(3, Math.max(0.5, multiplierRaw))
+        : 1;
+    // Snap to discrete allowed values to keep UI/engine consistent
+    const allowed = [0.5, 1, 1.5, 2, 3];
+    const explicitPauseMultiplierSnapped = allowed.reduce(
+      (prev, curr) =>
+        Math.abs(curr - explicitPauseMultiplierClamped) <
+        Math.abs(prev - explicitPauseMultiplierClamped)
+          ? curr
+          : prev,
+      allowed[0]
+    );
+
     // Directly call synthesizeReading; let it throw on abort for debugging
     await synthesizeReading({
       script,
@@ -84,6 +101,7 @@ export default async function handler(
       signal: abortController.signal,
       settings,
       improvePauses,
+      explicitPauseMultiplier: explicitPauseMultiplierSnapped,
     });
     res.end();
   } catch (error: any) {

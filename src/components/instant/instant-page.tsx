@@ -42,6 +42,10 @@ export default function ReaderPage() {
   const downloadAbortControllerRef = useRef<AbortController | null>(null);
   const scriptTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [customSettings] = useLocalStorage("custom-voice-settings", null);
+  const [explicitPauseMultiplier] = useLocalStorage(
+    "explicit-pause-multiplier",
+    1
+  );
   const [hasMounted, setHasMounted] = useState(false);
   const [improvePauses, setImprovePauses] = useState(true);
   const [selectedVoice, setSelectedVoice] = useAtom(voiceIdAtom);
@@ -88,6 +92,7 @@ export default function ReaderPage() {
             ? { settings: voiceSettings }
             : {}),
           improvePauses,
+          explicitPauseMultiplier,
           language: selectedLanguage,
         }),
         signal: controller.signal,
@@ -175,6 +180,7 @@ export default function ReaderPage() {
             ? { settings: voiceSettings }
             : {}),
           improvePauses,
+          explicitPauseMultiplier,
           language: selectedLanguage,
         }),
         signal: controller.signal,
