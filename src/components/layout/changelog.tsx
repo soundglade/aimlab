@@ -38,6 +38,17 @@ function CustomLink({
 // Changelog as JSX
 export const changelogEntries = [
   {
+    title: "Adding pause multiplier",
+    date: "2025-10-13T11:00:00Z",
+    description: (
+      <>
+        It's now possible to choose a custom pause multiplier for longer or
+        shorter pauses. You can find this setting in the Customize panel of the{" "}
+        <CustomLink href="/instant">instant player</CustomLink>.
+      </>
+    ),
+  },
+  {
     title: "Phasing out the Meditation Studio",
     date: "2025-07-07T17:00:00Z",
     description: (
