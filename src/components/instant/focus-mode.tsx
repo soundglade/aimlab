@@ -17,7 +17,21 @@ const events = [
   "tap",
 ];
 
-export function FocusMode({ onExit, activeStep, steps, stepsForPlayer }) {
+type FocusModeProps = {
+  onExit: any;
+  activeStep: any;
+  steps: any;
+  stepsForPlayer: any;
+  pauseMultiplier?: number;
+};
+
+export function FocusMode({
+  onExit,
+  activeStep,
+  steps,
+  stepsForPlayer,
+  pauseMultiplier = 1,
+}: FocusModeProps) {
   const [displayStep, setDisplayStep] = useState(activeStep);
 
   useMount(() => {
@@ -53,7 +67,7 @@ export function FocusMode({ onExit, activeStep, steps, stepsForPlayer }) {
       if (playerStep.type == "pause") {
         setTimeout(() => {
           setDisplayStep(nextStep);
-        }, playerStep.duration * 1000 - 1500);
+        }, Math.max(0, Math.round(Number(playerStep.duration ?? 0)) * 1000 - 1500));
       }
     }
   });
@@ -125,7 +139,7 @@ const OverlayContent = React.memo(function OverlayContent({
               <div>{stepText}</div>
             ) : stepType === "pause" ? (
               <div className="text-muted-foreground/70 italic">
-                {stepDuration}s pause
+                {Math.round(Number(stepDuration ?? 0))}s pause
               </div>
             ) : null}
           </motion.div>

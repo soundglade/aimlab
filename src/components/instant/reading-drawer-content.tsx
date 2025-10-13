@@ -311,7 +311,7 @@ export function ReadingDrawerContent({
                 {step.type === "speech" && <p>{step.text}</p>}
                 {step.type === "pause" && (
                   <p className="text-muted-foreground/70 italic">
-                    {step.duration}s pause
+                    {Math.round(Number(step.duration ?? 0))}s pause
                   </p>
                 )}
               </div>

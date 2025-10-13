@@ -15,6 +15,7 @@ interface SynthesizeReadingOptions {
   signal?: AbortSignal;
   settings?: any;
   improvePauses?: boolean;
+  explicitPauseMultiplier?: number;
 }
 
 function tryRepairAndParseJSON(text: string) {
@@ -39,6 +40,7 @@ export async function synthesizeReading({
   signal,
   settings,
   improvePauses,
+  explicitPauseMultiplier,
 }: SynthesizeReadingOptions) {
   // Generate a unique reading id for this session
   const generateReadingId = customAlphabet(
@@ -101,7 +103,13 @@ export async function synthesizeReading({
   // Helper to process a pause step
   async function processPauseStep(index: number, step: any) {
     if (signal?.aborted) throw new Error("Aborted");
-    const duration = Math.round(step.duration); // round to nearest second
+    const runtimeMultiplier =
+      typeof explicitPauseMultiplier === "number" ? explicitPauseMultiplier : 1;
+    // Compute scaled duration but DO NOT mutate step.duration to avoid UI flicker
+    const duration = Math.max(
+      1,
+      Math.round((step.duration || 0) * runtimeMultiplier)
+    );
 
     const mp3Filename = `${duration}-seconds.mp3`;
     const mp3Path = path.join(pausesDir, mp3Filename);
@@ -187,14 +195,35 @@ export async function synthesizeReading({
   function sendAugmentedData() {
     if (signal?.aborted) return;
     if (response?.script?.steps) {
+      const m =
+        typeof explicitPauseMultiplier === "number"
+          ? explicitPauseMultiplier
+          : 1;
+
       response.script.steps = steps.map((step: any, idx: number) => {
-        if (stepAudioFiles[idx]) {
-          return { ...step, audio: stepAudioFiles[idx] };
+        // Start from the LLM step, optionally attach audio file
+        const out = stepAudioFiles[idx]
+          ? { ...step, audio: stepAudioFiles[idx] }
+          : { ...step };
+
+        // For UI: always render adjusted pause duration (no flicker)
+        if (out?.type === "pause") {
+          const scaled = Math.max(
+            1,
+            Math.round(Number(out.duration || 0) * m)
+          );
+          out.duration = scaled;
         }
-        return step;
+        return out;
       });
 
       response.script.settings = settings;
+      // Expose runtime pause settings to the UI
+      response.script.runtime = {
+        ...(response.script.runtime || {}),
+        explicitPauseMultiplier:
+          typeof explicitPauseMultiplier === "number" ? explicitPauseMultiplier : 1,
+      };
 
       if (readyForConcatenation(response.script) && !startedConcatenation) {
         startedConcatenation = true;

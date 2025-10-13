@@ -27,6 +27,8 @@ export default function CustomizeDrawer() {
   const [open, setOpen] = useState(false);
   const [storedSettings, setStoredSettings] =
     useLocalStorage<ElevenLabsSettings | null>("custom-voice-settings", null);
+  const [pauseMultiplier, setPauseMultiplier] =
+    useLocalStorage<number>("explicit-pause-multiplier", 1);
   const [apiKey, setApiKey] = useState("");
   const [voiceId, setVoiceId] = useState("");
   const [modelId, setModelId] = useState("");
@@ -148,6 +150,51 @@ export default function CustomizeDrawer() {
         <DrawerContent className="w-[350px]!">
           <ScrollArea className="h-full p-2">
             <div className="p-2">
+              {/* Playback Settings */}
+              <div className="mb-6">
+                <h2 className="mb-1 text-xl tracking-tight">
+                  Pause length
+                </h2>
+                <p className="mb-4 text-sm text-gray-500">
+                  Prolong or shorten pauses in playback and downloads. The times shown below reflect the adjusted pause length.
+                </p>
+                <Label htmlFor="pauseMultiplier" className="mb-1 block text-xs">
+                  Pause length: {(pauseMultiplier ?? 1).toFixed(1)}×
+                </Label>
+                <input
+                  id="pauseMultiplier"
+                  type="range"
+                  min={0.5}
+                  max={3}
+                  step={0.1}
+                  list="pauseMultiplierOptions"
+                  value={pauseMultiplier ?? 1}
+                  onChange={(e) => {
+                    const val = parseFloat((e.target as HTMLInputElement).value);
+                    const allowed = [0.5, 1, 1.5, 2, 3];
+                    const snapped = allowed.reduce((prev, curr) =>
+                      Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev,
+                      allowed[0]
+                    );
+                    setPauseMultiplier(snapped);
+                  }}
+                  className="w-full"
+                />
+                <datalist id="pauseMultiplierOptions">
+                  <option value="0.5" />
+                  <option value="1" />
+                  <option value="1.5" />
+                  <option value="2" />
+                  <option value="3" />
+                </datalist>
+                <div className="mt-1 flex justify-between text-xs text-muted-foreground">
+                  <span>Fast 0.5×</span>
+                  <span>Normal 1.0×</span>
+                  <span>1.5×</span>
+                  <span>Slow 2.0×</span>
+                  <span>Extra Slow 3.0×</span>
+                </div>
+              </div>
               <h2 className="mb-1 text-xl tracking-tight">
                 Custom Voice Settings
               </h2>
