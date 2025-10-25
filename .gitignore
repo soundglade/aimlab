@@ -3,6 +3,10 @@
 /cache
 .vscode
 
+storage
+supabase
+tests/eval
+
 # dependencies
 /node_modules
 /.pnp

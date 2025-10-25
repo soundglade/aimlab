@@ -126,82 +126,6 @@ export default function LandingPage({
             </Card>
           </Link>
         </div>
-
-        <Button
-          asChild
-          size="lg"
-          variant="outline"
-          className="text-muted-foreground mt-4 border-0 md:mt-5"
-        >
-          <Link href="/articles/creative-examples">
-            <span className="hidden md:inline">Need inspiration? </span>
-            <BookOpen className="text-primary hidden h-4 w-4 md:inline" /> Check
-            out some creative examples
-          </Link>
-        </Button>
-      </section>
-
-      {/* Recent Community Meditations */}
-      <section className={`mb-10 w-full max-w-4xl px-4`}>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <ScrollText className="h-5 w-5 opacity-50" />
-            Latest public meditations
-          </h2>
-        </div>
-
-        <div className="space-y-4">
-          {latestMeditations.map((meditation, index) => (
-            <Link
-              key={index}
-              href={meditation.link}
-              className={cn(
-                "hover:bg-accent bg-background flex gap-4 rounded-lg p-4 transition-colors",
-                index > 5 && "hidden sm:block"
-              )}
-            >
-              {meditation.coverImageUrl && (
-                <div className="flex-shrink-0">
-                  <img
-                    src={meditation.coverImageUrl}
-                    alt="Cover"
-                    className="h-20 w-20 rounded object-cover"
-                  />
-                </div>
-              )}
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                <div>
-                  <h3 className="mb-1 text-lg font-medium">
-                    {meditation.title}
-                  </h3>
-                  {meditation.description && (
-                    <div className="text-muted-foreground mb-2 line-clamp-2 text-sm">
-                      {removeMarkdown(meditation.description).replace(
-                        /\n{2,}/g,
-                        "\n"
-                      )}
-                    </div>
-                  )}
-                </div>
-                <span className="text-muted-foreground text-xs">
-                  {meditation.timeAgo}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex justify-center">
-          <Button variant="secondary" asChild size="lg">
-            <Link
-              href="/meditations"
-              className="mt-4 flex items-center md:mr-0 md:mt-8"
-            >
-              <span>View all public meditations</span>
-              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
-            </Link>
-          </Button>
-        </div>
       </section>
 
       <div id="community" className="invisible relative -top-4"></div>
@@ -315,6 +239,69 @@ export default function LandingPage({
           <div className="bg-accent/60 px-6 py-4 md:px-10 md:py-4">
             <SubscribeForm />
           </div>
+        </div>
+      </section>
+
+      {/* Recent Community Meditations */}
+      <section className={`mb-10 w-full max-w-4xl px-4`}>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
+            <ScrollText className="h-5 w-5 opacity-50" />
+            Latest public meditations
+          </h2>
+        </div>
+
+        <div className="space-y-4">
+          {latestMeditations.map((meditation, index) => (
+            <Link
+              key={index}
+              href={meditation.link}
+              className={cn(
+                "hover:bg-accent bg-background flex gap-4 rounded-lg p-4 transition-colors",
+                index > 5 && "hidden sm:block"
+              )}
+            >
+              {meditation.coverImageUrl && (
+                <div className="flex-shrink-0">
+                  <img
+                    src={meditation.coverImageUrl}
+                    alt="Cover"
+                    className="h-20 w-20 rounded object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex min-w-0 flex-1 flex-col justify-between">
+                <div>
+                  <h3 className="mb-1 text-lg font-medium">
+                    {meditation.title}
+                  </h3>
+                  {meditation.description && (
+                    <div className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+                      {removeMarkdown(meditation.description).replace(
+                        /\n{2,}/g,
+                        "\n"
+                      )}
+                    </div>
+                  )}
+                </div>
+                <span className="text-muted-foreground text-xs">
+                  {meditation.timeAgo}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex justify-center">
+          <Button variant="secondary" asChild size="lg">
+            <Link
+              href="/meditations"
+              className="mt-4 flex items-center md:mr-0 md:mt-8"
+            >
+              <span>View all public meditations</span>
+              <ArrowRight className="-ml-1 h-4 w-4 md:ml-1" />
+            </Link>
+          </Button>
         </div>
       </section>
 
