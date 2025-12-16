@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function ExportIndex() {
-  const { meditations } = useMyMeditations();
+  const { getSortedMeditations } = useMyMeditations();
+  const meditations = getSortedMeditations("instant");
   const router = useRouter();
   const [referrer, setReferrer] = useState<string>("");
   const [redirectPath, setRedirectPath] = useState<string>("");
@@ -55,9 +56,6 @@ export default function ExportIndex() {
       <Layout variant="page">
         <header className="mb-12">
           <h1 className="mb-3 text-center text-2xl tracking-tight">Export</h1>
-          <p className="text-muted-foreground max-w-2xl text-center">
-            Export your browser-stored meditations to another service
-          </p>
         </header>
         <div className="mx-auto max-w-2xl">
           <div className="rounded-lg border border-border bg-card p-6 text-center">
@@ -70,22 +68,17 @@ export default function ExportIndex() {
 
   return (
     <Layout variant="page">
-      <header className="mb-12">
-        <h1 className="mb-3 text-center text-2xl tracking-tight">Export</h1>
-        <p className="text-muted-foreground max-w-2xl text-center">
-          Export your browser-stored meditations to another service
-        </p>
-      </header>
+      <h1 className="mb-4 text-center text-xl tracking-tight">Export</h1>
 
       <div className="mx-auto max-w-2xl">
         {!hasMeditations ? (
-          <div className="rounded-lg border border-border bg-card p-6 text-center">
+          <div className="text-center">
             <p className="text-muted-foreground">
               You don't have any meditations stored in your browser to export.
             </p>
           </div>
         ) : !canExport ? (
-          <div className="rounded-lg border border-border bg-card p-6 text-center">
+          <div className="text-center">
             <p className="text-muted-foreground">
               {!referrer
                 ? "No referrer detected. Please access this page from the service you want to export to."
@@ -95,7 +88,7 @@ export default function ExportIndex() {
             </p>
           </div>
         ) : (
-          <div className="rounded-lg border border-border bg-card p-6">
+          <div>
             <p className="mb-4 text-center text-sm text-muted-foreground">
               Would you like to export your {meditations.length} meditation
               {meditations.length !== 1 ? "s" : ""} to{" "}
