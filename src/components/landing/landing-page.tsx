@@ -181,7 +181,7 @@ export default function LandingPage({
         </div>
       </section>
 
-      <section className={`mb-10 w-full max-w-4xl px-4`}>
+      {/* <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-2xl tracking-tight">
             <Megaphone className="h-5 w-5 opacity-50" />
@@ -240,7 +240,7 @@ export default function LandingPage({
             <SubscribeForm />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Recent Community Meditations */}
       <section className={`mb-10 w-full max-w-4xl px-4`}>
