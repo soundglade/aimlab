@@ -1,13 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   ArrowRight,
   Sparkles,
@@ -65,64 +59,44 @@ export default function LandingPage({
 
         <div className="grid gap-4 text-center sm:max-w-[590px]">
           <Link href="/instant">
-            <Card
-              className={cn(
-                "group flex h-full flex-col justify-between gap-4 md:gap-6",
-                "px-2 py-7",
-                "text-left",
-                "hover:bg-accent"
-              )}
+            <Button
+              size="lg"
+              className="group-hover:bg-primary hover:bg-primary flex-shrink-0"
             >
-              <CardHeader>
-                <CardTitle className="mb-1 flex items-center gap-3">
-                  <Sparkles className="h-5 w-5 opacity-50" />
-                  Listen instantly
-                </CardTitle>
-                <CardDescription>
-                  Paste any AI-generated script, hit play, and hear it stream in
-                  real time
-                </CardDescription>
-              </CardHeader>
-              <CardFooter>
-                <Button
-                  size="lg"
-                  className="group-hover:bg-primary hover:bg-primary"
-                >
-                  Play a script
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </CardFooter>
-            </Card>
+              <Sparkles className="h-5 w-5 mr-1 flex-shrink-0 opacity-100" />{" "}
+              Play a script
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
           </Link>
           <Link href="/studio" className="hidden">
             <Card
               className={cn(
-                "group flex h-full flex-col justify-between gap-4 md:gap-6",
-                "px-2 py-7",
+                "group flex h-full flex-row items-center justify-between gap-4",
+                "px-6 py-4",
                 "text-left",
                 "hover:bg-accent"
               )}
             >
-              <CardHeader>
-                <CardTitle className="mb-1 flex items-center gap-3">
-                  <PencilRuler className="h-5 w-5 opacity-50" />
-                  Create a shareable meditation
-                </CardTitle>
-                <CardDescription>
-                  Step-by-step synthesis, custom voice, cover image, and a
-                  public URL
-                </CardDescription>
-              </CardHeader>
-              <CardFooter>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="group-hover:bg-background hover:bg-background dark:group-hover:bg-background/50 dark:hover:bg-background/50"
-                >
-                  Start creating
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </CardFooter>
+              <div className="flex flex-1 items-center gap-4 min-w-0">
+                <PencilRuler className="h-5 w-5 flex-shrink-0 opacity-50" />
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="mb-1 text-lg">
+                    Create a shareable meditation
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Step-by-step synthesis, custom voice, cover image, and a
+                    public URL
+                  </CardDescription>
+                </div>
+              </div>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="group-hover:bg-background hover:bg-background dark:group-hover:bg-background/50 dark:hover:bg-background/50 flex-shrink-0"
+              >
+                Start creating
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
             </Card>
           </Link>
         </div>
