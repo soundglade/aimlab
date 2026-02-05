@@ -102,22 +102,21 @@ export function getGalleryImages(post: RedditApiPost): RedditImage[] {
   const metadata = post.media_metadata;
   if (!items || !metadata) return [];
 
-  return items
-    .map((item) => {
-      const mediaId = item.media_id;
-      if (!mediaId) return undefined;
-      const entry = metadata[mediaId];
-      if (!entry || entry.status !== "valid") return undefined;
-      const source = entry.s ?? entry.p?.[entry.p.length - 1];
-      const url = decodeRedditUrl(source?.u);
-      if (!url) return undefined;
-      return {
-        url,
-        width: source?.x,
-        height: source?.y,
-      };
-    })
-    .filter((image): image is RedditImage => Boolean(image));
+  return items.reduce<RedditImage[]>((images, item) => {
+    const mediaId = item.media_id;
+    if (!mediaId) return images;
+    const entry = metadata[mediaId];
+    if (!entry || entry.status !== "valid") return images;
+    const source = entry.s ?? entry.p?.[entry.p.length - 1];
+    const url = decodeRedditUrl(source?.u);
+    if (!url) return images;
+    images.push({
+      url,
+      width: source?.x,
+      height: source?.y,
+    });
+    return images;
+  }, []);
 }
 
 export function getVideo(post: RedditApiPost): RedditVideo | undefined {

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { RedditPostMedia } from "@/lib/reddit-media";
+import type { RedditPostMedia } from "@/lib/reddit-media";
 
 function getAspectRatioStyle(width?: number, height?: number) {
   if (!width || !height) return undefined;
