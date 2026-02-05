@@ -2,6 +2,11 @@ import fetch from "node-fetch";
 import fs from "fs";
 import path from "path";
 import { timeAgo } from "./time";
+import {
+  parseRedditMedia,
+  RedditPostMedia,
+  RedditApiPost,
+} from "./reddit-media";
 
 export interface RedditPost {
   id: string;
@@ -13,6 +18,7 @@ export interface RedditPost {
   created_utc: number;
   score: number;
   timeAgo: string;
+  media?: RedditPostMedia;
 }
 
 // Define types for Reddit API response
@@ -28,7 +34,7 @@ interface RedditApiResponse {
         selftext: string;
         created_utc: number;
         score: number;
-      };
+      } & RedditApiPost;
     }[];
   };
 }
@@ -126,6 +132,8 @@ export async function getLatestRedditPosts(
 
     const posts = data.data.children.map((child) => {
       const post = child.data;
+      const media = parseRedditMedia(post);
+
       return {
         id: post.id,
         title: post.title,
@@ -136,6 +144,7 @@ export async function getLatestRedditPosts(
         created_utc: post.created_utc * 1000, // Convert to milliseconds
         score: post.score,
         timeAgo: timeAgo(post.created_utc * 1000),
+        media,
       };
     });
 

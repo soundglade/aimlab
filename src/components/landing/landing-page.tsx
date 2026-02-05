@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/layout/layout-component";
 import { SubscribeForm } from "./subscribe-form";
+import { RedditPostMedia } from "./reddit-post-media";
 import removeMarkdown from "remove-markdown";
 
 import { BlogPost } from "@/pages/index";
@@ -114,29 +115,43 @@ export default function LandingPage({
 
         <div className="rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
           <div className="space-y-8">
-            {latestRedditPosts.map((post, index) => (
-              <Link
-                href={post.permalink}
+            {latestRedditPosts.map((post) => (
+              <article
                 key={post.id}
-                className="group block"
-                target="_blank"
+                className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start"
               >
-                <article className="space-y-1">
+                <div className="space-y-1">
                   <div className="text-muted-foreground flex items-center gap-2 text-xs">
                     <span>u/{post.author}</span>
                     <span>•</span>
                     <span>{post.timeAgo}</span>
                   </div>
-                  <h2 className="group-hover:text-primary text-medium text-xl transition-colors">
-                    {post.title}
+                  <h2 className="text-medium text-xl transition-colors">
+                    <Link
+                      href={post.permalink}
+                      target="_blank"
+                      className="hover:text-primary"
+                    >
+                      {post.title}
+                    </Link>
                   </h2>
                   {post.selftext && (
-                    <p className="text-muted-foreground line-clamp-2 text-sm">
+                    <p className="text-muted-foreground line-clamp-2 text-sm md:line-clamp-4">
                       {post.selftext}
                     </p>
                   )}
-                </article>
-              </Link>
+                  <div>
+                    <Link
+                      href={post.permalink}
+                      target="_blank"
+                      className="text-muted-foreground hover:text-primary text-xs"
+                    >
+                      Open on Reddit
+                    </Link>
+                  </div>
+                </div>
+                <RedditPostMedia media={post.media} permalink={post.permalink} />
+              </article>
             ))}
           </div>
 
