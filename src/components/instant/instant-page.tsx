@@ -328,10 +328,6 @@ export default function ReaderPage() {
             Instant Meditation Player
           </h1>
 
-          <p className="text-muted-foreground mb-4 text-center">
-            Instantly read your own guided meditations
-          </p>
-
           <div className="mx-auto mb-0.5 flex justify-center gap-4">
             <ExamplesSelect
               onSelect={(example) => {
@@ -370,6 +366,14 @@ export default function ReaderPage() {
                 </span>
               </li>
             </ul>
+          </div>
+          <div className="w-full flex align-center">
+            <a
+              href="https://www.reddit.com/r/AIMeditationLab/comments/1qtv0z0/open_meadow_preview_inviting_a_few_of_you_to_try/"
+              className="mb-3 max-sm:-mt-2 text-muted-foreground mx-auto mb-1 rounded-lg py-2 px-3 text-sm text-center bg-popover hover:bg-accent"
+            >
+              Try our new, improved version: Open Meadow
+            </a>
           </div>
 
           <form
