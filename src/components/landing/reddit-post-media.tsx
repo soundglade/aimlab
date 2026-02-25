@@ -1,6 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import type { RedditPostMedia } from "@/lib/reddit-media";
+import {
+  deriveRedditHlsUrl,
+  type RedditPostMedia,
+} from "@/lib/reddit-media";
 
 function getAspectRatioStyle(width?: number, height?: number) {
   if (!width || !height) return undefined;
@@ -53,6 +56,11 @@ export function RedditPostMedia({
   }
 
   if (media.type === "video") {
+    const preferredSrc =
+      media.video.hlsUrl ??
+      deriveRedditHlsUrl(media.video.fallbackUrl) ??
+      media.video.fallbackUrl;
+
     return (
       <div className="mt-3">
         <video
@@ -62,7 +70,19 @@ export function RedditPostMedia({
           poster={media.video.poster}
           className="w-full max-h-[200px] rounded-lg border-2 border-border"
         >
-          <source src={media.video.fallbackUrl} type="video/mp4" />
+          {preferredSrc && (
+            <source
+              src={preferredSrc}
+              type={
+                preferredSrc.endsWith(".m3u8")
+                  ? "application/x-mpegURL"
+                  : "video/mp4"
+              }
+            />
+          )}
+          {media.video.fallbackUrl && preferredSrc !== media.video.fallbackUrl && (
+            <source src={media.video.fallbackUrl} type="video/mp4" />
+          )}
         </video>
       </div>
     );

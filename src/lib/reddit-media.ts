@@ -5,7 +5,11 @@ export type RedditImage = {
 };
 
 export type RedditVideo = {
-  fallbackUrl: string;
+  fallbackUrl?: string;
+  hlsUrl?: string;
+  dashUrl?: string;
+  hasAudio?: boolean;
+  isGif?: boolean;
   width?: number;
   height?: number;
   poster?: string;
@@ -48,6 +52,10 @@ export interface RedditApiPost {
   secure_media?: {
     reddit_video?: {
       fallback_url?: string;
+      hls_url?: string;
+      dash_url?: string;
+      has_audio?: boolean;
+      is_gif?: boolean;
       width?: number;
       height?: number;
     };
@@ -55,6 +63,10 @@ export interface RedditApiPost {
   media?: {
     reddit_video?: {
       fallback_url?: string;
+      hls_url?: string;
+      dash_url?: string;
+      has_audio?: boolean;
+      is_gif?: boolean;
       width?: number;
       height?: number;
     };
@@ -119,15 +131,50 @@ export function getGalleryImages(post: RedditApiPost): RedditImage[] {
   }, []);
 }
 
+function getRedditVideoIdFromUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname !== "v.redd.it") return undefined;
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    return segments[0];
+  } catch {
+    return undefined;
+  }
+}
+
+export function deriveRedditHlsUrl(fallbackUrl?: string): string | undefined {
+  const videoId = getRedditVideoIdFromUrl(fallbackUrl);
+  if (!videoId) return undefined;
+  return `https://v.redd.it/${videoId}/HLSPlaylist.m3u8`;
+}
+
+export function deriveRedditDashUrl(fallbackUrl?: string): string | undefined {
+  const videoId = getRedditVideoIdFromUrl(fallbackUrl);
+  if (!videoId) return undefined;
+  return `https://v.redd.it/${videoId}/DASHPlaylist.mpd`;
+}
+
 export function getVideo(post: RedditApiPost): RedditVideo | undefined {
   const redditVideo =
     post.secure_media?.reddit_video ?? post.media?.reddit_video;
-  if (!post.is_video || !redditVideo?.fallback_url) return undefined;
+  if (!post.is_video || !redditVideo) return undefined;
+
   const fallbackUrl = decodeRedditUrl(redditVideo.fallback_url);
-  if (!fallbackUrl) return undefined;
+  const hlsUrl =
+    decodeRedditUrl(redditVideo.hls_url) ?? deriveRedditHlsUrl(fallbackUrl);
+  const dashUrl =
+    decodeRedditUrl(redditVideo.dash_url) ?? deriveRedditDashUrl(fallbackUrl);
+  if (!fallbackUrl && !hlsUrl && !dashUrl) return undefined;
+
   const poster = getPreviewImage(post)?.url;
   return {
     fallbackUrl,
+    hlsUrl,
+    dashUrl,
+    hasAudio: redditVideo.has_audio,
+    isGif: redditVideo.is_gif,
     width: redditVideo.width,
     height: redditVideo.height,
     poster,
