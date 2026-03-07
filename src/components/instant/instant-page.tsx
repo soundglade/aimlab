@@ -368,7 +368,10 @@ export default function ReaderPage() {
             </ul>
           </div>
           <div className="w-full flex align-center">
-            <Button asChild className="max-sm:-mt-2 mx-auto mb-2 bg-primary/40">
+            <Button
+              asChild
+              className="max-sm:-mt-2 mx-auto mb-2 bg-primary/80 dark:bg-primary/40"
+            >
               <a href="https://openmeadow.ai/?from=aimlab">
                 <Sparkles className="size-4" />
                 Try Open Meadow, our new player
