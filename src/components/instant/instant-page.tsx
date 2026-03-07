@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { MessageSquare, Download } from "lucide-react";
+import { MessageSquare, Download, Sparkles } from "lucide-react";
 import { VoiceSelect } from "./voice-select";
 import { LanguageSelect } from "./language-select";
 import { useRouter } from "next/router";
@@ -368,12 +368,12 @@ export default function ReaderPage() {
             </ul>
           </div>
           <div className="w-full flex align-center">
-            <a
-              href="https://www.reddit.com/r/AIMeditationLab/comments/1qtv0z0/open_meadow_preview_inviting_a_few_of_you_to_try/"
-              className="mb-3 max-sm:-mt-2 text-muted-foreground mx-auto mb-1 rounded-lg py-2 px-3 text-sm text-center bg-popover hover:bg-accent"
-            >
-              Try our new, improved version: Open Meadow
-            </a>
+            <Button asChild className="max-sm:-mt-2 mx-auto mb-2 bg-primary/40">
+              <a href="https://openmeadow.ai/?from=aimlab">
+                <Sparkles className="size-4" />
+                Try Open Meadow, our new player
+              </a>
+            </Button>
           </div>
 
           <form
