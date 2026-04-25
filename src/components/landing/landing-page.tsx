@@ -118,7 +118,11 @@ export default function LandingPage({
             {latestRedditPosts.map((post) => (
               <article
                 key={post.id}
-                className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start"
+                className={cn(
+                  "grid gap-4 md:items-start",
+                  post.media &&
+                    "md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
+                )}
               >
                 <div className="space-y-1">
                   <div className="text-muted-foreground flex items-center gap-2 text-xs">
@@ -150,7 +154,12 @@ export default function LandingPage({
                     </Link>
                   </div>
                 </div>
-                <RedditPostMedia media={post.media} permalink={post.permalink} />
+                {post.media && (
+                  <RedditPostMedia
+                    media={post.media}
+                    permalink={post.permalink}
+                  />
+                )}
               </article>
             ))}
           </div>
