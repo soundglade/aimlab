@@ -2,8 +2,27 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyToken, getCookieName } from "@/lib/auth";
 
+// Paid generation endpoints, blocked while the project is deactivated so the
+// archive keeps serving without incurring AI costs. Flip with DEACTIVATE_WEBSITE.
+const BLOCKED_WHEN_DEACTIVATED = [
+  "/api/start-reading",
+  "/api/synthesize-meditation",
+  "/api/format-meditation-script",
+  "/api/save-instant-meditation",
+];
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  if (
+    process.env.DEACTIVATE_WEBSITE === "true" &&
+    BLOCKED_WHEN_DEACTIVATED.some((route) => path.startsWith(route))
+  ) {
+    return NextResponse.json(
+      { error: "Meditation creation is no longer available on AIM Lab." },
+      { status: 503 }
+    );
+  }
 
   // Only protect /admin and /playground routes
   if (!path.startsWith("/admin") && !path.startsWith("/playground")) {
@@ -38,5 +57,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/playground/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/playground/:path*",
+    "/api/start-reading",
+    "/api/synthesize-meditation",
+    "/api/format-meditation-script",
+    "/api/save-instant-meditation",
+  ],
 };

@@ -5,6 +5,7 @@ import {
   LatestMeditation,
 } from "@/lib/latest-meditations";
 import { getLatestRedditPosts, RedditPost } from "@/lib/reddit-posts";
+import { isWebsiteDeactivated } from "@/lib/deactivation";
 
 // Define our own BlogPost type since we removed the blog.ts library
 export type BlogPost = {
@@ -79,7 +80,10 @@ export default function Home({
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const latestMeditations = await getLatestMeditations();
-  const latestRedditPosts = await getLatestRedditPosts();
+  // When deactivated, stop sourcing Reddit so the archive doesn't keep updating.
+  const latestRedditPosts = isWebsiteDeactivated()
+    ? []
+    : await getLatestRedditPosts();
   return {
     props: {
       latestMeditations,

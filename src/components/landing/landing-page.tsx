@@ -103,15 +103,17 @@ export default function LandingPage({
         </div>
       </section>
 
-      <div id="community" className="invisible relative -top-4"></div>
-      {/* Community */}
-      <section className={`mb-10 w-full max-w-4xl px-4`}>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-2xl tracking-tight">
-            <Users className="h-5 w-5 opacity-50" />
-            Reddit community
-          </h2>
-        </div>
+      {latestRedditPosts.length > 0 && (
+        <>
+          <div id="community" className="invisible relative -top-4"></div>
+          {/* Community */}
+          <section className={`mb-10 w-full max-w-4xl px-4`}>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-2xl tracking-tight">
+                <Users className="h-5 w-5 opacity-50" />
+                Reddit community
+              </h2>
+            </div>
 
         <div className="rounded-xl bg-white px-6 py-6 dark:bg-gray-900 md:px-10 md:py-10">
           <div className="space-y-8">
@@ -177,7 +179,9 @@ export default function LandingPage({
             </Button>
           </div>
         </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* <section className={`mb-10 w-full max-w-4xl px-4`}>
         <div className="mb-6 flex items-center justify-between">

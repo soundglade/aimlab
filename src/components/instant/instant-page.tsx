@@ -26,6 +26,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import SavedMeditations from "./saved-meditations";
+import { isWebsiteDeactivatedClient } from "@/lib/deactivation";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -51,6 +52,10 @@ export default function ReaderPage() {
   const [selectedVoice, setSelectedVoice] = useAtom(voiceIdAtom);
   const [selectedLanguage, setSelectedLanguage] = useAtom(languageAtom);
   const router = useRouter();
+
+  // When the project is deactivated, creating new meditations is turned off.
+  // Saved meditations (stored in the browser) remain fully accessible below.
+  const deactivated = isWebsiteDeactivatedClient();
 
   // Language detection hook
   const { detectFromText, markUserSelected } = useLanguageDetection({
@@ -346,25 +351,33 @@ export default function ReaderPage() {
 
           <div className="text-muted-foreground mx-auto mb-1 max-w-4xl rounded-lg p-4 text-sm">
             <ul className="list-inside space-y-2 text-center">
-              <li>
-                <span className="hidden sm:inline">
-                  {" "}
-                  Use <i>ChatGPT</i>,{" "}
-                  <Link
-                    href="https://awakin.ai"
-                    target="_blank"
-                    className="text-primary"
-                  >
-                    Awakin.ai
-                  </Link>{" "}
-                  or another chatbot to generate a meditation script, then paste
-                  it here
-                </span>
-                <span className="sm:hidden">
-                  Create a meditation script with <i>ChatGPT</i> or any other
-                  chatbot, then copy and paste it down here
-                </span>
-              </li>
+              {deactivated ? (
+                <li>
+                  Creating new meditations is no longer available on AIM Lab.
+                  Your previously saved meditations are still here below, and
+                  you can keep practicing on Open Meadow.
+                </li>
+              ) : (
+                <li>
+                  <span className="hidden sm:inline">
+                    {" "}
+                    Use <i>ChatGPT</i>,{" "}
+                    <Link
+                      href="https://awakin.ai"
+                      target="_blank"
+                      className="text-primary"
+                    >
+                      Awakin.ai
+                    </Link>{" "}
+                    or another chatbot to generate a meditation script, then
+                    paste it here
+                  </span>
+                  <span className="sm:hidden">
+                    Create a meditation script with <i>ChatGPT</i> or any other
+                    chatbot, then copy and paste it down here
+                  </span>
+                </li>
+              )}
             </ul>
           </div>
           <div className="w-full flex align-center">
@@ -395,7 +408,7 @@ export default function ReaderPage() {
                   // Trigger language detection
                   detectFromText(newScript);
                 }}
-                disabled={isSubmitting || isDownloading}
+                disabled={isSubmitting || isDownloading || deactivated}
                 required
                 maxLength={10000}
                 ref={scriptTextareaRef}
@@ -409,7 +422,12 @@ export default function ReaderPage() {
                     <Button
                       type="submit"
                       className="relative w-full pr-5 text-base sm:mx-auto sm:w-[200px]"
-                      disabled={isSubmitting || isDownloading || !script.trim()}
+                      disabled={
+                        isSubmitting ||
+                        isDownloading ||
+                        !script.trim() ||
+                        deactivated
+                      }
                     >
                       {isSubmitting ? "Playing..." : "Play"}
                     </Button>
@@ -422,7 +440,10 @@ export default function ReaderPage() {
                           size="icon"
                           className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-full opacity-50"
                           disabled={
-                            isSubmitting || isDownloading || !script.trim()
+                            isSubmitting ||
+                            isDownloading ||
+                            !script.trim() ||
+                            deactivated
                           }
                           onClick={handleDownload}
                         >

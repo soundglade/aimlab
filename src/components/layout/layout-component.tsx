@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Header } from "./header-component";
 import { Footer } from "./footer-component";
+import { DeactivationBanner } from "./deactivation-banner";
 import Head from "next/head";
 
 export const gradientBackgroundClasses =
@@ -85,6 +86,8 @@ export function Layout({
           content="https://aimlab.soundglade.com/og-image-2.jpg"
         />
       </Head>
+
+      <DeactivationBanner />
 
       {variant === "page" ? (
         <>
