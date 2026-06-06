@@ -2,9 +2,22 @@
 <h3 align="center">The AI Meditation Playground</h3>
 <p align="center">An open-source project exploring the intersection of AI and meditation practices.</p>
 
-<p align="center">
-  <b>Visit the Live Website:</b> <a href="https://aimlab.soundglade.com/">https://aimlab.soundglade.com/</a>
-</p>
+<blockquote align="center">
+  <p><b>📢 This project has ended.</b></p>
+  <p>AIM Lab is no longer creating new meditations, but the archive stays online.<br/>
+  Continue your practice on <a href="https://openmeadow.ai/?from=aimlab"><b>Open Meadow</b></a>, our new player,
+  or host AIM Lab yourself from this repo (see below).</p>
+</blockquote>
+
+## Self-hosting
+
+This repo is fully open-source under the MIT license, so you can run your own
+instance. Follow [Getting Started](#getting-started) below.
+
+The hosted version runs in a read-only "archive" mode via a single feature flag.
+Set `DEACTIVATE_WEBSITE=true` in your environment to disable all paid meditation
+generation (keeping saved/archived content servable); leave it unset or `false`
+to run the full, generative experience.
 
 ## Demo
 
