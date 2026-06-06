@@ -1,15 +1,17 @@
 import {
-  isWebsiteDeactivatedClient,
   OPEN_MEADOW_URL,
   GITHUB_REPO_URL,
 } from "@/lib/deactivation";
+import { useWebsiteDeactivation } from "@/hooks/use-website-deactivation";
 
 /**
  * Thin sitewide banner shown when DEACTIVATE_WEBSITE is on. Tells visitors the
  * project has ended and points them to Open Meadow and the open-source repo.
  */
 export function DeactivationBanner() {
-  if (!isWebsiteDeactivatedClient()) return null;
+  const { deactivated } = useWebsiteDeactivation();
+
+  if (!deactivated) return null;
 
   return (
     <div className="w-full bg-primary/90 px-4 py-2 text-center text-sm text-primary-foreground">

@@ -26,7 +26,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import SavedMeditations from "./saved-meditations";
-import { isWebsiteDeactivatedClient } from "@/lib/deactivation";
+import { useWebsiteDeactivation } from "@/hooks/use-website-deactivation";
 
 export default function ReaderPage() {
   const [script, setScript] = useState("");
@@ -55,7 +55,9 @@ export default function ReaderPage() {
 
   // When the project is deactivated, creating new meditations is turned off.
   // Saved meditations (stored in the browser) remain fully accessible below.
-  const deactivated = isWebsiteDeactivatedClient();
+  const { deactivated, isLoading: isDeactivationLoading } =
+    useWebsiteDeactivation();
+  const creationDisabled = deactivated || isDeactivationLoading;
 
   // Language detection hook
   const { detectFromText, markUserSelected } = useLanguageDetection({
@@ -408,7 +410,7 @@ export default function ReaderPage() {
                   // Trigger language detection
                   detectFromText(newScript);
                 }}
-                disabled={isSubmitting || isDownloading || deactivated}
+                disabled={isSubmitting || isDownloading || creationDisabled}
                 required
                 maxLength={10000}
                 ref={scriptTextareaRef}
@@ -426,7 +428,7 @@ export default function ReaderPage() {
                         isSubmitting ||
                         isDownloading ||
                         !script.trim() ||
-                        deactivated
+                        creationDisabled
                       }
                     >
                       {isSubmitting ? "Playing..." : "Play"}
@@ -443,7 +445,7 @@ export default function ReaderPage() {
                             isSubmitting ||
                             isDownloading ||
                             !script.trim() ||
-                            deactivated
+                            creationDisabled
                           }
                           onClick={handleDownload}
                         >

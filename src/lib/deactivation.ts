@@ -8,8 +8,8 @@
  *  - the landing page stops sourcing Reddit posts
  *  - the /instant create form is disabled (saved meditations still work)
  *
- * `NEXT_PUBLIC_DEACTIVATE_WEBSITE` is mirrored from `DEACTIVATE_WEBSITE` in
- * next.config.js so the same boolean reaches client components.
+ * Client components read the public runtime projection from /api/public-config
+ * so the flag can be changed without rebuilding the client bundle.
  */
 
 export const OPEN_MEADOW_URL = "https://openmeadow.ai/?from=aimlab";
@@ -18,9 +18,4 @@ export const GITHUB_REPO_URL = "https://github.com/soundglade/aimlab";
 /** Server-side check (API routes, getServerSideProps, middleware). */
 export function isWebsiteDeactivated(): boolean {
   return process.env.DEACTIVATE_WEBSITE === "true";
-}
-
-/** Client-side check (React components). */
-export function isWebsiteDeactivatedClient(): boolean {
-  return process.env.NEXT_PUBLIC_DEACTIVATE_WEBSITE === "true";
 }
